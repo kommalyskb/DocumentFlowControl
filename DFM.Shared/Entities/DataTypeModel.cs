@@ -15,5 +15,7 @@ namespace DFM.Shared.Entities
         public string? DocType { get; set; }
         [Indexed]
         public string? OrganizationID { get; set; }
+        [Indexed(Sortable = true)]
+        public int SortOrder { get; set; }
     }
 }

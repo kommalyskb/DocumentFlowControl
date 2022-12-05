@@ -1,0 +1,10 @@
+{
+  "_id": "_design/query",
+  "views": {
+    "byRoleId": {
+      "reduce": "_count",
+      "map": "function (doc) {\n   for(var i = 0, len = doc.recipients.length; i < len; i++){\n     var key = { roleId: doc.recipients[i].recipientInfo.roleID, docStatus: doc.recipients[i].docStatus, inboxType: doc.inboxType };\n    \n     emit(key, doc);\n   }\n  \n}"
+    }
+  },
+  "language": "javascript"
+}

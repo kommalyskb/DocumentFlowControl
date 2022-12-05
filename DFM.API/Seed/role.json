@@ -1,0 +1,10 @@
+{
+  "_id": "_design/query",
+  "views": {
+    "byOrgId": {
+      "map": "function (doc) {\n  emit(doc.organizationID, doc);\n}",
+      "reduce": "_count"
+    }
+  },
+  "language": "javascript"
+}

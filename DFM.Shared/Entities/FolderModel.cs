@@ -18,7 +18,7 @@ namespace DFM.Shared.Entities
         public decimal Start { get; set; }
         [Indexed]
         public int NextNumber { get; set; }
-        [Indexed]
+        [Indexed(Sortable = true)]
         public int Seq { get; set; }
         [Indexed]
         public string? Prefix { get; set; }

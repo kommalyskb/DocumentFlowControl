@@ -21,4 +21,8 @@
     <ProjectReference Include="..\DFM.Shared\DFM.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Seed\" />
+  </ItemGroup>
+
 </Project>

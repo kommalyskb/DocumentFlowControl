@@ -32,6 +32,7 @@ namespace DFM.API.Controllers
         }
 
         /// <summary>
+        /// v1.0.0
         /// ແມ່ນ API ທີ່ໃຊ້ໃນການ ຂໍ access token ສຳລັບນັກພັດທະນາ ທີ່ບໍ່ສາມາດໃຊ້ oauth2.0
         /// ສຳລັບ flow ທີ່ support ຕອນນີ້ມີຢູ່ 2 ຢ່າງຄື: 
         /// 1. GrantType = "client_credentials" ສຳລັບ flow ນີ້ຈະບໍ່ support refresh token ແລະ ບໍ່ຮອງຮັບ offline access scope

@@ -15,6 +15,7 @@
         </member>
         <member name="M:DFM.API.Controllers.ConnectedController.TokenV1(DFM.Shared.DTOs.TokenEndPointRequest,System.Threading.CancellationToken)">
             <summary>
+            v1.0.0
             ແມ່ນ API ທີ່ໃຊ້ໃນການ ຂໍ access token ສຳລັບນັກພັດທະນາ ທີ່ບໍ່ສາມາດໃຊ້ oauth2.0
             ສຳລັບ flow ທີ່ support ຕອນນີ້ມີຢູ່ 2 ຢ່າງຄື: 
             1. GrantType = "client_credentials" ສຳລັບ flow ນີ້ຈະບໍ່ support refresh token ແລະ ບໍ່ຮອງຮັບ offline access scope
@@ -29,6 +30,36 @@
             ແມ່ນ Endpoint ສຳລັບຂໍ Access Token ໃຫມ່ດ້ວຍການສົ່ງ refresh token ເຂົ້າມາ
             </summary>
             <param name="request"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DFM.API.Controllers.DocumentController.GetDocumentV1(System.String,System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            v1.0.0
+             ແມ່ນ API ທີ່ໃຊ້ໃນການດຶງເອົາເອກະສານ ຕາມ Role, ກ່ອງເອກະສານ
+            </summary>
+            <param name="page"></param>
+            <param name="link"></param>
+            <param name="roleId"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DFM.API.Controllers.DocumentController.SaveDocumentV1(DFM.Shared.DTOs.DocumentRequest,System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            v1.0.0
+            ແມ່ນ API ທີ່ໃຊ້ສຳລັບການເຮັດ Transaction ຂອງ ເອກະສານ
+            </summary>
+            <param name="request"></param>
+            <param name="roleId"></param>
+            <param name="fakeId"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DFM.API.Controllers.SeedController.Post(System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            v1.0.0 
+            ແມ່ນການ Seed Database ແລະ re-index
+            </summary>
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>

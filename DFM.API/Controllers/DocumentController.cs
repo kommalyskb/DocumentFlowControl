@@ -38,6 +38,16 @@ namespace DFM.API.Controllers
             this.organization = organization;
             this.redisConnector = redisConnector;
         }
+
+        /// <summary>
+        /// v1.0.0
+        ///  ແມ່ນ API ທີ່ໃຊ້ໃນການດຶງເອົາເອກະສານ ຕາມ Role, ກ່ອງເອກະສານ
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="link"></param>
+        /// <param name="roleId"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [HttpGet("GetDocument/{page}/{link}/{roleId}")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(ResponseQueryDocument), StatusCodes.Status200OK)]
@@ -108,6 +118,15 @@ namespace DFM.API.Controllers
             return false;
         }
 
+        /// <summary>
+        /// v1.0.0
+        /// ແມ່ນ API ທີ່ໃຊ້ສຳລັບການເຮັດ Transaction ຂອງ ເອກະສານ
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="roleId"></param>
+        /// <param name="fakeId"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [HttpPost("SaveDocument/{roleId}")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status200OK)]

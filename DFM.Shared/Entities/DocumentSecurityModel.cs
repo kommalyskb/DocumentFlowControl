@@ -15,6 +15,8 @@ namespace DFM.Shared.Entities
         public string? Level { get; set; }
         [Indexed]
         public string? OrganizationID { get; set; }
+        [Indexed(Sortable = true)]
+        public int SortOrder { get; set; }
 
     }
 }
