@@ -1,0 +1,143 @@
+version: '3.4'
+
+services:
+  dfm.db:
+    image: couchdb
+    restart: always
+    ports:
+      - "5984:5984"
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=1qaz2wsx
+    volumes:
+        - ./dbdata:/opt/couchdb/data
+  dfm.api:
+    image: ${DOCKER_REGISTRY-}dfmapi
+    restart: always
+    ports:
+      - 5000:80
+    environment:
+      - TZ=Asia/Vientiane
+    networks:
+      - dfmnetwork
+    build:
+      context: .
+      dockerfile: DFM.API/Dockerfile
+    depends_on:
+      - dfm.db
+
+  dfm.frontend:
+    image: ${DOCKER_REGISTRY-}dfmfrontend
+    restart: always
+    ports:
+      - 5001:80
+    environment:
+      - TZ=Asia/Vientiane
+    networks:
+      - dfmnetwork
+    build:
+      context: .
+      dockerfile: DFM.Frontend/Dockerfile
+    depends_on:
+      - dfm.api
+  dfm.storage:
+    image: quay.io/minio/minio:RELEASE.2022-05-08T23-50-31Z
+    restart: always
+    command: server /data --address ':9000' --console-address ':9001'
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: 16493905036800000
+      MINIO_ROOT_PASSWORD: 58b5e8134c3c4666b1dbb078561a6893
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    depends_on:
+      - dfm.api
+    volumes:
+      - data_minio:/data
+
+  dfm.es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.1
+    environment:
+      - node.name=dfm.es01
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=dfm.es02,dfm.es03
+      - cluster.initial_master_nodes=dfm.es01,dfm.es02,dfm.es03
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data01:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - dfmnetwork
+
+  dfm.es02:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.1
+    environment:
+      - node.name=dfm.es02
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=dfm.es01,dfm.es03
+      - cluster.initial_master_nodes=dfm.es01,dfm.es02,dfm.es03
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data02:/usr/share/elasticsearch/data
+    networks:
+      - dfmnetwork
+
+  dfm.es03:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.1
+    environment:
+      - node.name=dfm.es03
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=es01,es02
+      - cluster.initial_master_nodes=dfm.es01,dfm.es02,dfm.es03
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data03:/usr/share/elasticsearch/data
+    networks:
+      - dfmnetwork
+
+  dfm.kibana:
+    image: docker.elastic.co/kibana/kibana:7.11.1
+    ports:
+      - 5601:5601
+    environment:
+      ELASTICSEARCH_URL: http://dfm.es01:9200
+      ELASTICSEARCH_HOSTS: '["http://dfm.es01:9200","http://dfm.es02:9200","http://dfm.es03:9200"]'
+    networks:
+      - dfmnetwork
+  
+networks: 
+  dfmnetwork:
+    driver: bridge
+volumes:
+  data_minio:
+  data01:
+    driver: local
+  data02:
+    driver: local
+  data03:
+    driver: local
+  
+
+
+

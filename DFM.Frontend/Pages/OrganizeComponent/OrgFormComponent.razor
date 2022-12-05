@@ -1,0 +1,109 @@
+﻿@inject IHttpService httpService
+@inject AccessTokenStorage accessToken
+@inject ServiceEndpoint endpoint
+@inject LocalStorageHelper storageHelper
+
+<MudContainer>
+    <MudGrid>
+        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+            <h2>ຂໍ້ມູນຕຳແຫນ່ງ</h2>
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <MudTextField T="string" Counter="1000" MaxLength="1000" Disabled="@disabled" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ຊື່ທີ່ເປັນພາສາທ້ອງຖີ່ນ" Label="ຊື່ເປັນພາສາລາວ*" />
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <MudTextField T="string" Counter="1000" MaxLength="1000" Disabled="@disabled" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ຊື່ທີ່ເປັນພາສາສາກົນ" Label="ຊື່ເປັນພາສາອັງກິດ*" />
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <MudSelect T="RoleTypeModel" HelperText="ລະດັບຕຳແຫນ່ງ" Label="ຕຳແຫນ່ງ*" Variant="Variant.Text" Disabled="@disabled">
+                <MudSelectItem Value="RoleTypeModel.Prime">ປະທານບໍລິສັດ</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.DeputyPrime">ຮອງປະທານບໍລິສັດ</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.PrimeSecretary">ເລຂາປະທານບໍລິສັດ</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.DeputyPrimeSecretary">ເລຂາຮອງປະທານບໍລິສັດ</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.Director">ຜູ້ອຳນວຍການ</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.DeputyDirector">ຮອງຜູ້ອຳນວຍການ</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.InboundPrime">ຂາເຂົ້າບໍລິສັດ</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.OutboundPrime">ຂາອອກບໍລິສັດ</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.OfficePrime">ຫົວຫນ້າຫ້ອງການ</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.DeputyOfficePrime">ຮອງຫົວຫນ້າຫ້ອງການ</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.InboundOfficePrime">ຂາເຂົ້າຫ້ອງການ</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.OutboundOfficePrime">ຂາອອກຫ້ອງ</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.General">ຫົວຫນ້າຝ່າຍ</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.DeputyGeneral">ຮອງຫົວຫນ້າຝ່າຍ</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.InboundGeneral">ຂາເຂົ້າຝ່າຍ</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.OutboundGeneral">ຂາອອກຝ່າຍ </MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.OfficeGeneral">ຫົວຫນ້າຫ້ອງການຝ່າຍ</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.DeputyOfficeGeneral">ຮອງຫົວຫນ້າຫ້ອງການຝ່າຍ</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.Division">ຫົວຫນ້າພະແນກ</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.DeputyDivision">ຮອງພະແນກ</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.Department">ຫົວຫນ້າພາກສ່ວນ</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.DeputyDepartment">ຮອງພາກສ່ວນ</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.Employee">ພະນັກງານວິຊາການ</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.Contract">ສັນຍາຈ້າງ</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.Volunteer">ອາສາສະຫມັກ</MudSelectItem>
+            </MudSelect>
+        </MudItem>
+        @if (FormMode == FormMode.Edit)
+        {
+            <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+                <MudCheckBox @bind-Checked="@disabled" Label="ແກ້ໄຂ ຕຳແໜ່ງ" Color="Color.Primary"></MudCheckBox>
+            </MudItem>
+        }
+        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+            <h2>ຜູ້ໃຫ້ທິດຊີ້ນຳ</h2>
+        </MudItem>
+        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+            <MudSelect T="RoleTypeModel" HelperText="ພາກສ່ວນສັງກັດ" Label="ສັງກັດ*" Variant="Variant.Text" Disabled="@disabled">
+
+            </MudSelect>
+        </MudItem>
+        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+            <MudSelect T="RoleTypeModel" HelperText="ຜູ້ໃຫ້ທິດຊີ້ນຳ" Label="ຜູ້ໃຫ້ທິດ*" Variant="Variant.Text" Disabled="@disabled">
+
+            </MudSelect>
+        </MudItem>
+        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+            <MudTextField T="string" Counter="1000" MaxLength="1000" Disabled="@disabled" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ຊື່ປະກາດໃຊ້ທີ່ສະແດງໃນ ແຜນຜັງ" Label="ຊື່ປະກາດໃຊ້*" />
+        </MudItem>
+        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+            <h2>ຂໍ້ມູນບຸກຄະລາກອນ</h2>
+        </MudItem>
+        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+            <MudField Label="ຊື່ ນາມສະກຸນ" Variant="Variant.Text"></MudField>
+        </MudItem>
+        <MudItem xs="12" md="4">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary">ເລືອກ ບຸກຄະລາກອນ</MudButton>
+        </MudItem>
+        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+            <MudList Clickable="false">
+                <MudListSubheader>
+                    ລາຍການ ຕຳແໜ່ງທີ່ຖືກແຕ່ງຕັ້ງ
+                </MudListSubheader>
+                <MudListItem Icon="@Icons.Material.Filled.SupervisedUserCircle">
+                    Sent mail
+                </MudListItem>
+                <MudListItem Icon="@Icons.Material.Filled.SupervisedUserCircle">
+                    Drafts
+                </MudListItem>
+            </MudList>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+@code {
+    [Parameter] public string? OrganizationID { get; set; }
+    [Parameter] public FormMode FormMode { get; set; }
+    [Parameter] public RoleTreeModel? RoleTreeModel { get; set; }
+    bool disabled = false;
+}

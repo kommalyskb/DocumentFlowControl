@@ -1,0 +1,149 @@
+﻿@page "/pages/doc/{Link}/{Page}"
+@inject IHttpService httpService
+@inject AccessTokenStorage accessToken
+@inject ServiceEndpoint endpoint
+@inject LocalStorageHelper storageHelper
+@inject IMinioService minio
+@inject StorageConfiguration storageConf
+@inject NavigationManager nav
+@inject ISnackbar Snackbar
+@implements IDisposable
+
+<PageTitle>Document - DFM</PageTitle>
+
+<DFM.Frontend.Pages.Common.ButtonPanel FormMode="formMode" ShowTerminateButton="true" ShowCreateButton="showCreateButton" OnProcessing="onProcessing" ShowHistoryButton="true"
+                                       ShowDeleteButton="true" ShowEditButton="true" ShowSaveButton="true" ShowSendButton="showSendButton" ShowRestoreButton="true"
+                                       CreateButtonEvent="onCreateButtonClick" PreviousButtonEvent="onePreviousButtonClick" Behavior="myRole!.Behavior"
+                                       SendButtonEvent="onSendButtonClick" EditButtonEvent="onEditButtonClick" RestoreButtonEvent="onRestoreButtonClick"
+                                       RootBreadcrumb="ລາຍການເອກະສານ" ViewBreadcrumb="ເບີ່ງເອກະສານ" EditBreadcrumb="ແກ້ໄຂເອກະສານ" CreateBreadcrumb="ສ້າງເອກະສານໃຫມ່"
+                                       SaveButtonEvent="onSaveClickAsync" DeleteButtonEvent="onDeleteButtonClick" TerminateButtonEvent="onTerminateButtonClick"></DFM.Frontend.Pages.Common.ButtonPanel>
+
+
+@if (Link == "inbound")
+{
+
+    @if (formMode == FormMode.List)
+    {
+        <DFM.Frontend.Pages.Inbound.Inbox OnProcessing="onProcessing" TraceStatus="traceStatus" Link="@Link" OnTabChangeEvent="onTabChangeEventAsync" OnRowClick="@onRowClick"></DFM.Frontend.Pages.Inbound.Inbox>
+
+    }
+    else if (formMode == FormMode.Create)
+    {
+        
+        <DFM.Frontend.Pages.Inbound.DocumentForm RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument"
+                                         DocumentModel="documentModel" Attachments="files" Notice="onMessageAlert" MyRole="selectedRole"
+                                         RelateFiles="relateFiles" Mode="formMode"></DFM.Frontend.Pages.Inbound.DocumentForm>
+    }
+    else if (formMode == FormMode.Edit)
+    {
+        <DFM.Frontend.Pages.Inbound.DocumentForm RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument"
+                                                 DocumentModel="documentModel" Attachments="files" Notice="onMessageAlert" MyRole="selectedRole"
+                                         RelateFiles="relateFiles" Mode="formMode"></DFM.Frontend.Pages.Inbound.DocumentForm>
+    }
+    else if (formMode == FormMode.View || formMode == FormMode.Trash || formMode == FormMode.Terminated)
+    {
+        <DFM.Frontend.Pages.Inbound.DocumentView RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument"
+                                        DocumentModel="documentModel"></DFM.Frontend.Pages.Inbound.DocumentView>
+
+    }
+
+}
+else if (Link == "outbound")
+{
+    @if (formMode == FormMode.List)
+    {
+        <DFM.Frontend.Pages.Outbound.Inbox TraceStatus="traceStatus" OnProcessing="onProcessing" Link="@Link" OnTabChangeEvent="onTabChangeEventAsync" OnRowClick="@onRowClick"></DFM.Frontend.Pages.Outbound.Inbox>
+
+    }
+    else if (formMode == FormMode.Create)
+    {
+        <DFM.Frontend.Pages.Outbound.DocumentForm RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument"
+                                                  DocumentModel="documentModel" Attachments="files" Notice="onMessageAlert" MyRole="selectedRole"
+                                          RelateFiles="relateFiles" Mode="formMode"></DFM.Frontend.Pages.Outbound.DocumentForm>
+    }
+    else if (formMode == FormMode.Edit)
+    {
+        <DFM.Frontend.Pages.Outbound.DocumentForm RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument"
+                                                  DocumentModel="documentModel" Attachments="files" Notice="onMessageAlert" MyRole="selectedRole"
+                                        RelateFiles="relateFiles" Mode="formMode"></DFM.Frontend.Pages.Outbound.DocumentForm>
+    }
+    else if (formMode == FormMode.View|| formMode == FormMode.Trash || formMode == FormMode.Terminated)
+    {
+        <DFM.Frontend.Pages.Outbound.DocumentView RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument"
+                                        DocumentModel="documentModel"></DFM.Frontend.Pages.Outbound.DocumentView>
+
+    }
+
+}
+else
+{
+    <MudAlert Severity="Severity.Error">Sorry the content not found, invalid link or page</MudAlert>
+}
+
+<MudMessageBox @ref="mbox" Title="ສົ່ງເອກະສານ">
+    <MessageContent>
+        <DFM.Frontend.Pages.Common.Recipient Recipients="recipients" RoleId="@roleId" MainReceiver="@mainReciver"></DFM.Frontend.Pages.Common.Recipient>
+    </MessageContent>
+    <YesButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save">ສົ່ງຕໍ່</MudButton>
+    </YesButton>
+</MudMessageBox>
+
+<MudMessageBox @ref="delBox" Title="ລຶບເອກະສານ">
+    <MessageContent>
+        <h2>ທ່ານຕ້ອງການ ລຶບເອກະສານ ນີ້ແທ້ບໍ່?</h2>
+    </MessageContent>
+    <YesButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Error" StartIcon="@Icons.Material.Filled.Delete">ຢືນຢັນ</MudButton>
+    </YesButton>
+</MudMessageBox>
+
+
+<MudMessageBox @ref="restoreBox" Title="ກູ້ຄືນເອກະສານ">
+    <MessageContent>
+        <h2>ທ່ານຕ້ອງການ ກູ້ຄືນເອກະສານ ນີ້ແທ້ບໍ່?</h2>
+    </MessageContent>
+    <YesButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Success" StartIcon="@Icons.Material.Filled.Restore">ຢືນຢັນ</MudButton>
+    </YesButton>
+</MudMessageBox>
+
+<MudMessageBox @ref="terminateBox" Title="ສິ້ນສຸດເອກະສານ" style="width:300px">
+    <MessageContent>
+        <MudGrid xs="12" md="12">
+            <MudItem>
+                <MudTextField Lines="5" T="string" @bind-Value="terminateComment" Counter="1000" MaxLength="1000" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" Label="ຄຳເຫັນ" />
+            </MudItem>
+        </MudGrid>
+
+    </MessageContent>
+    <YesButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Success" StartIcon="@Icons.Material.Filled.CheckCircle">ຢືນຢັນ</MudButton>
+    </YesButton>
+</MudMessageBox>
+
+@code {
+    [Parameter] public string? Link { get; set; }
+    [Parameter] public string? Page { get; set; }
+    private FormMode formMode;
+    private TraceStatus traceStatus;
+    string? roleId = "";
+    MainReceiver? mainReciver = new();
+    bool onProcessing = false;
+    string? terminateComment;
+    bool showCreateButton = false;
+    bool showSendButton = true;
+    DocumentModel? documentModel = new();
+    RawDocumentData? rawDocument = new();
+    MudMessageBox? mbox { get; set; }
+    MudMessageBox? delBox { get; set; }
+    MudMessageBox? restoreBox { get; set; }
+    MudMessageBox? terminateBox { get; set; }
+    IList<AttachmentDto> files = new List<AttachmentDto>();
+    IList<AttachmentDto> relateFiles = new List<AttachmentDto>();
+    Reciepient? myRole = new();
+
+    public void Dispose()
+    {
+    }
+}

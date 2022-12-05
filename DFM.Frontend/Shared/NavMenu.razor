@@ -1,0 +1,61 @@
+﻿
+<MudNavMenu>
+    <div class="@(IsOpen?"d-flex justify-content-end":"d-flex justify-content-center")">
+        <MudIconButton Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit" OnClick="Open" Size="Size.Medium" />
+    </div>
+
+    <MudDivider Class="mb-4" Style="height:2px" />
+
+    @if (IsOpen)
+    {
+        <MudText Typo="Typo.subtitle2" Color="Color.Inherit" Class="ml-4 my-3">ສ່ວນຕົວ</MudText>
+    }
+
+    <MudNavLink Href="/pages/home" Icon="@Icons.Material.Outlined.Home">ຫນ້າຫລັກ</MudNavLink>
+    <MudNavLink Href="/pages/personal/account" Icon="@Icons.Material.Outlined.Person">ຂໍ້ມູນຜູ້ໃຊ້</MudNavLink>
+    <MudDivider Style="height:2px" />
+    @if (IsOpen)
+    {
+        <MudText Typo="Typo.subtitle2" Color="Color.Inherit" Class="ml-4 my-3">ເອກະສານຂາເຂົ້າ</MudText>
+    }
+
+    <MudNavLink Href="/pages/doc/inbound/inbox" Icon="@Icons.Material.Outlined.Inbox" Match="NavLinkMatch.Prefix">ກຳລັງດຳເນີນງານ</MudNavLink>
+    <MudNavLink Href="/pages/doc/inbound/draft" Icon="@Icons.Material.Outlined.Drafts" Match="NavLinkMatch.Prefix">ສະບັບຮ່າງ</MudNavLink>
+    <MudNavLink Href="/pages/doc/inbound/completed" Icon="@Icons.Material.Outlined.Send" Match="NavLinkMatch.Prefix">ສຳເລັດແລ້ວ</MudNavLink>
+    <MudNavLink Href="/pages/doc/inbound/bin" Icon="@Icons.Material.Outlined.Cabin" Match="NavLinkMatch.Prefix">ຖັງຂີ້ເຫຍື່ອ</MudNavLink>
+    <MudDivider Style="height:2px" />
+    @if (IsOpen)
+    {
+        <MudText Typo="Typo.subtitle2" Color="Color.Inherit" Class="ml-4 my-3">ເອກະສານຂາອອກ</MudText>
+    }
+
+    <MudNavLink Href="/pages/doc/outbound/inbox" Icon="@Icons.Material.Outlined.Inbox" Match="NavLinkMatch.Prefix">ກຳລັງດຳເນີນງານ</MudNavLink>
+    <MudNavLink Href="/pages/doc/outbound/draft" Icon="@Icons.Material.Outlined.Drafts" Match="NavLinkMatch.Prefix">ສະບັບຮ່າງ</MudNavLink>
+    <MudNavLink Href="/pages/doc/outbound/completed" Icon="@Icons.Material.Outlined.Send" Match="NavLinkMatch.Prefix">ສຳເລັດແລ້ວ</MudNavLink>
+    <MudNavLink Href="/pages/doc/outbound/bin" Icon="@Icons.Material.Outlined.Cabin" Match="NavLinkMatch.Prefix">ຖັງຂີ້ເຫຍື່ອ</MudNavLink>
+    <MudDivider Style="height:2px" />
+    @if (IsOpen)
+    {
+        <MudText Typo="Typo.subtitle2" Color="Color.Inherit" Class="ml-4 my-3">ແຟ້ມເອກະສານ</MudText>
+    }
+
+    <MudNavLink Href="/pages/folder/inbound" Icon="@Icons.Material.Outlined.Folder">ແຟ້ມຂາເຂົ້າ</MudNavLink>
+    <MudNavLink Href="/pages/folder/outbound" Icon="@Icons.Material.Outlined.FolderShared">ແຟ້ມຂາອອກ</MudNavLink>
+    <MudDivider Style="height:2px" />
+    @if (IsOpen)
+    {
+        <MudText Typo="Typo.subtitle2" Color="Color.Inherit" Class="ml-4 my-3">ຈັດການຜູ້ໃຊ້</MudText>
+    }
+
+    <MudNavLink Href="/pages/org/chart" Icon="@Icons.Material.Outlined.AddChart">ແຜນວາດອົງກອນ</MudNavLink>
+    <MudNavLink Href="/pages/org/user" Icon="@Icons.Material.Outlined.SupervisedUserCircle">ຜູ້ໃຊ້ລະບົບ</MudNavLink>
+    <MudDivider Style="height:2px" />
+    @if (IsOpen)
+    {
+        <MudText Typo="Typo.subtitle2" Color="Color.Inherit" Class="ml-4 my-3">ລາຍງານ</MudText>
+    }
+
+    <MudNavLink Href="/pages/report/inbound" Icon="@Icons.Material.Outlined.Newspaper">ລາຍງານເອກະສານຂາເຂົ້າ</MudNavLink>
+    <MudNavLink Href="/pages/report/outbound" Icon="@Icons.Material.Outlined.Newspaper">ລາຍງານເອກະສານຂາອອກ</MudNavLink>
+    <MudDivider Style="height:2px" />
+</MudNavMenu>

@@ -1,0 +1,32 @@
+﻿@inject IHttpService httpService
+@inject AccessTokenStorage accessToken
+@inject ServiceEndpoint endpoint
+@inject LocalStorageHelper storageHelper
+
+<MudContainer>
+    <MudGrid>
+        <MudItem xs="12" md="12">
+            <MudTabs Elevation="2" Rounded="true" Centered="false" @bind-ActivePanelIndex="panelIndex">
+                @if (tabItems == null)
+                {
+                    <MudAlert Severity="Severity.Error">Sorry the content not found, This user not recognize within any organization chart</MudAlert>
+                }
+                else
+                {
+                    foreach (var item in tabItems)
+                    {
+                        <FolderDataGrid Link="@Link" RoleId="@RoleId" OnRowClick="onRowClick"></FolderDataGrid>
+                    }
+                }
+            </MudTabs>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+
+@code {
+    [Parameter] public string? RoleId { get; set; }
+    [Parameter] public string? Link { get; set; }
+    [Parameter] public EventCallback<FolderModel> OnRowClick { get; set; }
+    [Parameter] public EventCallback<string> OnTabChangeEvent { get; set; }
+}

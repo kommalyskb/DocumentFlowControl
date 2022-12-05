@@ -1,0 +1,55 @@
+﻿@inject IHttpService httpService
+@inject AccessTokenStorage accessToken
+@inject ServiceEndpoint endpoint
+@inject LocalStorageHelper storageHelper
+<MudContainer>
+    <MudGrid>
+        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+            <MudTextField T="string" Counter="1000" MaxLength="1000" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ຊື່ຂອງເອກະສານ" Label="ຊື່ແຟ້ມ*" />
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <MudTextField T="int" Immediate="true" Variant="Variant.Text" HelperText="ເລກທີ່ເລີ່ມຕົ້ນຂອງເອກະສານ" Label="ເລກທີ່ເລີ່ມຕົ້ນ" />
+
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <MudTextField T="int" Immediate="true" Variant="Variant.Text" HelperText="ລຳດັບການສະແດງຜົນ" Label="ລຳດັບແຟ້ມ" />
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+           <MudDatePicker PickerVariant="PickerVariant.Inline" Label="ວັນທີ່ນຳໃຊ້ແຟ້ມ*" HelperText="ວັນທີ່ເລີ່ມນຳໃຊ້ແຟ້ມ" DateFormat="dd/MM/yyyy" />
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+           <MudDatePicker PickerVariant="PickerVariant.Inline" Label="ວັນທີປິດແຟ້ມ*" HelperText="ວັນທີ່ແຟ້ມຫມົດອາຍຸ" DateFormat="dd/MM/yyyy" />
+        </MudItem>
+        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+            <MudTextField T="string" Immediate="true" Variant="Variant.Text" HelperText="ຕົວຫຍໍ້ທີ່ເອົາມາສະແດງໃນເລກທີເອກະສານ" Label="ຕົວຫຍໍ້ອົງກອນ" />
+
+        </MudItem>
+        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+            <MudTextField T="string" Immediate="true" Variant="Variant.Text" HelperText="ຮູບແບບທີ່ເອົາມາສະແດງໃນເລກທີເອກະສານ" Label="ຮູບແບບເລກທີ" />
+
+        </MudItem>
+        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+            <MudTextField T="string" Immediate="true" Variant="Variant.Text" HelperText="ຫນ່ວຍງານຮັບຜິດຊອບອອກແຟ້ມ" Label="ຫນ່ວຍງານຮັບຜິດຊອບ" />
+
+        </MudItem>
+        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+            <MudSelect T="string" HelperText="ປະເພດຂອງເອກະສານທີ່ສາມາດໃຊ້ກັບແຟ້ມນີ້ໄດ້" Label="ປະເພດເອກະສານ*" Variant="Variant.Text">
+                @if (docTypeModels is not null)
+                {
+                    foreach (var item in docTypeModels!)
+                    {
+                        <MudSelectItem Value="item.id">@item.DocType</MudSelectItem>
+                    }
+                }
+            </MudSelect>
+        </MudItem>
+        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+            
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+@code {
+    [Parameter] public string? RoleId { get; set; }
+    [Parameter] public FolderModel? FolderModel { get; set; }
+}

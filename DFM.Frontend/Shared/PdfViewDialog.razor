@@ -1,0 +1,38 @@
+﻿
+<MudDialog>
+    <DialogContent>
+        @if (IsUrl)
+        {
+            if (string.IsNullOrWhiteSpace(PdfUrl))
+            {
+                <h2>File could not found</h2>
+            }
+            else
+            {
+                <iframe src="@PdfUrl" style="width: 100%; height: 100vh"></iframe>
+
+            }
+        }
+        else
+        {
+            if (PdfStream == null)
+            {
+                <h2>File could not found</h2>
+            }
+            else
+            {
+                string pdfContent = $"data:application/pdf;base64,{Convert.ToBase64String(PdfStream)}";
+                <iframe src="@pdfContent" style="width: 100%; height: 100vh"></iframe>
+            }
+        }
+    </DialogContent>
+
+</MudDialog>
+
+@code {
+    [Parameter] public bool IsUrl { get; set; }
+    [Parameter] public byte[]? PdfStream { get; set; }
+    [Parameter] public string? PdfUrl { get; set; }
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
+    void Close() => MudDialog!.Cancel();
+}

@@ -1,0 +1,251 @@
+﻿@inject IHttpService httpService
+@inject IDialogService DialogService
+
+@if (headerContent != null)
+{
+
+    <MudContainer MaxWidth="MaxWidth.ExtraLarge" Style="width:unset;">
+        <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+            <MudGrid>
+
+
+                @if (column == 1)
+                {
+                    <MudItem xs="12" sm="12">
+                        @if (VisibleCreateButton)
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.Save" Color="Color.Primary" aria-label="create" OnClick="@(() => submitForm(FormInputType.Create, AuthorizeHeader!))"></MudIconButton>
+                        }
+
+                        @if (VisibleDeleteButton)
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" aria-label="delete" OnClick="@(() => submitForm(FormInputType.Delete, AuthorizeHeader!))"></MudIconButton>
+                        }
+                        else
+                        {
+                            <MudIconButton Disabled Icon="@Icons.Material.Filled.Delete" Color="Color.Error" aria-label="delete" OnClick="@(() => submitForm(FormInputType.Delete, AuthorizeHeader!))"></MudIconButton>
+                        }
+
+                        @if (VisibleUpdateButton)
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.Save" Color="Color.Error" aria-label="update" OnClick="@(() => submitForm(FormInputType.Update, AuthorizeHeader!))"></MudIconButton>
+                        }
+
+                        @if (VisibleResetButton)
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.LockReset" Color="Color.Secondary" aria-label="reset" OnClick="@(()=>form.Reset())"></MudIconButton>
+                        }
+                        else
+                        {
+                            <MudIconButton Disabled Icon="@Icons.Material.Filled.LockReset" Color="Color.Secondary" aria-label="reset" OnClick="@(()=>form.Reset())"></MudIconButton>
+                        }
+                    </MudItem>
+
+                    <MudItem xs="12" sm="12">
+                        <h2>@FormID</h2>
+                        <MudDivider />
+                    </MudItem>
+                    <MudItem xs="12" sm="12">
+                        @foreach (var component in headerContent!.Where(x => x.Value.Column == 1).OrderBy(c => c.Value.Order))
+                        {
+                            <FormItem Item="component" />
+                        }
+                    </MudItem>
+
+                }
+                else if (column == 2)
+                {
+                    <MudItem xs="12" sm="12">
+                        @if (VisibleCreateButton)
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.Save" Color="Color.Primary" aria-label="create" OnClick="@(() => submitForm(FormInputType.Create, AuthorizeHeader!))"></MudIconButton>
+                        }
+
+                        @if (VisibleDeleteButton)
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" aria-label="delete" OnClick="@(() => submitForm(FormInputType.Delete, AuthorizeHeader!))"></MudIconButton>
+                        }
+                        else
+                        {
+                            <MudIconButton Disabled Icon="@Icons.Material.Filled.Delete" Color="Color.Error" aria-label="delete" OnClick="@(() => submitForm(FormInputType.Delete, AuthorizeHeader!))"></MudIconButton>
+                        }
+
+                        @if (VisibleUpdateButton)
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.Save" Color="Color.Error" aria-label="update" OnClick="@(() => submitForm(FormInputType.Update, AuthorizeHeader!))"></MudIconButton>
+                        }
+
+                        @if (VisibleResetButton)
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.LockReset" Color="Color.Secondary" aria-label="reset" OnClick="@(()=>form.Reset())"></MudIconButton>
+                        }
+                        else
+                        {
+                            <MudIconButton Disabled Icon="@Icons.Material.Filled.LockReset" Color="Color.Secondary" aria-label="reset" OnClick="@(()=>form.Reset())"></MudIconButton>
+                        }
+                    </MudItem>
+
+                    <MudItem xs="12" sm="12">
+                        <h2>@FormID</h2>
+                        <MudDivider />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        @foreach (var component in headerContent!.Where(x => x.Value.Column == 1).OrderBy(c => c.Value.Order))
+                        {
+                            <FormItem Item="component" />
+                        }
+                    </MudItem>
+
+                    <MudItem xs="12" sm="6">
+                        @foreach (var component in headerContent!.Where(x => x.Value.Column == 2).OrderBy(c => c.Value.Order))
+                        {
+                            <FormItem Item="component" />
+                        }
+                    </MudItem>
+
+                }
+                else if (column == 3)
+                {
+                    <MudItem xs="12" sm="12">
+                        @if (VisibleCreateButton)
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.Save" Color="Color.Primary" aria-label="create" OnClick="@(() => submitForm(FormInputType.Create, AuthorizeHeader!))"></MudIconButton>
+                        }
+
+                        @if (VisibleDeleteButton)
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" aria-label="delete" OnClick="@(() => submitForm(FormInputType.Delete, AuthorizeHeader!))"></MudIconButton>
+                        }
+                        else
+                        {
+                            <MudIconButton Disabled Icon="@Icons.Material.Filled.Delete" Color="Color.Error" aria-label="delete" OnClick="@(() => submitForm(FormInputType.Delete, AuthorizeHeader!))"></MudIconButton>
+                        }
+
+                        @if (VisibleUpdateButton)
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.Save" Color="Color.Error" aria-label="update" OnClick="@(() => submitForm(FormInputType.Update, AuthorizeHeader!))"></MudIconButton>
+                        }
+
+                        @if (VisibleResetButton)
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.LockReset" Color="Color.Secondary" aria-label="reset" OnClick="@(()=>form.Reset())"></MudIconButton>
+                        }
+                        else
+                        {
+                            <MudIconButton Disabled Icon="@Icons.Material.Filled.LockReset" Color="Color.Secondary" aria-label="reset" OnClick="@(()=>form.Reset())"></MudIconButton>
+                        }
+                    </MudItem>
+
+                    <MudItem xs="12" sm="12">
+                        <h2>@FormID</h2>
+                        <MudDivider />
+                    </MudItem>
+                    <MudItem xs="12" sm="4">
+                        @foreach (var component in headerContent!.Where(x => x.Value.Column == 1).OrderBy(c => c.Value.Order))
+                        {
+                            <FormItem Item="component" />
+                        }
+                    </MudItem>
+                    <MudItem xs="12" sm="4">
+                        @foreach (var component in headerContent!.Where(x => x.Value.Column == 2).OrderBy(c => c.Value.Order))
+                        {
+                            <FormItem Item="component" />
+                        }
+                    </MudItem>
+                    <MudItem xs="12" sm="4">
+                        @foreach (var component in headerContent!.Where(x => x.Value.Column == 3).OrderBy(c => c.Value.Order))
+                        {
+                            <FormItem Item="component" />
+                        }
+                    </MudItem>
+
+                }
+                else
+                {
+                    <MudItem xs="12" sm="12">
+                        @if (VisibleCreateButton)
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.Save" Color="Color.Primary" aria-label="create" OnClick="@(() => submitForm(FormInputType.Create, AuthorizeHeader!))"></MudIconButton>
+                        }
+
+                        @if (VisibleDeleteButton)
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" aria-label="delete" OnClick="@(() => submitForm(FormInputType.Delete, AuthorizeHeader!))"></MudIconButton>
+                        }
+                        else
+                        {
+                            <MudIconButton Disabled Icon="@Icons.Material.Filled.Delete" Color="Color.Error" aria-label="delete" OnClick="@(() => submitForm(FormInputType.Delete, AuthorizeHeader!))"></MudIconButton>
+                        }
+
+                        @if (VisibleUpdateButton)
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.Save" Color="Color.Error" aria-label="update" OnClick="@(() => submitForm(FormInputType.Update, AuthorizeHeader!))"></MudIconButton>
+                        }
+
+                        @if (VisibleResetButton)
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.LockReset" Color="Color.Secondary" aria-label="reset" OnClick="@(()=>form.Reset())"></MudIconButton>
+                        }
+                        else
+                        {
+                            <MudIconButton Disabled Icon="@Icons.Material.Filled.LockReset" Color="Color.Secondary" aria-label="reset" OnClick="@(()=>form.Reset())"></MudIconButton>
+                        }
+                    </MudItem>
+
+                    <MudItem xs="12" sm="12">
+                        <h2>@FormID</h2>
+                        <MudDivider />
+                    </MudItem>
+                    <MudItem xs="12" sm="12">
+                        @foreach (var component in headerContent!.Where(x => x.Value.Column == 1).OrderBy(c => c.Value.Order))
+                        {
+                            <FormItem Item="component" />
+                        }
+                    </MudItem>
+
+                }
+
+                @if (ModelDetails is not null)
+                {
+                    if (ModelDetails.Count > 0)
+                    {
+                        <MudItem xs="12" sm="12">
+                            <MudTabs Outlined="true" Position="Position.Top" Rounded="true" Border="true"
+                         ApplyEffectsToContainer="true" Class="mt-8" PanelClass="pa-6">
+                                @foreach (var detail in ModelDetails)
+                                {
+                                    <MudTabPanel Text="@detail.FormID">
+
+                                        <FormDetail AuthorizeHeader="detail.AuthorizeHeader" 
+                                        DetailEndpoint="detail.DetailEndpoint" 
+                                        DetailType="detail.DetailType"></FormDetail>
+
+                                    </MudTabPanel>
+                                }
+
+                            </MudTabs>
+                        </MudItem>
+                    }
+                }
+            </MudGrid>
+        </MudForm>
+
+    </MudContainer>
+
+}
+
+
+@code {
+
+    [Parameter] public string? FormID { get; set; }
+    [Parameter] public Type? HeaderType { get; set; }
+    [Parameter] public APIEndpoint? HeaderEndpoint { get; set; }
+    [Parameter] public EventCallback<APICallBack> OnSubmitFormCallBack { get; set; }
+    [Parameter] public bool VisibleCreateButton { get; set; }
+    [Parameter] public bool VisibleUpdateButton { get; set; }
+    [Parameter] public bool VisibleDeleteButton { get; set; }
+    [Parameter] public bool VisibleResetButton { get; set; }
+    [Parameter] public AuthorizeHeader? AuthorizeHeader { get; set; }
+    [Parameter] public List<FormDetailModel>? ModelDetails { get; set; }
+
+}

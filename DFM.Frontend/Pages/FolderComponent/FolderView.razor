@@ -1,0 +1,43 @@
+﻿@inject IHttpService httpService
+@inject AccessTokenStorage accessToken
+@inject ServiceEndpoint endpoint
+@inject LocalStorageHelper storageHelper
+<MudContainer>
+    <MudGrid>
+        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+            <MudField Label="ຊື່ແຟ້ມ" Variant="Variant.Text">ແຟ້ມເກັບເອກະສານ</MudField>
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <MudField Label="ເລກທີ່ເລີ່ມຕົ້ນ" Variant="Variant.Text">ເລກທີ່ເລີ່ມຕົ້ນຂອງເອກະສານ</MudField>
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <MudField Label="ລຳດັບແຟ້ມ" Variant="Variant.Text">ລຳດັບການສະແດງຜົນ</MudField>
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <MudField Label="ວັນທີ່ນຳໃຊ້ແຟ້ມ" Variant="Variant.Text">ວັນທີ່ເລີ່ມນຳໃຊ້ແຟ້ມ</MudField>
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <MudField Label="ວັນທີປິດແຟ້ມ" Variant="Variant.Text">ວັນທີ່ແຟ້ມຫມົດອາຍຸ</MudField>
+        </MudItem>
+        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+            <MudField Label="ຕົວຫຍໍ້ອົງກອນ" Variant="Variant.Text">ຕົວຫຍໍ້ທີ່ເອົາມາສະແດງໃນເລກທີເອກະສານ</MudField>
+        </MudItem>
+        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+             <MudField Label="ຮູບແບບເລກທີ" Variant="Variant.Text">ຮູບແບບທີ່ເອົາມາສະແດງໃນເລກທີເອກະສານ</MudField>
+        </MudItem>
+        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+            <MudField Label="ຫນ່ວຍງານຮັບຜິດຊອບ" Variant="Variant.Text">ຫນ່ວຍງານຮັບຜິດຊອບອອກແຟ້ມ</MudField>
+        </MudItem>
+        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+             <MudField Label="ປະເພດເອກະສານ" Variant="Variant.Text">ປະເພດຂອງເອກະສານທີ່ສາມາດໃຊ້ກັບແຟ້ມນີ້ໄດ້</MudField>
+        </MudItem>
+        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+            
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+@code {
+    [Parameter] public string? RoleId { get; set; }
+    [Parameter] public FolderModel? FolderModel { get; set; }
+}

@@ -1,0 +1,12 @@
+﻿@if (State == 0)
+{
+    @Authorizing
+}
+else if (State == 1)
+{
+    @NotAuthorized
+}
+else
+{
+    @Authorized
+}

@@ -1,0 +1,17 @@
+﻿@inherits LayoutComponentBase
+@inject NavigationManager UriHelper
+@inject AccessTokenStorage accessToken
+@inject IHttpService httpService
+@inject AuthenticationStateProvider auth
+<MudThemeProvider/>
+<MudDialogProvider />
+<MudSnackbarProvider />
+<MudMainContent Class="p-0">
+    <MudContainer Class="p-0" MaxWidth="MaxWidth.False">
+        @Body
+    </MudContainer>
+</MudMainContent>
+@code {
+    
+    
+}

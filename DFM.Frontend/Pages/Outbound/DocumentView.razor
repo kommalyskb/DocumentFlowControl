@@ -1,0 +1,204 @@
+﻿@inject IHttpService httpService
+@inject AccessTokenStorage accessToken
+@inject ServiceEndpoint endpoint
+@inject LocalStorageHelper storageHelper
+@inject IMinioService minio
+@inject IDialogService DialogService
+
+<MudContainer>
+    <MudGrid>
+        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+            <h2>ຂໍ້ມູນເອກະສານ</h2>
+        </MudItem>
+        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+            <MudField Label="ຫົວຂໍ້" Variant="Variant.Text">@RawDocument!.Title</MudField>
+        </MudItem>
+        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+            <MudField Label="ຫນ່ວຍງານຮັບຜິດຊອບ" Variant="Variant.Text">@RawDocument!.ResponseUnit</MudField>
+        </MudItem>
+
+        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+            <MudField Label="ລະດັບຄວາມລັບ" Variant="Variant.Text">
+                @if (securityModels != null)
+                {
+                    <text>@securityModels!.FirstOrDefault(x => x.id == RawDocument!.Security.id)!.Level</text>
+                }
+            </MudField>
+        </MudItem>
+
+        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+            <MudField Label="ລະດັບຄວາມເລັ່ງດ່ວນ" Variant="Variant.Text">
+                @if (urgentModels != null)
+                {
+                    <text>
+                        @urgentModels!.FirstOrDefault(x => x.id == RawDocument!.Urgent.id)!.Level
+                    </text>
+                }
+            </MudField>
+        </MudItem>
+
+        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+            <MudField Label="ກຳຫນົດມື້ແກ້ເອກະສານ" Variant="Variant.Text">@RawDocument!.ExpiredDate</MudField>
+        </MudItem>
+        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+            @if (RawDocument!.IsOriginalFile)
+            {
+                <MudField Label="ບໍ່ມີເອກະສານສະບັບແທ້" Variant="Variant.Text">ມີເອກະສານສະບັບແທ້</MudField>
+
+            }
+            else
+            {
+                <MudField Label="ບໍ່ມີເອກະສານສະບັບແທ້" Variant="Variant.Text">ບໍ່ມີເອກະສານສະບັບແທ້</MudField>
+
+            }
+        </MudItem>
+        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+            <h2>ກິດສຳພັນ</h2>
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <MudField Label="ເລກທີຂອງກິດສຳພັນ" Variant="Variant.Text">@RawDocument!.CommentNo</MudField>
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <MudField Label="ຫົວຂໍ້ຂອງກິດສຳພັນ" Variant="Variant.Text">@RawDocument!.CommentTitle</MudField>
+        </MudItem>
+        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+            <MudField Label="ເນື້ອໃນໃບກິດສຳພັນ" Variant="Variant.Text">@RawDocument!.CommentDetail</MudField>
+        </MudItem>
+        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+            <h2>ອັບໂຫຼດເອກະສານ</h2>
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <MudField Variant="Variant.Text">ເອກະສານຕິດຄັດ</MudField>
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <MudField Variant="Variant.Text">ເອກະສານກ່ຽວຂ້ອງ</MudField>
+        </MudItem>
+
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            @if (RawDocument!.Attachments != null)
+            {
+                <MudText Typo="@Typo.h6">@RawDocument!.Attachments.Count() File@(RawDocument!.Attachments.Count() == 1 ? "" : "s"):</MudText>
+                <MudList>
+                    @foreach (var file in RawDocument!.Attachments)
+                    {
+                        if (file != null)
+                        {
+                            if (!file.IsRemove)
+                            {
+                                <MudListItem Icon="@file.FileFormat" @key="@file">
+                                    <MudTooltip Text="@file!.Display">
+                                        @file!.DisplayOnPage <code><b>@file!.FileSize.ToString("0.##") MB</b></code>
+                                    </MudTooltip>
+                                    @if (file!.MimeType!.Contains("pdf"))
+                                    {
+                                        <MudIconButton Color="Color.Warning" Icon="@Icons.Material.Filled.Preview" aria-label="preview" Disabled="previewButton" OnClick="@(() => previewPdf(file!.Bucket, file!.FileName, file!.Display))"></MudIconButton>
+                                    }
+                                    <a class="mud-button-root mud-icon-button mud-warning-text hover:mud-warning-hover mud-ripple mud-ripple-icon" target="_blank" href="@endpoint.API/api/v1/Document/@file.Bucket/@file.FileName/@file.Display/Download">
+                                        <span class="mud-icon-button-label">
+                                            <MudIcon Icon="@Icons.Material.Filled.Download" Color="Color.Primary" />
+                                        </span>
+                                    </a>
+                                </MudListItem>
+                            }
+
+                        }
+                    }
+                </MudList>
+            }
+
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            @if (RawDocument!.RelateFles != null)
+            {
+                <MudText Typo="@Typo.h6">@RawDocument!.RelateFles.Count() File@(RawDocument!.RelateFles.Count() == 1 ? "" : "s"):</MudText>
+                <MudList>
+                    @foreach (var file in RawDocument!.RelateFles)
+                    {
+                        if (file != null)
+                        {
+                            if (!file.IsRemove)
+                            {
+                                <MudListItem Icon="@file.FileFormat" @key="@file">
+                                    <MudTooltip Text="@file!.Display">
+                                        @file!.DisplayOnPage <code><b>@file!.FileSize.ToString("0.##") MB</b></code>
+                                    </MudTooltip>
+
+                                    @if (file!.MimeType!.Contains("pdf"))
+                                    {
+                                        <MudIconButton Color="Color.Warning" Icon="@Icons.Material.Filled.Preview" aria-label="preview" Disabled="previewButton" OnClick="@(() => previewPdf(file!.Bucket, file!.FileName, file!.Display))"></MudIconButton>
+                                    }
+                                    <a class="mud-button-root mud-icon-button mud-warning-text hover:mud-warning-hover mud-ripple mud-ripple-icon" target="_blank" href="@endpoint.API/api/v1/Document/@file.Bucket/@file.FileName/@file.Display/Download">
+                                        <span class="mud-icon-button-label">
+                                            <MudIcon Icon="@Icons.Material.Filled.Download" Color="Color.Primary" />
+                                        </span>
+                                    </a>
+
+                                </MudListItem>
+                            }
+
+                        }
+                    }
+                </MudList>
+            }
+        </MudItem>
+        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+            <h2>ຂໍ້ມູນການເກັບຮັກສາສຳເນົາ</h2>
+        </MudItem>
+        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+            <MudField Label="ແຟ້ມເກັບເອກະສານ" Variant="Variant.Text">
+                @if (folderModels != null && !string.IsNullOrWhiteSpace(RawDocument!.FolderId))
+                {
+                    <text>
+                        @folderModels!.FirstOrDefault(x => x.id == RawDocument!.FolderId)!.Title
+                    </text>
+                }
+            </MudField>
+        </MudItem>
+        <MudItem xs="12" md="3" Class="d-flex flex-grow-1 gap-4">
+            <MudField Label="ຮູບແບບເອກະສານ" Variant="Variant.Text">@RawDocument!.FormType</MudField>
+        </MudItem>
+        <MudItem xs="12" md="3" Class="d-flex flex-grow-1 gap-4">
+            <MudField Label="ປະເພດເອກະສານ" Variant="Variant.Text">
+                @if (docTypeModels != null && !string.IsNullOrWhiteSpace(RawDocument!.DocType))
+                {
+                    <text>
+                        @docTypeModels!.FirstOrDefault(x => x.id == RawDocument!.DocType)!.DocType
+                    </text>
+                }
+            </MudField>
+        </MudItem>
+        <MudItem xs="12" md="2" Class="d-flex flex-grow-1 gap-4">
+            <MudField Label="ເລກທີ" Variant="Variant.Text">@RawDocument!.DocNo</MudField>
+        </MudItem>
+        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+            <MudField Label="ວັນທີ່ສົ່ງເອກະສານ" Variant="Variant.Text">@RawDocument!.SetDate</MudField>
+        </MudItem>
+        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+            <MudField Label="ຫນ່ວຍງານພາຍນອກ" Variant="Variant.Text">@RawDocument!.ExternalUnit</MudField>
+        </MudItem>
+        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+            <MudField Label="ຜູ້ເຊັນເອກະສານ" Variant="Variant.Text">@RawDocument!.Signer</MudField>
+        </MudItem>
+
+        <MudItem xs="12" md="12">
+            <MudAlert Severity="Severity.Normal" NoIcon="true" Class="mb-2 mt-3">ເອກະສານຂາອອກ</MudAlert>
+        </MudItem>
+
+    </MudGrid>
+</MudContainer>
+
+@code {
+    [Parameter] public DocumentModel? DocumentModel { get; set; }
+    [Parameter] public RawDocumentData? RawDocument { get; set; }
+    [Parameter] public PartialRole? MyRole { get; set; }
+    [Parameter] public string? RoleId { get; set; }
+    [Parameter] public bool OnProcessing { get; set; }
+
+    bool previewButton = false;
+    string? token = "";
+    private EmployeeModel? employee;
+    IEnumerable<DocumentUrgentModel>? urgentModels;
+    IEnumerable<DocumentSecurityModel>? securityModels;
+    IEnumerable<DataTypeModel>? docTypeModels;
+    IEnumerable<FolderModel>? folderModels;
+}

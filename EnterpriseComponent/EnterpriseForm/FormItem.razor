@@ -1,0 +1,88 @@
+﻿@using EnterpriseComponent.Attributes
+@using System.ComponentModel.DataAnnotations
+@using System.Globalization
+@switch (Item.Value.InputType)
+{
+    case FieldInputType.Button:
+        break;
+    case FieldInputType.Checkbox:
+        break;
+    case FieldInputType.Color:
+    <MudTextField T="string" Label="@Item.Value.DisplayName" InputType="InputType.Color"
+              @bind-Value="@Item.Value.Value" HelperText="@Item.Value.HelperText" TagID="@Item.Value.Name"/>
+        break;
+    case FieldInputType.Date:
+    <MudTextField T="string" Format="yyyy-MM-dd" Label="@Item.Value.DisplayName" InputType="InputType.Date"
+              @bind-Value="@Item.Value.Value" HelperText="@Item.Value.HelperText" TagID="@Item.Value.Name"/>
+        break;
+    case FieldInputType.DateTimeLocal:
+    <MudTextField T="string" Format="s" Label="@Item.Value.DisplayName" InputType="InputType.DateTimeLocal"
+              @bind-Value="@Item.Value.Value" HelperText="@Item.Value.HelperText" TagID="@Item.Value.Name"/>
+        break;
+    case FieldInputType.Email:
+    <MudTextField T="string" Label="@Item.Value.DisplayName" Required="@Item.Value.Required" RequiredError="@Item.Value.RequiredError"
+              Validation="@(new EmailAddressAttribute() {ErrorMessage = Item.Value.RequiredError})"
+              InputType="InputType.Email" @bind-Value="@Item.Value.Value" HelperText="@Item.Value.HelperText" TagID="@Item.Value.Name"/>
+        break;
+    case FieldInputType.File:
+        break;
+    case FieldInputType.Hidden:
+        break;
+    case FieldInputType.Image:
+        break;
+    case FieldInputType.Month:
+    <MudTextField T="string" Label="@Item.Value.DisplayName" InputType="InputType.Month"
+              @bind-Value="@Item.Value.Value" HelperText="@Item.Value.HelperText" TagID="@Item.Value.Name"/>
+        break;
+    case FieldInputType.Number:
+    <MudNumericField Immediate="false" Label="@Item.Value.DisplayName" Format="N2" Culture="@_en"
+                 T="double?" HelperText="@Item.Value.HelperText" @bind-Value="@Item.Value.ValueNumber" TagID="@Item.Value.Name"/>
+        break;
+    case FieldInputType.Password:
+     <MudTextField T="string" Label="@Item.Value.DisplayName" HelperText="@Item.Value.HelperText"
+              InputType="InputType.Password" Required="@Item.Value.Required"
+              RequiredError="@Item.Value.RequiredError" @bind-Value="@Item.Value.Value" TagID="@Item.Value.Name"/>
+        break;
+    case FieldInputType.Radio:
+        break;
+    case FieldInputType.Range:
+        break;
+    case FieldInputType.Reset:
+        break;
+    case FieldInputType.Search:
+    <MudTextField T="string" Label="@Item.Value.DisplayName" InputType="InputType.Search"
+              @bind-Value="@Item.Value.Value" HelperText="@Item.Value.HelperText" TagID="@Item.Value.Name"/>
+        break;
+    case FieldInputType.Submit:
+        break;
+    case FieldInputType.Text:
+    <MudTextField T="string" Label="@Item.Value.DisplayName" Required="@Item.Value.Required" HelperText="@Item.Value.HelperText"
+              RequiredError="@Item.Value.RequiredError" InputType="InputType.Text" @bind-Value="@Item.Value.Value" 
+              TagID="@Item.Value.Name"/>
+        break;
+    case FieldInputType.Time:
+    <MudTextField T="string" Label="@Item.Value.DisplayName" InputType="InputType.Time"
+              @bind-Value="@Item.Value.Value" HelperText="@Item.Value.HelperText" TagID="@Item.Value.Name"/>
+        break;
+    case FieldInputType.Url:
+        break;
+    case FieldInputType.Week:
+    <MudTextField T="string" Label="@Item.Value.DisplayName" InputType="InputType.Week"
+              @bind-Value="@Item.Value.Value" HelperText="@Item.Value.HelperText" TagID="@Item.Value.Name"/>
+        break;
+    case FieldInputType.Dropdown:
+        break;
+    case FieldInputType.Telephone:
+        break;
+    default:
+        break;
+}
+
+@code {
+    [Parameter] public KeyValuePair<string, FormAttribute> Item { get; set; }
+
+    CultureInfo _lo = CultureInfo.GetCultureInfo("lo");
+    CultureInfo _en = CultureInfo.GetCultureInfo("en-US");
+    CultureInfo _de = CultureInfo.GetCultureInfo("de-DE");
+
+}

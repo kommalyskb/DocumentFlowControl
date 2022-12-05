@@ -1,0 +1,44 @@
+﻿@page "/"
+@page "/pages/home"
+@inject IDialogService DialogService
+@inject IHttpService httpService
+@inject AccessTokenStorage accessToken
+@inject ServiceEndpoint endpoint
+@inject ICascadingService cascading
+@inject LocalStorageHelper storageHelper
+<MudContainer>
+    <MudGrid>
+        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+            <MudSelect @bind-Value="roleId" T="string" HelperText="ເລືອກ ຈຳລອງ ຕຳແໜ່ງ" Label="ຈຳລອງຕຳແໜ່ງ" Variant="Variant.Text">
+                @if (demoUser is not null)
+                {
+                    foreach (var item in demoUser!)
+                    {
+                        <MudSelectItem Value="item.Role.RoleID">@item.Role.Display.Local</MudSelectItem>
+                    }
+                }
+            </MudSelect>
+        </MudItem>
+        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+            <MudButton Variant="Variant.Filled" ButtonType="ButtonType.Button" OnClick="startProgram">ເລີ່ມຕົ້ນຈຳລອງ</MudButton>
+        </MudItem>
+        <MudItem xs="12" md="3" Class="d-flex flex-grow-1 gap-4">
+            <MudField>@selectModel.Role.Display.Local</MudField>
+        </MudItem>
+        <MudItem xs="12" md="3" Class="d-flex flex-grow-1 gap-4">
+            <MudField>@selectModel.Role.RoleType</MudField>
+        </MudItem>
+        <MudItem xs="12" md="3" Class="d-flex flex-grow-1 gap-4">
+            <MudField>@selectModel.Employee.Name.Local</MudField>
+        </MudItem>
+        <MudItem xs="12" md="3" Class="d-flex flex-grow-1 gap-4">
+            <MudField>@selectModel.Employee.FamilyName.Local</MudField>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+@code {
+    string? responseForm = "Waiting...";
+    string? roleId = "";
+    RoleTreeModel? selectModel = new();
+}

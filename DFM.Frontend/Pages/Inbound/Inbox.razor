@@ -1,0 +1,34 @@
+﻿@inject IHttpService httpService
+@inject AccessTokenStorage accessToken
+@inject ServiceEndpoint endpoint
+@inject LocalStorageHelper storageHelper
+
+<MudContainer>
+    <MudGrid>
+        <MudItem xs="12" md="12">
+            <MudTabs Elevation="2" Rounded="true" Centered="false" @bind-ActivePanelIndex="panelIndex">
+                @if (tabItems == null)
+                {
+                    <MudAlert Severity="Severity.Error">Sorry the content not found, This user not recognize within any organization chart</MudAlert>
+                }
+                else
+                {
+                    foreach (var item in tabItems)
+                    {
+                        <TabDataGrid TraceStatus="TraceStatus" OnProcessing="OnProcessing" Link="@Link" TabItem="item" RoleId="@item.Role.RoleID" OnRowClick="@onRowClick"></TabDataGrid>
+                    }
+                }
+            </MudTabs>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+
+@code {
+    [Parameter] public string? Link { get; set; }
+    [Parameter] public TraceStatus TraceStatus { get; set; }
+    [Parameter] public EventCallback<PartialRole> OnTabChangeEvent { get; set; }
+    [Parameter] public EventCallback<DocumentModel> OnRowClick { get; set; }
+    [Parameter] public bool OnProcessing { get; set; }
+}
+

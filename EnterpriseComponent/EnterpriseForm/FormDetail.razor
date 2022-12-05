@@ -1,0 +1,29 @@
+﻿@using System.ComponentModel.DataAnnotations
+@inject IHttpService httpService
+@inject IDialogService DialogService
+
+<MudDataGrid T="object" Items="Elements" EditMode="DataGridEditMode.Cell"
+             StartedEditingItem="@StartedEditingItem" CancelledEditingItem="@CancelledEditingItem" CommittedItemChanges="@CommittedItemChanges"
+             Bordered="true" Dense="true" EditTrigger="@(_editTriggerRowClick ? DataGridEditTrigger.OnRowClick : DataGridEditTrigger.Manual)">
+
+    <Columns>
+        @if (headerContent is not null)
+        {
+            foreach (var column in headerContent)
+            {
+                <Column T="object" Field="@column.Value.Name" Title="@column.Value.DisplayName" />
+            }
+        }
+
+
+    </Columns>
+</MudDataGrid>
+
+@code {
+    [Parameter] public Type? DetailType { get; set; }
+    [Parameter] public APIEndpoint? DetailEndpoint { get; set; }
+    [Parameter] public EventCallback<APICallBack> OnSubmitFormCallBack { get; set; }
+    [Parameter] public AuthorizeHeader? AuthorizeHeader { get; set; }
+
+
+}

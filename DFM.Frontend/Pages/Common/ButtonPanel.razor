@@ -1,0 +1,119 @@
+﻿@inject NavigationManager nav
+<MudContainer>
+    <MudGrid>
+        <MudItem xs="12" md="6">
+            <MudButtonGroup Color="Color.Primary" Variant="Variant.Text">
+
+                @if (!string.IsNullOrWhiteSpace(current))
+                {
+                    <MudButton StartIcon="@Icons.Material.Filled.ArrowBack" Disabled="@backButton" OnClick="(async () => await PreviousButtonEvent.InvokeAsync())">@previousBtn</MudButton>
+                    <MudButton Disabled="true">@current</MudButton>
+                }
+                else
+                {
+                    <MudButton Disabled="@backButton">@previousBtn</MudButton>
+                }
+            </MudButtonGroup>
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex justify-end flex-grow-1 gap-4">
+            @if (ShowHistoryButton)
+            {
+                <MudButtonGroup Color="Color.Warning" Variant="Variant.Outlined">
+                    <MudTooltip Text="ປະຫວັດການສົ່ງເອກະສານ">
+                        <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.HistoryEdu" Disabled="historyBtn" OnClick="(async () => await HistoryButtonEvent.InvokeAsync())"></MudIconButton>
+                    </MudTooltip>
+                </MudButtonGroup>
+            }
+            <MudButtonGroup Color="Color.Primary" Variant="Variant.Outlined">
+                
+                @if (ShowCreateButton)
+                {
+                    <MudTooltip Text="ຮ່າງເອກະສານໃຫມ່">
+                        <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.Add" Disabled="createBtn" OnClick="(async () => await CreateButtonEvent.InvokeAsync())"></MudIconButton>
+                    </MudTooltip>
+                }
+
+                @if (ShowEditButton)
+                {
+                    <MudTooltip Text="ແກ້ໄຂເອກະສານ">
+                        <MudIconButton Color="Color.Tertiary" Icon="@Icons.Material.Filled.Edit" Disabled="editBtn" OnClick="(async () => await EditButtonEvent.InvokeAsync())"></MudIconButton>
+                    </MudTooltip>
+                }
+
+                @if (ShowDeleteButton)
+                {
+                    <MudTooltip Text="ລຶບເອກະສານ">
+                        <MudIconButton Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Disabled="deleteBtn" OnClick="(async () => await DeleteButtonEvent.InvokeAsync())"></MudIconButton>
+                    </MudTooltip>
+                }
+                @if (ShowRestoreButton)
+                {
+                    <MudTooltip Text="ກູ້ຄືນເອກະສານ">
+                        <MudIconButton Color="Color.Secondary" Icon="@Icons.Material.Filled.Restore" Disabled="restoreBtn" OnClick="(async () => await RestoreButtonEvent.InvokeAsync())"></MudIconButton>
+                    </MudTooltip>
+                }
+
+                @if (ShowSaveButton)
+                {
+                    <MudTooltip Text="ບັນທຶກເອກະສານ">
+                        <MudIconButton Color="Color.Success" Icon="@Icons.Material.Filled.Save" Disabled="saveBtn" OnClick="(async () => await SaveButtonEvent.InvokeAsync())"></MudIconButton>
+                    </MudTooltip>
+                }
+
+                @if (ShowSendButton)
+                {
+                    <MudTooltip Text="ສົ່ງຕໍ່ເອກະສານ">
+                        <MudIconButton Color="Color.Info" Icon="@Icons.Material.Filled.Send" Disabled="sendBtn" OnClick="(async () => await SendButtonEvent.InvokeAsync())"></MudIconButton>
+                    </MudTooltip>
+                }
+
+            </MudButtonGroup>
+            @if (ShowTerminateButton)
+            {
+                <MudButtonGroup Color="Color.Warning" Variant="Variant.Outlined">
+                    <MudTooltip Text="ຈົບການຈໍລະຈອນເອກະສານ">
+                        <MudIconButton Color="Color.Warning" Icon="@Icons.Material.Filled.CheckCircle" Disabled="terminateBtn" OnClick="(async () => await TerminateButtonEvent.InvokeAsync())"></MudIconButton>
+                    </MudTooltip>
+                </MudButtonGroup>
+            }
+        </MudItem>
+        @if (OnProcessing)
+        {
+            <MudItem xs="12" md="12">
+                <MudProgressLinear Color="Color.Primary" Indeterminate="true" />
+            </MudItem>
+        }
+        
+    </MudGrid>
+</MudContainer>
+
+
+
+
+
+@code {
+    [Parameter] public FormMode FormMode { get; set; }
+    [Parameter] public EventCallback CreateButtonEvent { get; set; }
+    [Parameter] public EventCallback PreviousButtonEvent { get; set; }
+    [Parameter] public EventCallback SendButtonEvent { get; set; }
+    [Parameter] public EventCallback EditButtonEvent { get; set; }
+    [Parameter] public EventCallback DeleteButtonEvent { get; set; }
+    [Parameter] public EventCallback SaveButtonEvent { get; set; }
+    [Parameter] public EventCallback HistoryButtonEvent { get; set; }
+    [Parameter] public EventCallback TerminateButtonEvent { get; set; }
+    [Parameter] public EventCallback RestoreButtonEvent { get; set; }
+    [Parameter] public bool ShowTerminateButton { get; set; }
+    [Parameter] public bool ShowCreateButton { get; set; }
+    [Parameter] public bool ShowSendButton { get; set; }
+    [Parameter] public bool ShowEditButton { get; set; }
+    [Parameter] public bool ShowDeleteButton { get; set; }
+    [Parameter] public bool ShowSaveButton { get; set; }
+    [Parameter] public bool ShowRestoreButton { get; set; }
+    [Parameter] public bool ShowHistoryButton { get; set; }
+    [Parameter] public string? RootBreadcrumb { get; set; }
+    [Parameter] public string? ViewBreadcrumb { get; set; }
+    [Parameter] public string? CreateBreadcrumb { get; set; }
+    [Parameter] public string? EditBreadcrumb { get; set; }
+    [Parameter] public bool OnProcessing { get; set; }
+    [Parameter] public BehaviorStatus Behavior { get; set; }
+}

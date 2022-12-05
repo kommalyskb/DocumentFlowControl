@@ -1,0 +1,360 @@
+﻿@inject IHttpService httpService
+@inject AccessTokenStorage accessToken
+@inject ServiceEndpoint endpoint
+@inject LocalStorageHelper storageHelper
+@inject IMinioService minio
+@inject IDialogService DialogService
+
+
+<MudContainer>
+    <MudGrid>
+        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+            <h2>ຂໍ້ມູນເອກະສານ</h2>
+        </MudItem>
+        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+            <MudTextField Disabled="OnProcessing" @bind-Value="RawDocument!.Title" T="string" Counter="1000" MaxLength="1000" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ຫົວຂໍ້ຂອງເອກະສານ ໃຊ້ໃນການກຳກັບເອກະສານ" Label="ຫົວຂໍ້*" />
+        </MudItem>
+        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+           
+            <MudTextField Disabled="OnProcessing" @bind-Value="RawDocument!.ResponseUnit" T="string" Counter="500" MaxLength="500" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MediumCharacters))" HelperText="ພາກສ່ວນທີ່ສ້າງເອກະສານ" Label="ຫນ່ວຍງານຮັບຜິດຊອບ" />
+        </MudItem>
+
+        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+
+            @if (selectSecurityValues != null)
+            {
+                <MudSelect SelectedValues="selectSecurityValues" Disabled="OnProcessing" @bind-Value="RawDocument!.Security.id" T="string" HelperText="ລະດັບຄວາມປອດໄພຂອງເອກະສານ" Label="ລະດັບຄວາມລັບ*" Variant="Variant.Text">
+                    @if (securityModels is not null)
+                    {
+                        foreach (var item in securityModels!)
+                        {
+                            <MudSelectItem Value="item.id">@item.Level</MudSelectItem>
+                        }
+                    }
+                </MudSelect>
+            }
+            else
+            {
+                <MudSelect Disabled="OnProcessing" @bind-Value="RawDocument!.Security.id" T="string" HelperText="ລະດັບຄວາມປອດໄພຂອງເອກະສານ" Label="ລະດັບຄວາມລັບ*" Variant="Variant.Text">
+                    @if (securityModels is not null)
+                    {
+                        foreach (var item in securityModels!)
+                        {
+                            <MudSelectItem Value="item.id">@item.Level</MudSelectItem>
+                        }
+                    }
+                </MudSelect>
+            }
+        </MudItem>
+
+        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+            
+            @if (selectUrgentValues != null)
+            {
+                <MudSelect SelectedValues="selectUrgentValues" Disabled="OnProcessing" @bind-Value="RawDocument!.Urgent.id" T="string" HelperText="ລະດັບຄວາມຕ້ອງການຂອງເອກະສານ" Label="ລະດັບຄວາມເລັ່ງດ່ວນ*" Variant="Variant.Text">
+                    @if (urgentModels is not null)
+                    {
+                        foreach (var item in urgentModels!)
+                        {
+                            <MudSelectItem Value="item.id">@item.Level</MudSelectItem>
+                        }
+                    }
+                </MudSelect>
+            }
+            else
+            {
+                <MudSelect Disabled="OnProcessing" @bind-Value="RawDocument!.Urgent.id" T="string" HelperText="ລະດັບຄວາມຕ້ອງການຂອງເອກະສານ" Label="ລະດັບຄວາມເລັ່ງດ່ວນ*" Variant="Variant.Text">
+                    @if (urgentModels is not null)
+                    {
+                        foreach (var item in urgentModels!)
+                        {
+                            <MudSelectItem Value="item.id">@item.Level</MudSelectItem>
+                        }
+                    }
+                </MudSelect>
+            }
+        </MudItem>
+
+        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+           
+            <MudDatePicker Disabled="OnProcessing" @bind-Text="RawDocument!.ExpiredDate" PickerVariant="PickerVariant.Inline" Label="ວັນທີກຳຫນົດການແກ້ໄຂ*" HelperText="ກຳຫນົດມື້ແກ້ເອກະສານ" DateFormat="dd/MM/yyyy" />
+        </MudItem>
+        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+           
+            <MudCheckBox Disabled="OnProcessing" @bind-Checked="RawDocument!.IsOriginalFile" Label="ບໍ່ມີເອກະສານສະບັບແທ້" Color="Color.Primary"></MudCheckBox>
+        </MudItem>
+        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+            <h2>ກິດສຳພັນ</h2>
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+
+            <MudTextField Disabled="OnProcessing" @bind-Value="RawDocument!.CommentNo" T="string" Counter="500" MaxLength="500" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MediumCharacters))" HelperText="ເລກທີຂອງກິດສຳພັນ" Label="ເລກທີ" />
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            
+            <MudTextField Disabled="OnProcessing" @bind-Value="RawDocument!.CommentTitle" T="string" Counter="500" MaxLength="500" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MediumCharacters))" HelperText="ຫົວຂໍ້ຂອງກິດສຳພັນ" Label="ຈຸດປະສົງ" />
+        </MudItem>
+        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+            
+            <MudTextField Disabled="OnProcessing" @bind-Value="RawDocument!.CommentDetail" T="string" Counter="1000" MaxLength="1000" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ເນື້ອໃນໃບກິດສຳພັນ" Label="ເນື້ອໃນ" />
+        </MudItem>
+        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+            <h2>ອັບໂຫຼດເອກະສານ</h2>
+        </MudItem>
+        <MudItem xs="12" md="6">
+            <InputFile id="attachment" OnChange="uploadFiles" hidden multiple />
+            <MudButton Disabled="OnProcessing" HtmlTag="label"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Filled.CloudUpload"
+                       for="attachment">
+                ເອກະສານຕິດຄັດ*
+            </MudButton>
+
+        </MudItem>
+        <MudItem xs="12" md="6">
+            <InputFile id="relateFile" OnChange="uploadReladteFiles" hidden multiple />
+            <MudButton Disabled="OnProcessing" HtmlTag="label"
+                       Variant="Variant.Filled"
+                       Color="Color.Secondary"
+                       StartIcon="@Icons.Filled.CloudUpload"
+                       for="relateFile">
+                ເອກະສານກ່ຽວຂ້ອງ
+            </MudButton>
+
+        </MudItem>
+
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            @if (Attachments != null)
+            {
+                <MudText Typo="@Typo.h6">@Attachments.Count() File@(Attachments.Count() == 1 ? "" : "s"):</MudText>
+                <MudList>
+                    @foreach (var file in Attachments)
+                    {
+                        if (file.Info != null)
+                        {
+                            if (!file.Info.IsRemove)
+                            {
+                                <MudListItem Icon="@file.Info.FileFormat" @key="@file.Info">
+                                    <MudTooltip Text="@file!.Info!.Display">
+                                        @file!.Info!.DisplayOnPage @file!.Info!.IsNewFile<code><b>@file!.Info.FileSize.ToString("0.##") MB</b></code>
+                                    </MudTooltip>
+                                    @if (!file!.Info!.IsNewFile)
+                                    {
+                                        if (file!.Info.MimeType!.Contains("pdf"))
+                                        {
+                                            <MudIconButton Color="Color.Warning" Icon="@Icons.Material.Filled.Preview" aria-label="preview" Disabled="previewButton" OnClick="@(() => previewPdf(file!.Info.Bucket, file!.Info.FileName, file!.Info.Display))"></MudIconButton>
+                                        }
+                                        <a class="mud-button-root mud-icon-button mud-warning-text hover:mud-warning-hover mud-ripple mud-ripple-icon" target="_blank" href="@endpoint.API/api/v1/Document/@file.Info.Bucket/@file.Info.FileName/@file.Info.Display/Download">
+                                            <span class="mud-icon-button-label">
+                                                <MudIcon Icon="@Icons.Material.Filled.Download" Color="Color.Primary" />
+                                            </span>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        if (file!.Info.MimeType!.Contains("pdf"))
+                                        {
+                                            <MudIconButton Color="Color.Warning" Icon="@Icons.Material.Filled.Preview" aria-label="preview" Disabled="previewButton" OnClick="@(() => previewPdf(file!.File))"></MudIconButton>
+                                        }
+                                    }
+
+                                    <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="@(() => file!.Info!.IsRemove = true)"></MudIconButton>
+                                </MudListItem>
+                            }
+
+                        }
+                    }
+                </MudList>
+            }
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            @if (RelateFiles != null)
+            {
+                <MudText Typo="@Typo.h6">@RelateFiles.Count() File@(RelateFiles.Count() == 1 ? "" : "s"):</MudText>
+                <MudList>
+                    @foreach (var file in RelateFiles)
+                    {
+                        if (file.Info != null)
+                        {
+                            if (!file.Info.IsRemove)
+                            {
+
+                                <MudListItem Icon="@file.Info.FileFormat" @key="@file.Info">
+                                    <MudTooltip Text="@file!.Info!.Display">
+                                        @file!.Info!.DisplayOnPage <code><b>@file!.Info.FileSize.ToString("0.##") MB</b></code>
+                                    </MudTooltip>
+
+                                    @if (!file!.Info!.IsNewFile)
+                                    {
+                                        if (file!.Info.MimeType!.Contains("pdf"))
+                                        {
+                                            <MudIconButton Color="Color.Warning" Icon="@Icons.Material.Filled.Preview" aria-label="preview" Disabled="previewButton" OnClick="@(() => previewPdf(file!.Info.Bucket, file!.Info.FileName, file!.Info.Display))"></MudIconButton>
+                                        }
+                                        <a class="mud-button-root mud-icon-button mud-warning-text hover:mud-warning-hover mud-ripple mud-ripple-icon" target="_blank" href="@endpoint.API/api/v1/Document/@file.Info.Bucket/@file.Info.FileName/@file.Info.Display/Download">
+                                            <span class="mud-icon-button-label">
+                                                <MudIcon Icon="@Icons.Material.Filled.Download" Color="Color.Primary" />
+                                            </span>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        if (file!.Info.MimeType!.Contains("pdf"))
+                                        {
+                                            <MudIconButton Color="Color.Warning" Icon="@Icons.Material.Filled.Preview" aria-label="preview" Disabled="previewButton" OnClick="@(() => previewPdf(file!.File))"></MudIconButton>
+                                        }
+                                    }
+
+                                    <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="@(() => file!.Info!.IsRemove = true)"></MudIconButton>
+                                </MudListItem>
+                            }
+                        }
+
+                    }
+                </MudList>
+            }
+        </MudItem>
+        @if (MyRole!.RoleType == RoleTypeModel.OutboundGeneral || MyRole.RoleType == RoleTypeModel.OutboundOfficePrime || MyRole.RoleType == RoleTypeModel.OutboundPrime)
+        {
+            <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+                <h2>ຂໍ້ມູນການເກັບຮັກສາສຳເນົາ</h2>
+            </MudItem>
+            <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+
+                @if (selectFolderValues != null)
+                {
+                    <MudSelect SelectedValues="selectFolderValues" Disabled="OnProcessing" SelectedValuesChanged="onSelectedFolderChanged" @bind-Value="RawDocument!.FolderId" T="string" HelperText="ບ່ອນເກັບຂອງເອກະສານ" Label="ແຟ້ມເກັບເອກະສານ*" Variant="Variant.Text">
+                        @if (folderModels is not null)
+                        {
+                            foreach (var item in folderModels!)
+                            {
+                                <MudSelectItem Value="item.id">@item.Title</MudSelectItem>
+                            }
+                        }
+                    </MudSelect>
+                }
+                else
+                {
+                    <MudSelect Disabled="OnProcessing" SelectedValuesChanged="onSelectedFolderChanged" @bind-Value="RawDocument!.FolderId" T="string" HelperText="ບ່ອນເກັບຂອງເອກະສານ" Label="ແຟ້ມເກັບເອກະສານ*" Variant="Variant.Text">
+                        @if (folderModels is not null)
+                        {
+                            foreach (var item in folderModels!)
+                            {
+                                <MudSelectItem Value="item.id">@item.Title</MudSelectItem>
+                            }
+                        }
+                    </MudSelect>
+                }
+
+                <MudIconButton Disabled="OnProcessing" Color="Color.Success" Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" />
+                <MudIconButton Disabled="OnProcessing" Color="Color.Primary" Icon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="displayFolderDialogAsync" />
+
+            </MudItem>
+            <MudItem xs="12" md="3" Class="d-flex flex-grow-1 gap-4">
+
+                <MudSelect T="string" HelperText="ລັກສະນະການຮັບເອກະສານ" Label="ຮູບແບບເອກະສານ" Variant="Variant.Text">
+                    <MudSelectItem Value="@("ໃຫມ່")" />
+                    <MudSelectItem Value="@("ປ່ຽນແທນ")" />
+                    <MudSelectItem Value="@("ຖອນຄືນ")" />
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="12" md="3" Class="d-flex flex-grow-1 gap-4">
+
+                @if (selectDoctypeValues != null)
+                {
+                    <MudSelect SelectedValues="selectDoctypeValues" Disabled="OnProcessing" @bind-Value="RawDocument!.DocType" T="string" HelperText="ປະເພດຂອງເອກະສານທີ່ຮັບມາ" Label="ປະເພດເອກະສານ*" Variant="Variant.Text">
+                        @if (docTypeModels is not null)
+                        {
+                            foreach (var item in docTypeModels!)
+                            {
+                                <MudSelectItem Value="item.id">@item.DocType</MudSelectItem>
+                            }
+                        }
+                    </MudSelect>
+                }
+                else
+                {
+                    <MudSelect Disabled="OnProcessing" @bind-Value="RawDocument!.DocType" T="string" HelperText="ປະເພດຂອງເອກະສານທີ່ຮັບມາ" Label="ປະເພດເອກະສານ*" Variant="Variant.Text">
+                        @if (docTypeModels is not null)
+                        {
+                            foreach (var item in docTypeModels!)
+                            {
+                                <MudSelectItem Value="item.id">@item.DocType</MudSelectItem>
+                            }
+                        }
+                    </MudSelect>
+                }
+            </MudItem>
+            <MudItem xs="12" md="2" Class="d-flex flex-grow-1 gap-4" ondblclick="@onDocNoClick">
+                <MudField Label="ເລກທີ" Variant="Variant.Filled">@RawDocument!.DocNo</MudField>
+            </MudItem>
+            <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+
+                <MudDatePicker Disabled="OnProcessing" @bind-Value="RawDocument!.SetDate" PickerVariant="PickerVariant.Inline" Label="ວັນທີ່ສົ່ງເອກະສານອອກ*" HelperText="ວັນທີ່ສົ່ງເອກະສານ" DateFormat="dd/MM/yyyy" />
+            </MudItem>
+            <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+
+                <MudTextField Disabled="OnProcessing" @bind-Value="RawDocument!.ExternalUnit" T="string" Counter="500" MaxLength="500" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MediumCharacters))" HelperText="ຫນ່ວຍທີ່ຮັບເອກະສານ ໃນກໍລະນີ ຈົບການສົ່ງ" Label="ຫນ່ວຍງານພາຍນອກ" />
+            </MudItem>
+            <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+
+                <MudTextField Disabled="OnProcessing" @bind-Value="RawDocument!.Signer" T="string" Counter="500" MaxLength="500" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MediumCharacters))" HelperText="ຜູ້ທີ່ມາເຊັນຮັບເອກະສານ" Label="ຜູ້ເຊັນເອກະສານ" />
+            </MudItem>
+        }
+
+
+
+        <MudItem xs="12" md="12">
+            <MudAlert Severity="Severity.Normal" NoIcon="true" Class="mb-2 mt-3">ກະລຸນາປ້ອນຂໍ້ມູນໃຫ້ຄົບຖ້ວນ ເອກະສານຂາອອກ</MudAlert>
+        </MudItem>
+    </MudGrid>
+
+</MudContainer>
+
+
+<MudMessageBox @ref="mbox" Title="ແຟ້ມເອກະສານ">
+    <MessageContent>
+        <DFM.Frontend.Pages.FolderComponent.FolderForm RoleId="@RoleId"></DFM.Frontend.Pages.FolderComponent.FolderForm>
+    </MessageContent>
+    <YesButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save">ສ້າງແຟ້ມໃຫມ່</MudButton>
+    </YesButton>
+</MudMessageBox>
+
+<MudMessageBox @ref="docnoBox" Title="ແກ້ໄຂເລກທີເອກະສານ">
+    <MessageContent>
+        <MudNumericField @bind-Value="docNumber" Label="ເລກທີ" Variant="Variant.Text" Min="1" />
+    </MessageContent>
+    <YesButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.CheckCircle">ສຳເລັດ</MudButton>
+    </YesButton>
+</MudMessageBox>
+
+@code {
+
+    [Parameter] public DocumentModel? DocumentModel { get; set; }
+    [Parameter] public IList<AttachmentDto>? Attachments { get; set; }
+    [Parameter] public IList<AttachmentDto>? RelateFiles { get; set; }
+    [Parameter] public string? RoleId { get; set; }
+    [Parameter] public FormMode Mode { get; set; }
+    [Parameter] public bool OnProcessing { get; set; }
+    [Parameter] public EventCallback<string> Notice { get; set; }
+    [Parameter] public RawDocumentData? RawDocument { get; set; }
+    [Parameter] public PartialRole? MyRole { get; set; }
+    
+    bool previewButton = false;
+    string? token = "";
+    private EmployeeModel? employee;
+    IEnumerable<DocumentUrgentModel>? urgentModels;
+    IEnumerable<DocumentSecurityModel>? securityModels;
+    IEnumerable<DataTypeModel>? docTypeModels;
+    List<FolderModel>? folderModels = new();
+    private FolderModel? selectFolder;
+    IEnumerable<string>? selectFolderValues;
+    IEnumerable<string>? selectUrgentValues;
+    IEnumerable<string>? selectSecurityValues;
+    IEnumerable<string>? selectDoctypeValues;
+
+    MudMessageBox? mbox { get; set; }
+    MudMessageBox? docnoBox { get; set; }
+}

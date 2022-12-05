@@ -1,0 +1,34 @@
+﻿@page "/pages/org/chart"
+@inject IHttpService httpService
+@inject AccessTokenStorage accessToken
+@inject ServiceEndpoint endpoint
+@inject LocalStorageHelper storageHelper
+
+<PageTitle>Document - DFM</PageTitle>
+<DFM.Frontend.Pages.Common.ButtonPanel FormMode="formMode" ShowTerminateButton="false" ShowCreateButton="true" RootBreadcrumb="ໂຄງຮ່າງການຈັດຕັ້ງ"
+                                       ShowDeleteButton="false" ShowEditButton="true" ShowSaveButton="true" ShowSendButton="false"
+                                       PreviousButtonEvent="onePreviousButtonClick" CreateButtonEvent="onCreateButtonClick" EditButtonEvent="onEditButtonClick"
+                                       ViewBreadcrumb="@editBreadcrumbText" EditBreadcrumb="@editBreadcrumbText" CreateBreadcrumb="ສ້າງໂຄງຮ່າງການຈັດຕັ້ງໃຫມ່"
+                                       SaveButtonEvent="onSaveClickAsync"></DFM.Frontend.Pages.Common.ButtonPanel>
+
+
+@if (formMode == FormMode.Create || formMode == FormMode.Edit)
+{
+    <DFM.Frontend.Pages.OrganizeComponent.OrgFormComponent FormMode="formMode" OrganizationID="@orgId" RoleTreeModel="roleTreeModel"></DFM.Frontend.Pages.OrganizeComponent.OrgFormComponent>
+}
+else
+{
+
+    <DFM.Frontend.Pages.OrganizeComponent.ListViewComponent OnItemChangeEvent="onItemChangeEvent"></DFM.Frontend.Pages.OrganizeComponent.ListViewComponent>
+}
+
+
+
+
+@code {
+    [Parameter] public string? Link { get; set; }
+    private FormMode formMode;
+    RoleTreeModel? roleTreeModel;
+    string? orgId = "";
+    MudMessageBox? delBox { get; set; }
+}

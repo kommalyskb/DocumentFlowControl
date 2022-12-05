@@ -1,0 +1,284 @@
+{
+  "FormID": "123456789",
+  "PreviousLink": "/",
+  "Header": {
+    "Title": "Folder Management",
+    "TotalColumn": 2,
+    "APIEndpoint": {
+      "List": "",
+      "Create": "",
+      "Update": "",
+      "Delete": "",
+      "Get": ""
+    },
+    "Columns": [
+      {
+        "Fields": [
+          {
+            "Id": "Title",
+            "InputType": "Text",
+            "Label": "Folder Title",
+            "CssClass": "form-control",
+            "Required": true,
+            "Readonly": false,
+            "Visible": true,
+            "Lookup": false,
+            "RequireError": "",
+            "ErrorMessage": "",
+            "Description": "Input Title",
+            "DefaultText": "",
+            "Checked": false,
+            "AnchorOrigin": "BottomCenter",
+            "Items": [
+              {
+                "Text": "",
+                "Value": ""
+              }
+            ],
+            "Max": 0,
+            "Min": 0,
+            "Step": "1",
+            "MaxLenght": 0,
+            "Variant": "Text",
+            "APIEndpoint": {
+              "List": "",
+              "Create": "",
+              "Update": "",
+              "Delete": "",
+              "Get": ""
+            },
+            "ColumnNo": 1
+          },
+          {
+            "Id": "Start",
+            "InputType": "Number",
+            "Label": "Start",
+            "CssClass": "form-control",
+            "Required": true,
+            "Readonly": false,
+            "Visible": true,
+            "Lookup": false,
+            "RequireError": "",
+            "ErrorMessage": "",
+            "Description": "Input Start number",
+            "DefaultText": "",
+            "Checked": false,
+            "AnchorOrigin": "BottomCenter",
+            "Items": [
+              {
+                "Text": "",
+                "Value": ""
+              }
+            ],
+            "Max": 0,
+            "Min": 0,
+            "Step": "1",
+            "MaxLenght": 0,
+            "Variant": "Text",
+            "APIEndpoint": {
+              "List": "",
+              "Create": "",
+              "Update": "",
+              "Delete": "",
+              "Get": ""
+            },
+            "ColumnNo": 1
+          },
+          {
+            "Id": "Seq",
+            "InputType": "Number",
+            "Label": "Sequence",
+            "CssClass": "form-control",
+            "Required": true,
+            "Readonly": false,
+            "Visible": true,
+            "Lookup": false,
+            "RequireError": "",
+            "ErrorMessage": "",
+            "Description": "Input sequence number",
+            "DefaultText": "",
+            "Checked": false,
+            "AnchorOrigin": "BottomCenter",
+            "Items": [
+              {
+                "Text": "",
+                "Value": ""
+              }
+            ],
+            "Max": 0,
+            "Min": 0,
+            "Step": "1",
+            "MaxLenght": 0,
+            "Variant": "Text",
+            "APIEndpoint": {
+              "List": "",
+              "Create": "",
+              "Update": "",
+              "Delete": "",
+              "Get": ""
+            },
+            "ColumnNo": 1
+          },
+          {
+            "Id": "StartDate",
+            "InputType": "Date",
+            "Label": "Start Use Date",
+            "CssClass": "form-control",
+            "Required": true,
+            "Readonly": false,
+            "Visible": true,
+            "Lookup": false,
+            "RequireError": "",
+            "ErrorMessage": "",
+            "Description": "Input use date",
+            "DefaultText": "",
+            "Checked": false,
+            "AnchorOrigin": "BottomCenter",
+            "Items": [
+              {
+                "Text": "",
+                "Value": ""
+              }
+            ],
+            "Max": 0,
+            "Min": 0,
+            "Step": "1",
+            "MaxLenght": 0,
+            "Variant": "Text",
+            "APIEndpoint": {
+              "List": "",
+              "Create": "",
+              "Update": "",
+              "Delete": "",
+              "Get": ""
+            },
+            "ColumnNo": 1
+          },
+          {
+            "Id": "ExpiredDate",
+            "InputType": "Date",
+            "Label": "Expire Date",
+            "CssClass": "form-control",
+            "Required": true,
+            "Readonly": false,
+            "Visible": true,
+            "Lookup": false,
+            "RequireError": "",
+            "ErrorMessage": "",
+            "Description": "Input expire date",
+            "DefaultText": "",
+            "Checked": false,
+            "AnchorOrigin": "BottomCenter",
+            "Items": [
+              {
+                "Text": "",
+                "Value": ""
+              }
+            ],
+            "Max": 0,
+            "Min": 0,
+            "Step": "1",
+            "MaxLenght": 0,
+            "Variant": "Text",
+            "APIEndpoint": {
+              "List": "",
+              "Create": "",
+              "Update": "",
+              "Delete": "",
+              "Get": ""
+            },
+            "ColumnNo": 1
+          },
+          {
+            "Id": "ShortName",
+            "InputType": "Text",
+            "Label": "Short name",
+            "CssClass": "form-control",
+            "Required": true,
+            "Readonly": false,
+            "Visible": true,
+            "Lookup": false,
+            "RequireError": "",
+            "ErrorMessage": "",
+            "Description": "Input short name",
+            "DefaultText": "",
+            "Checked": false,
+            "AnchorOrigin": "BottomCenter",
+            "Items": [
+              {
+                "Text": "",
+                "Value": ""
+              }
+            ],
+            "Max": 0,
+            "Min": 0,
+            "Step": "1",
+            "MaxLenght": 0,
+            "Variant": "Text",
+            "APIEndpoint": {
+              "List": "",
+              "Create": "",
+              "Update": "",
+              "Delete": "",
+              "Get": ""
+            },
+            "ColumnNo": 1
+          }
+        ]
+      }
+    ]
+  },
+  "Details": [
+    {
+      "Title": "Employee",
+      "APIEndpoint": {
+        "List": "",
+        "Create": "",
+        "Update": "",
+        "Delete": "",
+        "Get": ""
+      },
+      "Columns": [
+        {
+          "Fields": [
+            {
+              "Id": "name",
+              "InputType": "text",
+              "Label": "Firstname",
+              "CssClass": "form-control",
+              "Required": false,
+              "Readonly": false,
+              "Visible": true,
+              "Lookup": false,
+              "RequireError": "",
+              "ErrorMessage": "",
+              "Description": "Input firstname",
+              "DefaultText": "",
+              "Checked": false,
+              "AnchorOrigin": "BottomCenter",
+              "Items": [
+                {
+                  "Text": "",
+                  "Value": ""
+                }
+              ],
+              "Max": 0,
+              "Min": 0,
+              "Step": "1",
+              "MaxLenght": 0,
+              "Variant": "Text",
+              "APIEndpoint": {
+                "List": "",
+                "Create": "",
+                "Update": "",
+                "Delete": "",
+                "Get": ""
+              },
+              "ColumnNo": 0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

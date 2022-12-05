@@ -1,0 +1,39 @@
+﻿@inherits LayoutComponentBase
+
+<PageTitle>DFM.Frontend</PageTitle>
+<MudThemeProvider />
+<MudDialogProvider/>
+<MudSnackbarProvider />
+<MudLayout>
+    <MudAppBar Color="Color.Primary" Fixed="false" Dense="true">
+        <MudIconButton Icon="@Icons.Material.Filled.Home" Color="Color.Inherit" Edge="Edge.Start" />
+        <MudSpacer />
+        <MudIconButton Icon="@Icons.Material.Filled.NoAccounts" Color="Color.Inherit" Edge="Edge.Start" />
+    </MudAppBar>
+    <MudDrawer @bind-Open="_drawerOpen" Elevation="0" ClipMode="DrawerClipMode.Always" Variant="@DrawerVariant.Mini">
+
+        <NavMenu OpenDrawer="ToggleMenu" IsOpen="@_drawerOpen" />
+    </MudDrawer>
+    <MudMainContent>
+        @*<CustomAuthorizeView>
+            <Authorized>
+            @Body
+            </Authorized>
+
+            </CustomAuthorizeView>*@
+        @Body
+
+    </MudMainContent>
+
+</MudLayout>
+
+
+@code
+{
+    bool _drawerOpen = true;
+
+    void ToggleMenu()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+}

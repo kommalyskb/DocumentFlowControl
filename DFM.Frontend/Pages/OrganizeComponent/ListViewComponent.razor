@@ -1,0 +1,20 @@
+﻿@inject IHttpService httpService
+@inject AccessTokenStorage accessToken
+@inject ServiceEndpoint endpoint
+@inject LocalStorageHelper storageHelper
+
+<MudContainer>
+    <MudGrid>
+        <MudItem xs="12" md="10">
+            <MudTreeView Items="treeItems" @bind-ActivatedValue="activatedValue" @bind-SelectedValues="selectedValues">
+                <ItemTemplate>
+                    <MudTreeViewItem @bind-Expanded="@context.IsExpanded" Items="@context.TreeItems" Value="@context" Text="@context.Content!.Role.Display.Local" />
+                </ItemTemplate>
+            </MudTreeView>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+@code {
+    [Parameter] public EventCallback<TreeItemData> OnItemChangeEvent { get; set; }
+}

@@ -1,0 +1,17 @@
+﻿@inject IHttpService httpService
+@inject AccessTokenStorage accessToken
+@inject ServiceEndpoint endpoint
+@inject LocalStorageHelper storageHelper
+
+
+<MudContainer>
+   <MudGrid>
+        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+            <h2>ຂໍ້ມູນພະນັກງານ</h2>
+        </MudItem>
+   </MudGrid>
+</MudContainer>
+
+@code {
+    [Parameter] public EmployeeModel? Employee { get; set; }
+}
