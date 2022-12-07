@@ -55,12 +55,12 @@ namespace DFM.Testcases.Organization
         [Fact(DisplayName = "ເພີ່ມ Role, Employee ເຂົ້າ ໄປໃນ Organization")]
         public async Task NC1()
         {
-            var myRole = await roleManager.GetRolePosition("fba6e7d73a044f84a371d615b2ffbf68");
-            var profile = await employeeManager.GetProfile("96759b98206c4e83a51795dd0be84206");
+            var myRole = await roleManager.GetRolePosition("198081ca5a774097b432d38c8931825c");
+            var profile = await employeeManager.GetProfile("f7009202b6d84928b5b3ec058955df35");
             var result = await organizationChart.AddRoleAndEmployee("b98c5c46cebd430bb7d9fe596d73c459", new RoleTreeModel
             {
                 RoleType = myRole.Content.RoleType,
-                ParentID = "6d6ba29bba5e4bc0a432cff87518c7dc",
+                ParentID = "f60ed05ebd9f4256b5b6279c994ef3fb",
                 Employee = new PartialEmployeeProfile
                 {
                     Name = profile.Content.Name,
@@ -74,7 +74,7 @@ namespace DFM.Testcases.Organization
                     RoleType = myRole.Content.RoleType,
                     Display = myRole.Content.Display
                 },
-                Publisher = "ບໍລິສັດ ຈະເລີນເຊກອງພະລັງງານ ຈຳກັດ"
+                Publisher = "ຝ່າຍ ການເງິນ"
             });
 
             Assert.True(result.Success);
@@ -82,7 +82,7 @@ namespace DFM.Testcases.Organization
         [Fact(DisplayName = "ລຶບ Role, Employee ອອກຈາກ Organization")]
         public async Task NC2()
         {
-            var result = await organizationChart.RemoveRoleAndEmployee("776dca2568194b77a8fc9c7c7f377e08", "bcd52dd6296d4a44ba2b93733a699b48");
+            var result = await organizationChart.RemoveRoleAndEmployee("b98c5c46cebd430bb7d9fe596d73c459", "198081ca5a774097b432d38c8931825c");
 
             Assert.True(result.Success);
         }
@@ -146,6 +146,15 @@ namespace DFM.Testcases.Organization
         {
             var result = await organizationChart.GetChartByID("8cb7efe0be82402f8007800db1a9c3f5");
             Assert.NotEqual(0, result.RowCount);
+        }
+
+        [Fact(DisplayName = "ສະແດງ Role info ທີ່ເປັນ ຂາອອກ ແລະ ຂາເຂົ້າ ທັງຫມົດຂອງ ບໍລິສັດ ຕາມ ໂຄງຮ່າງການຈັດຕັ້ງ")]
+        public async Task NC7()
+        {
+
+            var result = await organizationChart.GetSupervisorRolesPosition("b98c5c46cebd430bb7d9fe596d73c459");
+
+            Assert.True(result.Response.Success);
         }
     }
 }

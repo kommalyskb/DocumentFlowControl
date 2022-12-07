@@ -108,5 +108,19 @@ namespace DFM.Testcases.Role
 
             Assert.True(result.Response.Success);
         }
+
+        [Fact(DisplayName = "ສະແດງ Role info ຕາມ RoleIDs")]
+        public async Task NC6()
+        {
+            List<string> roles = new List<string>
+            {
+                "41b1585dd1e643569aa67f9fdc249547", "d10481da4d6c469db2ba67b1ff603177", "198081ca5a774097b432d38c8931825c"
+            };
+            var result = await roleManager.GetRolesPosition(roles);
+
+            Assert.True(result.Response.Success);
+        }
+
+       
     }
 }

@@ -5,35 +5,65 @@
 <MudContainer>
     <MudGrid>
         <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
-            <MudTextField T="string" Counter="1000" MaxLength="1000" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ຊື່ຂອງເອກະສານ" Label="ຊື່ແຟ້ມ*" />
+            <MudTextField Disabled="OnProcessing" @bind-Value="FolderModel!.Title" T="string" Counter="1000" MaxLength="1000" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ຊື່ຂອງເອກະສານ" Label="ຊື່ແຟ້ມ*" />
         </MudItem>
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <MudTextField T="int" Immediate="true" Variant="Variant.Text" HelperText="ເລກທີ່ເລີ່ມຕົ້ນຂອງເອກະສານ" Label="ເລກທີ່ເລີ່ມຕົ້ນ" />
+            <MudTextField Disabled="OnProcessing" @bind-Value="FolderModel!.Start" T="int" Immediate="true" Variant="Variant.Text" HelperText="ເລກທີ່ເລີ່ມຕົ້ນຂອງເອກະສານ" Label="ເລກທີ່ເລີ່ມຕົ້ນ" />
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <MudTextField ReadOnly="true" Disabled="OnProcessing" @bind-Value="FolderModel!.NextNumber" T="int" Immediate="true" Variant="Variant.Text" HelperText="ເລກທີຖັດໄປຂອງເອກະສານ" Label="ເລກທີຖັດໄປ" />
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <MudTextField Disabled="OnProcessing" @bind-Value="FolderModel!.Seq" T="int" Immediate="true" Variant="Variant.Text" HelperText="ລຳດັບການສະແດງຜົນ" Label="ລຳດັບແຟ້ມ" />
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <MudTextField Disabled="OnProcessing" @bind-Value="FolderModel!.Prefix" T="string" Counter="500" MaxLength="500" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MediumCharacters))" HelperText="ຕົວອັກສອນນຳຫນ້າ" Label="ອັກສອນນຳຫນ້າ" />
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <MudDatePicker Disabled="OnProcessing" @bind-Text="FolderModel!.StartDate" PickerVariant="PickerVariant.Inline" Label="ວັນທີ່ນຳໃຊ້ແຟ້ມ*" HelperText="ວັນທີ່ເລີ່ມນຳໃຊ້ແຟ້ມ" DateFormat="dd/MM/yyyy" />
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <MudDatePicker Disabled="OnProcessing" @bind-Text="FolderModel!.ExpiredDate" PickerVariant="PickerVariant.Inline" Label="ວັນທີປິດແຟ້ມ*" HelperText="ວັນທີ່ແຟ້ມຫມົດອາຍຸ" DateFormat="dd/MM/yyyy" />
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <MudTextField Disabled="OnProcessing" @bind-Value="FolderModel!.ShortName" T="string" Immediate="true" Variant="Variant.Text" HelperText="ຕົວຫຍໍ້ທີ່ເອົາມາສະແດງໃນເລກທີເອກະສານ" Label="ຕົວຫຍໍ້ອົງກອນ" />
 
         </MudItem>
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <MudTextField T="int" Immediate="true" Variant="Variant.Text" HelperText="ລຳດັບການສະແດງຜົນ" Label="ລຳດັບແຟ້ມ" />
-        </MudItem>
-        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-           <MudDatePicker PickerVariant="PickerVariant.Inline" Label="ວັນທີ່ນຳໃຊ້ແຟ້ມ*" HelperText="ວັນທີ່ເລີ່ມນຳໃຊ້ແຟ້ມ" DateFormat="dd/MM/yyyy" />
-        </MudItem>
-        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-           <MudDatePicker PickerVariant="PickerVariant.Inline" Label="ວັນທີປິດແຟ້ມ*" HelperText="ວັນທີ່ແຟ້ມຫມົດອາຍຸ" DateFormat="dd/MM/yyyy" />
-        </MudItem>
-        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-            <MudTextField T="string" Immediate="true" Variant="Variant.Text" HelperText="ຕົວຫຍໍ້ທີ່ເອົາມາສະແດງໃນເລກທີເອກະສານ" Label="ຕົວຫຍໍ້ອົງກອນ" />
-
-        </MudItem>
-        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-            <MudTextField T="string" Immediate="true" Variant="Variant.Text" HelperText="ຮູບແບບທີ່ເອົາມາສະແດງໃນເລກທີເອກະສານ" Label="ຮູບແບບເລກທີ" />
-
-        </MudItem>
-        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-            <MudTextField T="string" Immediate="true" Variant="Variant.Text" HelperText="ຫນ່ວຍງານຮັບຜິດຊອບອອກແຟ້ມ" Label="ຫນ່ວຍງານຮັບຜິດຊອບ" />
-
+            @if (formatDefaults != null)
+            {
+                <MudSelect @bind-Value="FolderModel!.FormatType" Disabled="OnProcessing" T="string" SelectedValues="formatDefaults" HelperText="ຮູບແບບທີ່ເອົາມາສະແດງໃນເລກທີເອກະສານ" Label="ຮູບແບບເລກທີ" Variant="Variant.Text">
+                    @foreach (var item in DocNoFormat.Formats)
+                    {
+                        <MudSelectItem T="string" Value="item.Value">@item.Name</MudSelectItem>
+                    }
+                </MudSelect>
+            }
+            else
+            {
+                <MudSelect @bind-Value="FolderModel!.FormatType" Disabled="OnProcessing" T="string" HelperText="ຮູບແບບທີ່ເອົາມາສະແດງໃນເລກທີເອກະສານ" Label="ຮູບແບບເລກທີ" Variant="Variant.Text">
+                    @foreach (var item in DocNoFormat.Formats)
+                    {
+                        <MudSelectItem T="string" Value="item.Value">@item.Name</MudSelectItem>
+                    }
+                </MudSelect>
+            }
+           
         </MudItem>
         <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
-            <MudSelect T="string" HelperText="ປະເພດຂອງເອກະສານທີ່ສາມາດໃຊ້ກັບແຟ້ມນີ້ໄດ້" Label="ປະເພດເອກະສານ*" Variant="Variant.Text">
+            
+            <MudSelect T="string" Immediate="true" Variant="Variant.Text" HelperText="ຫນ່ວຍງານຮັບຜິດຊອບອອກແຟ້ມ" Label="ຫນ່ວຍງານຮັບຜິດຊອບ" MultiSelection="true" SelectAll="true" SelectAllText="ເລືອກທັງຫມົດ" @bind-Value="supervisorText" @bind-SelectedValues="supervisorOption" MultiSelectionTextFunc="@(new Func<List<string>, string>(getSelectionSupervisor))">
+                @if (supervisors is not null)
+                {
+                    foreach (var item in supervisors!)
+                    {
+                        <MudSelectItem Value="item.Role.RoleID">@item!.Role.Display.Local - @item!.Employee.Name.Local</MudSelectItem>
+                    }
+                }
+            </MudSelect>
+        </MudItem>
+        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+            <MudSelect @bind-Value="docType" T="string" MultiSelection="true" SelectAll="true" SelectAllText="ເລືອກທັງຫມົດ" @bind-SelectedValues="docTypeOptions" MultiSelectionTextFunc="@(new Func<List<string>, string>(getSelectionDocType))" HelperText="ປະເພດຂອງເອກະສານທີ່ສາມາດໃຊ້ກັບແຟ້ມນີ້ໄດ້" Label="ປະເພດເອກະສານ*" Variant="Variant.Text">
                 @if (docTypeModels is not null)
                 {
                     foreach (var item in docTypeModels!)
@@ -52,4 +82,7 @@
 @code {
     [Parameter] public string? RoleId { get; set; }
     [Parameter] public FolderModel? FolderModel { get; set; }
+    [Parameter] public bool OnProcessing { get; set; }
+
+    
 }

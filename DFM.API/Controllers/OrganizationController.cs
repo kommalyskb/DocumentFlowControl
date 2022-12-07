@@ -95,6 +95,23 @@ namespace DFM.API.Controllers
             return BadRequest(result.Response);
         }
 
+
+        [HttpGet("GetSupervisors/{orgId}")]
+        [MapToApiVersion("1.0")]
+        [ProducesResponseType(typeof(IEnumerable<RoleTreeModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetSupervisorV1(string orgId, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var result = await organizationChart.GetSupervisorRolesPosition(orgId);
+            if (result.Response.Success)
+            {
+                return Ok(result.Contents);
+            }
+
+            return BadRequest(result.Response);
+
+        }
+
         [HttpGet("GetPublisher/{id}/{roleId}")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(CommonResponseId), StatusCodes.Status200OK)]

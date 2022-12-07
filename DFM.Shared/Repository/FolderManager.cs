@@ -49,7 +49,7 @@ namespace DFM.Shared.Repository
             );
         }
 
-        public async Task<CommonResponse> NewFolder(FolderModel request, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<CommonResponseId> NewFolder(FolderModel request, CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
@@ -106,7 +106,7 @@ namespace DFM.Shared.Repository
         }
 
 
-        public async Task<CommonResponse> EditFolder(FolderModel request, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<CommonResponseId> EditFolder(FolderModel request, CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {

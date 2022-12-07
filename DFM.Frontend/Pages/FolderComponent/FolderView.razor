@@ -5,31 +5,67 @@
 <MudContainer>
     <MudGrid>
         <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ຊື່ແຟ້ມ" Variant="Variant.Text">ແຟ້ມເກັບເອກະສານ</MudField>
+            <MudField Label="ຊື່ແຟ້ມ" Variant="Variant.Text">@FolderModel!.Title</MudField>
         </MudItem>
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ເລກທີ່ເລີ່ມຕົ້ນ" Variant="Variant.Text">ເລກທີ່ເລີ່ມຕົ້ນຂອງເອກະສານ</MudField>
+            <MudField Label="ເລກທີ່ເລີ່ມຕົ້ນ" Variant="Variant.Text">@FolderModel!.Start</MudField>
         </MudItem>
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ລຳດັບແຟ້ມ" Variant="Variant.Text">ລຳດັບການສະແດງຜົນ</MudField>
+            <MudField Label="ເລກທີຖັດໄປ" Variant="Variant.Text">@FolderModel!.NextNumber</MudField>
         </MudItem>
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ວັນທີ່ນຳໃຊ້ແຟ້ມ" Variant="Variant.Text">ວັນທີ່ເລີ່ມນຳໃຊ້ແຟ້ມ</MudField>
+            <MudField Label="ລຳດັບແຟ້ມ" Variant="Variant.Text">@FolderModel!.Seq</MudField>
         </MudItem>
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ວັນທີປິດແຟ້ມ" Variant="Variant.Text">ວັນທີ່ແຟ້ມຫມົດອາຍຸ</MudField>
+            <MudField Label="ອັກສອນນຳຫນ້າ" Variant="Variant.Text">@FolderModel!.Prefix</MudField>
         </MudItem>
-        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ຕົວຫຍໍ້ອົງກອນ" Variant="Variant.Text">ຕົວຫຍໍ້ທີ່ເອົາມາສະແດງໃນເລກທີເອກະສານ</MudField>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <MudField Label="ວັນທີ່ນຳໃຊ້ແຟ້ມ" Variant="Variant.Text">@FolderModel!.StartDate</MudField>
         </MudItem>
-        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-             <MudField Label="ຮູບແບບເລກທີ" Variant="Variant.Text">ຮູບແບບທີ່ເອົາມາສະແດງໃນເລກທີເອກະສານ</MudField>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <MudField Label="ວັນທີປິດແຟ້ມ" Variant="Variant.Text">@FolderModel!.ExpiredDate</MudField>
         </MudItem>
-        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ຫນ່ວຍງານຮັບຜິດຊອບ" Variant="Variant.Text">ຫນ່ວຍງານຮັບຜິດຊອບອອກແຟ້ມ</MudField>
+        
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <MudField Label="ຕົວຫຍໍ້ອົງກອນ" Variant="Variant.Text">@FolderModel!.ShortName</MudField>
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <MudField Label="ຮູບແບບເລກທີ" Variant="Variant.Text">
+                @displayFormat
+            </MudField>
         </MudItem>
         <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
-             <MudField Label="ປະເພດເອກະສານ" Variant="Variant.Text">ປະເພດຂອງເອກະສານທີ່ສາມາດໃຊ້ກັບແຟ້ມນີ້ໄດ້</MudField>
+            <MudField Label="ຫນ່ວຍງານຮັບຜິດຊອບ" Variant="Variant.Text">
+                @foreach (var item in FolderModel!.Supervisors)
+                {
+                    if (supervisors != null)
+                    {
+                        var spvs = supervisors.FirstOrDefault(x => x.Role.RoleID == item);
+                        if (spvs != null)
+                        {
+                            <MudChip Color="Color.Info">@spvs.Role.Display.Local - @spvs.Employee.Name.Local</MudChip>
+                        }
+                    }
+                }
+            </MudField>
+        </MudItem>
+        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+             <MudField Label="ປະເພດເອກະສານ" Variant="Variant.Text">
+                @foreach (var item in FolderModel!.SupportDocTypes)
+                {
+                    if (docTypeModels != null)
+                    {
+                        var docType = docTypeModels!.FirstOrDefault(x => x.id == item);
+                        if (docType != null)
+                        {
+                            <MudChip Color="Color.Warning">@docType.DocType</MudChip>
+                           
+                        }
+                    }
+                    
+                    
+                }
+             </MudField>
         </MudItem>
         <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
             

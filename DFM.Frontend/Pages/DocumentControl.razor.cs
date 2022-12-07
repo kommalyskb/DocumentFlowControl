@@ -20,6 +20,7 @@ namespace DFM.Frontend.Pages
         IEnumerable<RoleTreeModel>? recipients;
         PartialRole? selectedRole;
         CommonResponseId? publisher;
+        readonly int delayTime = 500;
         protected override void OnParametersSet()
         {
             if (Page == "inbox")
@@ -109,7 +110,6 @@ namespace DFM.Frontend.Pages
 
                     onProcessing = false;
 
-                    await Task.Delay(1000);
                     if (result.Success)
                     {
                         nav.NavigateTo($"/pages/doc/{Link}/{Page}", true);
@@ -119,6 +119,7 @@ namespace DFM.Frontend.Pages
                     {
                         AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ", Defaults.Classes.Position.BottomRight, Severity.Error);
                     }
+                    await Task.Delay(delayTime);
 
                     disposedObj();
                     formMode = FormMode.List;
@@ -185,7 +186,6 @@ namespace DFM.Frontend.Pages
 
                     onProcessing = false;
 
-                    await Task.Delay(1000);
                     if (result.Success)
                     {
                         nav.NavigateTo($"/pages/doc/{Link}/{Page}", true);
@@ -195,6 +195,7 @@ namespace DFM.Frontend.Pages
                     {
                         AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ", Defaults.Classes.Position.BottomRight, Severity.Error);
                     }
+                    await Task.Delay(delayTime);
 
                     disposedObj();
                     formMode = FormMode.List;
@@ -246,7 +247,6 @@ namespace DFM.Frontend.Pages
 
                     onProcessing = false;
 
-                    await Task.Delay(1000);
                     if (result.Success)
                     {
                         nav.NavigateTo($"/pages/doc/{Link}/{Page}", true);
@@ -256,6 +256,7 @@ namespace DFM.Frontend.Pages
                     {
                         AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ", Defaults.Classes.Position.BottomRight, Severity.Error);
                     }
+                    await Task.Delay(delayTime);
 
                     disposedObj();
                     formMode = FormMode.List;
@@ -396,7 +397,6 @@ namespace DFM.Frontend.Pages
 
                     onProcessing = false;
 
-                    await Task.Delay(1000);
                     if (result.Success)
                     {
                         if (result.Response.Code == nameof(ResultCode.NEW_DOCUMENT))
@@ -414,6 +414,7 @@ namespace DFM.Frontend.Pages
                     {
                         AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ", Defaults.Classes.Position.BottomRight, Severity.Error);
                     }
+                    await Task.Delay(delayTime);
 
                     disposedObj();
                     formMode = FormMode.List;
@@ -457,7 +458,7 @@ namespace DFM.Frontend.Pages
             };
             // Send request for save document
             var result = await httpService.Post<DocumentRequest, CommonResponse>(url, documentRequest, new AuthorizeHeader("bearer", token));
-            await Task.Delay(500);
+            await Task.Delay(delayTime);
             
         }
 
@@ -494,8 +495,7 @@ namespace DFM.Frontend.Pages
             // Open dialog success message or make small progress bar on top-corner
 
             onProcessing = false;
-
-            await Task.Delay(1000);
+            
             if (result.Success)
             {
                 if (result.Response.Code == nameof(ResultCode.NEW_DOCUMENT))
@@ -514,6 +514,7 @@ namespace DFM.Frontend.Pages
                 AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ", Defaults.Classes.Position.BottomRight, Severity.Error);
             }
 
+            await Task.Delay(delayTime);
             disposedObj();
             formMode = FormMode.List;
 

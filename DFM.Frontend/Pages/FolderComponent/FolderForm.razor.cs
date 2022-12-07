@@ -1,5 +1,7 @@
-﻿using DFM.Shared.Entities;
+﻿using DFM.Shared.DTOs;
+using DFM.Shared.Entities;
 using HttpClientService;
+using System.Security;
 using System.Text.Json;
 using System.Threading.Channels;
 
@@ -10,6 +12,12 @@ namespace DFM.Frontend.Pages.FolderComponent
         private EmployeeModel? employee;
         IEnumerable<DataTypeModel>? docTypeModels;
         string? token = "";
+        IEnumerable<string>? formatDefaults;
+        IEnumerable<RoleTreeModel>? supervisors;
+        string? docType  = "ກະລຸນາເລືອກ ຢ່າງຫນ້ອຍ 1 ຢ່າງ";
+        string? supervisorText = "ກະລຸນາເລືອກ ຢ່າງຫນ້ອຍ 1 ຢ່າງ";
+        IEnumerable<string>? docTypeOptions;
+        IEnumerable<string>? supervisorOption;
         private IEnumerable<string> MaxCharacters(string ch)
         {
             if (!string.IsNullOrEmpty(ch) && 1000 < ch?.Length)
@@ -26,17 +34,44 @@ namespace DFM.Frontend.Pages.FolderComponent
             Console.WriteLine($"{DateTime.Now} Load folder");
             employee = await storageHelper.GetEmployeeProfileAsync();
             token = await accessToken.GetTokenAsync();
+            await Task.Delay(500);
+            if (employee is not null)
+            {
+                // Use chanel to control concurrency
+                var channel = Channel.CreateUnbounded<(bool success, int component, string response)>();
+                // Consumer
+                var consumer = bindDataToVariables(channel.Reader);
+                // Producer
+                var produce = loadDataTasks(channel.Writer);
 
-            // Use chanel to control concurrency
-            var channel = Channel.CreateUnbounded<(bool success, int component, string response)>();
-            // Consumer
-            var consumer = bindDataToVariables(channel.Reader);
-            // Producer
-            var produce = loadDataTasks(channel.Writer);
+                // Await for result
+                await consumer;
+                await produce;
 
-            // Await for result
-            await consumer;
-            await produce;
+                if (!string.IsNullOrWhiteSpace(FolderModel!.FormatType))
+                {
+                    string displayFormat = FolderModel!.FormatType;
+                    displayFormat = displayFormat!.Replace("$docno", $"ເລກທີ");
+                    displayFormat = displayFormat!.Replace("$sn", $"ຕົວຫຍໍ້");
+                    displayFormat = displayFormat!.Replace("$yyyy", $"ປີ");
+                    formatDefaults = new List<string> { displayFormat };
+                }
+
+                
+                docTypeOptions = new HashSet<string>();
+                foreach (var item in FolderModel!.SupportDocTypes)
+                {
+                    docTypeOptions = docTypeOptions.Concat(new HashSet<string>() { item });
+                }
+                supervisorOption = new HashSet<string>();
+                foreach (var item in FolderModel!.Supervisors)
+                {
+                    supervisorOption = supervisorOption.Concat(new HashSet<string>() { item });
+                }
+                await InvokeAsync(StateHasChanged);
+                Console.WriteLine($"{DateTime.Now} Load Folder form ");
+            }
+            
         }
 
         private async Task bindDataToVariables(ChannelReader<(bool success, int component, string response)> reader)
@@ -61,6 +96,10 @@ namespace DFM.Frontend.Pages.FolderComponent
                     {
                         //folderModels = JsonSerializer.Deserialize<IEnumerable<FolderModel>>(item.response);
                     }
+                    if (item.component == 5)
+                    {
+                        supervisors = JsonSerializer.Deserialize<IEnumerable<RoleTreeModel>>(item.response);
+                    }
                 }
             }
         }
@@ -72,6 +111,7 @@ namespace DFM.Frontend.Pages.FolderComponent
             //tasks.Add(fetchAPI($"{endpoint.API}/api/v1/SecurityLevel/GetItems/{employee!.OrganizationID}", 2, writer));
             tasks.Add(fetchAPI($"{endpoint.API}/api/v1/DocumentType/GetItems/{employee!.OrganizationID}", 3, writer));
             //tasks.Add(fetchAPI($"{endpoint.API}/api/v1/Folder/GetItems/{RoleId}", 4, writer));
+            tasks.Add(fetchAPI($"{endpoint.API}/api/v1/Organization/GetSupervisors/{employee!.OrganizationID}", 5, writer));
 
             await Task.WhenAll(tasks);
             writer.Complete();
@@ -139,6 +179,53 @@ namespace DFM.Frontend.Pages.FolderComponent
                 }
 
             }
+            if (component == 5)
+            {
+                // Load Folder
+                var result = await httpService.Get<IEnumerable<RoleTreeModel>>(url, new AuthorizeHeader("bearer", token));
+                if (result.Success)
+                {
+                    var jsonDoc = JsonSerializer.Serialize(result.Response);
+                    await writer.WriteAsync((result.Success, component, jsonDoc));
+                }
+                else
+                {
+                    await writer.WriteAsync((result.Success, component, ""));
+                }
+
+            }
+        }
+        private string getSelectionDocType(List<string> selectedValues)
+        {
+            string? selectText = "";
+            if (selectedValues.Count > 0)
+            {
+                FolderModel!.SupportDocTypes = selectedValues;
+
+            }
+            foreach (var val in selectedValues)
+            {
+                var item = docTypeModels!.FirstOrDefault(x => x.id == val);
+                selectText += $"{item!.DocType}, ";
+            }
+            return selectText;
+
+        }
+        private string getSelectionSupervisor(List<string> selectedValues)
+        {
+            string? selectText = "";
+            if (selectedValues.Count > 0)
+            {
+                FolderModel!.Supervisors = selectedValues;
+
+            }
+            foreach (var val in selectedValues)
+            {
+                var item = supervisors!.FirstOrDefault(x => x.Role.RoleID == val);
+                selectText += $"{item!.Role.Display.Local} - {item!.Employee.Name.Local}, ";
+            }
+            return selectText;
+
         }
     }
 }

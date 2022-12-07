@@ -1895,5 +1895,29 @@ namespace DFM.Shared.Repository
                 throw;
             }
         }
+
+        public async Task<(decimal RowCount, IEnumerable<RoleTreeModel> Contents, CommonResponse Response)> GetSupervisorRolesPosition(string id, CancellationToken cancellationToken = default)
+        {
+            var organization = await GetOrganization(id, cancellationToken);
+
+            var result = organization.Content.Chart.Where(x => x.RoleType == RoleTypeModel.InboundGeneral ||
+            x.RoleType == RoleTypeModel.InboundOfficePrime || x.RoleType == RoleTypeModel.InboundPrime ||
+            x.RoleType == RoleTypeModel.OutboundGeneral || x.RoleType == RoleTypeModel.OutboundOfficePrime ||
+            x.RoleType == RoleTypeModel.OutboundPrime);
+
+            return (result.Count(), result, result.Count() > 0 ? new CommonResponse
+            {
+                Code = nameof(ResultCode.SUCCESS_OPERATION),
+                Success = true,
+                Detail = ResultCode.SUCCESS_OPERATION,
+                Message = ResultCode.SUCCESS_OPERATION
+            } : new CommonResponse
+            {
+                Code = nameof(ResultCode.NOT_FOUND),
+                Success = false,
+                Detail = ResultCode.NOT_FOUND,
+                Message = ResultCode.NOT_FOUND
+            });
+        }
     }
 }

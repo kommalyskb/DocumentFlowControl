@@ -55,6 +55,16 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
+        <member name="M:DFM.API.Controllers.FolderController.GetItemsV1(System.String,System.String,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            ດຶງເອົາ Folder ມາສະແດງ ຕາມ RoleID ຂອງຜູ້ທີ່ສາມາດແກ້ໄຂໄດ້
+            </summary>
+            <param name="roleId"></param>
+            <param name="link"></param>
+            <param name="view">ແມ່ນໃຊ້ໃນການສະແດງ Folder ທັງຫມົດ ຖ້າໃນກໍລະນີເປັນ 1</param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
         <member name="M:DFM.API.Controllers.SeedController.Post(System.Nullable{System.Int32},System.Threading.CancellationToken)">
             <summary>
             v1.0.0 

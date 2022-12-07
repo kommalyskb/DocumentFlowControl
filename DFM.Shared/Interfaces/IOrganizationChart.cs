@@ -26,5 +26,6 @@ namespace DFM.Shared.Interfaces
         Task<(CommonResponse Response, DynamicFlowModel FlowModel, IEnumerable<DynamicItem> Roles)> GetDynamicFlowByID(string id, ModuleType moduleType, CancellationToken cancellationToken = default);
         Task<bool> IsInSameParent(string? orgId, string? child1, string? child2, CancellationToken cancellationToken = default);
         Task<CommonResponseId> GetPublisher(string id, string roleId, CancellationToken cancellationToken = default);
+        Task<(decimal RowCount, IEnumerable<RoleTreeModel> Contents, CommonResponse Response)> GetSupervisorRolesPosition(string id, CancellationToken cancellationToken = default);
     }
 }

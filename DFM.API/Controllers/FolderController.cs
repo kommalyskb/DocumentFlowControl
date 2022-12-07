@@ -6,6 +6,11 @@ using DFM.Shared.Resources;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MyCouch;
+using MyCouch.Requests;
+using OpenTelemetry.Trace;
+using StackExchange.Redis;
+using System.Threading;
 
 namespace DFM.API.Controllers
 {
@@ -23,20 +28,33 @@ namespace DFM.API.Controllers
         }
 
 
-        [HttpGet("GetItem/{orgId}/{id}")]
+        [HttpGet("GetItem/{id}")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(FolderModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetItemV1(string orgId, string id)
+        public async Task<IActionResult> GetItemV1(string id, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return Ok();
+            var result = await folderManager.GetFolder(id, cancellationToken);
+            if (!result.Response.Success)
+            {
+                return BadRequest(result.Response);
+            }
+            return Ok(result.Content);
         }
 
+        /// <summary>
+        /// ດຶງເອົາ Folder ມາສະແດງ ຕາມ RoleID ຂອງຜູ້ທີ່ສາມາດແກ້ໄຂໄດ້
+        /// </summary>
+        /// <param name="roleId"></param>
+        /// <param name="link"></param>
+        /// <param name="view">ແມ່ນໃຊ້ໃນການສະແດງ Folder ທັງຫມົດ ຖ້າໃນກໍລະນີເປັນ 1</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [HttpGet("GetItems/{roleId}/{link}")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(IEnumerable<FolderModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetItemsV1(string roleId, string link, int? view, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IActionResult> GetItemsV1(string roleId, string link, int? view = 0, CancellationToken cancellationToken = default(CancellationToken))
         {
             // Verify link
             InboxType inboxType = InboxType.Inbound;
@@ -68,31 +86,48 @@ namespace DFM.API.Controllers
             return Ok(result.Contents);
         }
 
-        [HttpPost("NewItem/{orgId}")]
+        [HttpPost("NewItem")]
         [MapToApiVersion("1.0")]
-        [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CommonResponseId), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> NewItemV1(string orgId, [FromBody] FolderModel request)
+        public async Task<IActionResult> NewItemV1([FromBody] FolderModel request, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return Ok();
+            var result = await folderManager.NewFolder(request, cancellationToken);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+
         }
 
-        [HttpPut("UpdateItem/{orgId}")]
+        [HttpPost("UpdateItem")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdateItemV1(string orgId, [FromBody] FolderModel request)
+        public async Task<IActionResult> UpdateItemV1([FromBody] FolderModel request, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return Ok();
+            
+            var result = await folderManager.EditFolder(request, cancellationToken);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
         }
 
-        [HttpGet("RemoveItem/{orgId}/{id}")]
+        [HttpGet("RemoveItem/{id}")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> RemoveItemV1(string orgId, string id)
+        public async Task<IActionResult> RemoveItemV1(string id, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return Ok();
+            var result = await folderManager.RemoveFolder(id, cancellationToken);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
         }
     }
 }

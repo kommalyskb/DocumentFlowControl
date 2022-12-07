@@ -13,6 +13,7 @@ namespace DFM.Shared.Interfaces
         Task<CommonResponse> EditRolePosition(RoleManagementModel request, CancellationToken cancellationToken = default);
         Task<(CommonResponse Response, RoleManagementModel Content)> GetRolePosition(string id, CancellationToken cancellationToken = default);
         Task<(decimal RowCount, IEnumerable<RoleManagementModel> Contents, CommonResponse Response)> GetRolePositionByOrgID(string orgId, CancellationToken cancellationToken = default);
+        Task<(CommonResponse Response, List<RoleManagementModel> Contents)> GetRolesPosition(List<string> roles, CancellationToken cancellationToken = default);
         Task<CommonResponse> NewRolePosition(RoleManagementModel request, CancellationToken cancellationToken = default);
         Task<CommonResponse> RemoveRolePosition(string id, CancellationToken cancellationToken = default);
     }

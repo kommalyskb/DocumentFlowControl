@@ -3,16 +3,21 @@
 @inject AccessTokenStorage accessToken
 @inject ServiceEndpoint endpoint
 @inject LocalStorageHelper storageHelper
+@inject IMinioService minio
+@inject StorageConfiguration storageConf
+@inject NavigationManager nav
+@inject ISnackbar Snackbar
+@implements IDisposable
 
 <PageTitle>Folder - DFM</PageTitle>
 @if (Link == "inbound" || Link == "outbound")
 {
     <DFM.Frontend.Pages.Common.ButtonPanel FormMode="formMode" ShowTerminateButton="false" ShowCreateButton="true" ShowDeleteButton="true"
-                                       ShowEditButton="true" ShowSaveButton="true" ShowSendButton="false"
-                                       CreateButtonEvent="onCreateButtonClick" PreviousButtonEvent="onePreviousButtonClick" 
-                                       DeleteButtonEvent="onDeleteButtonClick" RootBreadcrumb="ລາຍການແຟ້ມເອກະສານ" ViewBreadcrumb="ເບີ່ງແຟ້ມເອກະສານ" 
-                                       EditBreadcrumb="ແກ້ໄຂແຟ້ມເອກະສານ" CreateBreadcrumb="ສ້າງແຟ້ມເອກະສານໃຫມ່"
-                                       EditButtonEvent="onEditButtonClick" SaveButtonEvent="onSaveClickAsync"></DFM.Frontend.Pages.Common.ButtonPanel>
+                                           ShowEditButton="true" ShowSaveButton="true" ShowSendButton="false" Behavior="BehaviorStatus.ReadWrite"
+                                           CreateButtonEvent="onCreateButtonClick" PreviousButtonEvent="onePreviousButtonClick"
+                                           DeleteButtonEvent="onDeleteButtonClick" RootBreadcrumb="ລາຍການແຟ້ມເອກະສານ" ViewBreadcrumb="ເບີ່ງແຟ້ມເອກະສານ"
+                                           EditBreadcrumb="ແກ້ໄຂແຟ້ມເອກະສານ" CreateBreadcrumb="ສ້າງແຟ້ມເອກະສານໃຫມ່" OnProcessing="onProcessing"
+                                           EditButtonEvent="onEditButtonClick" SaveButtonEvent="onSaveClickAsync"></DFM.Frontend.Pages.Common.ButtonPanel>
 
     @if (formMode == FormMode.List)
     {
@@ -20,11 +25,11 @@
     }
     else if (formMode == FormMode.Create)
     {
-        <DFM.Frontend.Pages.FolderComponent.FolderForm RoleId="@roleId" FolderModel="folderModel"></DFM.Frontend.Pages.FolderComponent.FolderForm>
+        <DFM.Frontend.Pages.FolderComponent.FolderForm RoleId="@roleId" FolderModel="folderModel" OnProcessing="onProcessing"></DFM.Frontend.Pages.FolderComponent.FolderForm>
     }
     else if (formMode == FormMode.Edit)
     {
-        <DFM.Frontend.Pages.FolderComponent.FolderForm RoleId="@roleId" FolderModel="folderModel"></DFM.Frontend.Pages.FolderComponent.FolderForm>
+        <DFM.Frontend.Pages.FolderComponent.FolderForm RoleId="@roleId" FolderModel="folderModel" OnProcessing="onProcessing"></DFM.Frontend.Pages.FolderComponent.FolderForm>
     }
     else if (formMode == FormMode.View)
     {
@@ -42,7 +47,7 @@ else
         <h2>ທ່ານຕ້ອງການ ລຶບແຟ້ມເອກະສານ ນີ້ແທ້ບໍ່?</h2>
     </MessageContent>
     <YesButton>
-        <MudButton Variant="Variant.Filled" Color="Color.Error" StartIcon="@Icons.Material.Filled.Delete" OnClick="onDeleteClickAsync">ຢືນຢັນ</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Error" StartIcon="@Icons.Material.Filled.Delete">ຢືນຢັນ</MudButton>
     </YesButton>
 </MudMessageBox>
 
@@ -51,5 +56,10 @@ else
     private FormMode formMode;
     string? roleId = "";
     MudMessageBox? delBox { get; set; }
-    FolderModel? folderModel;
+    FolderModel? folderModel = new();
+
+    bool onProcessing = false;
+    public void Dispose()
+    {
+    }
 }

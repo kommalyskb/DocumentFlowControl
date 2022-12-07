@@ -115,6 +115,14 @@ builder.Services.AddHostedService<IndexCreationService>();
 #endregion
 builder.Services.AddControllers();
 
+#region Change appsettings when in develop
+#if DEBUG
+builder.Configuration.AddJsonFile("appsettings.Development.json", false, true);
+#else
+builder.Configuration.AddJsonFile("appsettings.json", false, true);
+#endif
+#endregion
+
 #region Register swagger endpoint
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -9,6 +9,13 @@ using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
+#region Change appsettings when in develop
+#if DEBUG
+builder.Configuration.AddJsonFile("appsettings.Development.json", false, true);
+#else
+builder.Configuration.AddJsonFile("appsettings.json", false, true);
+#endif
+#endregion
 // Add services to the container.
 builder.Services.RegisterHttpClientService();
 

@@ -11,6 +11,7 @@ using Redis.OM;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -447,6 +448,41 @@ namespace DFM.Shared.Repository
             
 
         }
-   
+
+        public async Task<(CommonResponse Response, List<RoleManagementModel> Contents)> GetRolesPosition(List<string> roles, CancellationToken cancellationToken = default)
+        {
+            var result = await couchContext.ViewQueryAsync<string, RoleManagementModel>
+                    (
+                        couchDBHelper: read_couchDbHelper,
+                        designName: "query",
+                        viewName: "byId",
+                        keys: roles.ToArray(),
+                        limit: -1,
+                        page: 0,
+                        reduce: false,
+                        desc: false
+                    );
+
+
+            if (result.RowCount > 0)
+            {
+                return (new CommonResponse()
+                {
+                    Code = nameof(ResultCode.SUCCESS_OPERATION),
+                    Success = true,
+                    Detail = ValidateString.IsNullOrWhiteSpace(ResultCode.SUCCESS_OPERATION),
+                    Message = ResultCode.SUCCESS_OPERATION
+                }, result.Rows.Select(x => x.Value).ToList());
+            }
+
+            return (new CommonResponse()
+            {
+                Code = nameof(ResultCode.NOT_FOUND),
+                Success = false,
+                Detail = ResultCode.NOT_FOUND,
+                Message = ResultCode.NOT_FOUND
+            }, default!);
+        }
+        
     }
 }

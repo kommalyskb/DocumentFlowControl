@@ -40,6 +40,22 @@ namespace DFM.API.Controllers
             return Ok();
         }
 
+        [HttpPost("GetItems")]
+        [MapToApiVersion("1.0")]
+        [ProducesResponseType(typeof(IEnumerable<RoleManagementModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetItemsV1([FromBody] List<string> rolesId, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var result = await roleManager.GetRolesPosition(rolesId);
+            if (result.Response.Success)
+            {
+                return Ok(result.Contents);
+            }
+
+            return BadRequest(result.Response);
+            
+        }
+
         [HttpPost("NewItem/{orgId}")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status200OK)]

@@ -4,6 +4,10 @@
     "byOrgId": {
       "map": "function (doc) {\n  emit(doc.organizationID, doc);\n}",
       "reduce": "_count"
+    },
+    "byId": {
+      "reduce": "_count",
+      "map": "function (doc) {\n  emit(doc._id, doc);\n}"
     }
   },
   "language": "javascript"
