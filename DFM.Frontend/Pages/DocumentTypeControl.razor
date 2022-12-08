@@ -1,0 +1,61 @@
+﻿@page "/pages/doctype"
+@inject IHttpService httpService
+@inject AccessTokenStorage accessToken
+@inject ServiceEndpoint endpoint
+@inject LocalStorageHelper storageHelper
+@inject IMinioService minio
+@inject StorageConfiguration storageConf
+@inject NavigationManager nav
+@inject ISnackbar Snackbar
+@implements IDisposable
+
+
+
+<DFM.Frontend.Pages.Common.ButtonPanel FormMode="formMode" ShowTerminateButton="false" ShowCreateButton="true" ShowDeleteButton="true"
+                                       ShowEditButton="true" ShowSaveButton="true" ShowSendButton="false" Behavior="BehaviorStatus.ReadWrite"
+                                       CreateButtonEvent="onCreateButtonClick" PreviousButtonEvent="onePreviousButtonClick"
+                                       DeleteButtonEvent="onDeleteButtonClick" RootBreadcrumb="ລາຍການປະເພດເອກະສານ" ViewBreadcrumb="ເບີ່ງປະເພດເອກະສານ"
+                                       EditBreadcrumb="ແກ້ໄຂປະເພດເອກະສານ" CreateBreadcrumb="ສ້າງປະເພດເອກະສານໃຫມ່" OnProcessing="onProcessing"
+                                       EditButtonEvent="onEditButtonClick" SaveButtonEvent="onSaveClickAsync"></DFM.Frontend.Pages.Common.ButtonPanel>
+
+@if (formMode == FormMode.List)
+{
+    <DFM.Frontend.Pages.DocumentType.DocumentTypeList OnRowClick="onRowClick" RoleId="@roleId" OnTabChangeEvent="onTabChangeEvent"></DFM.Frontend.Pages.DocumentType.DocumentTypeList>
+}
+else if (formMode == FormMode.Create)
+{
+    <DFM.Frontend.Pages.DocumentType.DocumentTypeForm DataTypeModel="dataTypeModel" OnProcessing="onProcessing" RoleId="@roleId"></DFM.Frontend.Pages.DocumentType.DocumentTypeForm>
+}
+else if (formMode == FormMode.Edit)
+{
+    <DFM.Frontend.Pages.DocumentType.DocumentTypeForm DataTypeModel="dataTypeModel" OnProcessing="onProcessing" RoleId="@roleId"></DFM.Frontend.Pages.DocumentType.DocumentTypeForm>
+
+}
+else if (formMode == FormMode.View)
+{
+    <DFM.Frontend.Pages.DocumentType.DocumentTypeView DataTypeModel="dataTypeModel" RoleId="@roleId"></DFM.Frontend.Pages.DocumentType.DocumentTypeView>
+}
+
+
+
+<MudMessageBox @ref="delBox" Title="ລຶບເອກະສານ">
+    <MessageContent>
+        <h2>ທ່ານຕ້ອງການ ລຶບປະເພດເອກະສານ ນີ້ແທ້ບໍ່?</h2>
+    </MessageContent>
+    <YesButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Error" StartIcon="@Icons.Material.Filled.Delete">ຢືນຢັນ</MudButton>
+    </YesButton>
+</MudMessageBox>
+
+@code {
+
+
+    DataTypeModel dataTypeModel = new();
+    private FormMode formMode;
+    string? roleId = "";
+    MudMessageBox? delBox { get; set; }
+    bool onProcessing = false;
+    public void Dispose()
+    {
+    }
+}

@@ -22,22 +22,27 @@ namespace DFM.API.Controllers
             this.documentType = documentType;
         }
 
-        [HttpGet("GetItem/{orgId}/{id}")]
+        [HttpGet("GetItem/{id}")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(DataTypeModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetItemV1(string orgId, string id)
+        public async Task<IActionResult> GetItemV1(string id, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return Ok();
+            var result = await documentType.GetDocumentType(id, cancellationToken);
+            if (!result.Response.Success)
+            {
+                return BadRequest(result.Response);
+            }
+            return Ok(result.Content);
         }
 
         [HttpGet("GetItems/{orgId}")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(IEnumerable<DataTypeModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetItemsV1(string orgId)
+        public async Task<IActionResult> GetItemsV1(string orgId, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var result = await documentType.GetDocumentTypeByOrgId(orgId);
+            var result = await documentType.GetDocumentTypeByOrgId(orgId, cancellationToken);
             if (result.RowCount == 0)
             {
                 return BadRequest(result.Response);
@@ -45,31 +50,46 @@ namespace DFM.API.Controllers
             return Ok(result.Contents);
         }
 
-        [HttpPost("NewItem/{orgId}")]
+        [HttpPost("NewItem")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> NewItemV1(string orgId, [FromBody] DataTypeModel request)
+        public async Task<IActionResult> NewItemV1([FromBody] DataTypeModel request, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return Ok();
+            var result = await documentType.NewDocumentType(request, cancellationToken);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
         }
 
-        [HttpPut("UpdateItem/{orgId}")]
+        [HttpPost("UpdateItem")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdateItemV1(string orgId, [FromBody] DataTypeModel request)
+        public async Task<IActionResult> UpdateItemV1([FromBody] DataTypeModel request, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return Ok();
+                var result = await documentType.EditDocumentType(request, cancellationToken);
+                if (!result.Success)
+                {
+                    return BadRequest(result);
+                }
+                return Ok(result);
         }
 
-        [HttpGet("RemoveItem/{orgId}/{id}")]
+        [HttpGet("RemoveItem/{id}")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> RemoveItemV1(string orgId, string id)
+        public async Task<IActionResult> RemoveItemV1(string id, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return Ok();
+            var result = await documentType.RemoveDocumentType(id, cancellationToken);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
         }
     }
 }

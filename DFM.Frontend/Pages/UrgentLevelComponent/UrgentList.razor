@@ -1,0 +1,31 @@
+﻿@inject IHttpService httpService
+@inject AccessTokenStorage accessToken
+@inject ServiceEndpoint endpoint
+@inject LocalStorageHelper storageHelper
+
+<MudContainer>
+    <MudGrid>
+        <MudItem xs="12" md="12">
+            <MudTabs Elevation="2" Rounded="true" Centered="false" @bind-ActivePanelIndex="panelIndex">
+                @if (tabItems == null)
+                {
+                    <MudAlert Severity="Severity.Error">Sorry the content not found, This user not recognize within any organization chart</MudAlert>
+                }
+                else
+                {
+                    foreach (var item in tabItems)
+                    {
+                        <UrgentLevelGrid RoleId="@RoleId" OnRowClick="onRowClick"></UrgentLevelGrid>
+                    }
+                }
+            </MudTabs>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+
+@code {
+    [Parameter] public string? RoleId { get; set; }
+    [Parameter] public EventCallback<DocumentUrgentModel> OnRowClick { get; set; }
+    [Parameter] public EventCallback<string> OnTabChangeEvent { get; set; }
+}

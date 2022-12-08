@@ -1,0 +1,20 @@
+﻿@inject IHttpService httpService
+@inject AccessTokenStorage accessToken
+@inject ServiceEndpoint endpoint
+@inject LocalStorageHelper storageHelper
+
+<MudContainer>
+    <MudGrid>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <MudField Label="ປະເພດເອກກະສານ*">@DataTypeModel!.DocType</MudField>
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <MudField Label="ລຳດັບ">@DataTypeModel!.SortOrder</MudField>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+@code {
+    [Parameter] public string? RoleId { get; set; }
+    [Parameter] public DataTypeModel? DataTypeModel { get; set; }
+}

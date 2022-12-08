@@ -2,10 +2,12 @@
 using DFM.Shared.DTOs;
 using DFM.Shared.Entities;
 using DFM.Shared.Interfaces;
+using DFM.Shared.Repository;
 using DFM.Shared.Resources;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Xml.Linq;
 
 namespace DFM.API.Controllers
 {
@@ -22,22 +24,27 @@ namespace DFM.API.Controllers
             this.documentSecurity = documentSecurity;
         }
 
-        [HttpGet("GetItem/{orgId}/{id}")]
+        [HttpGet("GetItem/{id}")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(DocumentSecurityModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetItemV1(string orgId, string id)
+        public async Task<IActionResult> GetItemV1(string id, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return Ok();
+            var result = await documentSecurity.GetSecurityLevel(id, cancellationToken);
+            if (!result.Response.Success)
+            {
+                return BadRequest(result.Response);
+            }
+            return Ok(result.Content);
         }
 
         [HttpGet("GetItems/{orgId}")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(IEnumerable<DocumentSecurityModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetItemsV1(string orgId)
+        public async Task<IActionResult> GetItemsV1(string orgId, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var result = await documentSecurity.GetSecurityLevelByOrgId(orgId);
+            var result = await documentSecurity.GetSecurityLevelByOrgId(orgId, cancellationToken);
             if (result.RowCount == 0)
             {
                 return BadRequest(result.Response);
@@ -45,31 +52,46 @@ namespace DFM.API.Controllers
             return Ok(result.Contents);
         }
 
-        [HttpPost("NewItem/{orgId}")]
+        [HttpPost("NewItem")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> NewItemV1(string orgId, [FromBody] DocumentSecurityModel request)
+        public async Task<IActionResult> NewItemV1([FromBody] DocumentSecurityModel request, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return Ok();
+            var result = await documentSecurity.NewSecurityLevel(request, cancellationToken);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
         }
 
-        [HttpPut("UpdateItem/{orgId}")]
+        [HttpPut("UpdateItem")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdateItemV1(string orgId, [FromBody] DocumentSecurityModel request)
+        public async Task<IActionResult> UpdateItemV1([FromBody] DocumentSecurityModel request, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return Ok();
+            var result = await documentSecurity.EditSecurityLevel(request, cancellationToken);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
         }
 
-        [HttpGet("RemoveItem/{orgId}/{id}")]
+        [HttpGet("RemoveItem/{id}")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> RemoveItemV1(string orgId, string id)
+        public async Task<IActionResult> RemoveItemV1(string id, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return Ok();
+            var result = await documentSecurity.RemoveSecurityLevel(id, cancellationToken);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
         }
     }
 }

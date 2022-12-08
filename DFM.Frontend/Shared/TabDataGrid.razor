@@ -2,6 +2,7 @@
 @inject AccessTokenStorage accessToken
 @inject ServiceEndpoint endpoint
 @inject LocalStorageHelper storageHelper
+@implements IDisposable
 
 
 <MudTabPanel Icon="@Icons.Material.Filled.People" BadgeData='@unread' BadgeColor="Color.Error">
@@ -36,4 +37,8 @@
     [Parameter] public string? RoleId { get; set; }
     [Parameter] public EventCallback<DocumentModel> OnRowClick { get; set; }
     [Parameter] public bool OnProcessing { get; set; }
+
+    public void Dispose()
+    {
+    }
 }

@@ -1,6 +1,7 @@
 ﻿@inject IHttpService httpService
 @inject AccessTokenStorage accessToken
 @inject ServiceEndpoint endpoint
+@implements IDisposable
 
 
 <MudTabPanel Icon="@Icons.Material.Filled.People" BadgeColor="Color.Error">
@@ -25,4 +26,8 @@
     [Parameter] public string? RoleId { get; set; }
     [Parameter] public TabItemDto? TabItem { get; set; }
     [Parameter] public EventCallback<FolderModel> OnRowClick { get; set; }
+
+    public void Dispose()
+    {
+    }
 }

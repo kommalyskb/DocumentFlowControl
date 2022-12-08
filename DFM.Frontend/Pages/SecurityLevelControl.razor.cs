@@ -1,26 +1,21 @@
 ﻿using DFM.Shared.Common;
-using DFM.Shared.DTOs;
 using DFM.Shared.Entities;
-using DFM.Shared.Resources;
 using HttpClientService;
 using MudBlazor;
-using System;
 
 namespace DFM.Frontend.Pages
 {
-    public partial class FolderControl
+    public partial class SecurityLevelControl
     {
-        string? oldLink = "";
         readonly int delayTime = 500;
 
         protected override void OnInitialized()
         {
             formMode = FormMode.List;
-            oldLink = Link!;
 
             base.OnInitialized();
-
         }
+
         void onCreateButtonClick()
         {
             disposedObj();
@@ -30,7 +25,7 @@ namespace DFM.Frontend.Pages
         {
             formMode = FormMode.List;
         }
-        
+
         async Task onDeleteButtonClick()
         {
             bool? isDelete = await delBox!.Show();
@@ -41,7 +36,7 @@ namespace DFM.Frontend.Pages
                     onProcessing = true;
                     string token = await accessToken.GetTokenAsync();
 
-                    string url = $"{endpoint.API}/api/v1/Folder/RemoveItem/{folderModel!.id}";
+                    string url = $"{endpoint.API}/api/v1/SecurityLevel/RemoveItem/{documentSecurityModel!.id}";
                     var result = await httpService.Get<CommonResponse>(url, new AuthorizeHeader("bearer", token));
 
                     if (result.Success)
@@ -63,41 +58,35 @@ namespace DFM.Frontend.Pages
                 }
             }
         }
-        
+
         void onEditButtonClick()
         {
             formMode = FormMode.Edit;
         }
-        void onRowClick(FolderModel item)
+        void onRowClick(DocumentSecurityModel item)
         {
             // Row click
             formMode = FormMode.View;
-            folderModel = item;
+            documentSecurityModel = item;
 
         }
-        
+
         async Task onSaveClickAsync()
         {
             onProcessing = true;
             string token = await accessToken.GetTokenAsync();
             await InvokeAsync(StateHasChanged);
-            if (Link == "inbound")
-            {
-                folderModel!.InboxType = InboxType.Inbound;
 
-            }
-            else
-            {
-                folderModel!.InboxType = InboxType.Outbound;
-            }
             httpService.MediaType = MediaType.JSON;
-            if (string.IsNullOrWhiteSpace(folderModel.id))
+
+
+            if (string.IsNullOrWhiteSpace(documentSecurityModel.id))
             {
                 var employee = await storageHelper.GetEmployeeProfileAsync();
-                folderModel.OrganizationID = employee.OrganizationID;
+                documentSecurityModel.OrganizationID = employee.OrganizationID;
                 // New folder
-                string url = $"{endpoint.API}/api/v1/Folder/NewItem";
-                var result = await httpService.Post<FolderModel, CommonResponseId>(url, folderModel, new AuthorizeHeader("bearer", token));
+                string url = $"{endpoint.API}/api/v1/SecurityLevel/NewItem";
+                var result = await httpService.Post<DocumentSecurityModel, CommonResponseId>(url, documentSecurityModel, new AuthorizeHeader("bearer", token));
 
                 if (result.Success)
                 {
@@ -111,8 +100,8 @@ namespace DFM.Frontend.Pages
             else
             {
                 // Update folder
-                string url = $"{endpoint.API}/api/v1/Folder/UpdateItem";
-                var result = await httpService.Post<FolderModel, CommonResponseId>(url, folderModel, new AuthorizeHeader("bearer", token));
+                string url = $"{endpoint.API}/api/v1/SecurityLevel/UpdateItem";
+                var result = await httpService.Post<DocumentSecurityModel, CommonResponseId>(url, documentSecurityModel, new AuthorizeHeader("bearer", token));
 
                 if (result.Success)
                 {
@@ -133,10 +122,13 @@ namespace DFM.Frontend.Pages
         }
         void disposedObj()
         {
-            folderModel = new();
+            documentSecurityModel = new();
         }
 
-       
+        void onTabChangeEvent(string roleId)
+        {
+            this.roleId = roleId;
+        }
         void AlertMessage(string message, string position, Severity severity)
         {
             Snackbar.Clear();
@@ -152,19 +144,6 @@ namespace DFM.Frontend.Pages
         {
             if (!string.IsNullOrEmpty(ch) && 500 < ch?.Length)
                 yield return "ອັກສອນສູງສຸດ 500 ອັກສອນ";
-        }
-        void onTabChangeEvent(string roleId)
-        {
-            this.roleId = roleId;
-        }
-        protected override void OnParametersSet()
-        {
-            if (oldLink != Link)
-            {
-                formMode = FormMode.List;
-                oldLink = Link!;
-            }
-            base.OnParametersSet();
         }
     }
 }

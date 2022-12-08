@@ -291,7 +291,7 @@ namespace DFM.Shared.Repository
                         reduce: false,
                         desc: false
                     );
-                return (Convert.ToDecimal(count.Rows[0].Value), result.Rows.Select(x => x.Value), new CommonResponse()
+                return (Convert.ToDecimal(count.Rows[0].Value), result.Rows.Select(x => x.Value).OrderBy(x => x.SortOrder), new CommonResponse()
                 {
                     Code = nameof(ResultCode.SUCCESS_OPERATION),
                     Success = true,

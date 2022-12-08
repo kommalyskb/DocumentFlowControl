@@ -1,0 +1,21 @@
+﻿@inject IHttpService httpService
+@inject AccessTokenStorage accessToken
+@inject ServiceEndpoint endpoint
+@inject LocalStorageHelper storageHelper
+
+<MudContainer>
+    <MudGrid>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <MudTextField Disabled="OnProcessing" @bind-Value="DataTypeModel!.DocType" T="string" Counter="1000" MaxLength="1000" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ຊື່ຂອງປະເພດເອກກະສານ" Label="ປະເພດເອກກະສານ*" />
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <MudTextField Disabled="OnProcessing" @bind-Value="DataTypeModel!.SortOrder" T="int" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ລຳດັບການສະແດງຜົນ" Label="ລຳດັບ" />
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+@code {
+    [Parameter] public string? RoleId { get; set; }
+    [Parameter] public DataTypeModel? DataTypeModel { get; set; }
+    [Parameter] public bool OnProcessing { get; set; }
+}

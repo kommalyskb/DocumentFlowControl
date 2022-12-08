@@ -5,7 +5,7 @@
 <MudContainer>
     <MudGrid>
         <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
-            <MudTextField Disabled="OnProcessing" @bind-Value="FolderModel!.Title" T="string" Counter="1000" MaxLength="1000" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ຊື່ຂອງເອກະສານ" Label="ຊື່ແຟ້ມ*" />
+            <MudTextField Disabled="OnProcessing" @bind-Value="FolderModel!.Title" T="string" Counter="1000" MaxLength="1000" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ຊື່ຂອງແຟ້ມເອກະສານ" Label="ຊື່ແຟ້ມ*" />
         </MudItem>
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
             <MudTextField Disabled="OnProcessing" @bind-Value="FolderModel!.Start" T="int" Immediate="true" Variant="Variant.Text" HelperText="ເລກທີ່ເລີ່ມຕົ້ນຂອງເອກະສານ" Label="ເລກທີ່ເລີ່ມຕົ້ນ" />

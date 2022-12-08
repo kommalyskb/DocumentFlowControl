@@ -1,0 +1,61 @@
+﻿@page "/pages/urgent"
+@inject IHttpService httpService
+@inject AccessTokenStorage accessToken
+@inject ServiceEndpoint endpoint
+@inject LocalStorageHelper storageHelper
+@inject IMinioService minio
+@inject StorageConfiguration storageConf
+@inject NavigationManager nav
+@inject ISnackbar Snackbar
+@implements IDisposable
+
+
+
+<DFM.Frontend.Pages.Common.ButtonPanel FormMode="formMode" ShowTerminateButton="false" ShowCreateButton="true" ShowDeleteButton="true"
+                                       ShowEditButton="true" ShowSaveButton="true" ShowSendButton="false" Behavior="BehaviorStatus.ReadWrite"
+                                       CreateButtonEvent="onCreateButtonClick" PreviousButtonEvent="onePreviousButtonClick"
+                                       DeleteButtonEvent="onDeleteButtonClick" RootBreadcrumb="ລາຍການລະດັບຄວາມເລັ່ງດວ່ນ" ViewBreadcrumb="ເບີ່ງລະດັບຄວາມຄວາມເລັ່ງດວ່ນ"
+                                       EditBreadcrumb="ແກ້ໄຂລະດັບຄວາມຄວາມເລັ່ງດວ່ນ" CreateBreadcrumb="ສ້າງລະດັບຄວາມຄວາມເລັ່ງດວ່ນ" OnProcessing="onProcessing"
+                                       EditButtonEvent="onEditButtonClick" SaveButtonEvent="onSaveClickAsync"></DFM.Frontend.Pages.Common.ButtonPanel>
+
+@if (formMode == FormMode.List)
+{
+    <DFM.Frontend.Pages.UrgentLevelComponent.UrgentList OnRowClick="onRowClick" RoleId="@roleId" OnTabChangeEvent="onTabChangeEvent"></DFM.Frontend.Pages.UrgentLevelComponent.UrgentList>
+}
+else if (formMode == FormMode.Create)
+{
+    <DFM.Frontend.Pages.UrgentLevelComponent.UrgentForm DocumentUrgentModel="documentUrgentModel" OnProcessing="onProcessing" RoleId="@roleId"></DFM.Frontend.Pages.UrgentLevelComponent.UrgentForm>
+}
+else if (formMode == FormMode.Edit)
+{
+    <DFM.Frontend.Pages.UrgentLevelComponent.UrgentForm DocumentUrgentModel="documentUrgentModel" OnProcessing="onProcessing" RoleId="@roleId"></DFM.Frontend.Pages.UrgentLevelComponent.UrgentForm>
+
+}
+else if (formMode == FormMode.View)
+{
+        <DFM.Frontend.Pages.UrgentLevelComponent.UrgentView DocumentUrgentModel="documentUrgentModel" RoleId="@roleId"></DFM.Frontend.Pages.UrgentLevelComponent.UrgentView>
+}
+
+
+
+<MudMessageBox @ref="delBox" Title="ລຶບເອກະສານ">
+    <MessageContent>
+        <h2>ທ່ານຕ້ອງການ ລຶບລະດັບຄວາມເລັ່ງດ່ວນ ນີ້ແທ້ບໍ່?</h2>
+    </MessageContent>
+    <YesButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Error" StartIcon="@Icons.Material.Filled.Delete">ຢືນຢັນ</MudButton>
+    </YesButton>
+</MudMessageBox>
+
+@code {
+
+
+    DocumentUrgentModel documentUrgentModel = new();
+    private FormMode formMode;
+    string? roleId = "";
+    MudMessageBox? delBox { get; set; }
+    bool onProcessing = false;
+    public void Dispose()
+    {
+    }
+}
