@@ -28,5 +28,12 @@ namespace DFM.Frontend.Pages.OrganizeComponent
             }
             return base.OnInitializedAsync();
         }
+
+        private async Task onSelectedRoleChanged(IEnumerable<RoleTypeModel> values)
+        {
+            // Get Folder ID where index = 0
+           
+            await InvokeAsync(StateHasChanged);
+        }
     }
 }

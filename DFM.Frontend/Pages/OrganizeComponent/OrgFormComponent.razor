@@ -9,13 +9,13 @@
             <h2>ຂໍ້ມູນຕຳແຫນ່ງ</h2>
         </MudItem>
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <MudTextField T="string" Counter="1000" MaxLength="1000" Disabled="@disabled" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ຊື່ທີ່ເປັນພາສາທ້ອງຖີ່ນ" Label="ຊື່ເປັນພາສາລາວ*" />
+            <MudTextField T="string" Counter="1000" MaxLength="1000" @bind-Value="RoleTreeModel!.Role.Display.Local" Disabled="@disabled" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ຊື່ທີ່ເປັນພາສາທ້ອງຖີ່ນ" Label="ຊື່ເປັນພາສາລາວ*" />
         </MudItem>
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <MudTextField T="string" Counter="1000" MaxLength="1000" Disabled="@disabled" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ຊື່ທີ່ເປັນພາສາສາກົນ" Label="ຊື່ເປັນພາສາອັງກິດ*" />
+            <MudTextField T="string" Counter="1000" MaxLength="1000" @bind-Value="RoleTreeModel!.Role.Display.Local" Disabled="@disabled" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ຊື່ທີ່ເປັນພາສາສາກົນ" Label="ຊື່ເປັນພາສາອັງກິດ*" />
         </MudItem>
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <MudSelect T="RoleTypeModel" HelperText="ລະດັບຕຳແຫນ່ງ" Label="ຕຳແຫນ່ງ*" Variant="Variant.Text" Disabled="@disabled">
+            <MudSelect T="RoleTypeModel" HelperText="ລະດັບຕຳແຫນ່ງ" Label="ຕຳແຫນ່ງ*" @bind-Value="RoleTreeModel!.Role.RoleType" SelectedValuesChanged="onSelectedRoleChanged" Variant="Variant.Text" Disabled="@disabled">
                 <MudSelectItem Value="RoleTypeModel.Prime">ປະທານບໍລິສັດ</MudSelectItem>
                 <MudSelectItem Value="RoleTypeModel.DeputyPrime">ຮອງປະທານບໍລິສັດ</MudSelectItem>
                 <MudDivider></MudDivider>
@@ -64,23 +64,23 @@
             <h2>ຜູ້ໃຫ້ທິດຊີ້ນຳ</h2>
         </MudItem>
         <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-            <MudSelect T="RoleTypeModel" HelperText="ພາກສ່ວນສັງກັດ" Label="ສັງກັດ*" Variant="Variant.Text" Disabled="@disabled">
+            <MudSelect T="string" @bind-Value="@group" HelperText="ຝ່າຍທີ່ສັງກັດ" Label="ສັງກັດ*" Variant="Variant.Text" Disabled="@disabled">
 
             </MudSelect>
         </MudItem>
         <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-            <MudSelect T="RoleTypeModel" HelperText="ຜູ້ໃຫ້ທິດຊີ້ນຳ" Label="ຜູ້ໃຫ້ທິດ*" Variant="Variant.Text" Disabled="@disabled">
+            <MudSelect T="string" @bind-Value="RoleTreeModel!.ParentID" HelperText="ຜູ້ໃຫ້ທິດຊີ້ນຳ" Label="ຜູ້ໃຫ້ທິດ*" Variant="Variant.Text" Disabled="@disabled">
 
             </MudSelect>
         </MudItem>
         <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-            <MudTextField T="string" Counter="1000" MaxLength="1000" Disabled="@disabled" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ຊື່ປະກາດໃຊ້ທີ່ສະແດງໃນ ແຜນຜັງ" Label="ຊື່ປະກາດໃຊ້*" />
+            <MudTextField T="string" @bind-Value="RoleTreeModel!.Publisher" Counter="1000" MaxLength="1000" Disabled="@disabled" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ຊື່ປະກາດໃຊ້ທີ່ສະແດງໃນ ແຜນຜັງ" Label="ຊື່ປະກາດໃຊ້*" />
         </MudItem>
         <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
             <h2>ຂໍ້ມູນບຸກຄະລາກອນ</h2>
         </MudItem>
         <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ຊື່ ນາມສະກຸນ" Variant="Variant.Text"></MudField>
+            <MudField @bind-Value="@fullname" Label="ຊື່ ນາມສະກຸນ" Variant="Variant.Text"></MudField>
         </MudItem>
         <MudItem xs="12" md="4">
             <MudButton Variant="Variant.Filled" Color="Color.Primary">ເລືອກ ບຸກຄະລາກອນ</MudButton>
@@ -106,4 +106,6 @@
     [Parameter] public FormMode FormMode { get; set; }
     [Parameter] public RoleTreeModel? RoleTreeModel { get; set; }
     bool disabled = false;
+    string? fullname;
+    string? group;
 }

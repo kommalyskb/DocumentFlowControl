@@ -28,7 +28,7 @@ else
 @code {
     [Parameter] public string? Link { get; set; }
     private FormMode formMode;
-    RoleTreeModel? roleTreeModel;
+    RoleTreeModel? roleTreeModel = new();
     string? orgId = "";
     MudMessageBox? delBox { get; set; }
 }
