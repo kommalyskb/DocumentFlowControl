@@ -500,12 +500,14 @@ namespace DFM.API.Controllers
                     });
 
                     // Validate the existing recipient
-                    var provider = new RedisConnectionProvider(redisConnector.Connection);
-                    var context = provider.RedisCollection<DocumentModel>();
-                    var doc = await context.FindByIdAsync(request.DocumentModel.id);
+                    //var provider = new RedisConnectionProvider(redisConnector.Connection);
+                    //var context = provider.RedisCollection<DocumentModel>();
+                    //var doc = await context.FindByIdAsync(request.DocumentModel.id);
+                    var doc = await documentTransaction.GetDocument(request.DocumentModel.id, cancellationToken);
+
 
                     // Update raw data in document model
-                    var oldRawData = doc!.RawDatas!.FirstOrDefault(x => x.DataID == request.RawDocument.DataID);
+                    var oldRawData = doc!.Content.RawDatas!.FirstOrDefault(x => x.DataID == request.RawDocument.DataID);
                    
                     if (oldRawData != null)
                     {
@@ -556,19 +558,19 @@ namespace DFM.API.Controllers
 
                         #endregion
 
-                        int indexData = doc!.RawDatas!.IndexOf(oldRawData);
+                        int indexData = doc!.Content.RawDatas!.IndexOf(oldRawData);
                         request.DocumentModel.RawDatas![indexData] = request.RawDocument;
                     }
 
                     
-                    for (int i = 0; i < doc!.Recipients!.Count; i++)
+                    for (int i = 0; i < doc!.Content.Recipients!.Count; i++)
                     {
-                        var recipient = doc!.Recipients![i];
+                        var recipient = doc!.Content.Recipients![i];
                         foreach (var item in request.DocumentModel.Recipients!)
                         {
                             if (recipient.UId == item.UId)
                             {
-                                doc!.Recipients![i] = item;
+                                doc!.Content.Recipients![i] = item;
                             }
                         }
                     }
@@ -735,7 +737,7 @@ namespace DFM.API.Controllers
                             IsDisplay = isMainDisplay
                         };
                         // Set Reciepient
-                        doc!.Recipients!.Add(main);
+                        doc!.Content.Recipients!.Add(main);
                     }
                     // Set Co-Process
                     if (request.CoProcesses!.Count > 0)
@@ -774,14 +776,14 @@ namespace DFM.API.Controllers
                                 Behavior = BehaviorStatus.ProcessOnly
                             };
                             // Set Reciepient
-                            doc!.Recipients!.Add(coUser);
+                            doc!.Content.Recipients!.Add(coUser);
                         }
                     }
 
                     
 
                     // Set recipient
-                    request.DocumentModel.Recipients = doc!.Recipients!;
+                    request.DocumentModel.Recipients = doc!.Content.Recipients!;
 
                     var result = await documentTransaction.EditDocument(request.DocumentModel, cancellationToken);
 
