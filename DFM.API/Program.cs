@@ -16,11 +16,20 @@ using StackExchange.Redis;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
 string? CorsPolicy = "CorsPolicy";
 string? XmlCommentsFileName = "DFM.API.xml";
+
+#region Change appsettings when in develop
+#if DEBUG
+builder.Configuration.AddJsonFile("appsettings.Development.json", false, true);
+#else
+builder.Configuration.AddJsonFile("appsettings.json", false, true);
+#endif
+#endregion
 
 #region Custom log used serial log
 
@@ -77,6 +86,9 @@ builder.Services.AddSingleton(DBConfigConf);
 
 var redisConf = builder.Configuration.GetSection(nameof(RedisConf)).Get<RedisConf>();
 builder.Services.AddSingleton(redisConf);
+Console.WriteLine($"-------------------------------------------");
+Console.WriteLine(JsonSerializer.Serialize(redisConf));
+Console.WriteLine($"-------------------------------------------");
 
 var logConf = builder.Configuration.GetSection(nameof(LogServer)).Get<LogServer>();
 builder.Services.AddSingleton(logConf);
@@ -115,13 +127,7 @@ builder.Services.AddHostedService<IndexCreationService>();
 #endregion
 builder.Services.AddControllers();
 
-#region Change appsettings when in develop
-#if DEBUG
-builder.Configuration.AddJsonFile("appsettings.Development.json", false, true);
-#else
-builder.Configuration.AddJsonFile("appsettings.json", false, true);
-#endif
-#endregion
+
 
 #region Register swagger endpoint
 

@@ -82,71 +82,71 @@ services:
     volumes:
       - ./filedata:/data
 
-  dfm.es01:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.1
-    environment:
-      - node.name=dfm.es01
-      - cluster.name=es-docker-cluster
-      - discovery.seed_hosts=dfm.es02,dfm.es03
-      - cluster.initial_master_nodes=dfm.es01,dfm.es02,dfm.es03
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    volumes:
-      - data01:/usr/share/elasticsearch/data
-    ports:
-      - "9200:9200"
-    networks:
-      - dfmnetwork
+  # dfm.es01:
+  #   image: docker.elastic.co/elasticsearch/elasticsearch:7.11.1
+  #   environment:
+  #     - node.name=dfm.es01
+  #     - cluster.name=es-docker-cluster
+  #     - discovery.seed_hosts=dfm.es02,dfm.es03
+  #     - cluster.initial_master_nodes=dfm.es01,dfm.es02,dfm.es03
+  #     - bootstrap.memory_lock=true
+  #     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+  #   ulimits:
+  #     memlock:
+  #       soft: -1
+  #       hard: -1
+  #   volumes:
+  #     - data01:/usr/share/elasticsearch/data
+  #   ports:
+  #     - "9200:9200"
+  #   networks:
+  #     - dfmnetwork
 
-  dfm.es02:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.1
-    environment:
-      - node.name=dfm.es02
-      - cluster.name=es-docker-cluster
-      - discovery.seed_hosts=dfm.es01,dfm.es03
-      - cluster.initial_master_nodes=dfm.es01,dfm.es02,dfm.es03
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    volumes:
-      - data02:/usr/share/elasticsearch/data
-    networks:
-      - dfmnetwork
+  # dfm.es02:
+  #   image: docker.elastic.co/elasticsearch/elasticsearch:7.11.1
+  #   environment:
+  #     - node.name=dfm.es02
+  #     - cluster.name=es-docker-cluster
+  #     - discovery.seed_hosts=dfm.es01,dfm.es03
+  #     - cluster.initial_master_nodes=dfm.es01,dfm.es02,dfm.es03
+  #     - bootstrap.memory_lock=true
+  #     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+  #   ulimits:
+  #     memlock:
+  #       soft: -1
+  #       hard: -1
+  #   volumes:
+  #     - data02:/usr/share/elasticsearch/data
+  #   networks:
+  #     - dfmnetwork
 
-  dfm.es03:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.1
-    environment:
-      - node.name=dfm.es03
-      - cluster.name=es-docker-cluster
-      - discovery.seed_hosts=es01,es02
-      - cluster.initial_master_nodes=dfm.es01,dfm.es02,dfm.es03
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    volumes:
-      - data03:/usr/share/elasticsearch/data
-    networks:
-      - dfmnetwork
+  # dfm.es03:
+  #   image: docker.elastic.co/elasticsearch/elasticsearch:7.11.1
+  #   environment:
+  #     - node.name=dfm.es03
+  #     - cluster.name=es-docker-cluster
+  #     - discovery.seed_hosts=es01,es02
+  #     - cluster.initial_master_nodes=dfm.es01,dfm.es02,dfm.es03
+  #     - bootstrap.memory_lock=true
+  #     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+  #   ulimits:
+  #     memlock:
+  #       soft: -1
+  #       hard: -1
+  #   volumes:
+  #     - data03:/usr/share/elasticsearch/data
+  #   networks:
+  #     - dfmnetwork
 
-  dfm.kibana:
-    image: docker.elastic.co/kibana/kibana:7.11.1
-    ports:
-      - "5601:5601"
-    environment:
-      ELASTICSEARCH_URL: http://dfm.es01:9200
-      ELASTICSEARCH_HOSTS: '["http://dfm.es01:9200","http://dfm.es02:9200","http://dfm.es03:9200"]'
-    networks:
-      - dfmnetwork
+  # dfm.kibana:
+  #   image: docker.elastic.co/kibana/kibana:7.11.1
+  #   ports:
+  #     - "5601:5601"
+  #   environment:
+  #     ELASTICSEARCH_URL: http://dfm.es01:9200
+  #     ELASTICSEARCH_HOSTS: '["http://dfm.es01:9200","http://dfm.es02:9200","http://dfm.es03:9200"]'
+  #   networks:
+  #     - dfmnetwork
   
 networks: 
   dfmnetwork:
