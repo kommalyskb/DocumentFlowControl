@@ -55,12 +55,12 @@ namespace DFM.Testcases.Organization
         [Fact(DisplayName = "ເພີ່ມ Role, Employee ເຂົ້າ ໄປໃນ Organization")]
         public async Task NC1()
         {
-            var myRole = await roleManager.GetRolePosition("198081ca5a774097b432d38c8931825c");
-            var profile = await employeeManager.GetProfile("f7009202b6d84928b5b3ec058955df35");
+            var myRole = await roleManager.GetRolePosition("f60ed05ebd9f4256b5b6279c994ef3fb");
+            var profile = await employeeManager.GetProfile("87f978f7e0a14d44996f61b326e5d7a1");
             var result = await organizationChart.AddRoleAndEmployee("b98c5c46cebd430bb7d9fe596d73c459", new RoleTreeModel
             {
                 RoleType = myRole.Content.RoleType,
-                ParentID = "f60ed05ebd9f4256b5b6279c994ef3fb",
+                ParentID = "3f9c134674d44842a9764abe623ebc90",
                 Employee = new PartialEmployeeProfile
                 {
                     Name = profile.Content.Name,
@@ -74,7 +74,7 @@ namespace DFM.Testcases.Organization
                     RoleType = myRole.Content.RoleType,
                     Display = myRole.Content.Display
                 },
-                Publisher = "ຝ່າຍ ການເງິນ"
+                Publisher = "ຫົວຫນ້າຝ່າຍ ການເງິນ"
             });
 
             Assert.True(result.Success);
