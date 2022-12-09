@@ -128,8 +128,7 @@ namespace DFM.Frontend.Pages.Inbound
                         // Remove Expire folder
                         foreach (var folder in allFolders!)
                         {
-                            var dateTimeConverter = new DateFormatConverter("dd/MM/yyyy");
-                            var expiredDate = Convert.ToDateTime(folder.ExpiredDate, dateTimeConverter.Culture);
+                            var expiredDate = DateTime.ParseExact(folder.ExpiredDate!, "dd/MM/yyyy", null); 
                             if (DateTime.Now <= expiredDate)
                             {
                                 folderModels!.Add(folder);
