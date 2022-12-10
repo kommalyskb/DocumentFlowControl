@@ -16,6 +16,8 @@ RUN dotnet build "DFM.API.csproj" -c Release -o /app/build
 FROM build AS publish
 RUN dotnet publish "DFM.API.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
+ENV ASPNETCORE_ENVIRONMENT Production
+
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
