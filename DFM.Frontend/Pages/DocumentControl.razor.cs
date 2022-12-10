@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
 using Newtonsoft.Json.Linq;
 using StackExchange.Redis;
+using System.Text.Json;
 
 namespace DFM.Frontend.Pages
 {
@@ -495,7 +496,11 @@ namespace DFM.Frontend.Pages
             // Open dialog success message or make small progress bar on top-corner
 
             onProcessing = false;
-            
+
+            Console.WriteLine($"-------------------------------");
+            Console.WriteLine($"Result: {await result.HttpResponseMessage.Content.ReadAsStringAsync()}");
+            Console.WriteLine($"-------------------------------");
+
             if (result.Success)
             {
                 if (result.Response.Code == nameof(ResultCode.NEW_DOCUMENT))
