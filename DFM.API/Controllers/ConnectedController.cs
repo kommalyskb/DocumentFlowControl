@@ -2,6 +2,7 @@
 using DFM.Shared.Configurations;
 using DFM.Shared.DTOs;
 using DFM.Shared.Extensions;
+using DFM.Shared.Helper;
 using DFM.Shared.Resources;
 using HttpClientService;
 using IdentityModel.Client;
@@ -22,13 +23,15 @@ namespace DFM.API.Controllers
         private readonly IDistributedCache cache;
         private readonly OpenIDConf openId;
         private readonly RedisConf redis;
+        private readonly IIdentityHelper identityHelper;
 
-        public ConnectedController(IHttpService httpService, IDistributedCache cache, OpenIDConf openId, RedisConf redis)
+        public ConnectedController(IHttpService httpService, IDistributedCache cache, OpenIDConf openId, RedisConf redis, IIdentityHelper identityHelper)
         {
             this.httpService = httpService;
             this.cache = cache;
             this.openId = openId;
             this.redis = redis;
+            this.identityHelper = identityHelper;
         }
 
         /// <summary>
@@ -166,7 +169,7 @@ namespace DFM.API.Controllers
             }
 
             // Check expired token life time
-            if (!validateToken(cacheResult.AccessToken))
+            if (!identityHelper.ValidateToken(cacheResult.AccessToken))
             {
                 if (request.GrantType == "password")
                 {
@@ -386,22 +389,7 @@ namespace DFM.API.Controllers
 
 
         }
-        private bool validateToken(string token)
-        {
-            if (token == null) return false;
-            try
-            {
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var jwtSecurityToken = tokenHandler.ReadJwtToken(token);
-                return (jwtSecurityToken.ValidTo > DateTime.UtcNow.AddMinutes(-5) ? true : false);
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-
-
-        }
+       
         /// <summary>
         /// ແມ່ນ Endpoint ສຳລັບຂໍ Access Token ໃຫມ່ດ້ວຍການສົ່ງ refresh token ເຂົ້າມາ
         /// </summary>

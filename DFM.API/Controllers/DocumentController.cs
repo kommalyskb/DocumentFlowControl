@@ -316,10 +316,55 @@ namespace DFM.API.Controllers
 
                             if (isSameParent)
                             {
-                                
-                                // No need to dupplicate
-                                rawDataId = request.RawDocument!.DataID;
-                                mainBehavior = BehaviorStatus.ProcessOnly;
+
+                                // Need duplicate if sender is Outbound
+                                if (myRole.Content!.RoleType == RoleTypeModel.OutboundGeneral ||
+                                   myRole.Content!.RoleType == RoleTypeModel.OutboundOfficePrime ||
+                                   myRole.Content!.RoleType == RoleTypeModel.OutboundPrime)
+                                {
+                                    // Set Document Data
+                                    request.DocumentModel.RawDatas!.Add(new RawDocumentData
+                                    {
+                                        DataID = rawDataId,
+                                        Attachments = request.RawDocument.Attachments,
+                                        CommentDetail = request.RawDocument.CommentDetail,
+                                        CommentNo = request.RawDocument.CommentNo,
+                                        CommentTitle = request.RawDocument.CommentTitle,
+                                        DocDate = request.RawDocument.SendDate,
+                                        DocPage = request.RawDocument.DocPage,
+                                        ExternalDocID = request.RawDocument.DocNo,
+                                        FolderNum = 1,
+                                        FormType = request.RawDocument.FormType,
+                                        FromUnit = request.RawDocument.ResponseUnit,
+                                        IsOriginalFile = request.RawDocument.IsOriginalFile,
+                                        RelateFles = request.RawDocument.RelateFles,
+                                        Security = request.RawDocument.Security,
+                                        Title = request.RawDocument.Title,
+                                        TransferType = request.RawDocument.TransferType,
+                                        Urgent = request.RawDocument.Urgent,
+                                        CopyType = request.RawDocument.CopyType,
+                                        DocType = request.RawDocument.DocType
+                                    });
+                                    mainBehavior = BehaviorStatus.ReadWrite;
+                                }
+                                else
+                                {
+                                    // No need to dupplicate
+                                    rawDataId = request.RawDocument!.DataID;
+                                    if (receiverRole.Content.RoleType == RoleTypeModel.OutboundGeneral ||
+                                        receiverRole.Content.RoleType == RoleTypeModel.OutboundOfficePrime ||
+                                        receiverRole.Content.RoleType == RoleTypeModel.OutboundPrime)
+                                    {
+                                        mainBehavior = BehaviorStatus.ReadWrite;
+
+                                    }
+                                    else
+                                    {
+                                        mainBehavior = BehaviorStatus.ProcessOnly;
+
+                                    }
+                                }
+
                             }
                             else
                             {
@@ -590,7 +635,7 @@ namespace DFM.API.Controllers
                         request.DocumentModel.RawDatas![indexData] = request.RawDocument;
                     }
 
-                    
+                    // Update owner recipient 
                     for (int i = 0; i < doc!.Content.Recipients!.Count; i++)
                     {
                         var recipient = doc!.Content.Recipients![i];
@@ -692,7 +737,18 @@ namespace DFM.API.Controllers
                                 {
                                     // No need to dupplicate
                                     rawDataId = request.RawDocument!.DataID;
-                                    mainBehavior = BehaviorStatus.ProcessOnly;
+                                    if (receiverRole.Content.RoleType == RoleTypeModel.OutboundGeneral ||
+                                        receiverRole.Content.RoleType == RoleTypeModel.OutboundOfficePrime ||
+                                        receiverRole.Content.RoleType == RoleTypeModel.OutboundPrime)
+                                    {
+                                        mainBehavior = BehaviorStatus.ReadWrite;
+
+                                    }
+                                    else
+                                    {
+                                        mainBehavior = BehaviorStatus.ProcessOnly;
+
+                                    }
                                 }
                             }
                             else

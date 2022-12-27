@@ -14,7 +14,6 @@ namespace DFM.Shared.Extensions
         public RedisConnector(RedisConf configuration)
         {
 
-            Console.WriteLine($"Redis: - {JsonSerializer.Serialize(configuration)}");
             lazyConnection = new Lazy<ConnectionMultiplexer>(() =>
             {
                 return ConnectionMultiplexer.Connect(ConfigurationOptions.Parse($"{configuration.Server}:{configuration.Port}, password={configuration.Password}"));

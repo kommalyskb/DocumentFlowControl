@@ -38,6 +38,10 @@ namespace DFM.Shared.Entities
         public string? OrganizationID { get; set; }
         [Indexed]
         public string? EmployeeID { get; set; }
+        [Indexed]
+        public string? Username { get; set; }
+        [Indexed]
+        public string? Password { get; set; }
     }
     
 }

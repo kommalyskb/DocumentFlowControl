@@ -10,7 +10,6 @@ namespace DFM.Frontend.Pages
 {
     public partial class Organization
     {
-        string? oldLink = "";
         string? editBreadcrumbText = "";
         readonly int delayTime = 500;
         private EmployeeModel? employee;
@@ -20,8 +19,6 @@ namespace DFM.Frontend.Pages
         protected override void OnInitialized()
         {
             formMode = FormMode.List;
-            oldLink = Link!;
-
 
             base.OnInitialized();
 

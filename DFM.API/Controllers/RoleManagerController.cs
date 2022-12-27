@@ -46,7 +46,7 @@ namespace DFM.API.Controllers
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetItemsV1([FromBody] List<string> rolesId, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var result = await roleManager.GetRolesPosition(rolesId);
+            var result = await roleManager.GetRolesPosition(rolesId, cancellationToken);
             if (result.Response.Success)
             {
                 return Ok(result.Contents);

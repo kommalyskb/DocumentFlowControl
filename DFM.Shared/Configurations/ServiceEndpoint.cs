@@ -9,5 +9,6 @@ namespace DFM.Shared.Configurations
     public class ServiceEndpoint
     {
         public string? API { get; set; }
+        public string? IdentityAPI { get; set; }
     }
 }

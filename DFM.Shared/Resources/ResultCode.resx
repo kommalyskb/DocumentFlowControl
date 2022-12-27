@@ -180,6 +180,9 @@
   <data name="PARAMETER_EMPTY" xml:space="preserve">
     <value>Request failed parameter is empty</value>
   </data>
+  <data name="REG_USER_FAIL" xml:space="preserve">
+    <value>Failed to register new user on Identity Server</value>
+  </data>
   <data name="REQUEST_FAIL" xml:space="preserve">
     <value>Request failed</value>
   </data>
@@ -194,6 +197,9 @@
   </data>
   <data name="USERID_EMPTY" xml:space="preserve">
     <value>UserID could not empty</value>
+  </data>
+  <data name="USERNAME_COULD_NOT_EMPTY" xml:space="preserve">
+    <value>Username could not empty</value>
   </data>
   <data name="USERNAME_NOT_FOUND" xml:space="preserve">
     <value>Username not found</value>

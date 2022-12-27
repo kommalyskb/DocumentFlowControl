@@ -129,7 +129,7 @@ namespace DFM.API.Controllers
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetSupervisorV1(string orgId, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var result = await organizationChart.GetSupervisorRolesPosition(orgId);
+            var result = await organizationChart.GetSupervisorRolesPosition(orgId, cancellationToken);
             if (result.Response.Success)
             {
                 return Ok(result.Contents);
@@ -169,7 +169,7 @@ namespace DFM.API.Controllers
         public async Task<IActionResult> SavePositionV1(string orgId, [FromBody] RoleTreeModel request, CancellationToken cancellationToken = default(CancellationToken))
         {
             // Find employee profile
-            var profile = await employeeManager.GetProfile(request.Employee.UserID!);
+            var profile = await employeeManager.GetProfile(request.Employee.UserID!, cancellationToken);
             if (!profile.Response.Success)
             {
                 return BadRequest(profile.Response);
@@ -185,7 +185,7 @@ namespace DFM.API.Controllers
                     Display = request.Role.Display,
                     OrganizationID = orgId,
                     RoleType = request.RoleType,
-                });
+                }, cancellationToken);
                 if (!roleResult.Success)
                 {
                     return BadRequest(roleResult);
@@ -211,7 +211,7 @@ namespace DFM.API.Controllers
                     Display = request.Role.Display
                 },
                 Publisher = request.Publisher
-            });
+            }, cancellationToken);
             if (!result.Success)
             {
                 return BadRequest(result);
@@ -226,7 +226,7 @@ namespace DFM.API.Controllers
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> RemovePositionV1(string orgId, string roleId, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var result = await organizationChart.RemoveRoleAndEmployee(orgId, roleId);
+            var result = await organizationChart.RemoveRoleAndEmployee(orgId, roleId, cancellationToken);
             if (!result.Success)
             {
                 return BadRequest(result);

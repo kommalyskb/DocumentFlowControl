@@ -12,18 +12,18 @@
             <h2>ຂໍ້ມູນເອກະສານ</h2>
         </MudItem>
         <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
-            <MudTextField Disabled="OnProcessing" @bind-Value="RawDocument!.Title" T="string" Counter="1000" MaxLength="1000" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ຫົວຂໍ້ຂອງເອກະສານ ໃຊ້ໃນການກຳກັບເອກະສານ" Label="ຫົວຂໍ້*" />
+            <MudTextField Disabled="OnProcessing" @bind-Value="RawDocument!.Title" Required="true" T="string" Counter="1000" MaxLength="1000" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ຫົວຂໍ້ຂອງເອກະສານ ໃຊ້ໃນການກຳກັບເອກະສານ" Label="ຫົວຂໍ້" />
         </MudItem>
         <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
            
-            <MudTextField Disabled="OnProcessing" @bind-Value="RawDocument!.ResponseUnit" T="string" Counter="500" MaxLength="500" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MediumCharacters))" HelperText="ພາກສ່ວນທີ່ສ້າງເອກະສານ" Label="ຫນ່ວຍງານຮັບຜິດຊອບ" />
+            <MudTextField Disabled="OnProcessing" @bind-Value="RawDocument!.ResponseUnit" Required="true" T="string" Counter="500" MaxLength="500" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MediumCharacters))" HelperText="ພາກສ່ວນທີ່ສ້າງເອກະສານ" Label="ຫນ່ວຍງານຮັບຜິດຊອບ" />
         </MudItem>
 
         <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
 
             @if (selectSecurityValues != null)
             {
-                <MudSelect SelectedValues="selectSecurityValues" Disabled="OnProcessing" @bind-Value="RawDocument!.Security.id" T="string" HelperText="ລະດັບຄວາມປອດໄພຂອງເອກະສານ" Label="ລະດັບຄວາມລັບ*" Variant="Variant.Text">
+                <MudSelect SelectedValues="selectSecurityValues" Disabled="OnProcessing" @bind-Value="RawDocument!.Security.id" T="string" HelperText="ລະດັບຄວາມປອດໄພຂອງເອກະສານ" Label="ລະດັບຄວາມລັບ" Variant="Variant.Text">
                     @if (securityModels is not null)
                     {
                         foreach (var item in securityModels!)
@@ -35,7 +35,7 @@
             }
             else
             {
-                <MudSelect Disabled="OnProcessing" @bind-Value="RawDocument!.Security.id" T="string" HelperText="ລະດັບຄວາມປອດໄພຂອງເອກະສານ" Label="ລະດັບຄວາມລັບ*" Variant="Variant.Text">
+                <MudSelect Disabled="OnProcessing" @bind-Value="RawDocument!.Security.id" T="string" HelperText="ລະດັບຄວາມປອດໄພຂອງເອກະສານ" Label="ລະດັບຄວາມລັບ" Variant="Variant.Text">
                     @if (securityModels is not null)
                     {
                         foreach (var item in securityModels!)
@@ -51,7 +51,7 @@
             
             @if (selectUrgentValues != null)
             {
-                <MudSelect SelectedValues="selectUrgentValues" Disabled="OnProcessing" @bind-Value="RawDocument!.Urgent.id" T="string" HelperText="ລະດັບຄວາມຕ້ອງການຂອງເອກະສານ" Label="ລະດັບຄວາມເລັ່ງດ່ວນ*" Variant="Variant.Text">
+                <MudSelect SelectedValues="selectUrgentValues" Disabled="OnProcessing" @bind-Value="RawDocument!.Urgent.id" T="string" HelperText="ລະດັບຄວາມຕ້ອງການຂອງເອກະສານ" Label="ລະດັບຄວາມເລັ່ງດ່ວນ" Variant="Variant.Text">
                     @if (urgentModels is not null)
                     {
                         foreach (var item in urgentModels!)
@@ -63,7 +63,7 @@
             }
             else
             {
-                <MudSelect Disabled="OnProcessing" @bind-Value="RawDocument!.Urgent.id" T="string" HelperText="ລະດັບຄວາມຕ້ອງການຂອງເອກະສານ" Label="ລະດັບຄວາມເລັ່ງດ່ວນ*" Variant="Variant.Text">
+                <MudSelect Disabled="OnProcessing" @bind-Value="RawDocument!.Urgent.id" T="string" HelperText="ລະດັບຄວາມຕ້ອງການຂອງເອກະສານ" Label="ລະດັບຄວາມເລັ່ງດ່ວນ" Variant="Variant.Text">
                     @if (urgentModels is not null)
                     {
                         foreach (var item in urgentModels!)
@@ -77,7 +77,7 @@
 
         <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
            
-            <MudDatePicker Disabled="OnProcessing" @bind-Text="RawDocument!.ExpiredDate" PickerVariant="PickerVariant.Inline" Label="ວັນທີກຳຫນົດການແກ້ໄຂ*" HelperText="ກຳຫນົດມື້ແກ້ເອກະສານ" DateFormat="dd/MM/yyyy" />
+            <MudDatePicker Disabled="OnProcessing" @bind-Text="RawDocument!.ExpiredDate" PickerVariant="PickerVariant.Inline" Label="ວັນທີກຳຫນົດການແກ້ໄຂ" HelperText="ກຳຫນົດມື້ແກ້ເອກະສານ" DateFormat="dd/MM/yyyy" />
         </MudItem>
         <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
            
@@ -108,7 +108,7 @@
                        Color="Color.Primary"
                        StartIcon="@Icons.Filled.CloudUpload"
                        for="attachment">
-                ເອກະສານຕິດຄັດ*
+                ເອກະສານຕິດຄັດ
             </MudButton>
 
         </MudItem>
@@ -223,7 +223,7 @@
 
                 @if (selectFolderValues != null)
                 {
-                    <MudSelect SelectedValues="selectFolderValues" Disabled="OnProcessing" SelectedValuesChanged="onSelectedFolderChanged" @bind-Value="RawDocument!.FolderId" T="string" HelperText="ບ່ອນເກັບຂອງເອກະສານ" Label="ແຟ້ມເກັບເອກະສານ*" Variant="Variant.Text">
+                    <MudSelect SelectedValues="selectFolderValues" Disabled="OnProcessing" SelectedValuesChanged="onSelectedFolderChanged" @bind-Value="RawDocument!.FolderId" T="string" HelperText="ບ່ອນເກັບຂອງເອກະສານ" Label="ແຟ້ມເກັບເອກະສານ" Variant="Variant.Text">
                         @if (folderModels is not null)
                         {
                             foreach (var item in folderModels!)
@@ -235,7 +235,7 @@
                 }
                 else
                 {
-                    <MudSelect Disabled="OnProcessing" SelectedValuesChanged="onSelectedFolderChanged" @bind-Value="RawDocument!.FolderId" T="string" HelperText="ບ່ອນເກັບຂອງເອກະສານ" Label="ແຟ້ມເກັບເອກະສານ*" Variant="Variant.Text">
+                    <MudSelect Disabled="OnProcessing" SelectedValuesChanged="onSelectedFolderChanged" @bind-Value="RawDocument!.FolderId" T="string" HelperText="ບ່ອນເກັບຂອງເອກະສານ" Label="ແຟ້ມເກັບເອກະສານ" Variant="Variant.Text">
                         @if (folderModels is not null)
                         {
                             foreach (var item in folderModels!)
@@ -252,7 +252,7 @@
             </MudItem>
             <MudItem xs="12" md="3" Class="d-flex flex-grow-1 gap-4">
 
-                <MudSelect T="string" HelperText="ລັກສະນະການຮັບເອກະສານ" Label="ຮູບແບບເອກະສານ" Variant="Variant.Text">
+                <MudSelect Disabled="OnProcessing" @bind-Value="RawDocument!.FormType" T="string" HelperText="ລັກສະນະການຮັບເອກະສານ" Label="ຮູບແບບເອກະສານ" Variant="Variant.Text">
                     <MudSelectItem Value="@("ໃຫມ່")" />
                     <MudSelectItem Value="@("ປ່ຽນແທນ")" />
                     <MudSelectItem Value="@("ຖອນຄືນ")" />
@@ -262,7 +262,7 @@
 
                 @if (selectDoctypeValues != null)
                 {
-                    <MudSelect SelectedValues="selectDoctypeValues" Disabled="OnProcessing" @bind-Value="RawDocument!.DocType" T="string" HelperText="ປະເພດຂອງເອກະສານທີ່ຮັບມາ" Label="ປະເພດເອກະສານ*" Variant="Variant.Text">
+                    <MudSelect SelectedValues="selectDoctypeValues" Disabled="OnProcessing" @bind-Value="RawDocument!.DocType" T="string" HelperText="ປະເພດຂອງເອກະສານທີ່ຮັບມາ" Label="ປະເພດເອກະສານ" Variant="Variant.Text">
                         @if (docTypeModels is not null)
                         {
                             foreach (var item in docTypeModels!)
@@ -274,7 +274,7 @@
                 }
                 else
                 {
-                    <MudSelect Disabled="OnProcessing" @bind-Value="RawDocument!.DocType" T="string" HelperText="ປະເພດຂອງເອກະສານທີ່ຮັບມາ" Label="ປະເພດເອກະສານ*" Variant="Variant.Text">
+                    <MudSelect Disabled="OnProcessing" @bind-Value="RawDocument!.DocType" T="string" HelperText="ປະເພດຂອງເອກະສານທີ່ຮັບມາ" Label="ປະເພດເອກະສານ" Variant="Variant.Text">
                         @if (docTypeModels is not null)
                         {
                             foreach (var item in docTypeModels!)
@@ -290,7 +290,7 @@
             </MudItem>
             <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
 
-                <MudDatePicker Disabled="OnProcessing" @bind-Value="RawDocument!.SetDate" PickerVariant="PickerVariant.Inline" Label="ວັນທີ່ສົ່ງເອກະສານອອກ*" HelperText="ວັນທີ່ສົ່ງເອກະສານ" DateFormat="dd/MM/yyyy" />
+                <MudDatePicker Disabled="OnProcessing" @bind-Value="RawDocument!.SetDate" PickerVariant="PickerVariant.Inline" Label="ວັນທີ່ສົ່ງເອກະສານອອກ" HelperText="ວັນທີ່ສົ່ງເອກະສານ" DateFormat="dd/MM/yyyy" />
             </MudItem>
             <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
 

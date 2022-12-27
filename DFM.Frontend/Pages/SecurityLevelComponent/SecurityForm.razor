@@ -6,7 +6,7 @@
 <MudContainer>
     <MudGrid>
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <MudTextField Disabled="OnProcessing" @bind-Value="DocumentSecurityModel!.Level" T="string" Counter="1000" MaxLength="1000" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ຊື່ຂອງລະດັບຄວາມປອດໄພ" Label="ລະດັບຄວາມປອດໄພ*" />
+            <MudTextField Disabled="OnProcessing" @bind-Value="DocumentSecurityModel!.Level" Required="true" T="string" Counter="1000" MaxLength="1000" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ຊື່ຂອງລະດັບຄວາມປອດໄພ" Label="ລະດັບຄວາມປອດໄພ" />
         </MudItem>
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
             <MudTextField Disabled="OnProcessing" @bind-Value="DocumentSecurityModel!.SortOrder" T="int" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ລຳດັບການສະແດງຜົນ" Label="ລຳດັບ" />

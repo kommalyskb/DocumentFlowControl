@@ -464,7 +464,7 @@ namespace DFM.Frontend.Pages
             documentRequest.DocumentModel = documentModel;
             int index = documentRequest.DocumentModel.Recipients.IndexOf(myRole);
             documentRequest.DocumentModel.Recipients[index].IsRead = true;
-            documentRequest.DocumentModel.Recipients[index].ReadDate = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+            documentRequest.DocumentModel.Recipients[index].ReadDate = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
             documentRequest.DocumentModel.Recipients[index].RecipientInfo.Fullname = new ShortEmpInfo
             {
                 EmployeeID = employee.EmployeeID,

@@ -2,6 +2,8 @@
 @inject AccessTokenStorage accessToken
 @inject ServiceEndpoint endpoint
 @inject LocalStorageHelper storageHelper
+@inject EnvConf envConf
+@inject IDialogService DialogService
 
 
 <MudContainer>
@@ -9,9 +11,92 @@
         <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
             <h2>ຂໍ້ມູນພະນັກງານ</h2>
         </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <MudTextField Disabled="OnProcessing" @bind-Value="Employee!.Name.Local" Required="true" T="string" Counter="1000" MaxLength="1000" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ຊື່ທີ່ເປັນພາສາລາວ" Label="ຊື່" />
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <MudTextField Disabled="OnProcessing" @bind-Value="Employee!.FamilyName.Local" Required="true" T="string" Counter="1000" MaxLength="1000" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ນາມສະກຸນທີ່ເປັນພາສາລາວ" Label="ນາມສະກຸນ" />
+        </MudItem>
+
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <MudTextField Disabled="OnProcessing" @bind-Value="Employee!.Name.Eng" Required="true" T="string" Counter="1000" MaxLength="1000" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="Name (English)" Label="Name" />
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <MudTextField Disabled="OnProcessing" @bind-Value="Employee!.FamilyName.Eng" Required="true" T="string" Counter="1000" MaxLength="1000" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="Family name (English)" Label="Family name" />
+        </MudItem>
+
+        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+            <MudDatePicker Disabled="OnProcessing" @bind-Value="Employee!.Dob" Required="true" PickerVariant="PickerVariant.Inline" Label="ວັນເດືອນປີເກີດ" HelperText="ວັນເດືອນປີເກີດ" DateFormat="dd/MM/yyyy" />
+        </MudItem>
+        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+            <MudSelect Disabled="OnProcessing" @bind-Value="Employee!.Gender" T="Gender" HelperText="ເພດ" Label="ເພດ" Variant="Variant.Text">
+                <MudSelectItem Value="@(Gender.Male)" />
+                <MudSelectItem Value="@(Gender.Female)" />
+                <MudSelectItem Value="@(Gender.Unknow)" />
+            </MudSelect>
+        </MudItem>
+        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+            <MudTextField Disabled="OnProcessing" @bind-Value="Employee!.EmployeeID" T="string" Counter="1000" MaxLength="1000" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ເລກລະຫັດປະຈຳຕົວພະນັກງານ (ຖ້າມີ)" Label="ລະຫັດພະນັກງານ" />
+        </MudItem>
+
+        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+            <h2>ຂໍ້ມູນເຂົ້າເຖິງລະບົບ</h2>
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <MudTextField Disabled="OnProcessing" @bind-Value="Employee!.Username" Required="true" T="string" Counter="12" MaxLength="12" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(UserCharacters))" HelperText="Username ທີ່ໃຊ້ລັອກອິນລະບົບ" Label="Username" />
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <MudTextField Disabled="OnProcessing" @bind-Value="Employee!.Password" InputType="InputType.Password" Required="true" T="string" Counter="6" MaxLength="6" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(PasswordCharacters))" HelperText="Pລະຫັດຜ່ານ" Label="Password" />
+        </MudItem>
+
+        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+            <h2>ທີ່ຢູ່ບ່ອນເກີດ</h2>
+        </MudItem>
+        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+            <MudTextField Disabled="OnProcessing" @bind-Value="Employee!.BornAddress.Village" T="string" Counter="1000" MaxLength="1000" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ບ້ານ ເກີດ" Label="ບ້ານ" />
+        </MudItem>
+        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+            <MudTextField Disabled="OnProcessing" @bind-Value="Employee!.BornAddress.District" T="string" Counter="1000" MaxLength="1000" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ເມືອງ ເກີດ" Label="ເມືອງ" />
+        </MudItem>
+        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+            <MudTextField Disabled="OnProcessing" @bind-Value="Employee!.BornAddress.Province" T="string" Counter="1000" MaxLength="1000" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ແຂວງ ເກີດ" Label="ແຂວງ" />
+        </MudItem>
+
+        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+            <h2>ທີ່ຢູ່ປັດຈຸບັນ</h2>
+        </MudItem>
+        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+            <MudTextField Disabled="OnProcessing" @bind-Value="Employee!.CurrentAddress.Village" T="string" Counter="1000" MaxLength="1000" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ບ້ານ ຢູ່ປັດຈຸບັນ" Label="ບ້ານ" />
+        </MudItem>
+        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+            <MudTextField Disabled="OnProcessing" @bind-Value="Employee!.CurrentAddress.District" T="string" Counter="1000" MaxLength="1000" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ເມືອງ ຢູ່ປັດຈຸບັນ" Label="ເມືອງ" />
+        </MudItem>
+        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+            <MudTextField Disabled="OnProcessing" @bind-Value="Employee!.CurrentAddress.Province" T="string" Counter="1000" MaxLength="1000" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ແຂວງ ຢູ່ປັດຈຸບັນ" Label="ແຂວງ" />
+        </MudItem>
+        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+            <MudTextField Disabled="OnProcessing" @bind-Value="Employee!.CurrentAddress.UnitNo" T="string" Counter="1000" MaxLength="1000" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ຫນ່ວຍ ຢູ່ປັດຈຸບັນ" Label="ໜ່ວຍ" />
+        </MudItem>
+        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+            <MudTextField Disabled="OnProcessing" @bind-Value="Employee!.CurrentAddress.HouseNo" T="string" Counter="1000" MaxLength="1000" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ເຮືອນເລກທີ ຢູ່ປັດຈຸບັນ" Label="ເຮືອນເລກທີ" />
+        </MudItem>
+
+        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+            <h2>ຂໍ້ມູນສຳລັບຕິດຕໍ່</h2>
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <MudTextField Disabled="OnProcessing" @bind-Value="Employee!.Contact.Phone" Required="true" T="string" Counter="1000" MaxLength="1000" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ເບີໂທ ມືຖື" Label="ເບີໂທ" />
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <MudTextField Disabled="OnProcessing" @bind-Value="Employee!.Contact.Email" Required="true" T="string" Counter="1000" MaxLength="1000" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ທີ່ຢູ່ ອີເມວ" Label="ອີເມວ" />
+        </MudItem>
+        
    </MudGrid>
 </MudContainer>
 
 @code {
     [Parameter] public EmployeeModel? Employee { get; set; }
+    [Parameter] public EventCallback<string> Notice { get; set; }
+    [Parameter] public FormMode Mode { get; set; }
+    [Parameter] public bool OnProcessing { get; set; }
 }

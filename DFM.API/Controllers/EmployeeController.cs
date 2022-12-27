@@ -1,11 +1,16 @@
 ﻿using DFM.Shared.Common;
+using DFM.Shared.Configurations;
 using DFM.Shared.DTOs;
 using DFM.Shared.Entities;
+using DFM.Shared.Helper;
 using DFM.Shared.Interfaces;
 using DFM.Shared.Resources;
+using HttpClientService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
+using System.Xml.Linq;
 
 namespace DFM.API.Controllers
 {
@@ -16,10 +21,16 @@ namespace DFM.API.Controllers
     public class EmployeeController : ControllerBase
     {
         private readonly IEmployeeManager employeeManager;
+        private readonly IIdentityHelper identityHelper;
+        private readonly IHttpService httpService;
+        private readonly ServiceEndpoint endpoint;
 
-        public EmployeeController(IEmployeeManager employeeManager)
+        public EmployeeController(IEmployeeManager employeeManager, IIdentityHelper identityHelper, IHttpService httpService, ServiceEndpoint endpoint)
         {
             this.employeeManager = employeeManager;
+            this.identityHelper = identityHelper;
+            this.httpService = httpService;
+            this.endpoint = endpoint;
         }
 
         [HttpGet("GetItem")]
@@ -51,7 +62,7 @@ namespace DFM.API.Controllers
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(IEnumerable<EmployeeModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetItemsV1(string orgId)
+        public async Task<IActionResult> GetItemsV1(string orgId, CancellationToken cancellationToken = default(CancellationToken))
         {
             var result = await employeeManager.GetProfileByOrgId(orgId);
             if (result.RowCount == 0)
@@ -61,29 +72,100 @@ namespace DFM.API.Controllers
             return Ok(result.Contents);
         }
 
-        [HttpPost("NewItem/{orgId}")]
+        [HttpPost("SaveItem")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> NewItemV1(string orgId, [FromBody] EmployeeModel request)
+        public async Task<IActionResult> SaveItemV1([FromBody] EmployeeModel request, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return Ok();
+            if (string.IsNullOrWhiteSpace(request.Username))
+            {
+                return BadRequest(new CommonResponse
+                {
+                    Code = nameof(ResultCode.USERNAME_COULD_NOT_EMPTY),
+                    Success = false,
+                    Message = ResultCode.USERNAME_COULD_NOT_EMPTY,
+                    Detail = ResultCode.USERNAME_COULD_NOT_EMPTY
+                });
+            }
+            //get admin token
+            var checkAdminToken = await identityHelper.GetAdminAccessToken();
+            var validateResult = await identityHelper.ValidateUser(request.Username, checkAdminToken.Token);
+
+            bool isNewUser = false;
+
+            if (validateResult.SearchState == 2)
+            {
+                // Found user
+                request.id = validateResult.UserID;
+                isNewUser = false;
+            }
+            else
+            {
+                isNewUser = true;
+                // Register new User
+                var r = new UserRegisterRequestResponse
+                {
+                    userName = request.Username,
+                    accessFailedCount = 0,
+                    email = request.Contact.Email,
+                    emailConfirmed = true,
+                    lockoutEnabled = false,
+                    lockoutEnd = DateTime.UtcNow,
+                    phoneNumber = request.Contact.Phone,
+                    phoneNumberConfirmed = true,
+                    twoFactorEnabled = false
+
+                };
+                var reqUser = await httpService.Post<UserRegisterRequestResponse>($"{endpoint.IdentityAPI}/api/Users", r, new AuthorizeHeader("bearer", checkAdminToken.Token), cancellationToken);
+                if (reqUser.Success)
+                {
+                    var reqUserContent = await reqUser.HttpResponseMessage.Content.ReadAsStringAsync();
+                    var userResponse = JsonSerializer.Deserialize<UserRegisterRequestResponse>(reqUserContent);
+                    request.id = userResponse?.id;
+                }
+                else
+                {
+                    return BadRequest(new CommonResponse
+                    {
+                        Code = nameof(ResultCode.REG_USER_FAIL),
+                        Success = false,
+                        Message = ResultCode.REG_USER_FAIL,
+                        Detail = ResultCode.REG_USER_FAIL
+                    });
+                }
+            }
+
+            if (isNewUser)
+            {
+
+                // New employee
+                var result = await employeeManager.NewEmployeeProfile(request, cancellationToken);
+
+                if (result.Success)
+                {
+                    return Ok(result);
+                }
+                return BadRequest(result);
+            }
+            else
+            {
+                // Update
+                var result = await employeeManager.EditEmployeeProfile(request, cancellationToken);
+                if (result.Success)
+                {
+                    return Ok(result);
+                }
+                return BadRequest(result);
+            }
         }
 
-        [HttpPut("UpdateItem/{orgId}")]
-        [MapToApiVersion("1.0")]
-        [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdateItemV1(string orgId, [FromBody] EmployeeModel request)
-        {
-            return Ok();
-        }
 
-        [HttpGet("RemoveItem/{orgId}/{id}")]
+        [HttpGet("RemoveItem/{id}")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> RemoveItemV1(string orgId, string id)
+        public async Task<IActionResult> RemoveItemV1(string id, CancellationToken cancellationToken = default(CancellationToken))
         {
             return Ok();
         }

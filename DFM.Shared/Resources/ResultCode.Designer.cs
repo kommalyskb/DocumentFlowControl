@@ -250,6 +250,15 @@ namespace DFM.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to register new user on Identity Server.
+        /// </summary>
+        public static string REG_USER_FAIL {
+            get {
+                return ResourceManager.GetString("REG_USER_FAIL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Request failed.
         /// </summary>
         public static string REQUEST_FAIL {
@@ -291,6 +300,15 @@ namespace DFM.Shared.Resources {
         public static string USERID_EMPTY {
             get {
                 return ResourceManager.GetString("USERID_EMPTY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Username could not empty.
+        /// </summary>
+        public static string USERNAME_COULD_NOT_EMPTY {
+            get {
+                return ResourceManager.GetString("USERNAME_COULD_NOT_EMPTY", resourceCulture);
             }
         }
         

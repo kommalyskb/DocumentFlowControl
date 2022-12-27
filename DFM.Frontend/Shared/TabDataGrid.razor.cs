@@ -52,11 +52,21 @@ namespace DFM.Frontend.Shared
         }
         private Func<DocumentDto, string> _cellStyleFunc => x =>
         {
-            string style = $"{x.FontColor};";
+            string style = $"";
 
             if (!x.IsRead)
                 style += "font-weight:bold";
             
+
+            return style;
+        };
+        private Func<DocumentDto, string> _cellWithFontStyleFunc => x =>
+        {
+            string style = $"{x.FontColor};";
+
+            if (!x.IsRead)
+                style += "font-weight:bold";
+
 
             return style;
         };

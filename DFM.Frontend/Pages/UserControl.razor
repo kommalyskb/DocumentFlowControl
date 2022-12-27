@@ -3,12 +3,13 @@
 @inject AccessTokenStorage accessToken
 @inject ServiceEndpoint endpoint
 @inject LocalStorageHelper storageHelper
+@inject ISnackbar Snackbar
 
 <PageTitle>User Control - DFM</PageTitle>
 
 <DFM.Frontend.Pages.Common.ButtonPanel FormMode="formMode" ShowTerminateButton="false" ShowCreateButton="true" ShowDeleteButton="true"
-                                       ShowEditButton="true" ShowSaveButton="true" ShowSendButton="false"
-                                       CreateButtonEvent="onCreateButtonClick" PreviousButtonEvent="onePreviousButtonClick"
+                                       ShowEditButton="true" ShowSaveButton="true" ShowSendButton="false" ShowHistoryButton="false" ShowRestoreButton="false"
+                                       CreateButtonEvent="onCreateButtonClick" PreviousButtonEvent="onePreviousButtonClick" OnProcessing="onProcessing"
                                        DeleteButtonEvent="onDeleteButtonClick" RootBreadcrumb="ລາຍການຜູ້ໃຊ້ລະບົບ" ViewBreadcrumb="ເບີ່ງຂໍ້ມູນຜູ້ໃຊ້ລະບົບ"
                                        EditBreadcrumb="ແກ້ໄຂຂໍ້ມູນຜູ້ໃຊ້ລະບົບ" CreateBreadcrumb="ສ້າງຂໍ້ມູນຜູ້ໃຊ້ລະບົບໃຫມ່"
                                        EditButtonEvent="onEditButtonClick" SaveButtonEvent="onSaveClickAsync"></DFM.Frontend.Pages.Common.ButtonPanel>
@@ -19,15 +20,17 @@
 }
 else if (formMode == FormMode.Create || formMode == FormMode.Edit)
 {
-    <DFM.Frontend.Pages.UserComponent.UserForm FormMode="formMode" Employee="employeeModel"></DFM.Frontend.Pages.UserComponent.UserForm>
+    <DFM.Frontend.Pages.UserComponent.UserForm Mode="formMode" Employee="employeeModel" OnProcessing="onProcessing"></DFM.Frontend.Pages.UserComponent.UserForm>
 }
 else if (formMode == FormMode.View)
 {
+    <DFM.Frontend.Pages.UserComponent.UserView Employee="employeeModel"></DFM.Frontend.Pages.UserComponent.UserView>
 }
 
 @code {
     private FormMode formMode;
     string? roleId = "";
     MudMessageBox? delBox { get; set; }
-    EmployeeModel? employeeModel;
+    EmployeeModel? employeeModel = new();
+    bool onProcessing = false;
 }

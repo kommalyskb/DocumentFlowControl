@@ -80,24 +80,39 @@ builder.Services.AddSingleton<ICouchContext, CouchContext>();
 // Register configuration
 var openId = builder.Configuration.GetSection(nameof(OpenIDConf)).Get<OpenIDConf>();
 builder.Services.AddSingleton(openId);
+Console.WriteLine($"------------OpenID Configurations----------");
+Console.WriteLine(JsonSerializer.Serialize(openId));
+Console.WriteLine($"-------------------------------------------");
 
 var DBConfigConf = builder.Configuration.GetSection(nameof(DBConfig)).Get<DBConfig>();
 builder.Services.AddSingleton(DBConfigConf);
+Console.WriteLine($"----------Database Configurations----------");
+Console.WriteLine(JsonSerializer.Serialize(DBConfigConf));
+Console.WriteLine($"-------------------------------------------");
 
 var redisConf = builder.Configuration.GetSection(nameof(RedisConf)).Get<RedisConf>();
 builder.Services.AddSingleton(redisConf);
-Console.WriteLine($"-------------------------------------------");
+Console.WriteLine($"-------------Redis Configurations----------");
 Console.WriteLine(JsonSerializer.Serialize(redisConf));
 Console.WriteLine($"-------------------------------------------");
 
 var logConf = builder.Configuration.GetSection(nameof(LogServer)).Get<LogServer>();
 builder.Services.AddSingleton(logConf);
+Console.WriteLine($"------------Log Configurations----------");
+Console.WriteLine(JsonSerializer.Serialize(logConf));
+Console.WriteLine($"-------------------------------------------");
 
 var endpointConf = builder.Configuration.GetSection(nameof(ServiceEndpoint)).Get<ServiceEndpoint>();
 builder.Services.AddSingleton(endpointConf);
+Console.WriteLine($"----------Endpoint Configurations----------");
+Console.WriteLine(JsonSerializer.Serialize(endpointConf));
+Console.WriteLine($"-------------------------------------------");
 
 var storageConf = builder.Configuration.GetSection(nameof(StorageConfiguration)).Get<StorageConfiguration>();
 builder.Services.AddSingleton(storageConf);
+Console.WriteLine($"-----------Storage Configurations----------");
+Console.WriteLine(JsonSerializer.Serialize(storageConf));
+Console.WriteLine($"-------------------------------------------");
 
 // Redis Cache for IDistributedCache
 //var redisOptions = ConfigurationOptions.Parse($"{redisConf.Server}:{redisConf.Port}, password={redisConf.Password}");
@@ -123,6 +138,7 @@ builder.Services.AddSingleton<IRoleManager, RoleManager>();
 builder.Services.AddSingleton<IUserManager, UserManager>();
 builder.Services.AddSingleton<IMinioService, MinioService>();
 builder.Services.AddHostedService<IndexCreationService>();
+builder.Services.AddSingleton<IIdentityHelper, IdentityHelper>();
 
 #endregion
 builder.Services.AddControllers();
