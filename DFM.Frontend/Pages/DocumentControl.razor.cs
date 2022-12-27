@@ -84,6 +84,10 @@ namespace DFM.Frontend.Pages
                 {
                     // Delete button had fire
                     onProcessing = true;
+                    if (employee == null)
+                    {
+                        employee = await storageHelper.GetEmployeeProfileAsync();
+                    }
                     await InvokeAsync(StateHasChanged);
                     string url = $"{endpoint.API}/api/v1/Document/SaveDocument/{roleId}?fakeId={employee.id}";
                     string token = await accessToken.GetTokenAsync();
@@ -135,7 +139,10 @@ namespace DFM.Frontend.Pages
             {
                 if (isTerminated.Value)
                 {
-                    employee = await storageHelper.GetEmployeeProfileAsync();
+                    if (employee == null)
+                    {
+                        employee = await storageHelper.GetEmployeeProfileAsync();
+                    }
                     // Delete button had fire
                     onProcessing = true;
                     await InvokeAsync(StateHasChanged);
@@ -222,7 +229,10 @@ namespace DFM.Frontend.Pages
                     // Delete button had fire
                     onProcessing = true;
                     await InvokeAsync(StateHasChanged);
-
+                    if (employee == null)
+                    {
+                        employee = await storageHelper.GetEmployeeProfileAsync();
+                    }
                     string url = $"{endpoint.API}/api/v1/Document/SaveDocument/{roleId}?fakeId={employee.id}";
                     string token = await accessToken.GetTokenAsync();
 
@@ -325,7 +335,10 @@ namespace DFM.Frontend.Pages
                     onProcessing = true;
                     await InvokeAsync(StateHasChanged);
                     // Add receiver to model before save
-
+                    if (employee == null)
+                    {
+                        employee = await storageHelper.GetEmployeeProfileAsync();
+                    }
                     string url = $"{endpoint.API}/api/v1/Document/SaveDocument/{roleId}?fakeId={employee.id}";
                     string token = await accessToken.GetTokenAsync();
 
@@ -426,6 +439,10 @@ namespace DFM.Frontend.Pages
         async Task onUpdateWhenOpenDocument()
         {
             onProcessing = true;
+            if (employee == null)
+            {
+                employee = await storageHelper.GetEmployeeProfileAsync();
+            }
             string url = $"{endpoint.API}/api/v1/Document/SaveDocument/{roleId}?fakeId={employee.id}";
             string token = await accessToken.GetTokenAsync();
 
@@ -466,6 +483,10 @@ namespace DFM.Frontend.Pages
         async Task onSaveClickAsync()
         {
             onProcessing = true;
+            if (employee == null)
+            {
+                employee = await storageHelper.GetEmployeeProfileAsync();
+            }
             string url = $"{endpoint.API}/api/v1/Document/SaveDocument/{roleId}?fakeId={employee.id}";
             string token = await accessToken.GetTokenAsync();
 

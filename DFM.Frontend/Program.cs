@@ -38,6 +38,9 @@ builder.Services.AddSingleton(endpointConf);
 var storageConf = builder.Configuration.GetSection(nameof(StorageConfiguration)).Get<StorageConfiguration>();
 builder.Services.AddSingleton(storageConf);
 
+var envConf = builder.Configuration.GetSection(nameof(EnvConf)).Get<EnvConf>();
+builder.Services.AddSingleton(envConf);
+
 // Redis Cache for IDistributedCache
 var redisOptions = ConfigurationOptions.Parse($"{redisConf.Server}:{redisConf.Port}");
 //redisOptions.User = redisConf.User;

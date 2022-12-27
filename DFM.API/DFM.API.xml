@@ -44,6 +44,14 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
+        <member name="M:DFM.API.Controllers.DocumentController.GetDocumentV1(System.String,System.Threading.CancellationToken)">
+            <summary>
+            v1.0.0 ແມ່ນ API ທີ່ໃຊ້ໃນການດຶງເອົາເອກະສານຕາມ Document ID
+            </summary>
+            <param name="id"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
         <member name="M:DFM.API.Controllers.DocumentController.SaveDocumentV1(DFM.Shared.DTOs.DocumentRequest,System.String,System.String,System.Threading.CancellationToken)">
             <summary>
             v1.0.0

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Options;
 using Minio.DataModel;
 using MudBlazor;
+using System.Reflection.Metadata;
 using System.Text.Json;
 using System.Threading.Channels;
 using static MudBlazor.CategoryTypes;
@@ -25,7 +26,10 @@ namespace DFM.Frontend.Pages.Inbound
         {
 
             token = await accessToken.GetTokenAsync();
-            employee = await storageHelper.GetEmployeeProfileAsync();
+            if (employee == null)
+            {
+                employee = await storageHelper.GetEmployeeProfileAsync();
+            }
             await Task.Delay(500);
             if (employee is not null)
             {
@@ -135,6 +139,10 @@ namespace DFM.Frontend.Pages.Inbound
                             }
                         }
                     }
+                    if (item.component == 5)
+                    {
+                        document = JsonSerializer.Deserialize<DocumentModel>(item.response);
+                    }
                 }
             }
         }
@@ -146,6 +154,7 @@ namespace DFM.Frontend.Pages.Inbound
             tasks.Add(fetchAPI($"{endpoint.API}/api/v1/SecurityLevel/GetItems/{employee!.OrganizationID}", 2, writer));
             tasks.Add(fetchAPI($"{endpoint.API}/api/v1/DocumentType/GetItems/{employee!.OrganizationID}", 3, writer));
             tasks.Add(fetchAPI($"{endpoint.API}/api/v1/Folder/GetItems/{RoleId}/inbound?view=0", 4, writer));
+            tasks.Add(fetchAPI($"{endpoint.API}/api/v1/Document/GetDocument/{DocumentModel!.id}", 5, writer));
 
             await Task.WhenAll(tasks);
             writer.Complete();
@@ -202,6 +211,21 @@ namespace DFM.Frontend.Pages.Inbound
             {
                 // Load Folder
                 var result = await httpService.Get<IEnumerable<FolderModel>>(url, new AuthorizeHeader("bearer", token));
+                if (result.Success)
+                {
+                    var jsonDoc = JsonSerializer.Serialize(result.Response);
+                    await writer.WriteAsync((result.Success, component, jsonDoc));
+                }
+                else
+                {
+                    await writer.WriteAsync((result.Success, component, ""));
+                }
+
+            }
+            if (component == 5)
+            {
+                // Load Document
+                var result = await httpService.Get<DocumentModel>(url, new AuthorizeHeader("bearer", token));
                 if (result.Success)
                 {
                     var jsonDoc = JsonSerializer.Serialize(result.Response);

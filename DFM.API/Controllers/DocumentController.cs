@@ -9,6 +9,7 @@ using DFM.Shared.Resources;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MyCouch;
 using Redis.OM;
 using StackExchange.Redis;
 
@@ -108,6 +109,33 @@ namespace DFM.API.Controllers
 
         }
 
+        /// <summary>
+        /// v1.0.0 ແມ່ນ API ທີ່ໃຊ້ໃນການດຶງເອົາເອກະສານຕາມ Document ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [HttpGet("GetDocument/{id}")]
+        [MapToApiVersion("1.0")]
+        [ProducesResponseType(typeof(DocumentModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetDocumentV1(string id, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            try
+            {
+                var result = await documentTransaction.GetDocument(id, cancellationToken);
+                if (result.Response.Success)
+                {
+                    return Ok(result.Content);
+                }
+                return BadRequest(result.Response);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
         private bool isCrossRoleType(RoleTypeModel source, RoleTypeModel target)
         {
             if ((source == RoleTypeModel.OutboundGeneral || source == RoleTypeModel.OutboundOfficePrime || source == RoleTypeModel.OutboundPrime) &&

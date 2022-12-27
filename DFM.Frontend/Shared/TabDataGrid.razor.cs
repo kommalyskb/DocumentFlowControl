@@ -52,10 +52,11 @@ namespace DFM.Frontend.Shared
         }
         private Func<DocumentDto, string> _cellStyleFunc => x =>
         {
-            string style = "";
+            string style = $"{x.FontColor};";
 
             if (!x.IsRead)
                 style += "font-weight:bold";
+            
 
             return style;
         };
@@ -82,7 +83,10 @@ namespace DFM.Frontend.Shared
             Elements.Clear();
 
             token = await accessToken.GetTokenAsync();
-            employee = await storageHelper.GetEmployeeProfileAsync();
+            if (employee == null)
+            {
+                employee = await storageHelper.GetEmployeeProfileAsync();
+            }
             oldStatus = TraceStatus;
             // Load Urgent Level
             string urgentUrl = $"{endpoint.API}/api/v1/UrgentLevel/GetItems/{employee!.OrganizationID}";
@@ -104,7 +108,8 @@ namespace DFM.Frontend.Shared
                 {
                     var myDoc = item.Recipients!.LastOrDefault(x => x.RecipientInfo.RoleID == RoleId);
                     var rawDocumentData = item.RawDatas!.LastOrDefault(x => x.DataID == myDoc!.DataID);
-                    string urgentLabel = urgentModels!.FirstOrDefault(x => x.id == rawDocumentData!.Urgent.id)!.Level!;
+                    var urgentLabel = urgentModels!.FirstOrDefault(x => x.id == rawDocumentData!.Urgent.id)!;
+                    
                     Elements.Add(new DocumentDto
                     {
                         Id = item.id,
@@ -112,10 +117,11 @@ namespace DFM.Frontend.Shared
                         DocNo = rawDocumentData!.DocNo,
                         FormType = rawDocumentData!.FormType,
                         Title = rawDocumentData!.Title,
-                        UrgentLevel = urgentLabel,
+                        UrgentLevel = urgentLabel.Level!,
                         IsRead = myDoc!.IsRead,
                         Uid = myDoc!.UId,
-                        CreateDate = myDoc!.CreateDate
+                        CreateDate = myDoc!.CreateDate,
+                        FontColor = urgentLabel.FontColor!
                     });
                 }
                 unread = Elements.Count(x => !x.IsRead);

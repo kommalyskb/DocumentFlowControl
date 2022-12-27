@@ -8,7 +8,7 @@ namespace DFM.Frontend.Pages
     public partial class SecurityLevelControl
     {
         readonly int delayTime = 500;
-
+        private EmployeeModel? employee;
         protected override void OnInitialized()
         {
             formMode = FormMode.List;
@@ -82,7 +82,10 @@ namespace DFM.Frontend.Pages
 
             if (string.IsNullOrWhiteSpace(documentSecurityModel.id))
             {
-                var employee = await storageHelper.GetEmployeeProfileAsync();
+                if (employee == null)
+                {
+                    employee = await storageHelper.GetEmployeeProfileAsync();
+                }
                 documentSecurityModel.OrganizationID = employee.OrganizationID;
                 // New folder
                 string url = $"{endpoint.API}/api/v1/SecurityLevel/NewItem";

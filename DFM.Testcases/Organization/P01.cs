@@ -138,7 +138,7 @@ namespace DFM.Testcases.Organization
         [Fact(DisplayName = "ດຶງເອົາ Role ທີ່ມີ Employee ຕາມ Filter")]
         public async Task NC5()
         {
-            var result = await organizationChart.GetRoles("orgid", "sub");
+            var result = await organizationChart.GetRoles("b98c5c46cebd430bb7d9fe596d73c459", "0e27d2881de2420fba50eef81ed32e22");
             Assert.True(result.Response.Success);
         }
         [Fact(DisplayName = "ດຶງຂໍ້ມູນ Organization ID")]

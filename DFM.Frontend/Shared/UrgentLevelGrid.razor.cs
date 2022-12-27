@@ -8,6 +8,7 @@ namespace DFM.Frontend.Shared
     {
         private List<string> _events = new();
         string? token = "";
+        private EmployeeModel? employee;
         private List<DocumentUrgentModel> Elements = new();
         // events
         async Task RowClicked(DataGridRowClickEventArgs<DocumentUrgentModel> args)
@@ -40,7 +41,10 @@ namespace DFM.Frontend.Shared
         protected override async Task OnInitializedAsync()
         {
             // Load document
-            var employee = await storageHelper.GetEmployeeProfileAsync();
+            if (employee == null)
+            {
+                employee = await storageHelper.GetEmployeeProfileAsync();
+            }
             string url = $"{endpoint.API}/api/v1/UrgentLevel/GetItems/{employee.OrganizationID}";
             token = await accessToken.GetTokenAsync();
 

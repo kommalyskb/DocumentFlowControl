@@ -8,6 +8,7 @@ namespace DFM.Frontend.Shared
     {
         private List<string> _events = new();
         string? token = "";
+        private EmployeeModel? employee;
         private List<DataTypeModel> Elements = new();
         // events
         async Task RowClicked(DataGridRowClickEventArgs<DataTypeModel> args)
@@ -40,7 +41,10 @@ namespace DFM.Frontend.Shared
         protected override async Task OnInitializedAsync()
         {
             // Load document
-            var employee = await storageHelper.GetEmployeeProfileAsync();
+            if (employee == null)
+            {
+                employee = await storageHelper.GetEmployeeProfileAsync();
+            }
             string url = $"{endpoint.API}/api/v1/DocumentType/GetItems/{employee.OrganizationID}";
             token = await accessToken.GetTokenAsync();
 

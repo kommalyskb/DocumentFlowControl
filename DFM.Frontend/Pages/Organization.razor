@@ -3,18 +3,23 @@
 @inject AccessTokenStorage accessToken
 @inject ServiceEndpoint endpoint
 @inject LocalStorageHelper storageHelper
+@inject ISnackbar Snackbar
 
 <PageTitle>Document - DFM</PageTitle>
-<DFM.Frontend.Pages.Common.ButtonPanel FormMode="formMode" ShowTerminateButton="false" ShowCreateButton="true" RootBreadcrumb="ໂຄງຮ່າງການຈັດຕັ້ງ"
-                                       ShowDeleteButton="false" ShowEditButton="true" ShowSaveButton="true" ShowSendButton="false" Behavior="BehaviorStatus.ReadWrite"
+<DFM.Frontend.Pages.Common.ButtonPanel FormMode="formMode" ShowTerminateButton="false" ShowCreateButton="true" RootBreadcrumb="ໂຄງຮ່າງການຈັດຕັ້ງ" OnProcessing="onProcessing"
+                                       ShowDeleteButton="true" ShowEditButton="true" ShowSaveButton="true" ShowSendButton="false" Behavior="BehaviorStatus.ReadWrite"
                                        PreviousButtonEvent="onePreviousButtonClick" CreateButtonEvent="onCreateButtonClick" EditButtonEvent="onEditButtonClick"
+                                       DeleteButtonEvent="onDeleteButtonClick" ShowHistoryButton="false"
                                        ViewBreadcrumb="@editBreadcrumbText" EditBreadcrumb="@editBreadcrumbText" CreateBreadcrumb="ສ້າງໂຄງຮ່າງການຈັດຕັ້ງໃຫມ່"
                                        SaveButtonEvent="onSaveClickAsync"></DFM.Frontend.Pages.Common.ButtonPanel>
 
 
 @if (formMode == FormMode.Create || formMode == FormMode.Edit)
 {
-    <DFM.Frontend.Pages.OrganizeComponent.OrgFormComponent FormMode="formMode" OrganizationID="@orgId" RoleTreeModel="roleTreeModel"></DFM.Frontend.Pages.OrganizeComponent.OrgFormComponent>
+    <DFM.Frontend.Pages.OrganizeComponent.OrgFormComponent FormMode="formMode"
+                                                           OrganizationID="@orgId" RoleTreeModel="roleTreeModel"
+                                                           OnProcessing="onProcessing" Notice="onMessageAlert">
+    </DFM.Frontend.Pages.OrganizeComponent.OrgFormComponent>
 }
 else
 {
@@ -23,7 +28,15 @@ else
 }
 
 
-
+<MudMessageBox @ref="delBox" Title="ລຶບຕຳແໜ່ງອອກຈາກໂຄງຮ່າງການຈັດຕັ້ງ">
+    <MessageContent>
+        <h2 style="text-align:center">ທ່ານຈະບໍ່ສາມາດ ກູ້ ຄືນເອກະສານທີ່ກ່ຽວຂ້ອງກັບ ຕຳແໜ່ງນີ້ໄດ້</h2>
+        <h2 style="text-align:center">ທ່ານຕ້ອງການ ລຶບເອກະສານ ນີ້ແທ້ບໍ່?</h2>
+    </MessageContent>
+    <YesButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Error" StartIcon="@Icons.Material.Filled.Delete">ຢືນຢັນ</MudButton>
+    </YesButton>
+</MudMessageBox>
 
 @code {
     [Parameter] public string? Link { get; set; }

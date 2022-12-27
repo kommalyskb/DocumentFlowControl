@@ -9,6 +9,7 @@ namespace DFM.Frontend.Shared
 
         private List<string> _events = new();
         string? token = "";
+        private EmployeeModel? employee;
         private List<DocumentSecurityModel> Elements = new();
         // events
         async Task RowClicked(DataGridRowClickEventArgs<DocumentSecurityModel> args)
@@ -41,7 +42,10 @@ namespace DFM.Frontend.Shared
         protected override async Task OnInitializedAsync()
         {
             // Load document
-            var employee = await storageHelper.GetEmployeeProfileAsync();
+            if (employee == null)
+            {
+                employee = await storageHelper.GetEmployeeProfileAsync();
+            }
             string url = $"{endpoint.API}/api/v1/SecurityLevel/GetItems/{employee.OrganizationID}";
             token = await accessToken.GetTokenAsync();
 

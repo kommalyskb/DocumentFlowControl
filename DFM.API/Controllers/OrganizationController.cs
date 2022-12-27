@@ -16,11 +16,13 @@ namespace DFM.API.Controllers
     {
         private readonly IEmployeeManager employeeManager;
         private readonly IOrganizationChart organizationChart;
+        private readonly IRoleManager roleManager;
 
-        public OrganizationController(IEmployeeManager employeeManager, IOrganizationChart organizationChart)
+        public OrganizationController(IEmployeeManager employeeManager, IOrganizationChart organizationChart, IRoleManager roleManager)
         {
             this.employeeManager = employeeManager;
             this.organizationChart = organizationChart;
+            this.roleManager = roleManager;
         }
 
         [HttpGet("GetRole")]
@@ -38,6 +40,31 @@ namespace DFM.API.Controllers
                 userId = User.Claims.FirstOrDefault(x => x.Type == "sub")!.Value;
 
             }
+
+            // Get User Profile
+            var userProfile = await employeeManager.GetProfile(userId, cancellationToken);
+
+            if (!userProfile.Response.Success)
+            {
+                return BadRequest(userProfile.Response);
+            }
+
+            // Get role on organization
+            var result = await organizationChart.GetRoles(userProfile.Content.OrganizationID!, userProfile.Content.id!, cancellationToken);
+            if (result.Response.Success)
+            {
+                return Ok(result.Content);
+
+            }
+            return BadRequest(result.Response);
+        }
+
+        [HttpGet("GetRole/{userId}")]
+        [MapToApiVersion("1.0")]
+        [ProducesResponseType(typeof(IEnumerable<TabItemDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetRoleWithUserIDV1(string? userId, CancellationToken cancellationToken = default(CancellationToken))
+        {
 
             // Get User Profile
             var userProfile = await employeeManager.GetProfile(userId, cancellationToken);
@@ -135,39 +162,76 @@ namespace DFM.API.Controllers
         {
             return Ok();
         }
-        [HttpPost("AddRole/{orgId}")]
+        [HttpPost("SavePosition/{orgId}")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> AddRoleV1(string orgId, [FromBody] RoleTreeModel request, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IActionResult> SavePositionV1(string orgId, [FromBody] RoleTreeModel request, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return Ok();
+            // Find employee profile
+            var profile = await employeeManager.GetProfile(request.Employee.UserID!);
+            if (!profile.Response.Success)
+            {
+                return BadRequest(profile.Response);
+            }
+
+            if (string.IsNullOrWhiteSpace(request.Role.RoleID))
+            {
+                request.Role.RoleID = Guid.NewGuid().ToString("N");
+                // Create new Role
+                var roleResult = await roleManager.NewRolePosition(new RoleManagementModel
+                {
+                    id = request.Role.RoleID,
+                    Display = request.Role.Display,
+                    OrganizationID = orgId,
+                    RoleType = request.RoleType,
+                });
+                if (!roleResult.Success)
+                {
+                    return BadRequest(roleResult);
+                }
+
+                
+            }
+            var result = await organizationChart.AddRoleAndEmployee(orgId, new RoleTreeModel
+            {
+                RoleType = request.RoleType,
+                ParentID = request.ParentID,
+                Employee = new PartialEmployeeProfile
+                {
+                    Name = profile.Content.Name,
+                    FamilyName = profile.Content.FamilyName,
+                    Gender = profile.Content.Gender,
+                    UserID = profile.Content.id
+                },
+                Role = new PartialRole
+                {
+                    RoleID = request.Role.RoleID,
+                    RoleType = request.RoleType,
+                    Display = request.Role.Display
+                },
+                Publisher = request.Publisher
+            });
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+
         }
 
-        [HttpPut("UpdateRole/{orgId}")]
+        [HttpGet("RemovePosition/{orgId}/{roleId}")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdateRoleV1(string orgId, [FromBody] PartialRole request, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IActionResult> RemovePositionV1(string orgId, string roleId, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return Ok();
-        }
-        [HttpPut("UpdateEmployee/{orgId}")]
-        [MapToApiVersion("1.0")]
-        [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdateEmployeeV1(string orgId, [FromBody] PartialEmployeeProfile request, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            return Ok();
-        }
-
-        [HttpGet("RemoveRole/{orgId}/{roleId}")]
-        [MapToApiVersion("1.0")]
-        [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> RemoveItemV1(string orgId, string roleId, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            return Ok();
+            var result = await organizationChart.RemoveRoleAndEmployee(orgId, roleId);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
         }
     }
 }

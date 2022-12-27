@@ -311,6 +311,14 @@
         <MudItem xs="12" md="12">
             <MudAlert Severity="Severity.Normal" NoIcon="true" Class="mb-2 mt-3">ກະລຸນາປ້ອນຂໍ້ມູນໃຫ້ຄົບຖ້ວນ ເອກະສານຂາເຂົ້າ</MudAlert>
         </MudItem>
+
+        <MudItem xs="12" md="12">
+            @if (document != null)
+            {
+                <TrackingSheet Reciepients="document!.Recipients"></TrackingSheet>
+
+            }
+        </MudItem>
     </MudGrid>
 
 </MudContainer>
@@ -335,7 +343,7 @@
     </YesButton>
 </MudMessageBox>
 @code {
-    
+
 
     [Parameter] public DocumentModel? DocumentModel { get; set; }
     [Parameter] public IList<AttachmentDto>? Attachments { get; set; }
@@ -362,4 +370,6 @@
 
     MudMessageBox? mbox { get; set; }
     MudMessageBox? docnoBox { get; set; }
+
+    DocumentModel? document;
 }

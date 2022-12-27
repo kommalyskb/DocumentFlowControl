@@ -84,8 +84,8 @@ namespace DFM.Testcases.Employee
 
             RandomName nameGen = new RandomName(rand); // create a new instance of the RandomName class
 
-            string name = nameGen.GenerateOnlyName(Sex.Male); // generate a male name, with one middal name.
-            string surname = nameGen.GenerateOnlyName(Sex.Male);
+            string name = nameGen.GenerateOnlyName(Sex.Female); // generate a male name, with one middal name.
+            string surname = nameGen.GenerateOnlyName(Sex.Female);
             var result = await employeeManager.NewEmployeeProfile(new EmployeeModel
             {
                 id = Guid.NewGuid().ToString("N"),

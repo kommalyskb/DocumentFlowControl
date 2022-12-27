@@ -32,7 +32,10 @@ namespace DFM.Frontend.Pages.FolderComponent
         protected override async Task OnInitializedAsync()
         {
             Console.WriteLine($"{DateTime.Now} Load folder");
-            employee = await storageHelper.GetEmployeeProfileAsync();
+            if (employee == null)
+            {
+                employee = await storageHelper.GetEmployeeProfileAsync();
+            }
             token = await accessToken.GetTokenAsync();
             await Task.Delay(500);
             if (employee is not null)

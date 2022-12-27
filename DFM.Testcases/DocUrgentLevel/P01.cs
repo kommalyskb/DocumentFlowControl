@@ -68,6 +68,7 @@ namespace DFM.Testcases.DocUrgentLevel
                 id = "b5e9706a47b340c7954484c2dbcd51f1",
                 Level = "ດ່ວນສຸດ",
                 OrganizationID = "b98c5c46cebd430bb7d9fe596d73c459",
+                FontColor = "color:#db0f1a"
             });
 
             Assert.True(result.Success);

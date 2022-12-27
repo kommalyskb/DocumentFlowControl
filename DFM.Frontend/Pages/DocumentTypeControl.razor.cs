@@ -8,6 +8,7 @@ namespace DFM.Frontend.Pages
     public partial class DocumentTypeControl
     {
         readonly int delayTime = 500;
+        private EmployeeModel? employee;
 
         protected override void OnInitialized()
         {
@@ -82,7 +83,10 @@ namespace DFM.Frontend.Pages
 
             if (string.IsNullOrWhiteSpace(dataTypeModel.id))
             {
-                var employee = await storageHelper.GetEmployeeProfileAsync();
+                if (employee == null)
+                {
+                    employee = await storageHelper.GetEmployeeProfileAsync();
+                }
                 dataTypeModel.OrganizationID = employee.OrganizationID;
                 // New folder
                 string url = $"{endpoint.API}/api/v1/DocumentType/NewItem";

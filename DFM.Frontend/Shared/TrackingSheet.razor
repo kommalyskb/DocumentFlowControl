@@ -1,0 +1,41 @@
+﻿<MudTable Items="@Reciepients" ReadOnly="true" Filter="new Func<Reciepient,bool>(FilterFunc)">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">ປະຫວັດການເຄື່ອນໄຫວເອກະສານ</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+
+    <HeaderContent>
+        <MudTh>ຜູ້ຮັບ</MudTh>
+        <MudTh>ເວລາຮັບ</MudTh>
+        <MudTh>ເວລາເປີດອ່ານ</MudTh>
+        <MudTh>ຜູ້ທີ່ເປີດອ່ານ</MudTh>
+        <MudTh>ສະຖານະຮັບ</MudTh>
+        <MudTh>ສະຖານະສົ່ງ</MudTh>
+        <MudTh>ສະຖານະເອກະສານ</MudTh>
+        <MudTh>ເວລາສົ່ງອອກ</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd>@context.RecipientInfo.Position.Local</MudTd>
+        <MudTd>@context.ReceiveDate</MudTd>
+        <MudTd>
+            @isRead(context.IsRead, context.ReadDate)
+        </MudTd>
+        <MudTd>@context.RecipientInfo.Fullname.Name.Local</MudTd>
+        <MudTd>@DecodeEnumStatus.decodeOperationType(context.ReceiveRoleType)</MudTd>
+        <MudTd>@DecodeEnumStatus.decodeOperationType(context.SendRoleType)</MudTd>
+        <MudTd>@DecodeEnumStatus.decodeTraceStatus(context.DocStatus)</MudTd>
+        <MudTd>@context.SendDate</MudTd>
+    </RowTemplate>
+    <FooterContent>
+
+    </FooterContent>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+@code {
+
+    [Parameter] public IEnumerable<Reciepient>? Reciepients { get; set; }
+}

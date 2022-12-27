@@ -15,7 +15,10 @@ namespace DFM.Frontend.Pages.Outbound
         List<TabItemDto>? tabItems;
         protected override async Task OnInitializedAsync()
         {
-            employee = await storageHelper.GetEmployeeProfileAsync();
+            if (employee == null)
+            {
+                employee = await storageHelper.GetEmployeeProfileAsync();
+            }
             // Load tab
             string url = $"{endpoint.API}/api/v1/Organization/GetRole?fakeId={employee.id}";
 

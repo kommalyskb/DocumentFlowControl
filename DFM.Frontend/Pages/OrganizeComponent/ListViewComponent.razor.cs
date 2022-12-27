@@ -17,7 +17,10 @@ namespace DFM.Frontend.Pages.OrganizeComponent
         private EmployeeModel? employee;
         protected override async Task OnInitializedAsync()
         {
-            employee = await storageHelper.GetEmployeeProfileAsync();
+            if (employee == null)
+            {
+                employee = await storageHelper.GetEmployeeProfileAsync();
+            }
             token = await accessToken.GetTokenAsync();
 
             string url = $"{endpoint.API}/api/v1/Organization/GetItem/{employee.OrganizationID!}";

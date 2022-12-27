@@ -17,5 +17,6 @@ namespace DFM.Shared.DTOs
         public bool IsRead { get; set; }
         public string? Uid { get; set; }
         public decimal CreateDate { get; set; }
+        public string? FontColor { get; set; } = "color:black";
     }
 }

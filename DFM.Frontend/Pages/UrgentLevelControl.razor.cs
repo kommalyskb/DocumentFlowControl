@@ -8,7 +8,7 @@ namespace DFM.Frontend.Pages
     public partial class UrgentLevelControl
     {
         readonly int delayTime = 500;
-
+        private EmployeeModel? employee;
         protected override void OnInitialized()
         {
             formMode = FormMode.List;
@@ -82,7 +82,10 @@ namespace DFM.Frontend.Pages
 
             if (string.IsNullOrWhiteSpace(documentUrgentModel.id))
             {
-                var employee = await storageHelper.GetEmployeeProfileAsync();
+                if (employee == null)
+                {
+                    employee = await storageHelper.GetEmployeeProfileAsync();
+                }
                 documentUrgentModel.OrganizationID = employee.OrganizationID;
                 // New folder
                 string url = $"{endpoint.API}/api/v1/UrgentLevel/NewItem";

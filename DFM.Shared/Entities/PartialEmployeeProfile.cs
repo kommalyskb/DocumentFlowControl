@@ -11,7 +11,7 @@ namespace DFM.Shared.Entities
     public class PartialEmployeeProfile
     {
         [Indexed]
-        public string? UserID { get; set; }
+        public string? UserID { get; set; } 
         [Indexed(CascadeDepth = 1)]
         public MultiLanguage Name { get; set; } = new();
         [Indexed(CascadeDepth = 1)]

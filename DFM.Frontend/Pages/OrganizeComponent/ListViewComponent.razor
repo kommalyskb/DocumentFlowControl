@@ -6,7 +6,7 @@
 <MudContainer>
     <MudGrid>
         <MudItem xs="12" md="10">
-            <MudTreeView Items="treeItems" @bind-ActivatedValue="activatedValue" @bind-SelectedValues="selectedValues">
+            <MudTreeView Items="treeItems" @bind-ActivatedValue="activatedValue" @bind-SelectedValues="selectedValues" ExpandOnDoubleClick="true">
                 <ItemTemplate>
                     <MudTreeViewItem @bind-Expanded="@context.IsExpanded" Items="@context.TreeItems" Value="@context" Text="@context.Content!.Role.Display.Local" />
                 </ItemTemplate>

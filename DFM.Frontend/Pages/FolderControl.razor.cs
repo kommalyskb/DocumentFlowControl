@@ -12,7 +12,7 @@ namespace DFM.Frontend.Pages
     {
         string? oldLink = "";
         readonly int delayTime = 500;
-
+        private EmployeeModel? employee;
         protected override void OnInitialized()
         {
             formMode = FormMode.List;
@@ -93,7 +93,10 @@ namespace DFM.Frontend.Pages
             httpService.MediaType = MediaType.JSON;
             if (string.IsNullOrWhiteSpace(folderModel.id))
             {
-                var employee = await storageHelper.GetEmployeeProfileAsync();
+                if (employee == null)
+                {
+                    employee = await storageHelper.GetEmployeeProfileAsync();
+                };
                 folderModel.OrganizationID = employee.OrganizationID;
                 // New folder
                 string url = $"{endpoint.API}/api/v1/Folder/NewItem";
