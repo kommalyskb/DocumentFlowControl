@@ -11,6 +11,47 @@
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
             <MudTextField Disabled="OnProcessing" @bind-Value="DocumentSecurityModel!.SortOrder" T="int" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ລຳດັບການສະແດງຜົນ" Label="ລຳດັບ" />
         </MudItem>
+        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+
+            <MudSelect T="string" Immediate="true" Variant="Variant.Text" HelperText="ຕຳແໜ່ງທີ່ສາມາດເບີ່ງເອກະສານໄດ້" Label="ຜູ້ທີ່ສາມາດເຂົ້າເຖິງເອກະສານ" MultiSelection="true" SelectAll="true" SelectAllText="ເລືອກທັງຫມົດ" @bind-Value="authorizeView" @bind-SelectedValues="authorizeOption" MultiSelectionTextFunc="@(new Func<List<string>, string>(getSelectionAuthorize))">
+                <MudSelectItem Value="RoleTypeModel.Prime.ToString()">ປະທານບໍລິສັດ</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.DeputyPrime.ToString()">ຮອງປະທານບໍລິສັດ</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.PrimeSecretary.ToString()">ເລຂາປະທານບໍລິສັດ</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.DeputyPrimeSecretary.ToString()">ເລຂາຮອງປະທານບໍລິສັດ</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.Director.ToString()">ຜູ້ອຳນວຍການ</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.DeputyDirector.ToString()">ຮອງຜູ້ອຳນວຍການ</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.InboundPrime.ToString()">ຂາເຂົ້າບໍລິສັດ</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.OutboundPrime.ToString()">ຂາອອກບໍລິສັດ</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.OfficePrime.ToString()">ຫົວຫນ້າຫ້ອງການ</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.DeputyOfficePrime.ToString()">ຮອງຫົວຫນ້າຫ້ອງການ</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.InboundOfficePrime.ToString()">ຂາເຂົ້າຫ້ອງການ</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.OutboundOfficePrime.ToString()">ຂາອອກຫ້ອງ</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.General.ToString()">ຫົວຫນ້າຝ່າຍ</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.DeputyGeneral.ToString()">ຮອງຫົວຫນ້າຝ່າຍ</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.InboundGeneral.ToString()">ຂາເຂົ້າຝ່າຍ</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.OutboundGeneral.ToString()">ຂາອອກຝ່າຍ</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.OfficeGeneral.ToString()">ຫົວຫນ້າຫ້ອງການຝ່າຍ</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.DeputyOfficeGeneral.ToString()">ຮອງຫົວຫນ້າຫ້ອງການຝ່າຍ</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.Division.ToString()">ຫົວຫນ້າພະແນກ</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.DeputyDivision.ToString()">ຮອງພະແນກ</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.Department.ToString()">ຫົວຫນ້າພາກສ່ວນ</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.DeputyDepartment.ToString()">ຮອງພາກສ່ວນ</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.Employee.ToString()">ພະນັກງານວິຊາການ</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.Contract.ToString()">ສັນຍາຈ້າງ</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.Volunteer.ToString()">ອາສາສະຫມັກ</MudSelectItem>
+            </MudSelect>
+        </MudItem>
     </MudGrid>
 </MudContainer>
 

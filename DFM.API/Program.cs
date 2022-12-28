@@ -114,6 +114,12 @@ Console.WriteLine($"-----------Storage Configurations----------");
 Console.WriteLine(JsonSerializer.Serialize(storageConf));
 Console.WriteLine($"-------------------------------------------");
 
+var smtpConf = builder.Configuration.GetSection(nameof(SMTPConfig)).Get<SMTPConfig>();
+builder.Services.AddSingleton(smtpConf);
+Console.WriteLine($"-----------SMTP Configurations----------");
+Console.WriteLine(JsonSerializer.Serialize(smtpConf));
+Console.WriteLine($"-------------------------------------------");
+
 // Redis Cache for IDistributedCache
 //var redisOptions = ConfigurationOptions.Parse($"{redisConf.Server}:{redisConf.Port}, password={redisConf.Password}");
 //redisOptions.User = redisConf.User;
@@ -139,6 +145,7 @@ builder.Services.AddSingleton<IUserManager, UserManager>();
 builder.Services.AddSingleton<IMinioService, MinioService>();
 builder.Services.AddHostedService<IndexCreationService>();
 builder.Services.AddSingleton<IIdentityHelper, IdentityHelper>();
+builder.Services.AddSingleton<IEmailHelper,  EmailHelper>();
 
 #endregion
 builder.Services.AddControllers();

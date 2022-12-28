@@ -1,7 +1,18 @@
 ﻿@page "/authorize"
 @layout SubLayout
+@inject IHttpService httpService
+@inject AccessTokenStorage accessToken
+@inject ServiceEndpoint endpoint
+@inject LocalStorageHelper storageHelper
+@inject IMinioService minio
+@inject StorageConfiguration storageConf
+@inject NavigationManager nav
+@inject ISnackbar Snackbar
+@implements IDisposable
 <PageTitle>Login - DFM</PageTitle>
 
 @code {
-
+    public void Dispose()
+    {
+    }
 }

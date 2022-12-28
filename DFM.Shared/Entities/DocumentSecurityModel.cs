@@ -17,6 +17,8 @@ namespace DFM.Shared.Entities
         public string? OrganizationID { get; set; }
         [Indexed(Sortable = true)]
         public int SortOrder { get; set; }
+        [Indexed]
+        public List<RoleTypeModel>? Authorized { get; set; } = new(); // ແມ່ນຕຳແໜ່ງໃດສາມາດເບີ່ງ File ເອກະສານໄດ້ແດ່
 
     }
 }

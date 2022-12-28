@@ -7,6 +7,7 @@ using Google.Protobuf.WellKnownTypes;
 using HttpClientService;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
+using System;
 using System.Text.Json;
 using System.Threading.Channels;
 
@@ -490,6 +491,27 @@ namespace DFM.Frontend.Pages.Outbound
                 RawDocument!.FolderNum = docNumber;
             }
             await InvokeAsync(StateHasChanged);
+        }
+
+        private async Task refreshFolder()
+        {
+            string url = $"{endpoint.API}/api/v1/Folder/GetItems/{RoleId}/outbound?view=0";
+            var result = await httpService.Get<IEnumerable<FolderModel>>(url, new AuthorizeHeader("bearer", token));
+            if (result.Success)
+            {
+                folderModels.Clear();
+                // Remove Expire folder
+                foreach (var folder in result.Response!)
+                {
+                    var expiredDate = DateTime.ParseExact(folder.ExpiredDate!, "dd/MM/yyyy", null);
+                    if (DateTime.Now <= expiredDate)
+                    {
+                        folderModels!.Add(folder);
+                    }
+                }
+                await Notice.InvokeAsync("ດຶງຂໍ້ມູນແຟ້ມເອກະສານມາໃຫມ່ສຳເລັດ");
+                await InvokeAsync(StateHasChanged);
+            }
         }
     }
 }

@@ -496,5 +496,25 @@ namespace DFM.Frontend.Pages.Inbound
             }
             await InvokeAsync(StateHasChanged);
         }
+        private async Task refreshFolder()
+        {
+            string url = $"{endpoint.API}/api/v1/Folder/GetItems/{RoleId}/inbound?view=0";
+            var result = await httpService.Get<IEnumerable<FolderModel>>(url, new AuthorizeHeader("bearer", token));
+            if (result.Success)
+            {
+                folderModels.Clear();
+                // Remove Expire folder
+                foreach (var folder in result.Response!)
+                {
+                    var expiredDate = DateTime.ParseExact(folder.ExpiredDate!, "dd/MM/yyyy", null);
+                    if (DateTime.Now <= expiredDate)
+                    {
+                        folderModels!.Add(folder);
+                    }
+                }
+                await Notice.InvokeAsync("ດຶງຂໍ້ມູນແຟ້ມເອກະສານມາໃຫມ່ສຳເລັດ");
+                await InvokeAsync(StateHasChanged);
+            }
+        }
     }
 }

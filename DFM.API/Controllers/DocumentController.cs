@@ -403,6 +403,9 @@ namespace DFM.API.Controllers
                             isMainDisplay = false;
                         }
 
+                        // Get Email from main recipient
+                        //
+                        //
 
                         // For receiver don't have profile yet, it will appear when someone click read
                         var main = new Reciepient
@@ -444,8 +447,14 @@ namespace DFM.API.Controllers
                     // Set Co-Process
                     if (request.CoProcesses!.Count > 0)
                     {
+                        // Get Email from coprocess recipient
+                        //
+                        //
+
                         foreach (var item in request.CoProcesses)
                         {
+                            
+
                             // For receiver don't have profile yet, it will appear when someone click read
                             var coUser = new Reciepient
                             {
@@ -788,6 +797,10 @@ namespace DFM.API.Controllers
                             isMainDisplay = false;
                         }
 
+                        // Get Email from main recipient
+                        //
+                        //
+
                         // For receiver don't have profile yet, it will appear when someone click read
                         var main = new Reciepient
                         {
@@ -826,6 +839,9 @@ namespace DFM.API.Controllers
                     // Set Co-Process
                     if (request.CoProcesses!.Count > 0)
                     {
+                        // Get Email from coprocess recipient
+                        //
+                        //
                         foreach (var item in request.CoProcesses)
                         {
                             // For receiver don't have profile yet, it will appear when someone click read
