@@ -268,7 +268,7 @@
 
             <MudIconButton Disabled="OnProcessing" Color="Color.Success" Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" />
             <MudIconButton Disabled="OnProcessing" Color="Color.Primary" Icon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="displayFolderDialogAsync" />
-        
+
         </MudItem>
         <MudItem xs="12" md="3" Class="d-flex flex-grow-1 gap-4">
             <MudSelect Disabled="OnProcessing" @bind-Value="RawDocument!.CopyType" T="string" HelperText="ຮູບແບບການສຳເນົາເອກະສານ" Label="ປະເພດສຳເນົາ" Variant="Variant.Text">
@@ -326,7 +326,9 @@
 
 <MudMessageBox @ref="mbox" Title="ແຟ້ມເອກະສານ">
     <MessageContent>
-        <DFM.Frontend.Pages.FolderComponent.FolderForm RoleId="@RoleId"></DFM.Frontend.Pages.FolderComponent.FolderForm>
+        <div style="height: 65vh; overflow-y: auto">
+            <DFM.Frontend.Pages.FolderComponent.FolderForm RoleId="@RoleId" FolderModel="folderModel" OnProcessing="onFolderProcessing"></DFM.Frontend.Pages.FolderComponent.FolderForm>
+        </div>
     </MessageContent>
     <YesButton>
         <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save">ສ້າງແຟ້ມໃຫມ່</MudButton>
@@ -367,6 +369,8 @@
     IEnumerable<string>? selectUrgentValues;
     IEnumerable<string>? selectSecurityValues;
     IEnumerable<string>? selectDoctypeValues;
+    FolderModel? folderModel = new();
+    bool onFolderProcessing = false;
 
     MudMessageBox? mbox { get; set; }
     MudMessageBox? docnoBox { get; set; }

@@ -14,7 +14,7 @@ namespace DFM.Frontend.Pages.Outbound
 {
     public partial class DocumentForm
     {
-
+        readonly int delayTime = 500;
         int docNumber = 1;
         long maxFileSize = 1024 * 1024 * 25; // 5 MB or whatever, don't just use max int
 
@@ -238,7 +238,60 @@ namespace DFM.Frontend.Pages.Outbound
         private async Task displayFolderDialogAsync()
         {
             bool? result = await mbox!.Show();
-            StateHasChanged();
+            if (result.HasValue)
+            {
+                if (result.Value)
+                {
+                    onFolderProcessing = true;
+                    string token = await accessToken.GetTokenAsync();
+                    await InvokeAsync(StateHasChanged);
+
+                    folderModel!.InboxType = InboxType.Outbound; // Inbound folder
+
+                    httpService.MediaType = MediaType.JSON;
+                    if (string.IsNullOrWhiteSpace(folderModel.id))
+                    {
+                        if (employee == null)
+                        {
+                            employee = await storageHelper.GetEmployeeProfileAsync();
+                        };
+                        folderModel.OrganizationID = employee.OrganizationID;
+                        // New folder
+                        string url = $"{endpoint.API}/api/v1/Folder/NewItem";
+                        var resultFolder = await httpService.Post<FolderModel, CommonResponseId>(url, folderModel, new AuthorizeHeader("bearer", token));
+
+                        if (resultFolder.Success)
+                        {
+                            await Notice.InvokeAsync("ທຸລະກຳຂອງທ່ານ(ສ້າງແຟ້ມ) ສຳເລັດ");
+                        }
+                        else
+                        {
+                            await Notice.InvokeAsync("ທຸລະກຳຂອງທ່ານ(ສ້າງແຟ້ມ) ຜິດພາດ");
+                        }
+                    }
+                    else
+                    {
+                        // Update folder
+                        string url = $"{endpoint.API}/api/v1/Folder/UpdateItem";
+                        var resultFolder = await httpService.Post<FolderModel, CommonResponseId>(url, folderModel, new AuthorizeHeader("bearer", token));
+
+                        if (resultFolder.Success)
+                        {
+                            await Notice.InvokeAsync("ທຸລະກຳຂອງທ່ານ(ສ້າງແຟ້ມ) ສຳເລັດ");
+                        }
+                        else
+                        {
+                            await Notice.InvokeAsync("ທຸລະກຳຂອງທ່ານ(ສ້າງແຟ້ມ) ຜິດພາດ");
+                        }
+                    }
+
+                    onFolderProcessing = false;
+                    
+                    await Task.Delay(delayTime);
+                    // Dispose folder
+                    folderModel = new();
+                }
+            }
 
         }
         private IEnumerable<string> MaxCharacters(string ch)

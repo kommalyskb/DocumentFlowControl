@@ -140,7 +140,7 @@ namespace DFM.Frontend.Pages
 
         void onMessageAlert(string message)
         {
-            AlertMessage(message, Defaults.Classes.Position.BottomRight, Severity.Error);
+            AlertMessage(message, Defaults.Classes.Position.BottomRight, Severity.Info);
         }
         void AlertMessage(string message, string position, Severity severity)
         {
