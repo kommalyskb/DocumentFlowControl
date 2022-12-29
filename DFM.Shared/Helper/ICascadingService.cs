@@ -12,6 +12,7 @@ namespace DFM.Shared.Helper
     public interface ICascadingService
     {
         Task<(bool Success, EmployeeModel Content)> GetEmployeeProfile(string token, string userId, CancellationToken cancellationToken = default);
+        Task<(bool Success, EmployeeModel Content)> GetEmployeeProfile(string token, CancellationToken cancellationToken = default);
     }
     public class CascadingService : ICascadingService
     {
@@ -28,6 +29,14 @@ namespace DFM.Shared.Helper
         {
             // Load tab
             string url = $"{endpoint.API}/api/v1/Employee/GetItem?fakeId={userId}";
+
+            var result = await httpService.Get<EmployeeModel>(url, new AuthorizeHeader("bearer", token), cancellationToken);
+            return (result.Success, result.Response);
+        }
+        public async Task<(bool Success, EmployeeModel Content)> GetEmployeeProfile(string token, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            // Load tab
+            string url = $"{endpoint.API}/api/v1/Employee/GetItem";
 
             var result = await httpService.Get<EmployeeModel>(url, new AuthorizeHeader("bearer", token), cancellationToken);
             return (result.Success, result.Response);

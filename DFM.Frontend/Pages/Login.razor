@@ -8,11 +8,39 @@
 @inject StorageConfiguration storageConf
 @inject NavigationManager nav
 @inject ISnackbar Snackbar
+@inject ICascadingService cascading
 @implements IDisposable
 <PageTitle>Login - DFM</PageTitle>
 
+<MudGrid Class="mt-16">
+    <MudItem xs="12" sm="12" md="4"></MudItem>
+    <MudItem xs="12" sm="12" md="4">
+        <MudPaper Class="pa-4">
+            <MudForm>
+                <h1>Authentication</h1>
+
+                <MudTextField T="string" Label="Username" Required="true" RequiredError="User name is required!" @bind-Value="@userName" />
+                
+                <MudTextField T="string" Label="Password" HelperText="Choose a strong password"
+                              InputType="InputType.Password"
+                              Required="true" @bind-Value="@password"
+                              RequiredError="Password is required!" />
+               
+                <div class="d-flex align-center justify-space-between">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="authorize" Class="ml-auto">Login</MudButton>
+                </div>
+            </MudForm>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="12" md="4"></MudItem>
+</MudGrid>
+
 @code {
+    string? userName;
+    string? password;
+    bool onProcessing = false;
     public void Dispose()
     {
     }
+    
 }
