@@ -156,5 +156,12 @@ namespace DFM.Testcases.Organization
 
             Assert.True(result.Response.Success);
         }
+
+        [Fact(DisplayName = "ດຶງເອົາ Employee ທີ່ມີ Role ຕາມ Filter")]
+        public async Task NC8()
+        {
+            var result = await organizationChart.GetEmployee("b98c5c46cebd430bb7d9fe596d73c459", "d35a9b8866fc4f59bcd36cd343eb471e");
+            Assert.True(result.Response.Success);
+        }
     }
 }

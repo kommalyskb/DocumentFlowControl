@@ -216,7 +216,7 @@ builder.Services.AddAuthentication(IdentityServerAuthenticationDefaults.Authenti
 var app = builder.Build();
 
 app.UseSwagger();
-
+app.AddForwardHeaders();
 // Enable middleware to serve Swagger-UI (HTML, JS, CSS, etc.) by specifying the Swagger JSON endpoint(s).
 var descriptionProvider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
 app.UseSwaggerUI(options =>

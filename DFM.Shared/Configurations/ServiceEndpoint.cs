@@ -10,5 +10,6 @@ namespace DFM.Shared.Configurations
     {
         public string? API { get; set; }
         public string? IdentityAPI { get; set; }
+        public string? Frontend { get; set; }
     }
 }

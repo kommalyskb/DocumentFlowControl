@@ -663,6 +663,31 @@ namespace DFM.Shared.Repository
             return (org.Response, result);
 
         }
+        public async Task<(CommonResponse Response, RoleTreeModel Content)> GetEmployee(string orgId, string roleId, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var org = await GetOrganization(orgId, cancellationToken);
+            if (!org.Response.Success)
+            {
+                return (org.Response, default!);
+            }
+
+            var rolesDto = org.Content.Chart.FirstOrDefault(x => x.Role.RoleID == roleId);
+
+            if (rolesDto == null)
+            {
+                return (new CommonResponse
+                {
+                    Code = nameof(ResultCode.NOT_FOUND),
+                    Success = false,
+                    Detail = "Role not found",
+                    Message = ResultCode.NOT_FOUND
+                }, default!);
+            }
+
+           
+            return (org.Response, rolesDto);
+
+        }
         public async Task<CommonResponse> NewOrganization(MultiLanguage multiLanguage, AttachmentModel attachmentModel, CancellationToken cancellationToken = default)
         {
             try

@@ -1,4 +1,5 @@
 ﻿using DFM.Shared.Common;
+using DFM.Shared.Configurations;
 using DFM.Shared.DTOs;
 using DFM.Shared.Entities;
 using DFM.Shared.Extensions;
@@ -12,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using MyCouch;
 using Redis.OM;
 using StackExchange.Redis;
+using System.Runtime.CompilerServices;
 
 namespace DFM.API.Controllers
 {
@@ -28,8 +30,13 @@ namespace DFM.API.Controllers
         private readonly IMinioService minio;
         private readonly IOrganizationChart organization;
         private readonly IRedisConnector redisConnector;
+        private readonly IEmailHelper emailHelper;
+        private readonly ServiceEndpoint endpoint;
+        private readonly SMTPConfig smtp;
 
-        public DocumentController(IDocumentTransaction documentTransaction, IRoleManager roleManager, IEmployeeManager employeeManager, IFolderManager folderManager, IMinioService minio, IOrganizationChart organization, IRedisConnector redisConnector)
+        public DocumentController(IDocumentTransaction documentTransaction, IRoleManager roleManager, IEmployeeManager employeeManager, 
+            IFolderManager folderManager, IMinioService minio, IOrganizationChart organization, IRedisConnector redisConnector,
+            IEmailHelper emailHelper, ServiceEndpoint endpoint, SMTPConfig smtp)
         {
             this.documentTransaction = documentTransaction;
             this.roleManager = roleManager;
@@ -38,6 +45,9 @@ namespace DFM.API.Controllers
             this.minio = minio;
             this.organization = organization;
             this.redisConnector = redisConnector;
+            this.emailHelper = emailHelper;
+            this.endpoint = endpoint;
+            this.smtp = smtp;
         }
 
         /// <summary>
@@ -261,7 +271,7 @@ namespace DFM.API.Controllers
                     request.DocumentModel.Recipients!.Add(rec);
                     // Set Document Data
                     request.DocumentModel.RawDatas!.Add(request.RawDocument!);
-
+                    List<Task> tasks = new List<Task>();
                     // Set Receiver if User select Send
                     // Set main receiver
                     if (!string.IsNullOrWhiteSpace(request.Main.Id))
@@ -406,6 +416,18 @@ namespace DFM.API.Controllers
                         // Get Email from main recipient
                         //
                         //
+                        var mainRole = await organization.GetEmployee(request.DocumentModel!.OrganizationID, receiverRole.Content!.id);
+                        var mainProfile = await employeeManager.GetProfile(mainRole.Content.Employee.UserID);
+                        var mailBody = emailHelper.NotificationMailBody($"{endpoint.Frontend}", $"{ownRoleTrace.Fullname.Name.Local}", $"{request.RawDocument.Title}");
+
+                        // Add to email task
+                        tasks.Add(emailHelper.Send(new EmailProperty
+                        {
+                            Body = mailBody,
+                            From = smtp.Username,
+                            To = new List<string> { mainProfile.Content.Contact.Email },
+                            Subject = $"ເອກະສານມາໃຫມ່ - {request.RawDocument.Title}"
+                        }));
 
                         // For receiver don't have profile yet, it will appear when someone click read
                         var main = new Reciepient
@@ -447,13 +469,16 @@ namespace DFM.API.Controllers
                     // Set Co-Process
                     if (request.CoProcesses!.Count > 0)
                     {
-                        // Get Email from coprocess recipient
-                        //
-                        //
-
+                        List<string> emails = new();
                         foreach (var item in request.CoProcesses)
                         {
-                            
+                            // Get Email from coprocess recipient
+                            //
+                            //
+                            var itemRole = await organization.GetEmployee(request.DocumentModel!.OrganizationID, item.Role.RoleID);
+                            var itemProfile = await employeeManager.GetProfile(itemRole.Content.Employee.UserID);
+
+                            emails.Add(itemProfile.Content.Contact.Email);
 
                             // For receiver don't have profile yet, it will appear when someone click read
                             var coUser = new Reciepient
@@ -489,6 +514,15 @@ namespace DFM.API.Controllers
                             // Set Reciepient
                             request.DocumentModel.Recipients!.Add(coUser);
                         }
+
+                        var mailBody = emailHelper.NotificationMailBody($"{endpoint.Frontend}", $"{ownRoleTrace.Fullname.Name.Local}", $"{request.RawDocument.Title}");
+                        tasks.Add(emailHelper.Send(new EmailProperty
+                        {
+                            Body = mailBody,
+                            From = smtp.Username,
+                            To = emails,
+                            Subject = $"ເອກະສານມາໃຫມ່ - {request.RawDocument.Title}"
+                        }));
                     }
 
                     #region ອັບເດດການນຳໃຊ້ ເລກທີ່ໃນ Folder ແລະ ກວດ ເລກທີ່ວ່າມີການໃຊ້ບໍ່ ຖ້າມີໃຫ້ໃຊ້ເລກທີຖັດໄປ
@@ -555,6 +589,8 @@ namespace DFM.API.Controllers
                         request.DocumentModel.ParentID = result.Id;
                         // New Record
                         await documentTransaction.NewDocument(request.DocumentModel, cancellationToken);
+                        // Send email
+                        await Task.WhenAll(tasks);
                     }
 
 
@@ -644,6 +680,9 @@ namespace DFM.API.Controllers
                         request.DocumentModel.RawDatas![indexData] = request.RawDocument;
                     }
 
+                    // Sender
+                    var sender = doc!.Content.Recipients!.FirstOrDefault(x => x.UId == request.Uid);
+
                     // Update owner recipient 
                     for (int i = 0; i < doc!.Content.Recipients!.Count; i++)
                     {
@@ -656,6 +695,8 @@ namespace DFM.API.Controllers
                             }
                         }
                     }
+
+                    List<Task> tasks = new List<Task>();
 
                     // Set Receiver if User select Send
                     // Set main receiver
@@ -800,6 +841,18 @@ namespace DFM.API.Controllers
                         // Get Email from main recipient
                         //
                         //
+                        var mainRole = await organization.GetEmployee(request.DocumentModel!.OrganizationID, receiverRole.Content!.id);
+                        var mainProfile = await employeeManager.GetProfile(mainRole.Content.Employee.UserID);
+                        var mailBody = emailHelper.NotificationMailBody($"{endpoint.Frontend}", $"{sender.RecipientInfo.Fullname.Name.Local}", $"{request.RawDocument.Title}");
+
+                        // Add to email task
+                        tasks.Add(emailHelper.Send(new EmailProperty
+                        {
+                            Body = mailBody,
+                            From = smtp.Username,
+                            To = new List<string> { mainProfile.Content.Contact.Email },
+                            Subject = $"ເອກະສານມາໃຫມ່ - {request.RawDocument.Title}"
+                        }));
 
                         // For receiver don't have profile yet, it will appear when someone click read
                         var main = new Reciepient
@@ -839,11 +892,16 @@ namespace DFM.API.Controllers
                     // Set Co-Process
                     if (request.CoProcesses!.Count > 0)
                     {
-                        // Get Email from coprocess recipient
-                        //
-                        //
+                        List<string> emails = new();
                         foreach (var item in request.CoProcesses)
                         {
+                            // Get Email from coprocess recipient
+                            //
+                            //
+                            var itemRole = await organization.GetEmployee(request.DocumentModel!.OrganizationID, item.Role.RoleID);
+                            var itemProfile = await employeeManager.GetProfile(itemRole.Content.Employee.UserID);
+                            emails.Add(itemProfile.Content.Contact.Email);
+
                             // For receiver don't have profile yet, it will appear when someone click read
                             var coUser = new Reciepient
                             {
@@ -878,6 +936,15 @@ namespace DFM.API.Controllers
                             // Set Reciepient
                             doc!.Content.Recipients!.Add(coUser);
                         }
+
+                        var mailBody = emailHelper.NotificationMailBody($"{endpoint.Frontend}", $"{sender.RecipientInfo.Fullname.Name.Local}", $"{request.RawDocument.Title}");
+                        tasks.Add(emailHelper.Send(new EmailProperty
+                        {
+                            Body = mailBody,
+                            From = smtp.Username,
+                            To = emails,
+                            Subject = $"ເອກະສານມາໃຫມ່ - {request.RawDocument.Title}"
+                        }));
                     }
 
                     
@@ -886,7 +953,8 @@ namespace DFM.API.Controllers
                     request.DocumentModel.Recipients = doc!.Content.Recipients!;
 
                     var result = await documentTransaction.EditDocument(request.DocumentModel, cancellationToken);
-
+                    // Send email
+                    await Task.WhenAll(tasks);
                     // Create new record if it's in condition
                     if (!isMainDisplay)
                     {
