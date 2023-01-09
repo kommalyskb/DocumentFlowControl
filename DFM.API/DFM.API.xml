@@ -44,6 +44,23 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
+        <member name="M:DFM.API.Controllers.DocumentController.GetPersonalReportV1(DFM.Shared.DTOs.GetPersonalReportRequest,System.Threading.CancellationToken)">
+            <summary>
+            ແມ່ນ API ທີ່ໃຊ້ດຶງຕົວເລກລາຍງານ
+            </summary>
+            <param name="request"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DFM.API.Controllers.DocumentController.GetPersonalReportV1(DFM.Shared.Common.TraceStatus,DFM.Shared.DTOs.GetPersonalReportRequest,System.Threading.CancellationToken)">
+            <summary>
+            ແມ່ນ API ທີ່ໃຊ້ດຶງເອົາລາຍລະອຽດຂອງເອກະສານຕາມ Report
+            </summary>
+            <param name="traceStatus"></param>
+            <param name="request"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
         <member name="M:DFM.API.Controllers.DocumentController.GetDocumentV1(System.String,System.Threading.CancellationToken)">
             <summary>
             v1.0.0 ແມ່ນ API ທີ່ໃຊ້ໃນການດຶງເອົາເອກະສານຕາມ Document ID

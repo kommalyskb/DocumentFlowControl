@@ -34,7 +34,7 @@ namespace DFM.API.Controllers
         private readonly ServiceEndpoint endpoint;
         private readonly SMTPConfig smtp;
 
-        public DocumentController(IDocumentTransaction documentTransaction, IRoleManager roleManager, IEmployeeManager employeeManager, 
+        public DocumentController(IDocumentTransaction documentTransaction, IRoleManager roleManager, IEmployeeManager employeeManager,
             IFolderManager folderManager, IMinioService minio, IOrganizationChart organization, IRedisConnector redisConnector,
             IEmailHelper emailHelper, ServiceEndpoint endpoint, SMTPConfig smtp)
         {
@@ -109,6 +109,70 @@ namespace DFM.API.Controllers
                     Response = result.Response,
                     RowCount = result.RowCount
                 });
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+
+        /// <summary>
+        /// ແມ່ນ API ທີ່ໃຊ້ດຶງຕົວເລກລາຍງານ
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [HttpPost("GetPersonalReport")]
+        [MapToApiVersion("1.0")]
+        [ProducesResponseType(typeof(PersonalReportSummary), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetPersonalReportV1([FromBody] GetPersonalReportRequest request, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            try
+            {
+                
+                var result = await documentTransaction.GetPersonalReport(request, cancellationToken);
+                return Ok(result);
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+        /// <summary>
+        /// ແມ່ນ API ທີ່ໃຊ້ດຶງເອົາລາຍລະອຽດຂອງເອກະສານຕາມ Report
+        /// </summary>
+        /// <param name="traceStatus"></param>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [HttpPost("DrillDownReport/{traceStatus}")]
+        [MapToApiVersion("1.0")]
+        [ProducesResponseType(typeof(PersonalReportSummary), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetPersonalReportV1(TraceStatus traceStatus, [FromBody] GetPersonalReportRequest request, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            try
+            {
+
+                var result = await documentTransaction.DrillDownReport(request, traceStatus, cancellationToken);
+                if (result == null)
+                {
+                    return BadRequest(new CommonResponse
+                    {
+                        Code = nameof(ResultCode.NOT_FOUND),
+                        Success = false,
+                        Detail = ResultCode.NOT_FOUND,
+                        Message = ResultCode.NOT_FOUND
+                    });
+                }
+                return Ok(result);
 
             }
             catch (Exception)
@@ -280,7 +344,7 @@ namespace DFM.API.Controllers
                         var receiverRole = await roleManager.GetRolePosition(request.Main.Id, cancellationToken);
                         string? rawDataId = Guid.NewGuid().ToString("N");
                         BehaviorStatus mainBehavior = BehaviorStatus.ProcessOnly;
-                        
+
                         // Check RawData should make dupplicate or not?
                         if (receiverRole.Content.RoleType == RoleTypeModel.InboundPrime)
                         {
@@ -379,7 +443,7 @@ namespace DFM.API.Controllers
                             else
                             {
                                 // Need to dupplicate
-                                
+
                                 // Set Document Data
                                 request.DocumentModel.RawDatas!.Add(new RawDocumentData
                                 {
@@ -416,18 +480,22 @@ namespace DFM.API.Controllers
                         // Get Email from main recipient
                         //
                         //
-                        var mainRole = await organization.GetEmployee(request.DocumentModel!.OrganizationID, receiverRole.Content!.id);
-                        var mainProfile = await employeeManager.GetProfile(mainRole.Content.Employee.UserID);
-                        var mailBody = emailHelper.NotificationMailBody($"{endpoint.Frontend}", $"{ownRoleTrace.Fullname.Name.Local}", $"{request.RawDocument.Title}");
-
-                        // Add to email task
-                        tasks.Add(emailHelper.Send(new EmailProperty
+                        if (smtp.IsActivate)
                         {
-                            Body = mailBody,
-                            From = smtp.Username,
-                            To = new List<string> { mainProfile.Content.Contact.Email },
-                            Subject = $"ເອກະສານມາໃຫມ່ - {request.RawDocument.Title}"
-                        }));
+                            var mainRole = await organization.GetEmployee(request.DocumentModel!.OrganizationID, receiverRole.Content!.id);
+                            var mainProfile = await employeeManager.GetProfile(mainRole.Content.Employee.UserID);
+                            var mailBody = emailHelper.NotificationMailBody($"{endpoint.Frontend}", $"{ownRoleTrace.Fullname.Name.Local}", $"{request.RawDocument.Title}");
+
+                            // Add to email task
+                            tasks.Add(emailHelper.Send(new EmailProperty
+                            {
+                                Body = mailBody,
+                                From = smtp.Username,
+                                To = new List<string> { mainProfile.Content.Contact.Email },
+                                Subject = $"ເອກະສານມາໃຫມ່ - {request.RawDocument.Title}"
+                            }));
+                        }
+
 
                         // For receiver don't have profile yet, it will appear when someone click read
                         var main = new Reciepient
@@ -475,10 +543,14 @@ namespace DFM.API.Controllers
                             // Get Email from coprocess recipient
                             //
                             //
-                            var itemRole = await organization.GetEmployee(request.DocumentModel!.OrganizationID, item.Role.RoleID);
-                            var itemProfile = await employeeManager.GetProfile(itemRole.Content.Employee.UserID);
+                            if (smtp.IsActivate)
+                            {
+                                var itemRole = await organization.GetEmployee(request.DocumentModel!.OrganizationID, item.Role.RoleID);
+                                var itemProfile = await employeeManager.GetProfile(itemRole.Content.Employee.UserID);
 
-                            emails.Add(itemProfile.Content.Contact.Email);
+                                emails.Add(itemProfile.Content.Contact.Email);
+                            }
+
 
                             // For receiver don't have profile yet, it will appear when someone click read
                             var coUser = new Reciepient
@@ -514,15 +586,18 @@ namespace DFM.API.Controllers
                             // Set Reciepient
                             request.DocumentModel.Recipients!.Add(coUser);
                         }
-
-                        var mailBody = emailHelper.NotificationMailBody($"{endpoint.Frontend}", $"{ownRoleTrace.Fullname.Name.Local}", $"{request.RawDocument.Title}");
-                        tasks.Add(emailHelper.Send(new EmailProperty
+                        if (smtp.IsActivate)
                         {
-                            Body = mailBody,
-                            From = smtp.Username,
-                            To = emails,
-                            Subject = $"ເອກະສານມາໃຫມ່ - {request.RawDocument.Title}"
-                        }));
+                            var mailBody = emailHelper.NotificationMailBody($"{endpoint.Frontend}", $"{ownRoleTrace.Fullname.Name.Local}", $"{request.RawDocument.Title}");
+                            tasks.Add(emailHelper.Send(new EmailProperty
+                            {
+                                Body = mailBody,
+                                From = smtp.Username,
+                                To = emails,
+                                Subject = $"ເອກະສານມາໃຫມ່ - {request.RawDocument.Title}"
+                            }));
+                        }
+
                     }
 
                     #region ອັບເດດການນຳໃຊ້ ເລກທີ່ໃນ Folder ແລະ ກວດ ເລກທີ່ວ່າມີການໃຊ້ບໍ່ ຖ້າມີໃຫ້ໃຊ້ເລກທີຖັດໄປ
@@ -565,7 +640,7 @@ namespace DFM.API.Controllers
                             await folderManager.EditFolder(folder.Content, cancellationToken);
                         }
                     }
-                   
+
                     #endregion
 
                     var result = await documentTransaction.NewDocument(request.DocumentModel, cancellationToken);
@@ -590,7 +665,11 @@ namespace DFM.API.Controllers
                         // New Record
                         await documentTransaction.NewDocument(request.DocumentModel, cancellationToken);
                         // Send email
-                        await Task.WhenAll(tasks);
+                        if (smtp.IsActivate)
+                        {
+                            await Task.WhenAll(tasks);
+                        }
+
                     }
 
 
@@ -626,7 +705,7 @@ namespace DFM.API.Controllers
 
                     // Update raw data in document model
                     var oldRawData = doc!.Content.RawDatas!.FirstOrDefault(x => x.DataID == request.RawDocument.DataID);
-                   
+
                     if (oldRawData != null)
                     {
                         #region ອັບເດດການນຳໃຊ້ ເລກທີ່ໃນ Folder ແລະ ກວດ ເລກທີ່ວ່າມີການໃຊ້ບໍ່ ຖ້າມີໃຫ້ໃຊ້ເລກທີຖັດໄປ
@@ -720,7 +799,7 @@ namespace DFM.API.Controllers
                             else
                             {
                                 // Dupplicate
-                                
+
                                 // Set Document Data
                                 request.DocumentModel.RawDatas!.Add(new RawDocumentData
                                 {
@@ -841,18 +920,21 @@ namespace DFM.API.Controllers
                         // Get Email from main recipient
                         //
                         //
-                        var mainRole = await organization.GetEmployee(request.DocumentModel!.OrganizationID, receiverRole.Content!.id);
-                        var mainProfile = await employeeManager.GetProfile(mainRole.Content.Employee.UserID);
-                        var mailBody = emailHelper.NotificationMailBody($"{endpoint.Frontend}", $"{sender.RecipientInfo.Fullname.Name.Local}", $"{request.RawDocument.Title}");
-
-                        // Add to email task
-                        tasks.Add(emailHelper.Send(new EmailProperty
+                        if (smtp.IsActivate)
                         {
-                            Body = mailBody,
-                            From = smtp.Username,
-                            To = new List<string> { mainProfile.Content.Contact.Email },
-                            Subject = $"ເອກະສານມາໃຫມ່ - {request.RawDocument.Title}"
-                        }));
+                            var mainRole = await organization.GetEmployee(request.DocumentModel!.OrganizationID, receiverRole.Content!.id);
+                            var mainProfile = await employeeManager.GetProfile(mainRole.Content.Employee.UserID);
+                            var mailBody = emailHelper.NotificationMailBody($"{endpoint.Frontend}", $"{sender.RecipientInfo.Fullname.Name.Local}", $"{request.RawDocument.Title}");
+
+                            // Add to email task
+                            tasks.Add(emailHelper.Send(new EmailProperty
+                            {
+                                Body = mailBody,
+                                From = smtp.Username,
+                                To = new List<string> { mainProfile.Content.Contact.Email },
+                                Subject = $"ເອກະສານມາໃຫມ່ - {request.RawDocument.Title}"
+                            }));
+                        }
 
                         // For receiver don't have profile yet, it will appear when someone click read
                         var main = new Reciepient
@@ -898,9 +980,13 @@ namespace DFM.API.Controllers
                             // Get Email from coprocess recipient
                             //
                             //
-                            var itemRole = await organization.GetEmployee(request.DocumentModel!.OrganizationID, item.Role.RoleID);
-                            var itemProfile = await employeeManager.GetProfile(itemRole.Content.Employee.UserID);
-                            emails.Add(itemProfile.Content.Contact.Email);
+                            if (smtp.IsActivate)
+                            {
+                                var itemRole = await organization.GetEmployee(request.DocumentModel!.OrganizationID, item.Role.RoleID);
+                                var itemProfile = await employeeManager.GetProfile(itemRole.Content.Employee.UserID);
+                                emails.Add(itemProfile.Content.Contact.Email);
+                            }
+
 
                             // For receiver don't have profile yet, it will appear when someone click read
                             var coUser = new Reciepient
@@ -936,25 +1022,31 @@ namespace DFM.API.Controllers
                             // Set Reciepient
                             doc!.Content.Recipients!.Add(coUser);
                         }
-
-                        var mailBody = emailHelper.NotificationMailBody($"{endpoint.Frontend}", $"{sender.RecipientInfo.Fullname.Name.Local}", $"{request.RawDocument.Title}");
-                        tasks.Add(emailHelper.Send(new EmailProperty
+                        if (smtp.IsActivate)
                         {
-                            Body = mailBody,
-                            From = smtp.Username,
-                            To = emails,
-                            Subject = $"ເອກະສານມາໃຫມ່ - {request.RawDocument.Title}"
-                        }));
+                            var mailBody = emailHelper.NotificationMailBody($"{endpoint.Frontend}", $"{sender.RecipientInfo.Fullname.Name.Local}", $"{request.RawDocument.Title}");
+                            tasks.Add(emailHelper.Send(new EmailProperty
+                            {
+                                Body = mailBody,
+                                From = smtp.Username,
+                                To = emails,
+                                Subject = $"ເອກະສານມາໃຫມ່ - {request.RawDocument.Title}"
+                            }));
+                        }
+
                     }
 
-                    
+
 
                     // Set recipient
                     request.DocumentModel.Recipients = doc!.Content.Recipients!;
 
                     var result = await documentTransaction.EditDocument(request.DocumentModel, cancellationToken);
                     // Send email
-                    await Task.WhenAll(tasks);
+                    if (smtp.IsActivate)
+                    {
+                        await Task.WhenAll(tasks);
+                    }
                     // Create new record if it's in condition
                     if (!isMainDisplay)
                     {

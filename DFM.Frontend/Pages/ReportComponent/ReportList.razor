@@ -1,0 +1,75 @@
+﻿<MudContainer>
+    <MudGrid>
+        <MudItem xs="12" sm="7">
+            <MudForm>
+                <MudDatePicker Disabled="onProcessing" @bind-Text="@startDate" Required="true" PickerVariant="PickerVariant.Inline" Label="ວັນທີເລີ່ມຕົ້ນ" HelperText="ວັນທີເລີ່ມຕົ້ນ" DateFormat="dd/MM/yyyy" />
+                <MudDatePicker Disabled="onProcessing" @bind-Text="@endDate" Required="true" PickerVariant="PickerVariant.Inline" Label="ວັນທີສິ້ນສຸດ" HelperText="ວັນທີສິ້ນສຸດ" DateFormat="dd/MM/yyyy" />
+                <MudButton Variant="Variant.Outlined" Color="Color.Primary" EndIcon="@Icons.Material.Filled.Search" OnClick="onSearch">ຄົ້ນຫາ</MudButton>
+            </MudForm>
+        </MudItem>
+        <MudItem xs="12" sm="12">
+            <div class="mud-table mud-sm-table mud-table-hover mud-elevation-1">
+                <div class="mud-table-container">
+                    <table class="mud-table-root">
+                        <thead class="mud-table-head">
+                            <tr class="mud-table-row">
+                                <th class="mud-table-cell">
+                                    ວັນທີເລີ່ມ
+                                </th>
+                                <th class="mud-table-cell">
+                                    ວັນທີສິ້ນສຸດ
+                                </th>
+                                <th class="mud-table-cell">
+                                    ລວມທັງໝົດ
+                                </th>
+                                <th class="mud-table-cell">
+                                    ສະບັບຮ່າງ
+                                </th>
+                                <th class="mud-table-cell">
+                                    ດຳເນີນການ
+                                </th>
+                                <th class="mud-table-cell">
+                                    ສຳເລັດແລ້ວ
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="mud-table-body">
+                            <tr class="mud-table-row">
+                                <td class="mud-table-cell">
+                                    @startDate
+                                </td>
+                                <td class="mud-table-cell">
+                                    @endDate
+                                </td>
+                                <td class="mud-table-cell">
+                                    @ReportSummary.Total
+                                </td>
+                                <td class="mud-table-cell">
+                                    @ReportSummary.Draft
+                                </td>
+                                <td class="mud-table-cell">
+                                    @ReportSummary.InProgress
+                                </td>
+                                <td class="mud-table-cell">
+                                    @ReportSummary.Finished
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+@code {
+    [Parameter] public EventCallback<GetPersonalReportRequest> OnSearch { get; set; }
+    [Parameter] public InboxType InboxType { get; set; }
+    [Parameter] public List<string>? RoleIDs { get; set; }
+    [Parameter] public PersonalReportSummary? ReportSummary { get; set; }
+    string? startDate;
+    string? endDate;
+    bool onProcessing;
+
+}

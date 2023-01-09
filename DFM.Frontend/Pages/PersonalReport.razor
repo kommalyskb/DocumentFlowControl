@@ -1,0 +1,36 @@
+﻿@page "/pages/report/{Link}"
+@inject IHttpService httpService
+@inject AccessTokenStorage accessToken
+@inject ServiceEndpoint endpoint
+@inject LocalStorageHelper storageHelper
+@inject IMinioService minio
+@inject StorageConfiguration storageConf
+@inject NavigationManager nav
+@inject ISnackbar Snackbar
+@implements IDisposable
+
+<PageTitle>Report - DFM</PageTitle>
+
+@if (Link == "inbound")
+{
+    <DFM.Frontend.Pages.ReportComponent.ReportList InboxType="InboxType.Inbound" OnSearch="onSearch" RoleIDs="roleIds" ReportSummary="reportSummary"></DFM.Frontend.Pages.ReportComponent.ReportList>
+}
+else if (Link == "outbound")
+{
+    <DFM.Frontend.Pages.ReportComponent.ReportList InboxType="InboxType.Outbound" OnSearch="onSearch" RoleIDs="roleIds" ReportSummary="reportSummary"></DFM.Frontend.Pages.ReportComponent.ReportList>
+}
+else
+{
+    <MudAlert Severity="Severity.Error">Sorry the content not found, invalid link or page</MudAlert>
+}
+
+
+@code {
+    [Parameter] public string? Link { get; set; }
+
+    List<string> roleIds = new();
+
+    public void Dispose()
+    {
+    }
+}

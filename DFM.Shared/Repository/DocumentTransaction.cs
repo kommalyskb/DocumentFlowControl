@@ -358,7 +358,8 @@ namespace DFM.Shared.Repository
                         limit: -1,
                         page: 0,
                         reduce: true,
-                        desc: false
+                        desc: false,
+                        cancellationToken
                     );
 
                     if (count.Rows.Count() == 0)
@@ -381,7 +382,8 @@ namespace DFM.Shared.Repository
                             limit: -1,
                             page: 0,
                             reduce: false,
-                            desc: false
+                            desc: false,
+                        cancellationToken
                         );
 
                     foreach (var item in result.Rows)
@@ -425,7 +427,8 @@ namespace DFM.Shared.Repository
                         limit: -1,
                         page: 0,
                         reduce: true,
-                        desc: false
+                        desc: false,
+                        cancellationToken
                     );
 
                     if (count.Rows.Count() == 0)
@@ -448,7 +451,8 @@ namespace DFM.Shared.Repository
                             limit: -1,
                             page: 0,
                             reduce: false,
-                            desc: false
+                            desc: false,
+                        cancellationToken
                         );
 
                     foreach (var item in result.Rows)
@@ -475,6 +479,167 @@ namespace DFM.Shared.Repository
                         Message = ResultCode.SUCCESS_OPERATION
                     });
                 }
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<PersonalReportSummary> GetPersonalReport(GetPersonalReportRequest request, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                int total = 0;
+                int draft = 0;
+                int inprogress = 0;
+                int finished = 0;
+
+                List<QueryReportRequest> requests = new List<QueryReportRequest>();
+                foreach (string roleID in request.roleIDs!)
+                {
+                    requests.Add(new QueryReportRequest
+                    {
+                        inboxType = request.inboxType,
+                        roleID = roleID
+                    });
+                }
+
+                List<QueryReportResponse> countDraft = await queryPersonalReport(requests, "report_draft", cancellationToken);
+                List<QueryReportResponse> countFinished = await queryPersonalReport(requests, "report_finished", cancellationToken);
+                List<QueryReportResponse> countInprogress = await queryPersonalReport(requests, "report_inprogress", cancellationToken);
+                var start = Math.Truncate(request.start);
+                var end = Math.Truncate(request.end);
+                if (countDraft.Count > 0)
+                {
+                    draft = countDraft.Where(x => x.createDate >= start && x.createDate <= end).Count();
+                }
+
+                if (countFinished.Count > 0)
+                {
+                    finished = countFinished.Where(x => x.createDate >= start && x.createDate <= end).Count();
+                }
+
+                if (countInprogress.Count > 0)
+                {
+                    inprogress = countInprogress.Where(x => x.createDate >= start && x.createDate <= end).Count();
+                }
+
+                total = draft + finished + inprogress;
+
+                return new PersonalReportSummary
+                {
+                    Total = total,
+                    InProgress = inprogress,
+                    Draft = draft,
+                    Finished = finished
+                };
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        private async Task<List<QueryReportResponse>> queryPersonalReport(List<QueryReportRequest> requests, string viewName, CancellationToken cancellationToken)
+        {
+            var result = await couchContext.ViewQueryAsync<QueryReportRequest, QueryReportResponse>
+                                (
+                                    couchDBHelper: read_couchDbHelper,
+                                    designName: "query",
+                                    viewName: viewName,
+                                    keys: requests.ToArray(),
+                                    limit: -1,
+                                    page: 0,
+                                    reduce: false,
+                                    desc: false,
+                                    cancellationToken
+                                );
+            return result.Rows.Select(x => x.Value).ToList();
+        }
+       
+
+        public async Task<IEnumerable<DocumentModel>> DrillDownReport(GetPersonalReportRequest request, TraceStatus docStatus, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                List<QueryReportRequest> requests = new List<QueryReportRequest>();
+                foreach (string roleID in request.roleIDs)
+                {
+                    requests.Add(new QueryReportRequest
+                    {
+                        inboxType = request.inboxType,
+                        roleID = roleID
+                    });
+                }
+                var start = Math.Truncate(request.start);
+                var end = Math.Truncate(request.end);
+                if (docStatus == TraceStatus.Draft)
+                {
+                    var countDraft = await couchContext.ViewQueryAsync<QueryReportRequest, QueryReportResponse>
+                    (
+                        couchDBHelper: read_couchDbHelper,
+                        designName: "query",
+                        viewName: "report_draft",
+                        keys: requests.ToArray(),
+                        limit: -1,
+                        page: 0,
+                        reduce: false,
+                        desc: false,
+                        cancellationToken
+                    );
+                    if (countDraft.RowCount > 0)
+                    {
+                        var result = countDraft.Rows.Where(x => x.Value.createDate >= start && x.Value.createDate <= end);
+                        return result.Select(x => x.Value.content)!;
+                    }
+                }
+                else if (docStatus == TraceStatus.InProgress)
+                {
+                    var countInprogress = await couchContext.ViewQueryAsync<QueryReportRequest, QueryReportResponse>
+                    (
+                        couchDBHelper: read_couchDbHelper,
+                        designName: "query",
+                        viewName: "report_inprogress",
+                        keys: requests.ToArray(),
+                        limit: -1,
+                        page: 0,
+                        reduce: false,
+                        desc: false,
+                        cancellationToken
+                    );
+                    if (countInprogress.RowCount > 0)
+                    {
+                        var result = countInprogress.Rows.Where(x => x.Value.createDate >= start && x.Value.createDate <= end);
+                        return result.Select(x => x.Value.content)!;
+                    }
+                }
+                else if (docStatus == TraceStatus.Completed || docStatus == TraceStatus.Terminated)
+                {
+                    var countFinished = await couchContext.ViewQueryAsync<QueryReportRequest, QueryReportResponse>
+                    (
+                        couchDBHelper: read_couchDbHelper,
+                        designName: "query",
+                        viewName: "report_finished",
+                        keys: requests.ToArray(),
+                        limit: -1,
+                        page: 0,
+                        reduce: false,
+                        desc: false,
+                        cancellationToken
+                    );
+                    if (countFinished.RowCount > 0)
+                    {
+                        var result = countFinished.Rows.Where(x => x.Value.createDate >= start && x.Value.createDate <= end);
+                        return result.Select(x => x.Value.content)!;
+                    }
+                }
+
+                // No content return
+                return null!;
 
             }
             catch (Exception)
