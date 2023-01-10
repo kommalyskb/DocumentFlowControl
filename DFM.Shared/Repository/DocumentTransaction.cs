@@ -13,6 +13,7 @@ using Redis.OM;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -488,14 +489,10 @@ namespace DFM.Shared.Repository
             }
         }
 
-        public async Task<PersonalReportSummary> GetPersonalReport(GetPersonalReportRequest request, CancellationToken cancellationToken = default)
+        public async Task<List<PersonalReportSummary>> GetPersonalReport(GetPersonalReportRequest request, CancellationToken cancellationToken = default)
         {
             try
             {
-                int total = 0;
-                int draft = 0;
-                int inprogress = 0;
-                int finished = 0;
 
                 List<QueryReportRequest> requests = new List<QueryReportRequest>();
                 foreach (string roleID in request.roleIDs!)
@@ -512,30 +509,91 @@ namespace DFM.Shared.Repository
                 List<QueryReportResponse> countInprogress = await queryPersonalReport(requests, "report_inprogress", cancellationToken);
                 var start = Math.Truncate(request.start);
                 var end = Math.Truncate(request.end);
+                List<PersonalReportSummary> result = new();
                 if (countDraft.Count > 0)
                 {
-                    draft = countDraft.Where(x => x.createDate >= start && x.createDate <= end).Count();
+                    var draftResult = countDraft
+                        .Where(x => x.createDate >= start && x.createDate <= end)
+                        .GroupBy(x => x.roleId)
+                        .Select(c => new ReportPersonalGroup { RoleID = c.Key, Count = c.Count() });
+                    //draft = countDraft.Where(x => x.createDate >= start && x.createDate <= end).Count();
+                    foreach (var item in draftResult)
+                    {
+                        var isExist = result.FirstOrDefault(x => x.RoleID!.Equals(item.RoleID));
+                        
+                        if (isExist == null)
+                        {
+                            result.Add(new PersonalReportSummary
+                            {
+                                RoleID = item.RoleID,
+                                Position = countDraft.FirstOrDefault(x => x.roleId == item.RoleID)!.roleName,
+                                Draft = item.Count
+                            });
+                        }
+                        else
+                        {
+                            result[result.IndexOf(isExist)].Draft = item.Count;
+                        }
+                        
+                    }
                 }
 
                 if (countFinished.Count > 0)
                 {
-                    finished = countFinished.Where(x => x.createDate >= start && x.createDate <= end).Count();
+                    var finishedResult = countFinished
+                        .Where(x => x.createDate >= start && x.createDate <= end)
+                        .GroupBy(x => x.roleId)
+                        .Select(c => new ReportPersonalGroup { RoleID = c.Key, Count = c.Count() });
+                    //finished = countFinished.Where(x => x.createDate >= start && x.createDate <= end).Count();
+                    foreach (var item in finishedResult)
+                    {
+                        var isExist = result.FirstOrDefault(x => x.RoleID!.Equals(item.RoleID));
+                        if (isExist == null)
+                        {
+                            result.Add(new PersonalReportSummary
+                            {
+                                RoleID = item.RoleID,
+                                Position = countFinished.FirstOrDefault(x => x.roleId == item.RoleID)!.roleName,
+                                Finished = item.Count
+                            });
+                        }
+                        else
+                        {
+                            result[result.IndexOf(isExist)].Finished = item.Count;
+                        }
+
+                    }
                 }
 
                 if (countInprogress.Count > 0)
                 {
-                    inprogress = countInprogress.Where(x => x.createDate >= start && x.createDate <= end).Count();
+                    var inprogressResult = countInprogress
+                        .Where(x => x.createDate >= start && x.createDate <= end)
+                        .GroupBy(x => x.roleId)
+                        .Select(c => new ReportPersonalGroup { RoleID = c.Key, Count = c.Count() });
+                    //inprogress = countInprogress.Where(x => x.createDate >= start && x.createDate <= end).Count();
+                    foreach (var item in inprogressResult)
+                    {
+                        var isExist = result.FirstOrDefault(x => x.RoleID!.Equals(item.RoleID));
+                        if (isExist == null)
+                        {
+                            result.Add(new PersonalReportSummary
+                            {
+                                RoleID = item.RoleID,
+                                Position = countInprogress.FirstOrDefault(x => x.roleId == item.RoleID)!.roleName,
+                                InProgress = item.Count
+                            });
+                        }
+                        else
+                        {
+                            result[result.IndexOf(isExist)].InProgress = item.Count;
+                        }
+
+                    }
                 }
 
-                total = draft + finished + inprogress;
 
-                return new PersonalReportSummary
-                {
-                    Total = total,
-                    InProgress = inprogress,
-                    Draft = draft,
-                    Finished = finished
-                };
+                return result;
             }
             catch (Exception)
             {

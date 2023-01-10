@@ -8,9 +8,21 @@ namespace DFM.Shared.DTOs
 {
     public class PersonalReportSummary
     {
-        public int Total { get; set; }
+        public int Total { 
+            get
+            {
+                return Draft + InProgress + Finished;
+            }
+        }
         public int Draft { get; set; }
         public int InProgress { get; set; }
         public int Finished { get; set; }
+        public string? Position { get; set; }
+        public string? RoleID { get; set; }
+    }
+    public class ReportPersonalGroup
+    {
+        public string? RoleID { get; set; }
+        public int Count { get; set; }
     }
 }

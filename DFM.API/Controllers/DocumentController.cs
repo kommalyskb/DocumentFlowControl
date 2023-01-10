@@ -127,7 +127,7 @@ namespace DFM.API.Controllers
         /// <returns></returns>
         [HttpPost("GetPersonalReport")]
         [MapToApiVersion("1.0")]
-        [ProducesResponseType(typeof(PersonalReportSummary), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<PersonalReportSummary>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetPersonalReportV1([FromBody] GetPersonalReportRequest request, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -156,7 +156,7 @@ namespace DFM.API.Controllers
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(PersonalReportSummary), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetPersonalReportV1(TraceStatus traceStatus, [FromBody] GetPersonalReportRequest request, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IActionResult> DrillDownReportV1(TraceStatus traceStatus, [FromBody] GetPersonalReportRequest request, CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {

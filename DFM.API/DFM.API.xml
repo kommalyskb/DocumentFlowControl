@@ -52,7 +52,7 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:DFM.API.Controllers.DocumentController.GetPersonalReportV1(DFM.Shared.Common.TraceStatus,DFM.Shared.DTOs.GetPersonalReportRequest,System.Threading.CancellationToken)">
+        <member name="M:DFM.API.Controllers.DocumentController.DrillDownReportV1(DFM.Shared.Common.TraceStatus,DFM.Shared.DTOs.GetPersonalReportRequest,System.Threading.CancellationToken)">
             <summary>
             ແມ່ນ API ທີ່ໃຊ້ດຶງເອົາລາຍລະອຽດຂອງເອກະສານຕາມ Report
             </summary>

@@ -1,10 +1,11 @@
 ﻿<MudContainer>
     <MudGrid>
+        
         <MudItem xs="12" sm="7">
             <MudForm>
-                <MudDatePicker Disabled="onProcessing" @bind-Text="@startDate" Required="true" PickerVariant="PickerVariant.Inline" Label="ວັນທີເລີ່ມຕົ້ນ" HelperText="ວັນທີເລີ່ມຕົ້ນ" DateFormat="dd/MM/yyyy" />
-                <MudDatePicker Disabled="onProcessing" @bind-Text="@endDate" Required="true" PickerVariant="PickerVariant.Inline" Label="ວັນທີສິ້ນສຸດ" HelperText="ວັນທີສິ້ນສຸດ" DateFormat="dd/MM/yyyy" />
-                <MudButton Variant="Variant.Outlined" Color="Color.Primary" EndIcon="@Icons.Material.Filled.Search" OnClick="onSearch">ຄົ້ນຫາ</MudButton>
+                <MudDatePicker Disabled="OnProcessing" @bind-Text="@startDate" Required="true" PickerVariant="PickerVariant.Inline" Label="ວັນທີເລີ່ມຕົ້ນ" HelperText="ວັນທີເລີ່ມຕົ້ນ" DateFormat="dd/MM/yyyy" />
+                <MudDatePicker Disabled="OnProcessing" @bind-Text="@endDate" Required="true" PickerVariant="PickerVariant.Inline" Label="ວັນທີສິ້ນສຸດ" HelperText="ວັນທີສິ້ນສຸດ" DateFormat="dd/MM/yyyy" />
+                <MudButton Disabled="OnProcessing" Variant="Variant.Outlined" Color="Color.Primary" EndIcon="@Icons.Material.Filled.Search" OnClick="onSearch">ຄົ້ນຫາ</MudButton>
             </MudForm>
         </MudItem>
         <MudItem xs="12" sm="12">
@@ -13,6 +14,9 @@
                     <table class="mud-table-root">
                         <thead class="mud-table-head">
                             <tr class="mud-table-row">
+                                <th class="mud-table-cell">
+                                    ຕຳແໜ່ງ
+                                </th>
                                 <th class="mud-table-cell">
                                     ວັນທີເລີ່ມ
                                 </th>
@@ -34,32 +38,49 @@
                             </tr>
                         </thead>
                         <tbody class="mud-table-body">
-                            <tr class="mud-table-row">
-                                <td class="mud-table-cell">
-                                    @startDate
-                                </td>
-                                <td class="mud-table-cell">
-                                    @endDate
-                                </td>
-                                <td class="mud-table-cell">
-                                    @ReportSummary.Total
-                                </td>
-                                <td class="mud-table-cell">
-                                    @ReportSummary.Draft
-                                </td>
-                                <td class="mud-table-cell">
-                                    @ReportSummary.InProgress
-                                </td>
-                                <td class="mud-table-cell">
-                                    @ReportSummary.Finished
-                                </td>
-                            </tr>
+                            @if (!ReportSummary!.IsNullOrEmpty())
+                            {
+                                foreach (var item in ReportSummary!)
+                                {
+                                    <tr class="mud-table-row">
+                                        <td class="mud-table-cell">
+                                            @item.Position
+                                        </td>
+                                        <td class="mud-table-cell">
+                                            @startDate
+                                        </td>
+                                        <td class="mud-table-cell">
+                                            @endDate
+                                        </td>
+                                        <td class="mud-table-cell">
+                                            @item.Total
+                                        </td>
+                                        <td class="mud-table-cell">
+                                            <MudButton Variant="Variant.Text" Color="Color.Secondary" OnClick="@(() => onReportClick(TraceStatus.Draft, item.RoleID!))">@item.Draft</MudButton>
+                                        </td>
+                                        <td class="mud-table-cell">
+                                            <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => onReportClick(TraceStatus.InProgress, item.RoleID!))">@item.InProgress</MudButton>
+                                        </td>
+                                        <td class="mud-table-cell">
+                                            <MudButton Variant="Variant.Text" Color="Color.Success" OnClick="@(() => onReportClick(TraceStatus.Completed, item.RoleID!))">@item.Finished</MudButton>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            
                         </tbody>
                     </table>
                 </div>
             </div>
             
         </MudItem>
+
+        @if (OnProcessing)
+        {
+            <MudItem xs="12" md="12">
+                <MudProgressLinear Color="Color.Primary" Indeterminate="true" />
+            </MudItem>
+        }
     </MudGrid>
 </MudContainer>
 
@@ -67,9 +88,11 @@
     [Parameter] public EventCallback<GetPersonalReportRequest> OnSearch { get; set; }
     [Parameter] public InboxType InboxType { get; set; }
     [Parameter] public List<string>? RoleIDs { get; set; }
-    [Parameter] public PersonalReportSummary? ReportSummary { get; set; }
+    [Parameter] public List<PersonalReportSummary>? ReportSummary { get; set; }
+    [Parameter] public bool OnProcessing { get; set; }
+    [Parameter] public EventCallback<ReportClickDTO> OnReportItemClick { get; set; }
+
     string? startDate;
     string? endDate;
-    bool onProcessing;
 
 }

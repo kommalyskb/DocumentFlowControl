@@ -51,7 +51,8 @@ namespace DFM.Testcases.Report
         [Fact]
         public async Task PersonalReport()
         {
-            List<string> roleIDs = new List<string> { "b0bdfe59e30c434a8d990610c1e93aa0" };
+            List<string> roleIDs = new List<string> { "b0bdfe59e30c434a8d990610c1e93aa0", "fba6e7d73a044f84a371d615b2ffbf68" };
+
             var result = await documentService.GetPersonalReport(new GetPersonalReportRequest
             {
                 // InboxType.Inbound, roleIDs, 20221201000000, 20231231000000
@@ -67,7 +68,7 @@ namespace DFM.Testcases.Report
         [Fact]
         public async Task DrillDownReport()
         {
-            List<string> roleIDs = new List<string> { "b0bdfe59e30c434a8d990610c1e93aa0" };
+            List<string> roleIDs = new List<string> { "b0bdfe59e30c434a8d990610c1e93aa0", "fba6e7d73a044f84a371d615b2ffbf68" };
             var result = await documentService.DrillDownReport(new GetPersonalReportRequest
             {
                 // InboxType.Inbound, roleIDs, 20221201000000, 20231231000000
