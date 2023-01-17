@@ -23,13 +23,13 @@ var builder = WebApplication.CreateBuilder(args);
 string? CorsPolicy = "CorsPolicy";
 string? XmlCommentsFileName = "DFM.API.xml";
 
-#region Change appsettings when in develop
-#if DEBUG
-builder.Configuration.AddJsonFile("appsettings.Development.json", false, true);
-#else
-builder.Configuration.AddJsonFile("appsettings.json", false, true);
-#endif
-#endregion
+//#region Change appsettings when in develop
+//#if DEBUG
+//builder.Configuration.AddJsonFile("appsettings.Development.json", false, true);
+//#else
+//builder.Configuration.AddJsonFile("appsettings.json", false, true);
+//#endif
+//#endregion
 
 #region Custom log used serial log
 
