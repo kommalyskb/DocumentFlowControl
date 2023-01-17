@@ -2,6 +2,7 @@
 using DFM.Shared.Configurations;
 using DFM.Shared.DTOs;
 using DFM.Shared.Entities;
+using DFM.Shared.Extensions;
 using DFM.Shared.Helper;
 using DFM.Shared.Interfaces;
 using DFM.Shared.Resources;
@@ -24,13 +25,22 @@ namespace DFM.API.Controllers
         private readonly IIdentityHelper identityHelper;
         private readonly IHttpService httpService;
         private readonly ServiceEndpoint endpoint;
+        private readonly IAESHelper aes;
+        private readonly AESConfig aesConf;
+        private readonly IEmailHelper emailHelper;
+        private readonly SMTPConfig smtp;
 
-        public EmployeeController(IEmployeeManager employeeManager, IIdentityHelper identityHelper, IHttpService httpService, ServiceEndpoint endpoint)
+        public EmployeeController(IEmployeeManager employeeManager, IIdentityHelper identityHelper, IHttpService httpService, 
+            ServiceEndpoint endpoint, IAESHelper aes, AESConfig aesConf, IEmailHelper emailHelper, SMTPConfig smtp)
         {
             this.employeeManager = employeeManager;
             this.identityHelper = identityHelper;
             this.httpService = httpService;
             this.endpoint = endpoint;
+            this.aes = aes;
+            this.aesConf = aesConf;
+            this.emailHelper = emailHelper;
+            this.smtp = smtp;
         }
 
         [HttpGet("GetItem")]
@@ -123,6 +133,35 @@ namespace DFM.API.Controllers
                     var reqUserContent = await reqUser.HttpResponseMessage.Content.ReadAsStringAsync();
                     var userResponse = JsonSerializer.Deserialize<UserRegisterRequestResponse>(reqUserContent);
                     request.id = userResponse?.id;
+                    request.UserID = userResponse?.id;
+                    string password = $"{request.Password}@Dfm.codecamp";
+                    // Send email
+                    string emailBody = emailHelper.RegisterMailBody($"{request.Name.Local} {request.FamilyName.Local}", request.Username, request.Password);
+                    await emailHelper.Send(new EmailProperty
+                    {
+                        Body = emailBody,
+                        From = smtp.Username,
+                        To = new List<string> { request.Contact.Email },
+                        Subject = $"ລົງທະບຽນນຳໃຊ້ລະບົບຈໍລະຈອນເອກະສານ"
+                    });
+
+                    // Set password
+                    await httpService.Post<UserResetRequest>($"{endpoint.IdentityAPI}/api/Users/ChangePassword", new UserResetRequest
+                    {
+                        userId = userResponse?.id,
+                        password = password,
+                        confirmPassword = password
+
+                    }, new AuthorizeHeader("bearer", checkAdminToken.Token), cancellationToken);
+
+                    if (aesConf.Base == BaseConfig.HEX)
+                    {
+                        request.Password = aes.Encrypt(password, aesConf.Key.FromHEX(), aesConf.IV.FromHEX()).ToHEX();
+                    }
+                    else
+                    {
+                        request.Password = aes.Encrypt(password, aesConf.Key.FromBase64(), aesConf.IV.FromBase64()).ToBase64();
+                    }
                 }
                 else
                 {

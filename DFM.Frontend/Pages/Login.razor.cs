@@ -16,14 +16,18 @@ namespace DFM.Frontend.Pages
             onProcessing = true;
             string url = $"{endpoint.API}/api/v1/Connected/token";
             httpService.MediaType = MediaType.JSON;
+            if (userName != "admin")
+            {
+                password = $"{password}@Dfm.codecamp";
+            }
             TokenEndPointRequest request = new TokenEndPointRequest
             {
                 Username = userName,
                 Password = password,
-                ClientID = "DFM_Frontend", // create client for production
+                ClientID = identity.ClientID, // create client for production
                 GrantType = "password",
-                Secret = "", // Get secret
-                Scope = "openid profile DFM_API_SCOPE"
+                Secret = identity.Secret, // Get secret
+                Scope = identity.Scope
             };
             var result = await httpService.Post<TokenEndPointRequest, TokenEndPointResponse>(url, request);
             onProcessing = false;
@@ -36,7 +40,16 @@ namespace DFM.Frontend.Pages
 
                 await storageHelper.SetEmployeeProfileAsync(employeeProfile.Content);
 
-                nav.NavigateTo("/", true);
+                if (userName == "admin")
+                {
+                    nav.NavigateTo("/setup", true);
+                }
+                else
+                {
+                    nav.NavigateTo("/", true);
+
+                }
+
             }
             else
             {

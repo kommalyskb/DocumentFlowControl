@@ -38,7 +38,7 @@ namespace DFM.Frontend.Pages
                 employee = await storageHelper.GetEmployeeProfileAsync();
             }
             // Load tab
-            string url = $"{endpoint.API}/api/v1/Organization/GetRole?fakeId={employee.id}";
+            string url = $"{endpoint.API}/api/v1/Organization/GetRole";
             token = await accessToken.GetTokenAsync();
 
             var result = await httpService.Get<IEnumerable<TabItemDto>>(url, new AuthorizeHeader("bearer", token));

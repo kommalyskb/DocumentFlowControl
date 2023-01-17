@@ -8,7 +8,7 @@
 @inject LocalStorageHelper storageHelper
 <MudContainer>
     <MudGrid>
-        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+       @* <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
             <MudSelect @bind-Value="roleId" T="string" HelperText="ເລືອກ ຈຳລອງ ຕຳແໜ່ງ" Label="ຈຳລອງຕຳແໜ່ງ" Variant="Variant.Text">
                 @if (demoUser is not null)
                 {
@@ -33,7 +33,7 @@
         </MudItem>
         <MudItem xs="12" md="3" Class="d-flex flex-grow-1 gap-4">
             <MudField>@selectModel.Employee.FamilyName.Local</MudField>
-        </MudItem>
+        </MudItem>*@
     </MudGrid>
 </MudContainer>
 

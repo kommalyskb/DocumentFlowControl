@@ -15,6 +15,7 @@ namespace DFM.Frontend.Shared
         [Inject] AccessTokenStorage accessToken { get; set; }
         [Inject] public IHttpService httpService { get; set; }
         [Inject] public ServiceEndpoint endpoint { get; set; }
+        [Inject] public FrontendIdentity identity { get; set; }
 
         string token = "";
         public int State = 0;
@@ -42,9 +43,9 @@ namespace DFM.Frontend.Shared
                 {
                     var refreshTokenReq = new RefreshTokenEndPointRequest
                     {
-                        ClientID = "dfm_frontend",
+                        ClientID = identity.ClientID,
                         RefreshToken = refreshToken,
-                        Secret = "a401b0a6-59e0-2255-513f-4b7c77bba237"
+                        Secret = identity.Secret
                     };
                     var refreshTokenResult = await httpService.Post<RefreshTokenEndPointRequest, TokenEndPointResponse, CommonResponse>($"{endpoint.API}/api/v1/Connect/refreshToken", refreshTokenReq);
                     if (refreshTokenResult.Success)

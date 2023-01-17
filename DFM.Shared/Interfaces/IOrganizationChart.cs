@@ -11,7 +11,7 @@ namespace DFM.Shared.Interfaces
 {
     public interface IOrganizationChart
     {
-        Task<CommonResponse> NewOrganization(MultiLanguage multiLanguage, AttachmentModel attachmentModel, CancellationToken cancellationToken = default);
+        Task<CommonResponseId> NewOrganization(MultiLanguage multiLanguage, AttachmentModel attachmentModel, CancellationToken cancellationToken = default);
         Task<CommonResponse> AddRoleAndEmployee(string id, RoleTreeModel roleTreeModel, CancellationToken cancellationToken = default);
         Task<(CommonResponse Response, OrganizationModel Content)> GetOrganization(string id, CancellationToken cancellationToken = default);
         Task<CommonResponse> RemoveRoleAndEmployee(string id, string roleId, CancellationToken cancellationToken = default);

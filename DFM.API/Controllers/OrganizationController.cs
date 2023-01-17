@@ -156,11 +156,13 @@ namespace DFM.API.Controllers
 
         [HttpPost("NewItem")]
         [MapToApiVersion("1.0")]
-        [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CommonResponseId), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> NewItemV1([FromBody] NewOrganizationRequest request, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return Ok();
+            var result = await organizationChart.NewOrganization(request.Name, request.Attachment, cancellationToken);
+
+            return Ok(result);
         }
         [HttpPost("SavePosition/{orgId}")]
         [MapToApiVersion("1.0")]

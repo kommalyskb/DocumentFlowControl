@@ -41,6 +41,9 @@ builder.Services.AddSingleton(storageConf);
 var envConf = builder.Configuration.GetSection(nameof(EnvConf)).Get<EnvConf>();
 builder.Services.AddSingleton(envConf);
 
+var frontendSts = builder.Configuration.GetSection(nameof(FrontendIdentity)).Get<FrontendIdentity>();
+builder.Services.AddSingleton(frontendSts);
+
 // Redis Cache for IDistributedCache
 var redisOptions = ConfigurationOptions.Parse($"{redisConf.Server}:{redisConf.Port}");
 //redisOptions.User = redisConf.User;
@@ -57,6 +60,7 @@ builder.Services.AddScoped<AccessTokenStorage>();
 builder.Services.AddScoped<LocalStorageHelper>();
 builder.Services.AddScoped<ICascadingService, CascadingService>();
 builder.Services.AddSingleton<IMinioService, MinioService>();
+builder.Services.AddSingleton<IAESHelper,  AESHelper>();
 //builder.Services.AddScoped<IJSRuntime, JSRuntime>();
 builder.Services.AddMudServices();
 

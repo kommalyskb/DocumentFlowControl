@@ -1,8 +1,9 @@
 ﻿@inherits LayoutComponentBase
+@inject NavigationManager UriHelper
 
 <PageTitle>DFM.Frontend</PageTitle>
 <MudThemeProvider />
-<MudDialogProvider/>
+<MudDialogProvider />
 <MudSnackbarProvider />
 <MudLayout>
     <MudAppBar Color="Color.Primary" Fixed="false" Dense="true">
@@ -15,13 +16,16 @@
         <NavMenu OpenDrawer="ToggleMenu" IsOpen="@_drawerOpen" />
     </MudDrawer>
     <MudMainContent>
-        @*<CustomAuthorizeView>
+        <CustomAuthorizeView>
             <Authorized>
-            @Body
+                @Body
             </Authorized>
-
-            </CustomAuthorizeView>*@
-        @Body
+            <NotAuthorized>
+                @{
+                    UriHelper.NavigateTo("/authorize");
+                }
+            </NotAuthorized>
+        </CustomAuthorizeView>
 
     </MudMainContent>
 

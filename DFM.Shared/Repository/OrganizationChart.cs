@@ -688,7 +688,7 @@ namespace DFM.Shared.Repository
             return (org.Response, rolesDto);
 
         }
-        public async Task<CommonResponse> NewOrganization(MultiLanguage multiLanguage, AttachmentModel attachmentModel, CancellationToken cancellationToken = default)
+        public async Task<CommonResponseId> NewOrganization(MultiLanguage multiLanguage, AttachmentModel attachmentModel, CancellationToken cancellationToken = default)
         {
             try
             {

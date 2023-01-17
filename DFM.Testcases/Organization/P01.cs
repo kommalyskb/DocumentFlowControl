@@ -52,6 +52,18 @@ namespace DFM.Testcases.Organization
             employeeManager = new EmployeeManager(couchContext, dBConfig, redisConnector, organizationChart);
             roleManager = new RoleManager(couchContext, dBConfig, redisConnector, organizationChart);
         }
+
+        [Fact(DisplayName = "ສ້າງ Organization ໃຫມ່")]
+        public async Task NC15()
+        {
+            var result = await organizationChart.NewOrganization(new MultiLanguage
+            {
+
+            }, new AttachmentModel
+            {
+
+            });
+        }
         [Fact(DisplayName = "ເພີ່ມ Role, Employee ເຂົ້າ ໄປໃນ Organization")]
         public async Task NC1()
         {

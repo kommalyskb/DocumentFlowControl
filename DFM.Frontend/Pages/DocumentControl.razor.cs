@@ -89,7 +89,7 @@ namespace DFM.Frontend.Pages
                         employee = await storageHelper.GetEmployeeProfileAsync();
                     }
                     await InvokeAsync(StateHasChanged);
-                    string url = $"{endpoint.API}/api/v1/Document/SaveDocument/{roleId}?fakeId={employee.id}";
+                    string url = $"{endpoint.API}/api/v1/Document/SaveDocument/{roleId}";
                     string token = await accessToken.GetTokenAsync();
 
                     // Set current status to delete
@@ -146,7 +146,7 @@ namespace DFM.Frontend.Pages
                     // Delete button had fire
                     onProcessing = true;
                     await InvokeAsync(StateHasChanged);
-                    string url = $"{endpoint.API}/api/v1/Document/SaveDocument/{roleId}?fakeId={employee.id}";
+                    string url = $"{endpoint.API}/api/v1/Document/SaveDocument/{roleId}";
                     string token = await accessToken.GetTokenAsync();
 
                     // Set current status to delete
@@ -233,7 +233,7 @@ namespace DFM.Frontend.Pages
                     {
                         employee = await storageHelper.GetEmployeeProfileAsync();
                     }
-                    string url = $"{endpoint.API}/api/v1/Document/SaveDocument/{roleId}?fakeId={employee.id}";
+                    string url = $"{endpoint.API}/api/v1/Document/SaveDocument/{roleId}";
                     string token = await accessToken.GetTokenAsync();
 
                     // Set current status to delete
@@ -339,7 +339,7 @@ namespace DFM.Frontend.Pages
                     {
                         employee = await storageHelper.GetEmployeeProfileAsync();
                     }
-                    string url = $"{endpoint.API}/api/v1/Document/SaveDocument/{roleId}?fakeId={employee.id}";
+                    string url = $"{endpoint.API}/api/v1/Document/SaveDocument/{roleId}";
                     string token = await accessToken.GetTokenAsync();
 
                     // Upload file via Minio SDK
@@ -443,7 +443,7 @@ namespace DFM.Frontend.Pages
             {
                 employee = await storageHelper.GetEmployeeProfileAsync();
             }
-            string url = $"{endpoint.API}/api/v1/Document/SaveDocument/{roleId}?fakeId={employee.id}";
+            string url = $"{endpoint.API}/api/v1/Document/SaveDocument/{roleId}";
             string token = await accessToken.GetTokenAsync();
 
              // Bind Files
@@ -487,7 +487,7 @@ namespace DFM.Frontend.Pages
             {
                 employee = await storageHelper.GetEmployeeProfileAsync();
             }
-            string url = $"{endpoint.API}/api/v1/Document/SaveDocument/{roleId}?fakeId={employee.id}";
+            string url = $"{endpoint.API}/api/v1/Document/SaveDocument/{roleId}";
             string token = await accessToken.GetTokenAsync();
 
             // Upload file via Minio SDK
