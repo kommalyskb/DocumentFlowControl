@@ -126,6 +126,18 @@ Console.WriteLine($"-----------AES Configurations----------");
 Console.WriteLine(JsonSerializer.Serialize(aesConf));
 Console.WriteLine($"-------------------------------------------");
 
+var envConf = builder.Configuration.GetSection(nameof(EnvConf)).Get<EnvConf>();
+builder.Services.AddSingleton(envConf);
+Console.WriteLine($"-----------EnvConf Configurations----------");
+Console.WriteLine(JsonSerializer.Serialize(envConf));
+Console.WriteLine($"-------------------------------------------");
+
+var frontendSts = builder.Configuration.GetSection(nameof(FrontendIdentity)).Get<FrontendIdentity>();
+builder.Services.AddSingleton(frontendSts);
+Console.WriteLine($"-----------Frontend OpenID Configurations----------");
+Console.WriteLine(JsonSerializer.Serialize(frontendSts));
+Console.WriteLine($"-------------------------------------------");
+
 // Redis Cache for IDistributedCache
 //var redisOptions = ConfigurationOptions.Parse($"{redisConf.Server}:{redisConf.Port}, password={redisConf.Password}");
 //redisOptions.User = redisConf.User;
