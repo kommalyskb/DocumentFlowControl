@@ -118,6 +118,8 @@ var smtpConf = builder.Configuration.GetSection(nameof(SMTPConfig)).Get<SMTPConf
 builder.Services.AddSingleton(smtpConf);
 Console.WriteLine($"-----------SMTP Configurations----------");
 Console.WriteLine(JsonSerializer.Serialize(smtpConf));
+Console.WriteLine(smtpConf.Username);
+Console.WriteLine(smtpConf.Password);
 Console.WriteLine($"-------------------------------------------");
 
 var aesConf = builder.Configuration.GetSection(nameof(AESConfig)).Get<AESConfig>();
