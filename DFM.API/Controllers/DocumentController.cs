@@ -32,11 +32,11 @@ namespace DFM.API.Controllers
         private readonly IRedisConnector redisConnector;
         private readonly IEmailHelper emailHelper;
         private readonly ServiceEndpoint endpoint;
-        private readonly SMTPConfig smtp;
+        private readonly SMTPConf smtp;
 
         public DocumentController(IDocumentTransaction documentTransaction, IRoleManager roleManager, IEmployeeManager employeeManager,
             IFolderManager folderManager, IMinioService minio, IOrganizationChart organization, IRedisConnector redisConnector,
-            IEmailHelper emailHelper, ServiceEndpoint endpoint, SMTPConfig smtp)
+            IEmailHelper emailHelper, ServiceEndpoint endpoint, SMTPConf smtp)
         {
             this.documentTransaction = documentTransaction;
             this.roleManager = roleManager;
@@ -490,7 +490,7 @@ namespace DFM.API.Controllers
                             tasks.Add(emailHelper.Send(new EmailProperty
                             {
                                 Body = mailBody,
-                                From = smtp.Username,
+                                From = smtp.Email,
                                 To = new List<string> { mainProfile.Content.Contact.Email },
                                 Subject = $"ເອກະສານມາໃຫມ່ - {request.RawDocument.Title}"
                             }));
@@ -592,7 +592,7 @@ namespace DFM.API.Controllers
                             tasks.Add(emailHelper.Send(new EmailProperty
                             {
                                 Body = mailBody,
-                                From = smtp.Username,
+                                From = smtp.Email,
                                 To = emails,
                                 Subject = $"ເອກະສານມາໃຫມ່ - {request.RawDocument.Title}"
                             }));
@@ -930,7 +930,7 @@ namespace DFM.API.Controllers
                             tasks.Add(emailHelper.Send(new EmailProperty
                             {
                                 Body = mailBody,
-                                From = smtp.Username,
+                                From = smtp.Email,
                                 To = new List<string> { mainProfile.Content.Contact.Email },
                                 Subject = $"ເອກະສານມາໃຫມ່ - {request.RawDocument.Title}"
                             }));
@@ -1028,7 +1028,7 @@ namespace DFM.API.Controllers
                             tasks.Add(emailHelper.Send(new EmailProperty
                             {
                                 Body = mailBody,
-                                From = smtp.Username,
+                                From = smtp.Email,
                                 To = emails,
                                 Subject = $"ເອກະສານມາໃຫມ່ - {request.RawDocument.Title}"
                             }));

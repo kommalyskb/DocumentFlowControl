@@ -28,10 +28,10 @@ namespace DFM.API.Controllers
         private readonly IAESHelper aes;
         private readonly AESConfig aesConf;
         private readonly IEmailHelper emailHelper;
-        private readonly SMTPConfig smtp;
+        private readonly SMTPConf smtp;
 
         public EmployeeController(IEmployeeManager employeeManager, IIdentityHelper identityHelper, IHttpService httpService, 
-            ServiceEndpoint endpoint, IAESHelper aes, AESConfig aesConf, IEmailHelper emailHelper, SMTPConfig smtp)
+            ServiceEndpoint endpoint, IAESHelper aes, AESConfig aesConf, IEmailHelper emailHelper, SMTPConf smtp)
         {
             this.employeeManager = employeeManager;
             this.identityHelper = identityHelper;
@@ -140,7 +140,7 @@ namespace DFM.API.Controllers
                     await emailHelper.Send(new EmailProperty
                     {
                         Body = emailBody,
-                        From = smtp.Username,
+                        From = smtp.Email,
                         To = new List<string> { request.Contact.Email },
                         Subject = $"ລົງທະບຽນນຳໃຊ້ລະບົບຈໍລະຈອນເອກະສານ"
                     });

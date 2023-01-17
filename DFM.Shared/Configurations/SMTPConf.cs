@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace DFM.Shared.Configurations
 {
-    public class SMTPConfig
+    public class SMTPConf
     {
         public string? Server { get; set; }
         public int Port { get; set; }
-        public string? Username { get; internal set; }
-        public string? Password { get; internal set; }
+        public string? Email { get; set; }
+        public string? Password { get; set; }
         public bool IsActivate { get; set; }
     }
 }

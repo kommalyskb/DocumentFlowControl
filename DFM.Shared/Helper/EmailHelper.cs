@@ -30,9 +30,9 @@ namespace DFM.Shared.Helper
     }
     public class EmailHelper : IEmailHelper
     {
-        private readonly SMTPConfig smtpConf;
+        private readonly SMTPConf smtpConf;
 
-        public EmailHelper(SMTPConfig smtpConf)
+        public EmailHelper(SMTPConf smtpConf)
         {
             this.smtpConf = smtpConf;
         }
@@ -40,7 +40,7 @@ namespace DFM.Shared.Helper
         {
             SmtpClient smtp = new SmtpClient(smtpConf.Server, smtpConf.Port);
             smtp.EnableSsl = true;
-            smtp.Credentials = new NetworkCredential(smtpConf.Username, smtpConf.Password);
+            smtp.Credentials = new NetworkCredential(smtpConf.Email, smtpConf.Password);
 
            
             MailMessage message = new MailMessage();
