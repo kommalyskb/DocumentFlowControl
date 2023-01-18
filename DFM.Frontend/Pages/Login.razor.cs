@@ -3,8 +3,10 @@ using DFM.Shared.Common;
 using DFM.Shared.DTOs;
 using HttpClientService;
 using MudBlazor;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using StackExchange.Redis;
+using System.Text.Json;
 
 namespace DFM.Frontend.Pages
 {
@@ -29,8 +31,11 @@ namespace DFM.Frontend.Pages
                 Secret = identity.Secret, // Get secret
                 Scope = identity.Scope
             };
+            Console.WriteLine("--------Connect Token---------");
+            Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(request));
             var result = await httpService.Post<TokenEndPointRequest, TokenEndPointResponse>(url, request);
             onProcessing = false;
+            Console.WriteLine(await result.HttpResponseMessage.Content.ReadAsStringAsync());
             if (result.Success)
             {
                 await accessToken.SetTokenAsync(result.Response.AccessToken);
