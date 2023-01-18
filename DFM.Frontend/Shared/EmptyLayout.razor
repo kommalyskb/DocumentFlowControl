@@ -1,0 +1,31 @@
+﻿@inherits LayoutComponentBase
+@inject NavigationManager UriHelper
+@inject AccessTokenStorage accessToken
+@inject IHttpService httpService
+@inject AuthenticationStateProvider auth
+<MudThemeProvider Theme="customTheme" />
+<MudLayout>
+    <MudMainContent>
+        @Body
+    </MudMainContent>
+</MudLayout>
+
+
+
+@code {
+    private MudTheme customTheme = new()
+        {
+            Palette = new Palette
+            {
+                Primary = "#002f57",
+                Secondary = "#3D9970",
+                Info = "#001f3f",
+                Success = "#2ECC40",
+                Warning = "#FF851B",
+                Error = "#F012BE",
+                AppbarBackground = "#20629b",
+                // more color properties
+            }
+        };
+    
+}
