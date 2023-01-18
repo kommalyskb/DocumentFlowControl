@@ -18,5 +18,6 @@ namespace DFM.Shared.Interfaces
         Task<IEnumerable<DocumentModel>> DrillDownReport(GetPersonalReportRequest request, TraceStatus docStatus, CancellationToken cancellationToken = default);
         Task<CommonResponseId> NewDocument(DocumentModel request, CancellationToken cancellationToken = default);
         Task<CommonResponse> SendDocument(string docId, List<Reciepient> reciepients, CancellationToken cancellationToken = default);
+        Task<PersonalReportSummary> GetDashboard(GetDashboardRequest request, CancellationToken cancellationToken = default);
     }
 }

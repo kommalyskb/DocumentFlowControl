@@ -52,6 +52,14 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
+        <member name="M:DFM.API.Controllers.DocumentController.GetDashboardV1(DFM.Shared.DTOs.GetDashboardRequest,System.Threading.CancellationToken)">
+            <summary>
+            API ທີ່ຈະດຶງເອົາເອກະສານ ມາສະແດງຢູ່ຫນ້າ dashboard
+            </summary>
+            <param name="request"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
         <member name="M:DFM.API.Controllers.DocumentController.DrillDownReportV1(DFM.Shared.Common.TraceStatus,DFM.Shared.DTOs.GetPersonalReportRequest,System.Threading.CancellationToken)">
             <summary>
             ແມ່ນ API ທີ່ໃຊ້ດຶງເອົາລາຍລະອຽດຂອງເອກະສານຕາມ Report

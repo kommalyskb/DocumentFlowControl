@@ -7,9 +7,11 @@ using DFM.Shared.Extensions;
 using DFM.Shared.Helper;
 using DFM.Shared.Interfaces;
 using DFM.Shared.Resources;
+using Minio.DataModel;
 using MyCouch.Requests;
 using MyCouch.Responses;
 using Redis.OM;
+using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,12 +26,14 @@ namespace DFM.Shared.Repository
     {
         private readonly ICouchContext couchContext;
         private readonly IRedisConnector redisConnector;
+        private readonly IRoleManager roleManager;
         private readonly CouchDBHelper read_couchDbHelper;
         private readonly CouchDBHelper write_couchDbHelper;
-        public DocumentTransaction(ICouchContext couchContext, DBConfig dbConfig, IRedisConnector redisConnector)
+        public DocumentTransaction(ICouchContext couchContext, DBConfig dbConfig, IRedisConnector redisConnector, IRoleManager roleManager)
         {
             this.couchContext = couchContext;
             this.redisConnector = redisConnector;
+            this.roleManager = roleManager;
             this.read_couchDbHelper = new CouchDBHelper
            (
                scheme: dbConfig.Reader.Scheme,
@@ -601,6 +605,58 @@ namespace DFM.Shared.Repository
                 throw;
             }
         }
+        public async Task<PersonalReportSummary> GetDashboard(GetDashboardRequest request, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+
+                QueryReportRequest req = new QueryReportRequest
+                {
+                    inboxType = request.inboxType,
+                    roleID = request.roleID
+                };
+                
+
+                List<QueryReportResponse> countDraft = await queryPersonalReport(req, "report_draft", cancellationToken);
+                List<QueryReportResponse> countFinished = await queryPersonalReport(req, "report_finished", cancellationToken);
+                List<QueryReportResponse> countInprogress = await queryPersonalReport(req, "report_inprogress", cancellationToken);
+                PersonalReportSummary result = new PersonalReportSummary
+                {
+                    Draft = countDraft.Count,
+                    Finished = countFinished.Count,
+                    InProgress = countInprogress.Count,
+                    RoleID = request.roleID
+                };
+
+                if (result.Draft > 0)
+                {
+                    result.Position = countDraft.FirstOrDefault(x => x.roleId == req.roleID)!.roleName;
+                }
+                else if (result.Finished > 0)
+                {
+                    result.Position = countFinished.FirstOrDefault(x => x.roleId == req.roleID)!.roleName;
+                }
+                else if (result.InProgress > 0)
+                {
+                    result.Position = countInprogress.FirstOrDefault(x => x.roleId == req.roleID)!.roleName;
+                }
+                else
+                {
+                    var roleInfo = await roleManager.GetRolePosition(request.roleID!);
+                    if (roleInfo.Response.Success)
+                    {
+                        result.Position = roleInfo.Content.Display.Local;
+                    }
+                }
+
+                return result;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
 
         private async Task<List<QueryReportResponse>> queryPersonalReport(List<QueryReportRequest> requests, string viewName, CancellationToken cancellationToken)
         {
@@ -618,7 +674,23 @@ namespace DFM.Shared.Repository
                                 );
             return result.Rows.Select(x => x.Value).ToList();
         }
-       
+        private async Task<List<QueryReportResponse>> queryPersonalReport(QueryReportRequest request, string viewName, CancellationToken cancellationToken)
+        {
+            var result = await couchContext.ViewQueryAsync<QueryReportRequest, QueryReportResponse>
+                                (
+                                    couchDBHelper: read_couchDbHelper,
+                                    designName: "query",
+                                    viewName: viewName,
+                                    keys: request,
+                                    limit: -1,
+                                    page: 0,
+                                    reduce: false,
+                                    desc: false,
+                                    cancellationToken
+                                );
+            return result.Rows.Select(x => x.Value).ToList();
+        }
+
 
         public async Task<IEnumerable<DocumentModel>> DrillDownReport(GetPersonalReportRequest request, TraceStatus docStatus, CancellationToken cancellationToken = default)
         {

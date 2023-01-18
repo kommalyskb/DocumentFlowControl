@@ -1,3 +1,8 @@
+body, html {
+    height: 100%;
+    margin: 0;
+}
+
 @font-face {
     font-family: BoonBaan;
     src: url(../css/boonbaan/BoonBaan-Regular.woff2) format("woff2");
@@ -29,4 +34,14 @@
 * {
     font-family: 'BoonBaan', 'Inter' !important;
     /*font-size: 1rem;*/
+}
+.page-background-class {
+    background-image: url(../images/cse-background.jpg);
+    position: relative;
+    /* Full height */
+    height: 100%;
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 }

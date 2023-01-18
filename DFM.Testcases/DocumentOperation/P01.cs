@@ -45,7 +45,9 @@ namespace DFM.Testcases.DocumentOperation
                 Server = "localhost",
                 Port = 6379
             });
-            documentService = new DocumentTransaction(couchContext, dBConfig, redisConnector);
+            IOrganizationChart organizationChart = new OrganizationChart(couchContext, dBConfig, redisConnector);
+            IRoleManager roleManager = new RoleManager(couchContext, dBConfig, redisConnector, organizationChart);
+            documentService = new DocumentTransaction(couchContext, dBConfig, redisConnector, roleManager);
         }
         [Fact(DisplayName = "ສ້າງເອກະສານໃຫມ່ ໄວ້ໃນສະຖານະ ສະບັບຮ່າງ ອີງຕາມການດຳເນີນເອກະສານ ຂາເຂົ້າ-ຂາອອກ")]
         public async Task NC1()

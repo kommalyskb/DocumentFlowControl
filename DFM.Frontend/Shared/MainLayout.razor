@@ -2,20 +2,22 @@
 @inject NavigationManager UriHelper
 
 <PageTitle>DFM.Frontend</PageTitle>
-<MudThemeProvider />
+<MudThemeProvider Theme="customTheme" />
 <MudDialogProvider />
 <MudSnackbarProvider />
 <MudLayout>
-    <MudAppBar Color="Color.Primary" Fixed="false" Dense="true">
-        <MudIconButton Icon="@Icons.Material.Filled.Home" Color="Color.Inherit" Edge="Edge.Start" />
-        <MudSpacer />
-        <MudIconButton Icon="@Icons.Material.Filled.NoAccounts" Color="Color.Inherit" Edge="Edge.Start" />
-    </MudAppBar>
+    <header class="mud-appbar mud-appbar-dense mud-elevation-4 mud-theme-primary">
+        <div class="mud-toolbar mud-toolbar-dense mud-toolbar-gutters mud-toolbar-appbar" style="text-align: center; background-color: #20629b;">
+            <img src="images/cse-logo.png" alt="logo" class="mud-image object-cover object-center mud-elevation-25 rounded-lg" width="45" height="45" style="margin: auto" />
+        </div>
+    </header>
+
     <MudDrawer @bind-Open="_drawerOpen" Elevation="0" ClipMode="DrawerClipMode.Always" Variant="@DrawerVariant.Mini">
 
         <NavMenu OpenDrawer="ToggleMenu" IsOpen="@_drawerOpen" />
     </MudDrawer>
     <MudMainContent>
+        @*@Body*@
         <CustomAuthorizeView>
             <Authorized>
                 @Body
@@ -35,7 +37,20 @@
 @code
 {
     bool _drawerOpen = true;
-
+    private MudTheme customTheme = new()
+        {
+            Palette = new Palette
+            {
+                Primary = "#002f57",
+                Secondary = "#3D9970",
+                Info = "#001f3f",
+                Success = "#2ECC40",
+                Warning = "#FF851B",
+                Error = "#F012BE",
+                AppbarBackground = "#20629b",
+                // more color properties
+            }
+        };
     void ToggleMenu()
     {
         _drawerOpen = !_drawerOpen;

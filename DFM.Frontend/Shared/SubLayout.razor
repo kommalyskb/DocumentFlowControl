@@ -3,15 +3,29 @@
 @inject AccessTokenStorage accessToken
 @inject IHttpService httpService
 @inject AuthenticationStateProvider auth
-<MudThemeProvider/>
-<MudDialogProvider />
-<MudSnackbarProvider />
-<MudMainContent Class="p-0">
-    <MudContainer Class="p-0" MaxWidth="MaxWidth.False">
+<MudThemeProvider Theme="customTheme" />
+<MudLayout Class="page-background-class">
+    <MudMainContent>
         @Body
-    </MudContainer>
-</MudMainContent>
+    </MudMainContent>
+</MudLayout>
+
+
+
 @code {
-    
+    private MudTheme customTheme = new()
+        {
+            Palette = new Palette
+            {
+                Primary = "#002f57",
+                Secondary = "#3D9970",
+                Info = "#001f3f",
+                Success = "#2ECC40",
+                Warning = "#FF851B",
+                Error = "#F012BE",
+                AppbarBackground = "#20629b",
+                // more color properties
+            }
+        };
     
 }

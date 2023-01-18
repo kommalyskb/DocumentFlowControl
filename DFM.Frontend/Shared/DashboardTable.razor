@@ -1,0 +1,43 @@
+﻿@inject IHttpService httpService
+@inject AccessTokenStorage accessToken
+@inject ServiceEndpoint endpoint
+@inject LocalStorageHelper storageHelper
+@inject IMinioService minio
+@inject StorageConfiguration storageConf
+@inject NavigationManager nav
+@inject ISnackbar Snackbar
+@implements IDisposable
+<div class="mud-table mud-data-grid mud-xs-table mud-elevation-1 mud-width-full">
+    <div class="mud-table-container">
+        <table class="mud-table-root">
+            <tbody class="mud-table-body">
+                <tr class="mud-table-row">
+                    <td class="mud-table-cell">ກຳລັງດຳເນີນການ</td>
+                    <td class="mud-table-cell" style="text-align: end;">@summary!.InProgress</td>
+                </tr>
+                <tr class="mud-table-row">
+                    <td class="mud-table-cell">ສະບັບຮ່າງ</td>
+                    <td class="mud-table-cell" style="text-align: end;">@summary!.Draft</td>
+                </tr>
+                <tr class="mud-table-row">
+                    <td class="mud-table-cell">ສຳເລັດ</td>
+                    <td class="mud-table-cell" style="text-align: end;">@summary!.Finished</td>
+                </tr>
+                <tr class="mud-table-row">
+                    <td class="mud-table-cell">ລວມທັງໝົດ</td>
+                    <td class="mud-table-cell" style="text-align: end;">@summary!.Total</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@code {
+
+    [Parameter] public string? RoleId { get; set; }
+    [Parameter] public InboxType InboxType { get; set; }
+    [Parameter] public bool OnProcessing { get; set; }
+    public void Dispose()
+    {
+    }
+}

@@ -20,7 +20,7 @@ namespace DFM.API.Controllers
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
-    //[Authorize]
+    [Authorize]
     public class DocumentController : ControllerBase
     {
         private readonly IDocumentTransaction documentTransaction;
@@ -135,6 +135,32 @@ namespace DFM.API.Controllers
             {
                 
                 var result = await documentTransaction.GetPersonalReport(request, cancellationToken);
+                return Ok(result);
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+        /// <summary>
+        /// API ທີ່ຈະດຶງເອົາເອກະສານ ມາສະແດງຢູ່ຫນ້າ dashboard
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [HttpPost("GetDashboard")]
+        [MapToApiVersion("1.0")]
+        [ProducesResponseType(typeof(PersonalReportSummary), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetDashboardV1([FromBody] GetDashboardRequest request, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            try
+            {
+
+                var result = await documentTransaction.GetDashboard(request, cancellationToken);
                 return Ok(result);
 
             }

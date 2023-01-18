@@ -45,7 +45,9 @@ namespace DFM.Testcases.Report
                 Server = "localhost",
                 Port = 6379
             });
-            documentService = new DocumentTransaction(couchContext, dBConfig, redisConnector);
+            IOrganizationChart organizationChart = new OrganizationChart(couchContext, dBConfig, redisConnector);
+            IRoleManager roleManager = new RoleManager(couchContext, dBConfig, redisConnector, organizationChart);
+            documentService = new DocumentTransaction(couchContext, dBConfig, redisConnector, roleManager);
         }
 
         [Fact]
@@ -81,6 +83,18 @@ namespace DFM.Testcases.Report
             Assert.NotNull(result);
         }
 
+        [Fact]
+        public async Task Dashboard()
+        {
 
+            var result = await documentService.GetDashboard(new GetDashboardRequest
+            {
+                // InboxType.Inbound, roleIDs, 20221201000000, 20231231000000
+                inboxType = InboxType.Inbound,
+                roleID = "b0bdfe59e30c434a8d990610c1e93aa0"
+            });
+
+            Assert.NotNull(result);
+        }
     }
 }

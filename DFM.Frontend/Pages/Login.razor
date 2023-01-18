@@ -16,20 +16,27 @@
 <MudGrid Class="mt-16">
     <MudItem xs="12" sm="12" md="4"></MudItem>
     <MudItem xs="12" sm="12" md="4">
+        <div class="d-flex justify-center pa-4" style="text-align: center">
+            <img src="images/cse-icon.jpg" alt="logo" class="mud-image object-cover object-center mud-elevation-25 rounded-lg" width="100" height="100" style="margin: auto" />
+        </div>
         <MudPaper Class="pa-4">
             <MudForm>
-                <h1>Authentication</h1>
+                <h1 style="text-align: center">CSE's Doc Control'</h1>
 
                 <MudTextField T="string" Label="Username" Required="true" RequiredError="User name is required!" @bind-Value="@userName" />
-                
+
                 <MudTextField T="string" Label="Password" HelperText="Choose a strong password"
                               InputType="InputType.Password"
                               Required="true" @bind-Value="@password"
                               RequiredError="Password is required!" />
-               
-                <div class="d-flex align-center justify-space-between">
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="authorize" Class="ml-auto">Login</MudButton>
+
+                <div class="d-flex align-center justify-space-between pa-4">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="authorize" FullWidth="true" Class="ml-auto">Login</MudButton>
                 </div>
+                <div class="d-flex align-center justify-space-between pa-4" style="text-align: center">
+                    <MudLink Href="#" Style="margin: auto">Lost your passoword?</MudLink>
+                </div>
+                
             </MudForm>
         </MudPaper>
     </MudItem>
@@ -43,5 +50,5 @@
     public void Dispose()
     {
     }
-    
+
 }

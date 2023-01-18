@@ -8,37 +8,56 @@
 @inject LocalStorageHelper storageHelper
 <MudContainer>
     <MudGrid>
-       @* <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
-            <MudSelect @bind-Value="roleId" T="string" HelperText="ເລືອກ ຈຳລອງ ຕຳແໜ່ງ" Label="ຈຳລອງຕຳແໜ່ງ" Variant="Variant.Text">
-                @if (demoUser is not null)
-                {
-                    foreach (var item in demoUser!)
-                    {
-                        <MudSelectItem Value="item.Role.RoleID">@item.Role.Display.Local</MudSelectItem>
-                    }
-                }
-            </MudSelect>
-        </MudItem>
         <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
-            <MudButton Variant="Variant.Filled" ButtonType="ButtonType.Button" OnClick="startProgram">ເລີ່ມຕົ້ນຈຳລອງ</MudButton>
+            <div class="mud-paper mud-elevation-1 mud-card mud-width-full">
+                <div class="mud-card-content">
+                    @if (!selectValues.IsNullOrEmpty())
+                    {
+                        <MudSelect SelectedValues="selectValues" Disabled="onProcessing" @bind-Value="roleID" T="string" HelperText="ຕຳແໜ່ງຂອງທ່ານ" Label="ຕຳແໜ່ງ" Variant="Variant.Text">
+                            @if (roles is not null)
+                            {
+                                foreach (var item in roles!)
+                                {
+                                    <MudSelectItem Value="item.Role.RoleID">@item.Role.Display.Local</MudSelectItem>
+                                }
+                            }
+                        </MudSelect>
+                    }
+                    else
+                    {
+                        <MudSelect Disabled="onProcessing" @bind-Value="roleID" T="string" HelperText="ຕຳແໜ່ງຂອງທ່ານ" Label="ຕຳແໜ່ງ" Variant="Variant.Text">
+                            @if (roles is not null)
+                            {
+                                foreach (var item in roles!)
+                                {
+                                    <MudSelectItem Value="item.Role.RoleID">@item.Role.Display.Local</MudSelectItem>
+                                }
+                            }
+                        </MudSelect>
+                    }
+                </div>
+            </div>
         </MudItem>
-        <MudItem xs="12" md="3" Class="d-flex flex-grow-1 gap-4">
-            <MudField>@selectModel.Role.Display.Local</MudField>
+    </MudGrid>
+    <MudGrid>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <h2>ຂໍ້ມູນເອກະສານ ຂາເຂົ້າ</h2>
         </MudItem>
-        <MudItem xs="12" md="3" Class="d-flex flex-grow-1 gap-4">
-            <MudField>@selectModel.Role.RoleType</MudField>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <h2>ຂໍ້ມູນເອກະສານ ຂາອອກ</h2>
         </MudItem>
-        <MudItem xs="12" md="3" Class="d-flex flex-grow-1 gap-4">
-            <MudField>@selectModel.Employee.Name.Local</MudField>
+
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <DashboardTable InboxType="InboxType.Inbound" RoleId="@roleID" OnProcessing="onProcessing"></DashboardTable>
         </MudItem>
-        <MudItem xs="12" md="3" Class="d-flex flex-grow-1 gap-4">
-            <MudField>@selectModel.Employee.FamilyName.Local</MudField>
-        </MudItem>*@
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <DashboardTable InboxType="InboxType.Outbound" RoleId="@roleID" OnProcessing="onProcessing"></DashboardTable>
+        </MudItem>
     </MudGrid>
 </MudContainer>
 
 @code {
-    string? responseForm = "Waiting...";
-    string? roleId = "";
-    RoleTreeModel? selectModel = new();
+    string? roleID;
+    string? roleName;
+    bool onProcessing;
 }
