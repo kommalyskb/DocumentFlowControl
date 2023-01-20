@@ -20,7 +20,7 @@
 }
 else if (formMode == FormMode.Create || formMode == FormMode.Edit)
 {
-    <DFM.Frontend.Pages.UserComponent.UserForm Mode="formMode" Employee="employeeModel" OnProcessing="onProcessing"></DFM.Frontend.Pages.UserComponent.UserForm>
+    <DFM.Frontend.Pages.UserComponent.UserForm Mode="formMode" Employee="employeeModel" OnProcessing="onProcessing" Notify="notify"></DFM.Frontend.Pages.UserComponent.UserForm>
 }
 else if (formMode == FormMode.View)
 {
@@ -33,4 +33,5 @@ else if (formMode == FormMode.View)
     MudMessageBox? delBox { get; set; }
     EmployeeModel? employeeModel = new();
     bool onProcessing = false;
+    bool notify = false;
 }

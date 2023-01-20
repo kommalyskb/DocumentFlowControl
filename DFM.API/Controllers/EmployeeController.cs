@@ -86,7 +86,7 @@ namespace DFM.API.Controllers
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> SaveItemV1([FromBody] EmployeeModel request, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IActionResult> SaveItemV1([FromBody] EmployeeModel request, string notify, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrWhiteSpace(request.Username))
             {
@@ -136,14 +136,21 @@ namespace DFM.API.Controllers
                     request.UserID = userResponse?.id;
                     string password = $"{request.Password}@Dfm.codecamp";
                     // Send email
-                    string emailBody = emailHelper.RegisterMailBody($"{request.Name.Local} {request.FamilyName.Local}", request.Username, request.Password);
-                    await emailHelper.Send(new EmailProperty
+                    if (!string.IsNullOrWhiteSpace(notify))
                     {
-                        Body = emailBody,
-                        From = smtp.Email,
-                        To = new List<string> { request.Contact.Email },
-                        Subject = $"ລົງທະບຽນນຳໃຊ້ລະບົບຈໍລະຈອນເອກະສານ"
-                    });
+                        if (notify == "yes")
+                        {
+                            string emailBody = emailHelper.RegisterMailBody($"{request.Name.Local} {request.FamilyName.Local}", request.Username, request.Password);
+                            await emailHelper.Send(new EmailProperty
+                            {
+                                Body = emailBody,
+                                From = smtp.Email,
+                                To = new List<string> { request.Contact.Email },
+                                Subject = $"ລົງທະບຽນນຳໃຊ້ລະບົບຈໍລະຈອນເອກະສານ"
+                            });
+                        }
+                    }
+                    
 
                     // Set password
                     await httpService.Post<UserResetRequest>($"{endpoint.IdentityAPI}/api/Users/ChangePassword", new UserResetRequest

@@ -25,10 +25,10 @@
         <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
             <h2>ຂໍ້ມູນ ບໍລິສັດ</h2>
         </MudItem>
-        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
             <MudTextField Disabled="onProcessing" @bind-Value="model!.Name.Local" Required="true" T="string" Counter="1000" MaxLength="1000" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ຊື່ບໍລິສັດ ເປັນພາສາລາວ" Label="ຊື່ບໍລິສັດ" />
         </MudItem>
-        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
             <MudTextField Disabled="onProcessing" @bind-Value="model!.Name.Eng" Required="true" T="string" Counter="500" MaxLength="500" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MediumCharacters))" HelperText="Company name in english" Label="Company name" />
         </MudItem>
 

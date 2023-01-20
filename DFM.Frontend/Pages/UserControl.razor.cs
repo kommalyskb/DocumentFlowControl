@@ -51,7 +51,12 @@ namespace DFM.Frontend.Pages
             {
                 employee = await storageHelper.GetEmployeeProfileAsync();
             }
-            string url = $"{endpoint.API}/api/v1/Employee/SaveItem";
+            string isNotify = "no";
+            if (notify)
+            {
+                isNotify = "yes";
+            }
+            string url = $"{endpoint.API}/api/v1/Employee/SaveItem?notify={isNotify}";
             string token = await accessToken.GetTokenAsync();
             // Send request for save document
             var result = await httpService.Post<EmployeeModel, CommonResponse>(url, employeeModel!, new AuthorizeHeader("bearer", token));

@@ -42,11 +42,14 @@
         <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
             <h2>ຂໍ້ມູນເຂົ້າເຖິງລະບົບ</h2>
         </MudItem>
-        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
             <MudTextField Disabled="OnProcessing" @bind-Value="Employee!.Username" Required="true" T="string" Counter="12" MaxLength="12" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(UserCharacters))" HelperText="Username ທີ່ໃຊ້ລັອກອິນລະບົບ" Label="Username" />
         </MudItem>
-        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
             <MudTextField Disabled="OnProcessing" @bind-Value="Employee!.Password" InputType="InputType.Password" Required="true" T="string" Counter="6" MaxLength="6" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(PasswordCharacters))" HelperText="Pລະຫັດຜ່ານ" Label="Password" />
+        </MudItem>
+        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+            <MudCheckBox Disabled="OnProcessing" @bind-Checked="Notify" Label="ແຈ້ງການປ່ຽນແປງຂໍ້ມູນຜູ້ໃຊ້ທາງອີເມວ" Color="Color.Primary"></MudCheckBox>
         </MudItem>
 
         <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
@@ -99,4 +102,5 @@
     [Parameter] public EventCallback<string> Notice { get; set; }
     [Parameter] public FormMode Mode { get; set; }
     [Parameter] public bool OnProcessing { get; set; }
+    [Parameter] public bool Notify { get; set; }
 }
