@@ -3,6 +3,7 @@ using DFM.Shared.DTOs;
 using DFM.Shared.Entities;
 using HttpClientService;
 using MudBlazor;
+using System.Text.Json;
 
 namespace DFM.Frontend.Pages
 {
@@ -43,6 +44,7 @@ namespace DFM.Frontend.Pages
             var orgResult = await httpService.Post<NewOrganizationRequest, CommonResponseId>(url, req, new AuthorizeHeader("bearer", token));
             if (orgResult.Success)
             {
+                Console.WriteLine(JsonSerializer.Serialize(orgResult.Response));
                 string urlEmployee = $"{endpoint.API}/api/v1/Employee/SaveItem?notify=yes";
                 employee.OrganizationID = orgResult.Response.Id;
                 var empResult = await httpService.Post<EmployeeModel, CommonResponse>(urlEmployee, employee, new AuthorizeHeader("bearer", token));
