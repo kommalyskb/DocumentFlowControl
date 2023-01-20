@@ -41,9 +41,11 @@ namespace DFM.Shared.Helper
             try
             {
                 var jsonDoc = JsonSerializer.Serialize(value);
-                var plainTextBytes = Encoding.UTF8.GetBytes(jsonDoc);
+                Console.WriteLine(jsonDoc);
+                var plainTextBytes = Encoding.UTF8.GetBytes(jsonDoc).ToHEX();
+                Console.WriteLine(plainTextBytes);
                 await jsRuntime.InvokeAsync<object>("localStorage.setItem",
-                                                       "employeeProfile", plainTextBytes.ToHEX());
+                                                       "employeeProfile", plainTextBytes);
             }
             catch (Exception)
             {
