@@ -40,6 +40,8 @@ namespace DFM.Shared.Helper
         {
             try
             {
+                value.Username = "";
+                value.Password = "";
                 var jsonDoc = JsonSerializer.Serialize(value);
                 Console.WriteLine(jsonDoc);
                 var plainTextBytes = Encoding.UTF8.GetBytes(jsonDoc).ToHEX();
