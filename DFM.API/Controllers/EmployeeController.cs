@@ -10,7 +10,9 @@ using HttpClientService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 using System.Text.Json;
+using System.Threading;
 using System.Xml.Linq;
 
 namespace DFM.API.Controllers
@@ -30,7 +32,7 @@ namespace DFM.API.Controllers
         private readonly IEmailHelper emailHelper;
         private readonly SMTPConf smtp;
 
-        public EmployeeController(IEmployeeManager employeeManager, IIdentityHelper identityHelper, IHttpService httpService, 
+        public EmployeeController(IEmployeeManager employeeManager, IIdentityHelper identityHelper, IHttpService httpService,
             ServiceEndpoint endpoint, IAESHelper aes, AESConfig aesConf, IEmailHelper emailHelper, SMTPConf smtp)
         {
             this.employeeManager = employeeManager;
@@ -150,7 +152,7 @@ namespace DFM.API.Controllers
                             });
                         }
                     }
-                    
+
 
                     // Set password
                     await httpService.Post<UserResetRequest>($"{endpoint.IdentityAPI}/api/Users/ChangePassword", new UserResetRequest
@@ -204,6 +206,28 @@ namespace DFM.API.Controllers
                 }
                 return BadRequest(result);
             }
+        }
+
+        [HttpPost("ResendRegisterEmail")]
+        //[AllowAnonymous]
+        [MapToApiVersion("1.0")]
+        [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> ResendRegisterEmailV1([FromBody] ResendRegisterEmail request, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            string emailBody = emailHelper.RegisterMailBody($"{request.Name} {request.Surname}", request.Username, request.Password);
+            await emailHelper.Send(new EmailProperty
+            {
+                Body = emailBody,
+                From = smtp.Email,
+                To = new List<string> { request.Email },
+                Subject = $"ລົງທະບຽນນຳໃຊ້ລະບົບຈໍລະຈອນເອກະສານ"
+            });
+
+            stopwatch.Stop();
+            return Ok($"Elapsed: {stopwatch.Elapsed.TotalSeconds}");
+
         }
 
 
