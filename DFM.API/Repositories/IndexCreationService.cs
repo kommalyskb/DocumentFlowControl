@@ -27,7 +27,8 @@ namespace DFM.API.Repositories
                 provider.Connection.DropIndexAsync(typeof(DocumentSecurityModel)),
                 provider.Connection.DropIndexAsync(typeof(DocumentModel)),
                 provider.Connection.DropIndexAsync(typeof(DataTypeModel)),
-                provider.Connection.DropIndexAsync(typeof(MinioLinkCache))
+                provider.Connection.DropIndexAsync(typeof(MinioLinkCache)),
+                provider.Connection.DropIndexAsync(typeof(TokenEndPointResponse))
                 );
 
 
@@ -40,7 +41,8 @@ namespace DFM.API.Repositories
                 provider.Connection.CreateIndexAsync(typeof(DocumentSecurityModel)),
                 provider.Connection.CreateIndexAsync(typeof(DocumentModel)),
                 provider.Connection.CreateIndexAsync(typeof(DataTypeModel)),
-                provider.Connection.CreateIndexAsync(typeof(MinioLinkCache))
+                provider.Connection.CreateIndexAsync(typeof(MinioLinkCache)),
+                provider.Connection.CreateIndexAsync(typeof(TokenEndPointResponse))
                 );
         }
 
