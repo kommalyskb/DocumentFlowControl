@@ -1,4 +1,5 @@
 ﻿using DFM.Shared.Entities;
+using DFM.Shared.Extensions;
 using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
@@ -23,8 +24,8 @@ namespace DFM.Shared.Helper
             try
             {
                 var value = await jsRuntime.InvokeAsync<string>("localStorage.getItem", "employeeProfile");
-                var base64EncodedBytes = Convert.FromBase64String(value);
-                return JsonSerializer.Deserialize<EmployeeModel>(base64EncodedBytes)!;
+                var hexEncodedBytes = value.FromHEX();
+                return JsonSerializer.Deserialize<EmployeeModel>(hexEncodedBytes)!;
             }
             catch (Exception)
             {
@@ -42,7 +43,7 @@ namespace DFM.Shared.Helper
                 var jsonDoc = JsonSerializer.Serialize(value);
                 var plainTextBytes = Encoding.UTF8.GetBytes(jsonDoc);
                 await jsRuntime.InvokeAsync<object>("localStorage.setItem",
-                                                       "employeeProfile", Convert.ToBase64String(plainTextBytes));
+                                                       "employeeProfile", plainTextBytes.ToHEX());
             }
             catch (Exception)
             {
