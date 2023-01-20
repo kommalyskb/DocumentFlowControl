@@ -120,11 +120,11 @@ namespace DFM.Shared.Helper
             {
                 Address = $"{openID.Authority}/connect/token",
                 GrantType = "password",
-                ClientId = "dfm_admin_api", // Create client with scope DFMClient_api
-                ClientSecret = "d5b49860-754c-8ebe-89c0-fd36fe10c1ea",
-                UserName = "admin",
-                Password = "1Qaz2Wsx@",
-                Scope = $"{openID.APIScope} DFMClient_api" 
+                ClientId = openID.AdminClient, // Create client with scope DFMClient_api
+                ClientSecret = openID.AdminSecret,
+                UserName = openID.AdminUsername,
+                Password = openID.AdminPassword,
+                Scope = openID.AdminScope
             });
 
             if (!tokenResult.IsError)
@@ -137,8 +137,8 @@ namespace DFM.Shared.Helper
                     Message = ResultCode.SUCCESS_OPERATION,
                     Expire = tokenResult.ExpiresIn,
                     RefreshToken = tokenResult.RefreshToken,
-                    Password = "1Qaz2Wsx@",
-                    Username = "admin",
+                    Username = openID.AdminUsername,
+                    Password = openID.AdminPassword,
                     Detail = ResultCode.SUCCESS_OPERATION
                 };
                 token = tokenResult.AccessToken;
