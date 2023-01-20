@@ -43,7 +43,7 @@ namespace DFM.Frontend.Pages
             var orgResult = await httpService.Post<NewOrganizationRequest, CommonResponseId>(url, req, new AuthorizeHeader("bearer", token));
             if (orgResult.Success)
             {
-                string urlEmployee = $"{endpoint.API}/api/v1/Employee/SaveItem";
+                string urlEmployee = $"{endpoint.API}/api/v1/Employee/SaveItem?notify=yes";
                 var empResult = await httpService.Post<EmployeeModel, CommonResponse>(urlEmployee, employee, new AuthorizeHeader("bearer", token));
                 if (empResult.Success)
                 {
