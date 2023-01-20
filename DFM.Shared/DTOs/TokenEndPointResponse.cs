@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace DFM.Shared.DTOs
 {
+    [Document(StorageType = StorageType.Json, Prefixes = new[] { "TokenEndPointResponse" })]
     public class TokenEndPointResponse : CommonResponse
     {
         [Indexed]
