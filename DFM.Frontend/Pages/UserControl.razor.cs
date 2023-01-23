@@ -58,6 +58,7 @@ namespace DFM.Frontend.Pages
             }
             string url = $"{endpoint.API}/api/v1/Employee/SaveItem?notify={isNotify}";
             string token = await accessToken.GetTokenAsync();
+            employeeModel.OrganizationID = employee.OrganizationID;
             // Send request for save document
             var result = await httpService.Post<EmployeeModel, CommonResponse>(url, employeeModel!, new AuthorizeHeader("bearer", token));
 
