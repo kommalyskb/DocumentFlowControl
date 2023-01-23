@@ -28,7 +28,7 @@ namespace DFM.Frontend.Pages.OrganizeComponent
             if (result.Success)
             {
                 // Construct tree view
-                var childs = result.Response.Where(x => x.ParentID == "0");
+                var childs = result.Response.Where(x => x.ParentID == "0" || x.ParentID == null);
                 constructTreeItem(result.Response, childs, treeItems!);
                 
             }
