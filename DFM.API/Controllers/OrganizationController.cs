@@ -195,6 +195,10 @@ namespace DFM.API.Controllers
 
                 
             }
+            if (string.IsNullOrWhiteSpace(request.ParentID))
+            {
+                request.ParentID = "0";
+            }
             var result = await organizationChart.AddRoleAndEmployee(orgId, new RoleTreeModel
             {
                 RoleType = request.RoleType,
