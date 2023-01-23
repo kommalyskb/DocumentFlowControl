@@ -142,14 +142,22 @@ namespace DFM.API.Controllers
                     {
                         if (notify == "yes")
                         {
-                            string emailBody = emailHelper.RegisterMailBody($"{request.Name.Local} {request.FamilyName.Local}", request.Username, request.Password);
-                            await emailHelper.Send(new EmailProperty
+                            try
                             {
-                                Body = emailBody,
-                                From = smtp.Email,
-                                To = new List<string> { request.Contact.Email },
-                                Subject = $"ລົງທະບຽນນຳໃຊ້ລະບົບຈໍລະຈອນເອກະສານ"
-                            });
+                                string emailBody = emailHelper.RegisterMailBody($"{request.Name.Local} {request.FamilyName.Local}", request.Username, request.Password);
+                                await emailHelper.Send(new EmailProperty
+                                {
+                                    Body = emailBody,
+                                    From = smtp.Email,
+                                    To = new List<string> { request.Contact.Email },
+                                    Subject = $"ລົງທະບຽນນຳໃຊ້ລະບົບຈໍລະຈອນເອກະສານ"
+                                });
+                            }
+                            catch (Exception)
+                            {
+
+                            }
+                           
                         }
                     }
 

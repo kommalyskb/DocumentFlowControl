@@ -26,7 +26,8 @@ namespace DFM.Testcases.DynamicFlow
                     Scheme = "http",
                     Password = "1qaz2wsx",
                     Port = 5984,
-                    SrvAddr = "localhost",
+                    //SrvAddr = "localhost",
+                    SrvAddr = "20.10.100.91",
                     Username = "admin"
                 },
                 Reader = new DBInfo
@@ -34,14 +35,16 @@ namespace DFM.Testcases.DynamicFlow
                     Scheme = "http",
                     Password = "1qaz2wsx",
                     Port = 5984,
-                    SrvAddr = "localhost",
+                    //SrvAddr = "localhost",
+                    SrvAddr = "20.10.100.91",
                     Username = "admin"
                 }
 
             };
             IRedisConnector redisConnector = new RedisConnector(new RedisConf()
             {
-                Server = "localhost",
+                //Server = "localhost",
+                Server = "20.10.100.91",
                 Port = 12000,
                 Password = "1qaz2wsx"
             });
@@ -50,7 +53,7 @@ namespace DFM.Testcases.DynamicFlow
         [Fact(DisplayName = "ເພີ່ມ ຫຼື ແກ້ໄຂ Dynamic Flow ")]
         public async Task NC1()
         {
-            string? orgID = "b98c5c46cebd430bb7d9fe596d73c459";
+            string? orgID = "f89db3b253a14941bd31989480a562ad";
             RoleTypeModel source = RoleTypeModel.OutboundOfficePrime;
             List<RoleTypeModel> target = new List<RoleTypeModel> { RoleTypeModel.InboundGeneral, RoleTypeModel.OutboundPrime };
             var result = await organizationChart.SaveDynamicFlow(orgID, source, target, ModuleType.DocumentOutbound);

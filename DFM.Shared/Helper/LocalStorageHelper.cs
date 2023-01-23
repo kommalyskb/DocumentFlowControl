@@ -40,7 +40,6 @@ namespace DFM.Shared.Helper
         {
             try
             {
-                value.Username = "";
                 value.Password = "";
                 var jsonDoc = JsonSerializer.Serialize(value);
                 Console.WriteLine(jsonDoc);
