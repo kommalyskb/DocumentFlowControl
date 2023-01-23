@@ -84,8 +84,8 @@ namespace DFM.Shared.Helper
                     <body style= 'background-color: #F1F1F1; padding-left: 28%;padding-right: 28%;'>
 
                         <div >
-                            <div style= 'display: flex;justify-content: center; padding-top:2rem;padding-bottom:2rem;background-color: #192664; '>
-                                <h1>Document System</h1>
+                            <div style= 'display: flex;justify-content: center; padding-top:2rem;padding-bottom:2rem;background-color: #20629b; '>
+                                <h1 style='color: #FFFFFF; text-align: center'>CSE's Document Control</h1>
                             </div>
                             <div  style= 'background-color: #FFFFFF; '>
        
@@ -93,7 +93,8 @@ namespace DFM.Shared.Helper
                                         <h2 style= 'margin:0;font-weight: bold; '>ຍິນດີຕ້ອນຮັບເຂົ້າສູ່ ລະບົບຈໍລະຈອນເອກະສານ</h5>
                                     </div>
                                     <div style='display: flex;padding:0 1rem 1rem 1rem;'>
-                                        <div style='padding-right: 1rem;'>ທ່ານ {username} ລົງທະບຽນສຳເລັດເລັດແລ້ວລະຫັດຜ່ານຂອງທ່ານແມ່ນ 
+                                        <div style='padding-right: 1rem;'>ທ່ານ {name} ລົງທະບຽນສຳເລັດເລັດແລ້ວ ກະລຸນາໃຊ້ username: 
+                                         <span style= 'font-size:1.2rem;font-weight: bold; '>{username}</span></span> ແລະລະຫັດຜ່ານຂອງທ່ານແມ່ນ 
                                          <span style= 'font-size:1.2rem;font-weight: bold; '>{password}</span></span>
                                         </div>
                                     </div>
@@ -131,15 +132,15 @@ namespace DFM.Shared.Helper
                                 </div>
                                 <div style='display:flex;padding-bottom: 0.5rem;padding-top: 0.5rem;padding-left:1rem;padding-right:1rem;'>
                                     <img src='https://cdn-icons-png.flaticon.com/512/1782/1782765.png' style= 'width:30px;height:30px;cursor: pointer;margin-right: 1rem;'/>
-                                    <span style='margin-top:auto ;margin-bottom:auto;'>document.admin@dmf.la</span>
+                                    <span style='margin-top:auto ;margin-bottom:auto;'>{smtpConf.Email}</span>
                                 </div>
                                 <div style='display:flex;padding-bottom: 1.5rem;padding-top: 0.5rem;padding-left:1rem;padding-right:1rem;'>
                                     <img src= 'https://cdn-icons-png.flaticon.com/512/1384/1384007.png' style= 'width:30px;height:30px;cursor: pointer;margin-right: 1rem;'/>
-                                    <span style='margin-top:auto ;margin-bottom:auto;'>021xxxxxx</span>
+                                    <span style='margin-top:auto ;margin-bottom:auto;'>021 417788-99</span>
                                 </div>
 
                                 <div style='display: flex;justify-content:center;padding-top: 1rem;padding-bottom: 1rem;'>
-                                    <span style='margin-left:auto;margin-right: auto;'>Copyright © 2022 Comapny name</span>
+                                    <span style='margin-left:auto;margin-right: auto;'>Copyright © 2022 CHALEUN SEKONG ENERGY COMPANY LIMITED</span>
                                 </div>
 
                         </div>
@@ -159,9 +160,9 @@ namespace DFM.Shared.Helper
                     </head>
                     <body style= 'background-color: #F1F1F1; padding-left: 28%;padding-right: 28%;'>
 
-                        <div >
-                            <div style= 'display: flex;justify-content: center; padding-top:2rem;padding-bottom:2rem;background-color: #192664; '>
-                                <h1>Document System</h1>
+                        <div>
+                            <div style= 'display: flex;justify-content: center; padding-top:2rem;padding-bottom:2rem;background-color: #20629b; '>
+                                <h1 style='color: #FFFFFF; text-align: center'>CSE's Document Control</h1>
                             </div>
                             <div  style= 'background-color: #FFFFFF; '>
        
@@ -207,15 +208,15 @@ namespace DFM.Shared.Helper
                                 </div>
                                 <div style='display:flex;padding-bottom: 0.5rem;padding-top: 0.5rem;padding-left:1rem;padding-right:1rem;'>
                                     <img src='https://cdn-icons-png.flaticon.com/512/1782/1782765.png' style= 'width:30px;height:30px;cursor: pointer;margin-right: 1rem;'/>
-                                    <span style='margin-top:auto ;margin-bottom:auto;'>document.admin@dmf.la</span>
+                                    <span style='margin-top:auto ;margin-bottom:auto;'>{smtpConf.Email}</span>
                                 </div>
                                 <div style='display:flex;padding-bottom: 1.5rem;padding-top: 0.5rem;padding-left:1rem;padding-right:1rem;'>
                                     <img src= 'https://cdn-icons-png.flaticon.com/512/1384/1384007.png' style= 'width:30px;height:30px;cursor: pointer;margin-right: 1rem;'/>
-                                    <span style='margin-top:auto ;margin-bottom:auto;'>021xxxxxx</span>
+                                    <span style='margin-top:auto ;margin-bottom:auto;'>021 417788-99</span>
                                 </div>
 
                                 <div style='display: flex;justify-content:center;padding-top: 1rem;padding-bottom: 1rem;'>
-                                    <span style='margin-left:auto;margin-right: auto;'>Copyright © 2022 Comapny name</span>
+                                    <span style='margin-left:auto;margin-right: auto;'>Copyright © 2022 CHALEUN SEKONG ENERGY COMPANY LIMITED</span>
                                 </div>
 
                         </div>
