@@ -77,14 +77,13 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
-        <member name="M:DFM.API.Controllers.DocumentController.SaveDocumentV1(DFM.Shared.DTOs.DocumentRequest,System.String,System.String,System.Threading.CancellationToken)">
+        <member name="M:DFM.API.Controllers.DocumentController.SaveDocumentV1(DFM.Shared.DTOs.DocumentRequest,System.String,System.Threading.CancellationToken)">
             <summary>
             v1.0.0
             ແມ່ນ API ທີ່ໃຊ້ສຳລັບການເຮັດ Transaction ຂອງ ເອກະສານ
             </summary>
             <param name="request"></param>
             <param name="roleId"></param>
-            <param name="fakeId"></param>
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>

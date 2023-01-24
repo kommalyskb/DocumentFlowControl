@@ -28,7 +28,7 @@ namespace DFM.Shared.Helper
         public async Task<(bool Success, EmployeeModel Content)> GetEmployeeProfile(string token, string userId, CancellationToken cancellationToken = default(CancellationToken))
         {
             // Load tab
-            string url = $"{endpoint.API}/api/v1/Employee/GetItem?fakeId={userId}";
+            string url = $"{endpoint.API}/api/v1/Employee/GetItem";
 
             var result = await httpService.Get<EmployeeModel>(url, new AuthorizeHeader("bearer", token), cancellationToken);
             return (result.Success, result.Response);

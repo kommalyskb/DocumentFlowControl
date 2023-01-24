@@ -13,24 +13,29 @@ namespace DFM.Testcases.Storage
     public class P01
     {
         IMinioService minioService;
-        IRedisConnector cache;
         public P01()
         {
+            IRedisConnector redisConnector = new RedisConnector(new RedisConf()
+            {
+                Server = "20.10.100.91",
+                Port = 12000,
+                Password = "1qaz2wsx"
+            });
             minioService = new MinioService(new StorageConfiguration
             {
-                AccessKey = "LJ57QC66MZR7W1DAZTJP",
-                SecretKey = "LIqUg44iaHY3zxDI9ErvVb0MxY7spvZ1amg2n3or",
+                AccessKey = "16493905036800000",
+                SecretKey = "58b5e8134c3c4666b1dbb078561a6893",
                 DefaultExpired = 8600,
-                Endpoint = "storage-mtcv3.eoffice.la",
-                WithSSL = true,
+                Endpoint = "20.10.100.92:9000",
+                WithSSL = false,
                 
-            }, cache);
+            }, redisConnector);
         }
 
         [Fact]
         public async Task GenerateLink()
         {
-            var result = await minioService.GenerateLink("test03", "eoffice-note.rar");
+            var result = await minioService.GenerateLink("test", "after.PNG");
         }
     }
 }

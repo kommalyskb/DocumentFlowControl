@@ -252,21 +252,20 @@ namespace DFM.API.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <param name="roleId"></param>
-        /// <param name="fakeId"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [HttpPost("SaveDocument/{roleId}")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> SaveDocumentV1([FromBody] DocumentRequest request, string roleId, string fakeId, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IActionResult> SaveDocumentV1([FromBody] DocumentRequest request, string roleId, CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
                 bool isMainDisplay = true;
                 string? mainUUID = "";
                 // Get Owner
-                string userId = fakeId;// GeneratorHelper.NotAvailable;
+                string userId = "";// GeneratorHelper.NotAvailable;
                 if (User.Claims.FirstOrDefault(x => x.Type == "sub") != null)
                 {
                     userId = User.Claims.FirstOrDefault(x => x.Type == "sub")!.Value;

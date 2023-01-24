@@ -29,11 +29,11 @@ namespace DFM.API.Controllers
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(IEnumerable<TabItemDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetRoleV1(string? fakeId, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IActionResult> GetRoleV1(CancellationToken cancellationToken = default(CancellationToken))
         {
 
             // Get UserID
-            var userId = fakeId;
+            var userId = "";
 
             if (User.Claims.FirstOrDefault(x => x.Type == "sub") != null)
             {
