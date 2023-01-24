@@ -53,9 +53,9 @@ namespace DFM.Testcases.DynamicFlow
         [Fact(DisplayName = "ເພີ່ມ ຫຼື ແກ້ໄຂ Dynamic Flow ")]
         public async Task NC1()
         {
-            string? orgID = "f89db3b253a14941bd31989480a562ad";
+            string? orgID = "b275e686238e444895c8572a5ce0e4bb";
             RoleTypeModel source = RoleTypeModel.OutboundOfficePrime;
-            List<RoleTypeModel> target = new List<RoleTypeModel> { RoleTypeModel.InboundGeneral, RoleTypeModel.OutboundPrime };
+            List<RoleTypeModel> target = new List<RoleTypeModel> { RoleTypeModel.InboundGeneral, RoleTypeModel.InboundOfficePrime, RoleTypeModel.OutboundPrime, RoleTypeModel.PrimeSecretary, RoleTypeModel.DeputyPrimeSecretary };
             var result = await organizationChart.SaveDynamicFlow(orgID, source, target, ModuleType.DocumentOutbound);
         }
 
