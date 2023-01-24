@@ -25,7 +25,7 @@ namespace DFM.Frontend.Pages.Inbound
 
             var result = await httpService.Get<IEnumerable<TabItemDto>>(url, new AuthorizeHeader("bearer", token));
 
-            tabItems = result.Response.ToList();
+            tabItems = result.Response.Where(x => x.Role.RoleType != RoleTypeModel.OutboundPrime && x.Role.RoleType != RoleTypeModel.OutboundOfficePrime && x.Role.RoleType != RoleTypeModel.OutboundGeneral).ToList();
 
             // Callback event 
             await OnTabChangeEvent.InvokeAsync(tabItems[_panelIndex].Role);

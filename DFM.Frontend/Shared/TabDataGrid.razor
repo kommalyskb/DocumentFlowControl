@@ -5,7 +5,7 @@
 @implements IDisposable
 
 
-<MudTabPanel Icon="@Icons.Material.Filled.People" BadgeData='@unread' BadgeColor="Color.Error">
+<MudTabPanel Text="@TabItem.Role.Display.Local" Icon="@Icons.Material.Filled.People" BadgeData='@unread' BadgeColor="Color.Error">
     <MudDataGrid T="DocumentDto" MultiSelection="true" Items="@Elements" SortMode="SortMode.Multiple" Filterable="true"
               FilterMode="@DataGridFilterMode.ColumnFilterRow" Hideable="true" Hover="true" Class="cursor-pointer"
               RowClick="@RowClicked" SelectedItemsChanged="@SelectedItemsChanged" Bordered="true" ColumnResizeMode="ResizeMode.Column">
