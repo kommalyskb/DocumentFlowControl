@@ -61,4 +61,11 @@
     <MudNavLink Href="/pages/report/inbound" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.Newspaper">ລາຍງານເອກະສານຂາເຂົ້າ</MudNavLink>
     <MudNavLink Href="/pages/report/outbound" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.Newspaper">ລາຍງານເອກະສານຂາອອກ</MudNavLink>
     <MudDivider Style="height:2px" />
+    @if (IsOpen)
+    {
+        <MudText Typo="Typo.subtitle2" Color="Color.Primary" Style="font-weight: bold; font-size: 16px;" Class="ml-4 my-3">ລະບົບ</MudText>
+    }
+
+    <MudNavLink Href="/authorize" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.Logout">ອອກຈາກລະບບົ</MudNavLink>
+    <MudDivider Style="height:5px" />
 </MudNavMenu>

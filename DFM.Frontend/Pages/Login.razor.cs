@@ -6,13 +6,17 @@ using MudBlazor;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using StackExchange.Redis;
+using System.Runtime.InteropServices;
 using System.Text.Json;
 
 namespace DFM.Frontend.Pages
 {
     public partial class Login
     {
-
+        protected override async Task OnInitializedAsync()
+        {
+            await accessToken.RemoveTokenAsync();
+        }
         private async Task authorize()
         {
             onProcessing = true;
