@@ -100,7 +100,10 @@
                             {
                                 <MudListItem Icon="@file.FileFormat" @key="@file">
                                     <MudTooltip Text="@file!.Display">
-                                        @file!.DisplayOnPage <code><b>@file!.FileSize.ToString("0.##") MB</b></code>
+                                        <MudChip Color="Color.Primary">
+                                            @file!.DisplayOnPage <code><b>@file!.FileSize.ToString("0.##") MB</b></code>
+                                        </MudChip>
+
                                     </MudTooltip>
                                     @if (file!.MimeType!.Contains("pdf"))
                                     {
@@ -133,7 +136,10 @@
                             {
                                 <MudListItem Icon="@file.FileFormat" @key="@file">
                                     <MudTooltip Text="@file!.Display">
-                                        @file!.DisplayOnPage <code><b>@file!.FileSize.ToString("0.##") MB</b></code>
+                                        <MudChip Color="Color.Secondary">
+                                            @file!.DisplayOnPage <code><b>@file!.FileSize.ToString("0.##") MB</b></code>
+                                        </MudChip>
+                                        
                                     </MudTooltip>
 
                                     @if (file!.MimeType!.Contains("pdf"))
@@ -145,7 +151,7 @@
                                             <MudIcon Icon="@Icons.Material.Filled.Download" Color="Color.Primary" />
                                         </span>
                                     </a>
-                                
+
                                 </MudListItem>
                             }
 

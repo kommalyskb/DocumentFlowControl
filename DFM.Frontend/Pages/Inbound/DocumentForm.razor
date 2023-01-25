@@ -159,7 +159,10 @@
                             {
                                 <MudListItem Icon="@file.Info.FileFormat" @key="@file.Info">
                                     <MudTooltip Text="@file!.Info!.Display">
-                                        @file!.Info!.DisplayOnPage @file!.Info!.IsNewFile<code><b>@file!.Info.FileSize.ToString("0.##") MB</b></code>
+                                        <MudChip Color="Color.Primary">
+                                            @file!.Info!.DisplayOnPage @file!.Info!.IsNewFile<code><b>@file!.Info.FileSize.ToString("0.##") MB</b></code>
+                                        </MudChip>
+                                        
                                     </MudTooltip>
                                     @if (!file!.Info!.IsNewFile)
                                     {
@@ -204,7 +207,10 @@
 
                                 <MudListItem Icon="@file.Info.FileFormat" @key="@file.Info">
                                     <MudTooltip Text="@file!.Info!.Display">
-                                        @file!.Info!.DisplayOnPage <code><b>@file!.Info.FileSize.ToString("0.##") MB</b></code>
+                                        <MudChip Color="Color.Secondary">
+                                            @file!.Info!.DisplayOnPage <code><b>@file!.Info.FileSize.ToString("0.##") MB</b></code>
+                                        </MudChip>
+                                        
                                     </MudTooltip>
 
                                     @if (!file!.Info!.IsNewFile)
