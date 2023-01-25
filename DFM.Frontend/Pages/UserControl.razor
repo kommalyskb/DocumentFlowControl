@@ -4,7 +4,7 @@
 @inject ServiceEndpoint endpoint
 @inject LocalStorageHelper storageHelper
 @inject ISnackbar Snackbar
-    
+
 <PageTitle>User Control - DFM</PageTitle>
 
 <DFM.Frontend.Pages.Common.ButtonPanel FormMode="formMode" ShowTerminateButton="false" ShowCreateButton="true" ShowDeleteButton="true"
@@ -14,18 +14,27 @@
                                        EditBreadcrumb="ແກ້ໄຂຂໍ້ມູນຜູ້ໃຊ້ລະບົບ" CreateBreadcrumb="ສ້າງຂໍ້ມູນຜູ້ໃຊ້ລະບົບໃຫມ່"
                                        EditButtonEvent="onEditButtonClick" SaveButtonEvent="onSaveClickAsync"></DFM.Frontend.Pages.Common.ButtonPanel>
 
-@if (formMode == FormMode.List)
-{
-    <DFM.Frontend.Pages.UserComponent.UserListView RoleId="@roleId" OnRowClick="@onRowClick"></DFM.Frontend.Pages.UserComponent.UserListView>
-}
-else if (formMode == FormMode.Create || formMode == FormMode.Edit)
-{
-    <DFM.Frontend.Pages.UserComponent.UserForm Mode="formMode" Employee="employeeModel" OnProcessing="onProcessing" Notify="notify"></DFM.Frontend.Pages.UserComponent.UserForm>
-}
-else if (formMode == FormMode.View)
-{
-    <DFM.Frontend.Pages.UserComponent.UserView Employee="employeeModel"></DFM.Frontend.Pages.UserComponent.UserView>
-}
+
+
+<MudContainer Class="mt-2">
+    <MudGrid>
+        <MudItem xs="12" sm="12">
+            <MudPaper Elevation="3">
+                @if (formMode == FormMode.List)
+                {
+                    <DFM.Frontend.Pages.UserComponent.UserListView RoleId="@roleId" OnRowClick="@onRowClick"></DFM.Frontend.Pages.UserComponent.UserListView>
+                }
+                else if (formMode == FormMode.Create || formMode == FormMode.Edit)
+                {
+                    <DFM.Frontend.Pages.UserComponent.UserForm Mode="formMode" Employee="employeeModel" OnProcessing="onProcessing" Notify="notify"></DFM.Frontend.Pages.UserComponent.UserForm>
+                }
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+
+
 
 @code {
     private FormMode formMode;

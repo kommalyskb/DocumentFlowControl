@@ -14,7 +14,7 @@ namespace DFM.Frontend.Shared
         string? token = "";
         private List<DocumentDto> Elements = new();
         private ResponseQueryDocument? responseQueryDocument;
-        private int unread = 0;
+        //private int unread = 0;
         private EmployeeModel? employee;
         IEnumerable<DocumentUrgentModel>? urgentModels;
         TraceStatus oldStatus;
@@ -125,7 +125,7 @@ namespace DFM.Frontend.Shared
                         Id = item.id,
                         DocDate = myDoc!.ReceiveDate,
                         DocNo = rawDocumentData!.DocNo,
-                        FormType = rawDocumentData!.FormType,
+                        FormType = rawDocumentData!.DocType,
                         Title = rawDocumentData!.Title,
                         UrgentLevel = urgentLabel.Level!,
                         IsRead = myDoc!.IsRead,
@@ -134,7 +134,7 @@ namespace DFM.Frontend.Shared
                         FontColor = urgentLabel.FontColor!
                     });
                 }
-                unread = Elements.Count(x => !x.IsRead);
+                //unread = Elements.Count(x => !x.IsRead);
 
                 // Order Element
                 Elements = Elements.OrderByDescending(x => x.CreateDate).ToList();

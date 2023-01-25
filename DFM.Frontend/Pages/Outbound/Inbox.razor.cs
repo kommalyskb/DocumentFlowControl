@@ -26,11 +26,14 @@ namespace DFM.Frontend.Pages.Outbound
             token = await accessToken.GetTokenAsync();
 
             var result = await httpService.Get<IEnumerable<TabItemDto>>(url, new AuthorizeHeader("bearer", token));
+            if (result.Success)
+            {
+                tabItems = result.Response.Where(x => x.Role.RoleType != RoleTypeModel.InboundPrime && x.Role.RoleType != RoleTypeModel.InboundOfficePrime && x.Role.RoleType != RoleTypeModel.InboundGeneral).ToList();
 
-            tabItems = result.Response.Where(x => x.Role.RoleType != RoleTypeModel.InboundPrime && x.Role.RoleType != RoleTypeModel.InboundOfficePrime && x.Role.RoleType != RoleTypeModel.InboundGeneral).ToList();
+                // Callback event 
+                await OnTabChangeEvent.InvokeAsync(tabItems[_panelIndex].Role);
+            }
 
-            // Callback event 
-            await OnTabChangeEvent.InvokeAsync(tabItems[_panelIndex].Role);
         }
 
         async Task onRowClick(DocumentModel item)

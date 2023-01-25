@@ -42,9 +42,12 @@ namespace DFM.Frontend.Pages
             token = await accessToken.GetTokenAsync();
 
             var result = await httpService.Get<IEnumerable<TabItemDto>>(url, new AuthorizeHeader("bearer", token));
-
-            //tabItems = result.Response.ToList();
-            roleIds = result.Response.Select(x => x.Role.RoleID).ToList()!;
+            if (result.Success)
+            {
+                //tabItems = result.Response.ToList();
+                roleIds = result.Response.Select(x => x.Role.RoleID).ToList()!;
+            }
+           
         }
         protected override void OnParametersSet()
         {

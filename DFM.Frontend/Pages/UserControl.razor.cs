@@ -37,10 +37,13 @@ namespace DFM.Frontend.Pages
         {
             formMode = FormMode.Edit;
         }
-        void onRowClick(EmployeeDto item)
+        void onRowClick(EmployeeModel item)
         {
+            // Set employee model
+            employeeModel = item;
             // Row click
-            formMode = FormMode.View;
+            formMode = FormMode.Edit;
+            
 
         }
 

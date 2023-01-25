@@ -11,13 +11,15 @@ namespace DFM.Frontend.Pages.UserComponent
         string? token = "";
         private List<EmployeeDto> Elements = new();
         private EmployeeModel? employee;
+        private IEnumerable<EmployeeModel>? allEmployees;
         async Task RowClicked(DataGridRowClickEventArgs<EmployeeDto> args)
         {
             //_events.Insert(0, $"Event = RowClick, Index = {args.RowIndex}, Data = {JsonSerializer.Serialize(args.Item)}");
             //Console.WriteLine(JsonSerializer.Serialize(args.Item));
 
             // Open new page
-            await OnRowClick.InvokeAsync(args.Item);
+            var item = allEmployees.FirstOrDefault(z => z.id == args.Item.Id);
+            await OnRowClick.InvokeAsync(item);
         }
 
         void SelectedItemsChanged(HashSet<EmployeeDto> items)
@@ -49,6 +51,7 @@ namespace DFM.Frontend.Pages.UserComponent
             var result = await httpService.Get<IEnumerable<EmployeeModel>>(url, new AuthorizeHeader("bearer", token));
             if (result.Success)
             {
+                allEmployees = result.Response;
                 Elements = result.Response.Select(x => new EmployeeDto
                 {
                     Email = x.Contact.Email,

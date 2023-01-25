@@ -11,75 +11,85 @@
 
 <PageTitle>Report - DFM</PageTitle>
 
-<MudContainer>
+<MudContainer Class="mt-2">
     <MudGrid>
-        <MudItem xs="12" md="6">
-            <MudButtonGroup Color="Color.Primary" Variant="Variant.Text">
+        <MudItem xs="12" sm="12">
+            <MudPaper Elevation="3">
+                <MudContainer>
+                    <MudGrid>
+                        <MudItem xs="12" md="6">
+                            <MudButtonGroup Color="Color.Primary" Variant="Variant.Text">
 
-                @if (isDrillDown == ReportDrillDownEnum.List)
+                                @if (isDrillDown == ReportDrillDownEnum.List)
+                                {
+                                    <MudButton StartIcon="@Icons.Material.Filled.ArrowBack" OnClick="onPrevoiusToSearch">@previousBtn</MudButton>
+                                    <MudButton Disabled="true">@current</MudButton>
+                                }
+                                else if (isDrillDown == ReportDrillDownEnum.Detail)
+                                {
+                                    <MudButton StartIcon="@Icons.Material.Filled.ArrowBack" OnClick="onPrevoiusToList">@previousBtn</MudButton>
+                                    <MudButton Disabled="true">@current</MudButton>
+                                }
+                                else
+                                {
+                                    <MudButton Disabled="true">@current</MudButton>
+
+                                }
+                            </MudButtonGroup>
+                        </MudItem>
+                    </MudGrid>
+                </MudContainer>
+
+                @if (Link == "inbound")
                 {
-                    <MudButton StartIcon="@Icons.Material.Filled.ArrowBack" OnClick="onPrevoiusToSearch">@previousBtn</MudButton>
-                    <MudButton Disabled="true">@current</MudButton>
+                    if (isDrillDown == ReportDrillDownEnum.List)
+                    {
+                        <DFM.Frontend.Pages.ReportComponent.ReportView Link="@Link" RoleId="@itemClick.RoleID"
+                                                                       TraceStatus="itemClick.TraceStatus" OnRowClick="onRowClick"></DFM.Frontend.Pages.ReportComponent.ReportView>
+                    }
+                    else if (isDrillDown == ReportDrillDownEnum.Search)
+                    {
+                        <DFM.Frontend.Pages.ReportComponent.ReportList InboxType="InboxType.Inbound"
+                                                                       OnSearch="onSearch" RoleIDs="roleIds" ReportSummary="reportSummary"
+                                                                       OnProcessing="onProcessing" OnReportItemClick="onItemReportClick"></DFM.Frontend.Pages.ReportComponent.ReportList>
+                    }
+                    else if (isDrillDown == ReportDrillDownEnum.Detail)
+                    {
+                        <DFM.Frontend.Pages.Inbound.DocumentView RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument"
+                                                                 DocumentModel="documentModel"></DFM.Frontend.Pages.Inbound.DocumentView>
+                    }
+
                 }
-                else if (isDrillDown == ReportDrillDownEnum.Detail)
+                else if (Link == "outbound")
                 {
-                    <MudButton StartIcon="@Icons.Material.Filled.ArrowBack" OnClick="onPrevoiusToList">@previousBtn</MudButton>
-                    <MudButton Disabled="true">@current</MudButton>
+                    if (isDrillDown == ReportDrillDownEnum.List)
+                    {
+                        <DFM.Frontend.Pages.ReportComponent.ReportView Link="@Link" RoleId="@itemClick.RoleID"
+                                                                       TraceStatus="itemClick.TraceStatus" OnRowClick="onRowClick"></DFM.Frontend.Pages.ReportComponent.ReportView>
+                    }
+                    else if (isDrillDown == ReportDrillDownEnum.Search)
+                    {
+                        <DFM.Frontend.Pages.ReportComponent.ReportList InboxType="InboxType.Outbound"
+                                                                       OnSearch="onSearch" RoleIDs="roleIds" ReportSummary="reportSummary"
+                                                                       OnProcessing="onProcessing" OnReportItemClick="onItemReportClick"></DFM.Frontend.Pages.ReportComponent.ReportList>
+                    }
+                    else if (isDrillDown == ReportDrillDownEnum.Detail)
+                    {
+                        <DFM.Frontend.Pages.Outbound.DocumentView RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument"
+                                                                  DocumentModel="documentModel"></DFM.Frontend.Pages.Outbound.DocumentView>
+                    }
+
                 }
                 else
                 {
-                    <MudButton Disabled="true">@current</MudButton>
-
+                    <MudAlert Severity="Severity.Error">Sorry the content not found, invalid link or page</MudAlert>
                 }
-            </MudButtonGroup>
+
+            </MudPaper>
         </MudItem>
     </MudGrid>
 </MudContainer>
 
-@if (Link == "inbound")
-{
-    if (isDrillDown == ReportDrillDownEnum.List)
-    {
-        <DFM.Frontend.Pages.ReportComponent.ReportView Link="@Link" RoleId="@itemClick.RoleID"
-                                                       TraceStatus="itemClick.TraceStatus" OnRowClick="onRowClick"></DFM.Frontend.Pages.ReportComponent.ReportView>
-    }
-    else if (isDrillDown == ReportDrillDownEnum.Search)
-    {
-        <DFM.Frontend.Pages.ReportComponent.ReportList InboxType="InboxType.Inbound"
-                                                       OnSearch="onSearch" RoleIDs="roleIds" ReportSummary="reportSummary"
-                                                       OnProcessing="onProcessing" OnReportItemClick="onItemReportClick"></DFM.Frontend.Pages.ReportComponent.ReportList>
-    }
-    else if (isDrillDown == ReportDrillDownEnum.Detail)
-    {
-        <DFM.Frontend.Pages.Inbound.DocumentView RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument"
-                                                 DocumentModel="documentModel"></DFM.Frontend.Pages.Inbound.DocumentView>
-    }
-
-}
-else if (Link == "outbound")
-{
-    if (isDrillDown == ReportDrillDownEnum.List)
-    {
-        <DFM.Frontend.Pages.ReportComponent.ReportView Link="@Link" RoleId="@itemClick.RoleID"
-                                                       TraceStatus="itemClick.TraceStatus" OnRowClick="onRowClick"></DFM.Frontend.Pages.ReportComponent.ReportView>
-    }
-    else if (isDrillDown == ReportDrillDownEnum.Search)
-    {
-        <DFM.Frontend.Pages.ReportComponent.ReportList InboxType="InboxType.Outbound"
-                                                       OnSearch="onSearch" RoleIDs="roleIds" ReportSummary="reportSummary"
-                                                       OnProcessing="onProcessing" OnReportItemClick="onItemReportClick"></DFM.Frontend.Pages.ReportComponent.ReportList>
-    }
-    else if (isDrillDown == ReportDrillDownEnum.Detail)
-    {
-        <DFM.Frontend.Pages.Outbound.DocumentView RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument"
-                                                  DocumentModel="documentModel"></DFM.Frontend.Pages.Outbound.DocumentView>
-    }
-
-}
-else
-{
-    <MudAlert Severity="Severity.Error">Sorry the content not found, invalid link or page</MudAlert>
-}
 
 
 @code {

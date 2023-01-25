@@ -7,7 +7,9 @@
 
 
 <MudContainer>
-   <MudGrid>
+
+    <MudGrid>
+
         <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
             <h2>ຂໍ້ມູນພະນັກງານ</h2>
         </MudItem>
@@ -93,9 +95,10 @@
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
             <MudTextField Disabled="OnProcessing" @bind-Value="Employee!.Contact.Email" Required="true" T="string" Counter="1000" MaxLength="1000" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ທີ່ຢູ່ ອີເມວ" Label="ອີເມວ" />
         </MudItem>
-        
-   </MudGrid>
+
+    </MudGrid>
 </MudContainer>
+
 
 @code {
     [Parameter] public EmployeeModel? Employee { get; set; }

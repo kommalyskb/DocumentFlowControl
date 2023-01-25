@@ -28,11 +28,14 @@ namespace DFM.Frontend.Pages.FolderComponent
             token = await accessToken.GetTokenAsync();
 
             var result = await httpService.Get<IEnumerable<TabItemDto>>(url, new AuthorizeHeader("bearer", token));
+            if (result.Success)
+            {
+                tabItems = result.Response.ToList();
 
-            tabItems = result.Response.ToList();
-
-            // Callback event 
-            await OnTabChangeEvent.InvokeAsync(tabItems[_panelIndex].Role.RoleID);
+                // Callback event 
+                await OnTabChangeEvent.InvokeAsync(tabItems[_panelIndex].Role.RoleID);
+            }
+            
         }
     }
 }

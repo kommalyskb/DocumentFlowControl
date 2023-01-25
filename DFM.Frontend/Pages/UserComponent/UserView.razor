@@ -6,89 +6,99 @@
 @inject EnvConf envConf
 @inject IDialogService DialogService
 
-<MudContainer>
+<MudContainer Class="mt-2">
     <MudGrid>
-        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
-            <h2>ຂໍ້ມູນພະນັກງານ</h2>
-        </MudItem>
-        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ຊື່" Variant="Variant.Text">@Employee!.Name.Local</MudField>
-        </MudItem>
-        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ນາມສະກຸນ" Variant="Variant.Text">@Employee!.FamilyName.Local</MudField>
-        </MudItem>
+        <MudItem xs="12" sm="12">
+            <MudPaper Elevation="3">
+                <MudContainer>
+                    <MudGrid>
+                        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+                            <h2>ຂໍ້ມູນພະນັກງານ</h2>
+                        </MudItem>
+                        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+                            <MudField Label="ຊື່" Variant="Variant.Text">@Employee!.Name.Local</MudField>
+                        </MudItem>
+                        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+                            <MudField Label="ນາມສະກຸນ" Variant="Variant.Text">@Employee!.FamilyName.Local</MudField>
+                        </MudItem>
 
-        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="Name" Variant="Variant.Text">@Employee!.Name.Eng</MudField>
-        </MudItem>
-        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="Family name" Variant="Variant.Text">@Employee!.FamilyName.Local</MudField>
-        </MudItem>
+                        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+                            <MudField Label="Name" Variant="Variant.Text">@Employee!.Name.Eng</MudField>
+                        </MudItem>
+                        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+                            <MudField Label="Family name" Variant="Variant.Text">@Employee!.FamilyName.Local</MudField>
+                        </MudItem>
 
-        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ວັນເດືອນປີເກີດ" Variant="Variant.Text">@Employee!.Dob</MudField>
-        </MudItem>
-        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ເພດ" Variant="Variant.Text">@Employee!.Gender</MudField>
-        </MudItem>
-        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ລະຫັດພະນັກງານ" Variant="Variant.Text">@Employee!.EmployeeID</MudField>
-        </MudItem>
+                        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+                            <MudField Label="ວັນເດືອນປີເກີດ" Variant="Variant.Text">@Employee!.Dob</MudField>
+                        </MudItem>
+                        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+                            <MudField Label="ເພດ" Variant="Variant.Text">@Employee!.Gender</MudField>
+                        </MudItem>
+                        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+                            <MudField Label="ລະຫັດພະນັກງານ" Variant="Variant.Text">@Employee!.EmployeeID</MudField>
+                        </MudItem>
 
-        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
-            <h2>ຂໍ້ມູນເຂົ້າເຖິງລະບົບ</h2>
-        </MudItem>
-        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="Username" Variant="Variant.Text">@Employee!.Username</MudField>
-        </MudItem>
-        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="Password" Variant="Variant.Text">***********</MudField>
-        </MudItem>
+                        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+                            <h2>ຂໍ້ມູນເຂົ້າເຖິງລະບົບ</h2>
+                        </MudItem>
+                        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+                            <MudField Label="Username" Variant="Variant.Text">@Employee!.Username</MudField>
+                        </MudItem>
+                        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+                            <MudField Label="Password" Variant="Variant.Text">***********</MudField>
+                        </MudItem>
 
-        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
-            <h2>ທີ່ຢູ່ບ່ອນເກີດ</h2>
-        </MudItem>
-        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-            <MudField Labelບ້ານ Variant="Variant.Text">@Employee!.BornAddress.Village</MudField>
-        </MudItem>
-        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ເມືອງ" Variant="Variant.Text">@Employee!.BornAddress.District</MudField>
-        </MudItem>
-        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ແຂວງ" Variant="Variant.Text">@Employee!.BornAddress.Province</MudField>
-        </MudItem>
+                        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+                            <h2>ທີ່ຢູ່ບ່ອນເກີດ</h2>
+                        </MudItem>
+                        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+                            <MudField Labelບ້ານ Variant="Variant.Text">@Employee!.BornAddress.Village</MudField>
+                        </MudItem>
+                        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+                            <MudField Label="ເມືອງ" Variant="Variant.Text">@Employee!.BornAddress.District</MudField>
+                        </MudItem>
+                        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+                            <MudField Label="ແຂວງ" Variant="Variant.Text">@Employee!.BornAddress.Province</MudField>
+                        </MudItem>
 
-        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
-            <h2>ທີ່ຢູ່ປັດຈຸບັນ</h2>
-        </MudItem>
-        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ບ້ານ" Variant="Variant.Text">@Employee!.CurrentAddress.Village</MudField>
-        </MudItem>
-        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ເມືອງ" Variant="Variant.Text">@Employee!.CurrentAddress.District</MudField>
-        </MudItem>
-        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ແຂວງ" Variant="Variant.Text">@Employee!.CurrentAddress.Province</MudField>
-        </MudItem>
-        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ໜ່ວຍ" Variant="Variant.Text">@Employee!.CurrentAddress.UnitNo</MudField>
-        </MudItem>
-        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ເຮືອນເລກທີ" Variant="Variant.Text">@Employee!.CurrentAddress.HouseNo</MudField>
-        </MudItem>
+                        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+                            <h2>ທີ່ຢູ່ປັດຈຸບັນ</h2>
+                        </MudItem>
+                        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+                            <MudField Label="ບ້ານ" Variant="Variant.Text">@Employee!.CurrentAddress.Village</MudField>
+                        </MudItem>
+                        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+                            <MudField Label="ເມືອງ" Variant="Variant.Text">@Employee!.CurrentAddress.District</MudField>
+                        </MudItem>
+                        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+                            <MudField Label="ແຂວງ" Variant="Variant.Text">@Employee!.CurrentAddress.Province</MudField>
+                        </MudItem>
+                        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+                            <MudField Label="ໜ່ວຍ" Variant="Variant.Text">@Employee!.CurrentAddress.UnitNo</MudField>
+                        </MudItem>
+                        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+                            <MudField Label="ເຮືອນເລກທີ" Variant="Variant.Text">@Employee!.CurrentAddress.HouseNo</MudField>
+                        </MudItem>
 
-        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
-            <h2>ຂໍ້ມູນສຳລັບຕິດຕໍ່</h2>
-        </MudItem>
-        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ເບີໂທ" Variant="Variant.Text">@Employee!.Contact.Phone</MudField>
-        </MudItem>
-        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ອີເມວ" Variant="Variant.Text">@Employee!.Contact.Email</MudField>
-        </MudItem>
+                        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+                            <h2>ຂໍ້ມູນສຳລັບຕິດຕໍ່</h2>
+                        </MudItem>
+                        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+                            <MudField Label="ເບີໂທ" Variant="Variant.Text">@Employee!.Contact.Phone</MudField>
+                        </MudItem>
+                        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+                            <MudField Label="ອີເມວ" Variant="Variant.Text">@Employee!.Contact.Email</MudField>
+                        </MudItem>
 
+                    </MudGrid>
+                </MudContainer>
+            </MudPaper>
+        </MudItem>
     </MudGrid>
 </MudContainer>
+
+
 
 @code {
     

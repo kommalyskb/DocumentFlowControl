@@ -18,67 +18,76 @@
                                        RootBreadcrumb="ລາຍການເອກະສານ" ViewBreadcrumb="ເບີ່ງເອກະສານ" EditBreadcrumb="ແກ້ໄຂເອກະສານ" CreateBreadcrumb="ສ້າງເອກະສານໃຫມ່"
                                        SaveButtonEvent="onSaveClickAsync" DeleteButtonEvent="onDeleteButtonClick" TerminateButtonEvent="onTerminateButtonClick"></DFM.Frontend.Pages.Common.ButtonPanel>
 
+<MudContainer Class="mt-2">
+    <MudGrid>
+        <MudItem xs="12" sm="12">
+            <MudPaper Elevation="3">
 
-@if (Link == "inbound")
-{
+                @if (Link == "inbound")
+                {
 
-    @if (formMode == FormMode.List)
-    {
-        <DFM.Frontend.Pages.Inbound.Inbox OnProcessing="onProcessing" TraceStatus="traceStatus" Link="@Link" OnTabChangeEvent="onTabChangeEventAsync" OnRowClick="@onRowClick"></DFM.Frontend.Pages.Inbound.Inbox>
+                    @if (formMode == FormMode.List)
+                    {
+                        <DFM.Frontend.Pages.Inbound.Inbox OnProcessing="onProcessing" TraceStatus="traceStatus" Link="@Link" OnTabChangeEvent="onTabChangeEventAsync" OnRowClick="@onRowClick"></DFM.Frontend.Pages.Inbound.Inbox>
 
-    }
-    else if (formMode == FormMode.Create)
-    {
-        
-        <DFM.Frontend.Pages.Inbound.DocumentForm RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument"
-                                         DocumentModel="documentModel" Attachments="files" Notice="onMessageAlert" MyRole="selectedRole"
-                                         RelateFiles="relateFiles" Mode="formMode"></DFM.Frontend.Pages.Inbound.DocumentForm>
-    }
-    else if (formMode == FormMode.Edit)
-    {
-        <DFM.Frontend.Pages.Inbound.DocumentForm RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument"
-                                                 DocumentModel="documentModel" Attachments="files" Notice="onMessageAlert" MyRole="selectedRole"
-                                         RelateFiles="relateFiles" Mode="formMode"></DFM.Frontend.Pages.Inbound.DocumentForm>
-    }
-    else if (formMode == FormMode.View || formMode == FormMode.Trash || formMode == FormMode.Terminated)
-    {
-        <DFM.Frontend.Pages.Inbound.DocumentView RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument"
-                                        DocumentModel="documentModel"></DFM.Frontend.Pages.Inbound.DocumentView>
+                    }
+                    else if (formMode == FormMode.Create)
+                    {
 
-    }
+                        <DFM.Frontend.Pages.Inbound.DocumentForm RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument"
+                                                                 DocumentModel="documentModel" Attachments="files" Notice="onMessageAlert" MyRole="selectedRole"
+                                                                 RelateFiles="relateFiles" Mode="formMode"></DFM.Frontend.Pages.Inbound.DocumentForm>
+                    }
+                    else if (formMode == FormMode.Edit)
+                    {
+                        <DFM.Frontend.Pages.Inbound.DocumentForm RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument"
+                                                                 DocumentModel="documentModel" Attachments="files" Notice="onMessageAlert" MyRole="selectedRole"
+                                                                 RelateFiles="relateFiles" Mode="formMode"></DFM.Frontend.Pages.Inbound.DocumentForm>
+                    }
+                    else if (formMode == FormMode.View || formMode == FormMode.Trash || formMode == FormMode.Terminated)
+                    {
+                        <DFM.Frontend.Pages.Inbound.DocumentView RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument"
+                                                                 DocumentModel="documentModel"></DFM.Frontend.Pages.Inbound.DocumentView>
 
-}
-else if (Link == "outbound")
-{
-    @if (formMode == FormMode.List)
-    {
-        <DFM.Frontend.Pages.Outbound.Inbox TraceStatus="traceStatus" OnProcessing="onProcessing" Link="@Link" OnTabChangeEvent="onTabChangeEventAsync" OnRowClick="@onRowClick"></DFM.Frontend.Pages.Outbound.Inbox>
+                    }
 
-    }
-    else if (formMode == FormMode.Create)
-    {
-        <DFM.Frontend.Pages.Outbound.DocumentForm RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument"
-                                                  DocumentModel="documentModel" Attachments="files" Notice="onMessageAlert" MyRole="selectedRole"
-                                          RelateFiles="relateFiles" Mode="formMode"></DFM.Frontend.Pages.Outbound.DocumentForm>
-    }
-    else if (formMode == FormMode.Edit)
-    {
-        <DFM.Frontend.Pages.Outbound.DocumentForm RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument"
-                                                  DocumentModel="documentModel" Attachments="files" Notice="onMessageAlert" MyRole="selectedRole"
-                                        RelateFiles="relateFiles" Mode="formMode"></DFM.Frontend.Pages.Outbound.DocumentForm>
-    }
-    else if (formMode == FormMode.View|| formMode == FormMode.Trash || formMode == FormMode.Terminated)
-    {
-        <DFM.Frontend.Pages.Outbound.DocumentView RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument"
-                                        DocumentModel="documentModel"></DFM.Frontend.Pages.Outbound.DocumentView>
+                }
+                else if (Link == "outbound")
+                {
+                    @if (formMode == FormMode.List)
+                    {
+                        <DFM.Frontend.Pages.Outbound.Inbox TraceStatus="traceStatus" OnProcessing="onProcessing" Link="@Link" OnTabChangeEvent="onTabChangeEventAsync" OnRowClick="@onRowClick"></DFM.Frontend.Pages.Outbound.Inbox>
 
-    }
+                    }
+                    else if (formMode == FormMode.Create)
+                    {
+                        <DFM.Frontend.Pages.Outbound.DocumentForm RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument"
+                                                                  DocumentModel="documentModel" Attachments="files" Notice="onMessageAlert" MyRole="selectedRole"
+                                                                  RelateFiles="relateFiles" Mode="formMode"></DFM.Frontend.Pages.Outbound.DocumentForm>
+                    }
+                    else if (formMode == FormMode.Edit)
+                    {
+                        <DFM.Frontend.Pages.Outbound.DocumentForm RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument"
+                                                                  DocumentModel="documentModel" Attachments="files" Notice="onMessageAlert" MyRole="selectedRole"
+                                                                  RelateFiles="relateFiles" Mode="formMode"></DFM.Frontend.Pages.Outbound.DocumentForm>
+                    }
+                    else if (formMode == FormMode.View || formMode == FormMode.Trash || formMode == FormMode.Terminated)
+                    {
+                        <DFM.Frontend.Pages.Outbound.DocumentView RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument"
+                                                                  DocumentModel="documentModel"></DFM.Frontend.Pages.Outbound.DocumentView>
 
-}
-else
-{
-    <MudAlert Severity="Severity.Error">Sorry the content not found, invalid link or page</MudAlert>
-}
+                    }
+
+                }
+                else
+                {
+                    <MudAlert Severity="Severity.Error">Sorry the content not found, invalid link or page</MudAlert>
+                }
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
 
 <MudMessageBox @ref="mbox" Title="ສົ່ງເອກະສານ">
     <MessageContent>

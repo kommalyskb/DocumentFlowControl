@@ -820,6 +820,8 @@ namespace DFM.Shared.Repository
                 var outboundPrime = charts.Where(x => x.RoleType == RoleTypeModel.OutboundPrime).ToList(); // ດຶງເອົາຂາອອກ ບໍລິສັດ
                 var inboundOffice = charts.Where(x => x.RoleType == RoleTypeModel.InboundOfficePrime).ToList(); // ດຶງເອົາຂາເຂົ້າ ບໍລິສັດ
                 var outboundOffice = charts.Where(x => x.RoleType == RoleTypeModel.OutboundOfficePrime).ToList(); // ດຶງເອົາຂາອອກ ບໍລິສັດ
+                var allInboundGeneral = charts.Where(x => x.RoleType == RoleTypeModel.InboundGeneral).ToList(); // ດຶງເອົາຂາເຂົ້າທຸກຝ່າຍໃນ ບໍລິສັດ
+                var allOutboundGeneral = charts.Where(x => x.RoleType == RoleTypeModel.OutboundGeneral).ToList(); // ດຶງເອົາຂາອກທຸກຝ່າຍໃນ ບໍລິສັດ
                 List<RoleTreeModel> childCharts = new();
                 foreach (var item in flowItem!.RoleTargets!)
                 {
@@ -1012,7 +1014,21 @@ namespace DFM.Shared.Repository
                         case RoleTypeModel.InboundGeneral:
                             // If roleItem is Outbound (Any outbound type) should see all Inbound general
                             // Else If roleItem is Inbound (Any Inbound type) should see all inbound general also
-                            // Elase should see only inbound that same general
+                            // Else should see only inbound that same general
+                            if (isInboundOrOutbound(roleItem.RoleType))
+                            {
+                                childCharts.AddRange(allInboundGeneral);
+                            }
+                            else
+                            {
+                                var parentGeneral = getParent(charts, roleItem, RoleTypeModel.General);
+
+                                var myInbound = allInboundGeneral.FirstOrDefault(x => x.ParentID == parentGeneral.Role.RoleID);
+                                if (myInbound != null)
+                                {
+                                    childCharts.Add(myInbound);
+                                }
+                            }
                             break;
                         case RoleTypeModel.OutboundPrime:
                             childCharts.AddRange(outboundPrime!);
@@ -1057,6 +1073,66 @@ namespace DFM.Shared.Repository
 
 
         }
+
+        private bool isInboundOrOutbound(RoleTypeModel roleType)
+        {
+            switch (roleType)
+            {
+                case RoleTypeModel.Prime:
+                    return false;
+                case RoleTypeModel.DeputyPrime:
+                    return false;
+                case RoleTypeModel.PrimeSecretary:
+                    return false;
+                case RoleTypeModel.DeputyPrimeSecretary:
+                    return false;
+                case RoleTypeModel.Director:
+                    return false;
+                case RoleTypeModel.DeputyDirector:
+                    return false;
+                case RoleTypeModel.OfficePrime:
+                    return false;
+                case RoleTypeModel.DeputyOfficePrime:
+                    return false;
+                case RoleTypeModel.General:
+                    return false;
+                case RoleTypeModel.DeputyGeneral:
+                    return false;
+                case RoleTypeModel.OfficeGeneral:
+                    return false;
+                case RoleTypeModel.DeputyOfficeGeneral:
+                    return false;
+                case RoleTypeModel.Division:
+                    return false;
+                case RoleTypeModel.DeputyDivision:
+                    return false;
+                case RoleTypeModel.Department:
+                    return false;
+                case RoleTypeModel.DeputyDepartment:
+                    return false;
+                case RoleTypeModel.Employee:
+                    return false;
+                case RoleTypeModel.Contract:
+                    return false;
+                case RoleTypeModel.Volunteer:
+                    return false;
+                case RoleTypeModel.InboundPrime:
+                    return true;
+                case RoleTypeModel.InboundOfficePrime:
+                    return true;
+                case RoleTypeModel.InboundGeneral:
+                    return true;
+                case RoleTypeModel.OutboundPrime:
+                    return true;
+                case RoleTypeModel.OutboundOfficePrime:
+                    return true;
+                case RoleTypeModel.OutboundGeneral:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
         public async Task<CommonResponseId> GetPublisher(string id, string roleId, CancellationToken cancellationToken = default(CancellationToken))
         {
             try

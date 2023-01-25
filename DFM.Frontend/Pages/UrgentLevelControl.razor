@@ -18,23 +18,33 @@
                                        EditBreadcrumb="ແກ້ໄຂລະດັບຄວາມຄວາມເລັ່ງດວ່ນ" CreateBreadcrumb="ສ້າງລະດັບຄວາມຄວາມເລັ່ງດວ່ນ" OnProcessing="onProcessing"
                                        EditButtonEvent="onEditButtonClick" SaveButtonEvent="onSaveClickAsync"></DFM.Frontend.Pages.Common.ButtonPanel>
 
-@if (formMode == FormMode.List)
-{
-    <DFM.Frontend.Pages.UrgentLevelComponent.UrgentList OnRowClick="onRowClick" RoleId="@roleId" OnTabChangeEvent="onTabChangeEvent"></DFM.Frontend.Pages.UrgentLevelComponent.UrgentList>
-}
-else if (formMode == FormMode.Create)
-{
-    <DFM.Frontend.Pages.UrgentLevelComponent.UrgentForm DocumentUrgentModel="documentUrgentModel" OnProcessing="onProcessing" RoleId="@roleId"></DFM.Frontend.Pages.UrgentLevelComponent.UrgentForm>
-}
-else if (formMode == FormMode.Edit)
-{
-    <DFM.Frontend.Pages.UrgentLevelComponent.UrgentForm DocumentUrgentModel="documentUrgentModel" OnProcessing="onProcessing" RoleId="@roleId"></DFM.Frontend.Pages.UrgentLevelComponent.UrgentForm>
 
-}
-else if (formMode == FormMode.View)
-{
-        <DFM.Frontend.Pages.UrgentLevelComponent.UrgentView DocumentUrgentModel="documentUrgentModel" RoleId="@roleId"></DFM.Frontend.Pages.UrgentLevelComponent.UrgentView>
-}
+<MudContainer Class="mt-2">
+    <MudGrid>
+        <MudItem xs="12" sm="12">
+            <MudPaper Elevation="3">
+                @if (formMode == FormMode.List)
+                {
+                    <DFM.Frontend.Pages.UrgentLevelComponent.UrgentList OnRowClick="onRowClick" RoleId="@roleId" OnTabChangeEvent="onTabChangeEvent"></DFM.Frontend.Pages.UrgentLevelComponent.UrgentList>
+                }
+                else if (formMode == FormMode.Create)
+                {
+                    <DFM.Frontend.Pages.UrgentLevelComponent.UrgentForm DocumentUrgentModel="documentUrgentModel" OnProcessing="onProcessing" RoleId="@roleId"></DFM.Frontend.Pages.UrgentLevelComponent.UrgentForm>
+                }
+                else if (formMode == FormMode.Edit)
+                {
+                    <DFM.Frontend.Pages.UrgentLevelComponent.UrgentForm DocumentUrgentModel="documentUrgentModel" OnProcessing="onProcessing" RoleId="@roleId"></DFM.Frontend.Pages.UrgentLevelComponent.UrgentForm>
+
+                }
+                else if (formMode == FormMode.View)
+                {
+                    <DFM.Frontend.Pages.UrgentLevelComponent.UrgentView DocumentUrgentModel="documentUrgentModel" RoleId="@roleId"></DFM.Frontend.Pages.UrgentLevelComponent.UrgentView>
+                }
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
 
 
 

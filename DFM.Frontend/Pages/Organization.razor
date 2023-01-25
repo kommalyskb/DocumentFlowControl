@@ -14,18 +14,28 @@
                                        SaveButtonEvent="onSaveClickAsync"></DFM.Frontend.Pages.Common.ButtonPanel>
 
 
-@if (formMode == FormMode.Create || formMode == FormMode.Edit)
-{
-    <DFM.Frontend.Pages.OrganizeComponent.OrgFormComponent FormMode="formMode"
-                                                           OrganizationID="@orgId" RoleTreeModel="roleTreeModel"
-                                                           OnProcessing="onProcessing" Notice="onMessageAlert">
-    </DFM.Frontend.Pages.OrganizeComponent.OrgFormComponent>
-}
-else
-{
+<MudContainer Class="mt-2">
+    <MudGrid>
+        <MudItem xs="12" sm="12">
+            <MudPaper Elevation="3">
 
-    <DFM.Frontend.Pages.OrganizeComponent.ListViewComponent OnItemChangeEvent="onItemChangeEvent"></DFM.Frontend.Pages.OrganizeComponent.ListViewComponent>
-}
+                @if (formMode == FormMode.Create || formMode == FormMode.Edit)
+                {
+                    <DFM.Frontend.Pages.OrganizeComponent.OrgFormComponent FormMode="formMode"
+                                                                           OrganizationID="@orgId" RoleTreeModel="roleTreeModel"
+                                                                           OnProcessing="onProcessing" Notice="onMessageAlert">
+                    </DFM.Frontend.Pages.OrganizeComponent.OrgFormComponent>
+                }
+                else
+                {
+
+                    <DFM.Frontend.Pages.OrganizeComponent.ListViewComponent OnItemChangeEvent="onItemChangeEvent"></DFM.Frontend.Pages.OrganizeComponent.ListViewComponent>
+                }
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
 
 
 <MudMessageBox @ref="delBox" Title="ລຶບຕຳແໜ່ງອອກຈາກໂຄງຮ່າງການຈັດຕັ້ງ">

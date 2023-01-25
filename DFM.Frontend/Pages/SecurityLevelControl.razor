@@ -18,23 +18,34 @@
                                        EditBreadcrumb="ແກ້ໄຂລະດັບຄວາມປອດໄພ" CreateBreadcrumb="ສ້າງລະດັບຄວາມປອດໄພ" OnProcessing="onProcessing"
                                        EditButtonEvent="onEditButtonClick" SaveButtonEvent="onSaveClickAsync"></DFM.Frontend.Pages.Common.ButtonPanel>
 
-@if (formMode == FormMode.List)
-{
-    <DFM.Frontend.Pages.SecurityLevelComponent.SecurityList OnRowClick="onRowClick" RoleId="@roleId" OnTabChangeEvent="onTabChangeEvent"></DFM.Frontend.Pages.SecurityLevelComponent.SecurityList>
-}
-else if (formMode == FormMode.Create)
-{
-    <DFM.Frontend.Pages.SecurityLevelComponent.SecurityForm DocumentSecurityModel="documentSecurityModel" OnProcessing="onProcessing" RoleId="@roleId"></DFM.Frontend.Pages.SecurityLevelComponent.SecurityForm>
-}
-else if (formMode == FormMode.Edit)
-{
-    <DFM.Frontend.Pages.SecurityLevelComponent.SecurityForm DocumentSecurityModel="documentSecurityModel" OnProcessing="onProcessing" RoleId="@roleId"></DFM.Frontend.Pages.SecurityLevelComponent.SecurityForm>
 
-}
-else if (formMode == FormMode.View)
-{
-    <DFM.Frontend.Pages.SecurityLevelComponent.SecurityView DocumentSecurityModel="documentSecurityModel" RoleId="@roleId"></DFM.Frontend.Pages.SecurityLevelComponent.SecurityView>
-}
+<MudContainer Class="mt-2">
+    <MudGrid>
+        <MudItem xs="12" sm="12">
+            <MudPaper Elevation="3">
+
+                @if (formMode == FormMode.List)
+                {
+                    <DFM.Frontend.Pages.SecurityLevelComponent.SecurityList OnRowClick="onRowClick" RoleId="@roleId" OnTabChangeEvent="onTabChangeEvent"></DFM.Frontend.Pages.SecurityLevelComponent.SecurityList>
+                }
+                else if (formMode == FormMode.Create)
+                {
+                    <DFM.Frontend.Pages.SecurityLevelComponent.SecurityForm DocumentSecurityModel="documentSecurityModel" OnProcessing="onProcessing" RoleId="@roleId"></DFM.Frontend.Pages.SecurityLevelComponent.SecurityForm>
+                }
+                else if (formMode == FormMode.Edit)
+                {
+                    <DFM.Frontend.Pages.SecurityLevelComponent.SecurityForm DocumentSecurityModel="documentSecurityModel" OnProcessing="onProcessing" RoleId="@roleId"></DFM.Frontend.Pages.SecurityLevelComponent.SecurityForm>
+
+                }
+                else if (formMode == FormMode.View)
+                {
+                    <DFM.Frontend.Pages.SecurityLevelComponent.SecurityView DocumentSecurityModel="documentSecurityModel" RoleId="@roleId"></DFM.Frontend.Pages.SecurityLevelComponent.SecurityView>
+                }
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
 
 
 

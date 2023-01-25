@@ -18,23 +18,33 @@
                                        EditBreadcrumb="ແກ້ໄຂປະເພດເອກະສານ" CreateBreadcrumb="ສ້າງປະເພດເອກະສານໃຫມ່" OnProcessing="onProcessing"
                                        EditButtonEvent="onEditButtonClick" SaveButtonEvent="onSaveClickAsync"></DFM.Frontend.Pages.Common.ButtonPanel>
 
-@if (formMode == FormMode.List)
-{
-    <DFM.Frontend.Pages.DocumentType.DocumentTypeList OnRowClick="onRowClick" RoleId="@roleId" OnTabChangeEvent="onTabChangeEvent"></DFM.Frontend.Pages.DocumentType.DocumentTypeList>
-}
-else if (formMode == FormMode.Create)
-{
-    <DFM.Frontend.Pages.DocumentType.DocumentTypeForm DataTypeModel="dataTypeModel" OnProcessing="onProcessing" RoleId="@roleId"></DFM.Frontend.Pages.DocumentType.DocumentTypeForm>
-}
-else if (formMode == FormMode.Edit)
-{
-    <DFM.Frontend.Pages.DocumentType.DocumentTypeForm DataTypeModel="dataTypeModel" OnProcessing="onProcessing" RoleId="@roleId"></DFM.Frontend.Pages.DocumentType.DocumentTypeForm>
+<MudContainer Class="mt-2">
+    <MudGrid>
+        <MudItem xs="12" sm="12">
+            <MudPaper Elevation="3">
+                @if (formMode == FormMode.List)
+                {
+                    <DFM.Frontend.Pages.DocumentType.DocumentTypeList OnRowClick="onRowClick" RoleId="@roleId" OnTabChangeEvent="onTabChangeEvent"></DFM.Frontend.Pages.DocumentType.DocumentTypeList>
+                }
+                else if (formMode == FormMode.Create)
+                {
+                    <DFM.Frontend.Pages.DocumentType.DocumentTypeForm DataTypeModel="dataTypeModel" OnProcessing="onProcessing" RoleId="@roleId"></DFM.Frontend.Pages.DocumentType.DocumentTypeForm>
+                }
+                else if (formMode == FormMode.Edit)
+                {
+                    <DFM.Frontend.Pages.DocumentType.DocumentTypeForm DataTypeModel="dataTypeModel" OnProcessing="onProcessing" RoleId="@roleId"></DFM.Frontend.Pages.DocumentType.DocumentTypeForm>
 
-}
-else if (formMode == FormMode.View)
-{
-    <DFM.Frontend.Pages.DocumentType.DocumentTypeView DataTypeModel="dataTypeModel" RoleId="@roleId"></DFM.Frontend.Pages.DocumentType.DocumentTypeView>
-}
+                }
+                else if (formMode == FormMode.View)
+                {
+                    <DFM.Frontend.Pages.DocumentType.DocumentTypeView DataTypeModel="dataTypeModel" RoleId="@roleId"></DFM.Frontend.Pages.DocumentType.DocumentTypeView>
+                }
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+
 
 
 
