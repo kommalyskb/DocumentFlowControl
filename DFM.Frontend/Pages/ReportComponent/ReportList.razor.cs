@@ -1,5 +1,6 @@
 ﻿using DFM.Shared.Common;
 using DFM.Shared.DTOs;
+using MudBlazor;
 
 namespace DFM.Frontend.Pages.ReportComponent
 {
@@ -7,7 +8,16 @@ namespace DFM.Frontend.Pages.ReportComponent
     {
         private async Task onSearch()
         {
-
+            if (string.IsNullOrWhiteSpace(startDate))
+            {
+                await NotifyMessage.InvokeAsync("ຜິດພາດ, ກະລຸນາປ້ອນວັນທີ່ເລີ່ມຕົ້ນຄົ້ນຫາ");
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(endDate))
+            {
+                await NotifyMessage.InvokeAsync("ຜິດພາດ, ກະລຸນາປ້ອນວັນທີ່ສິ້ນສຸດຄົ້ນຫາ");
+                return;
+            }
             GetPersonalReportRequest callBack = new GetPersonalReportRequest
             {
                 inboxType = InboxType,
@@ -32,4 +42,6 @@ namespace DFM.Frontend.Pages.ReportComponent
             });
         }
     }
+
+   
 }

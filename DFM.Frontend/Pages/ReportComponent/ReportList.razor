@@ -1,13 +1,18 @@
 ﻿<MudContainer>
     <MudGrid>
         
-        <MudItem xs="12" sm="7">
-            <MudForm>
-                <MudDatePicker Disabled="OnProcessing" @bind-Text="@startDate" Required="true" PickerVariant="PickerVariant.Inline" Label="ວັນທີເລີ່ມຕົ້ນ" HelperText="ວັນທີເລີ່ມຕົ້ນ" DateFormat="dd/MM/yyyy" />
-                <MudDatePicker Disabled="OnProcessing" @bind-Text="@endDate" Required="true" PickerVariant="PickerVariant.Inline" Label="ວັນທີສິ້ນສຸດ" HelperText="ວັນທີສິ້ນສຸດ" DateFormat="dd/MM/yyyy" />
-                <MudButton Disabled="OnProcessing" Variant="Variant.Outlined" Color="Color.Primary" EndIcon="@Icons.Material.Filled.Search" OnClick="onSearch">ຄົ້ນຫາ</MudButton>
-            </MudForm>
+        <MudItem xs="12" sm="6">
+            <MudDatePicker Disabled="OnProcessing" @bind-Text="@startDate" Required="true" PickerVariant="PickerVariant.Inline" Label="ວັນທີເລີ່ມຕົ້ນ" HelperText="ວັນທີເລີ່ມຕົ້ນ" DateFormat="dd/MM/yyyy" />
         </MudItem>
+        <MudItem xs="12" sm="6">
+            <MudDatePicker Disabled="OnProcessing" @bind-Text="@endDate" Required="true" PickerVariant="PickerVariant.Inline" Label="ວັນທີສິ້ນສຸດ" HelperText="ວັນທີສິ້ນສຸດ" DateFormat="dd/MM/yyyy" />
+
+        </MudItem>
+        <MudItem xs="12" sm="12" Style="text-align: center">
+            <MudButton Style="margin: auto" Disabled="OnProcessing" Variant="Variant.Filled"
+                       Color="Color.Primary" EndIcon="@Icons.Material.Filled.Search" OnClick="onSearch">ຄົ້ນຫາ</MudButton>
+        </MudItem>
+        <MudDivider></MudDivider>
         <MudItem xs="12" sm="12">
             <div class="mud-table mud-sm-table mud-table-hover mud-elevation-1">
                 <div class="mud-table-container">
@@ -91,6 +96,7 @@
     [Parameter] public List<PersonalReportSummary>? ReportSummary { get; set; }
     [Parameter] public bool OnProcessing { get; set; }
     [Parameter] public EventCallback<ReportClickDTO> OnReportItemClick { get; set; }
+    [Parameter] public EventCallback<string> NotifyMessage { get; set; }
 
     string? startDate;
     string? endDate;

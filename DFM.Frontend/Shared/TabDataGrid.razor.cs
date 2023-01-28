@@ -18,6 +18,7 @@ namespace DFM.Frontend.Shared
         private EmployeeModel? employee;
         IEnumerable<DocumentUrgentModel>? urgentModels;
         TraceStatus oldStatus;
+        private IEnumerable<DataTypeModel> docTypeModel;
 
         // events
         async Task RowClicked(DataGridRowClickEventArgs<DocumentDto> args)
@@ -55,7 +56,7 @@ namespace DFM.Frontend.Shared
             string style = $"";
 
             if (!x.IsRead)
-                style += "font-weight:bold";
+                style = "font-weight:bold; background-color:#ff4081ff; color:#ffffff";
             
 
             return style;
@@ -65,7 +66,7 @@ namespace DFM.Frontend.Shared
             string style = $"{x.FontColor};";
 
             if (!x.IsRead)
-                style += "font-weight:bold";
+                style = "font-weight:bold; background-color:#ff4081ff; color:#ffffff";
 
 
             return style;
@@ -105,6 +106,13 @@ namespace DFM.Frontend.Shared
             {
                 urgentModels = urgentLevel.Response;
             }
+            // Load Document Type
+            string docTypeUrl = $"{endpoint.API}/api/v1/DocumentType/GetItems/{employee!.OrganizationID}";
+            var docType = await httpService.Get<IEnumerable<DataTypeModel>>(docTypeUrl, new AuthorizeHeader("bearer", token));
+            if (docType.Success)
+            {
+                docTypeModel = docType.Response;
+            }
 
             // Load document
             string url = $"{endpoint.API}/api/v1/Document/GetDocument/{TraceStatus}/{Link}/{RoleId}";
@@ -119,15 +127,16 @@ namespace DFM.Frontend.Shared
                     var myDoc = item.Recipients!.LastOrDefault(x => x.RecipientInfo.RoleID == RoleId);
                     var rawDocumentData = item.RawDatas!.LastOrDefault(x => x.DataID == myDoc!.DataID);
                     var urgentLabel = urgentModels!.FirstOrDefault(x => x.id == rawDocumentData!.Urgent.id)!;
+                    var docTypeLabel = docTypeModel.FirstOrDefault(x => x.id == rawDocumentData!.DocType)!;
                     
                     Elements.Add(new DocumentDto
                     {
                         Id = item.id,
                         DocDate = myDoc!.ReceiveDate,
                         DocNo = rawDocumentData!.DocNo,
-                        FormType = rawDocumentData!.DocType,
+                        FormType = docTypeLabel!.DocType,
                         Title = rawDocumentData!.Title,
-                        UrgentLevel = urgentLabel.Level!,
+                        UrgentLevel = urgentLabel!.Level!,
                         IsRead = myDoc!.IsRead,
                         Uid = myDoc!.UId,
                         CreateDate = myDoc!.CreateDate,

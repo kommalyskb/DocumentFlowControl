@@ -34,6 +34,17 @@
     <MudNavLink Href="/pages/doc/outbound/completed" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.Send" Match="NavLinkMatch.Prefix">ສຳເລັດແລ້ວ</MudNavLink>
     <MudNavLink Href="/pages/doc/outbound/bin" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.Cabin" Match="NavLinkMatch.Prefix">ຖັງຂີ້ເຫຍື່ອ</MudNavLink>
     <MudDivider Style="height:2px" />
+   
+    
+    @if (IsOpen)
+    {
+        <MudText Typo="Typo.subtitle2" Color="Color.Primary" Style="font-weight: bold; font-size: 16px;" Class="ml-4 my-3">ລາຍງານສຳລັບແອັດມິນ</MudText>
+    }
+
+    <MudNavLink Href="/pages/monitor/inbound" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.AdminPanelSettings">ເອກະສານຂາເຂົ້າ</MudNavLink>
+    <MudNavLink Href="/pages/monitor/outbound" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.AdminPanelSettings">ເອກະສານຂາອອກ</MudNavLink>
+    <MudDivider Style="height:2px" />
+
     @if (IsOpen)
     {
         <MudText Typo="Typo.subtitle2" Color="Color.Primary" Style="font-weight: bold; font-size: 16px;" Class="ml-4 my-3">ແຟ້ມເອກະສານ</MudText>

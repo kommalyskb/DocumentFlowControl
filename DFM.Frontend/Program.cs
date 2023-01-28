@@ -103,7 +103,24 @@ builder.Services.AddSingleton<IAESHelper,  AESHelper>();
 builder.Services.AddMudServices();
 
 builder.Services.AddRazorPages();
-builder.Services.AddServerSideBlazor();
+builder.Services.AddServerSideBlazor(options =>
+{
+    options.DetailedErrors = true;
+    options.DisconnectedCircuitMaxRetained = 100;
+    options.DisconnectedCircuitRetentionPeriod = TimeSpan.FromMinutes(3);
+    options.JSInteropDefaultCallTimeout = TimeSpan.FromMinutes(1);
+    options.MaxBufferedUnacknowledgedRenderBatches = 10;
+})
+            .AddHubOptions(options =>
+            {
+                options.ClientTimeoutInterval = TimeSpan.FromSeconds(30);
+                options.EnableDetailedErrors = true;
+                options.HandshakeTimeout = TimeSpan.FromSeconds(15);
+                options.KeepAliveInterval = TimeSpan.FromSeconds(15);
+                options.MaximumParallelInvocationsPerClient = 1;
+                options.MaximumReceiveMessageSize = 86 * 1024;
+                options.StreamBufferCapacity = 10;
+            });
 
 var app = builder.Build();
 

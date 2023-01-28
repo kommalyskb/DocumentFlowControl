@@ -1,7 +1,7 @@
 ﻿using DFM.Shared.DTOs;
 using DFM.Shared.Entities;
 using HttpClientService;
-using Newtonsoft.Json.Linq;
+using System.Linq;
 
 namespace DFM.Frontend.Pages
 {
@@ -27,13 +27,13 @@ namespace DFM.Frontend.Pages
             if (result.Success)
             {
                 roles = result.Response;
-                selectValues = roles.Select(x => x.Role.RoleID);
-
-
+                roleID = roles!.FirstOrDefault()!.Role!.RoleID!;
+                selectValues = new List<string>() { roleID };
+                
             }
             await InvokeAsync(StateHasChanged);
 
         }
-        
+
     }
 }

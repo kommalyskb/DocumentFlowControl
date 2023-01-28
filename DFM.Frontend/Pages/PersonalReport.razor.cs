@@ -47,7 +47,7 @@ namespace DFM.Frontend.Pages
                 //tabItems = result.Response.ToList();
                 roleIds = result.Response.Select(x => x.Role.RoleID).ToList()!;
             }
-           
+            await InvokeAsync(StateHasChanged);
         }
         protected override void OnParametersSet()
         {
@@ -59,6 +59,14 @@ namespace DFM.Frontend.Pages
                 searchRequest = new();
                 documentModel = new();
                 rawDocument = new();
+                if (Link == "inbound")
+                {
+                    current = "ລາຍງານເອກະສານຂາເຂົ້າ";
+                }
+                else
+                {
+                    current = "ລາຍງານເອກະສານຂາອອກ";
+                }
             }
             base.OnParametersSet();
         }
@@ -138,6 +146,17 @@ namespace DFM.Frontend.Pages
             rawDocument = documentModel!.RawDatas!.LastOrDefault(x => x.DataID == myRole!.DataID);
             isDrillDown = ReportDrillDownEnum.Detail;
             await InvokeAsync(StateHasChanged);
+        }
+
+        void AlertMessage(string message, string position, Severity severity)
+        {
+            Snackbar.Clear();
+            Snackbar.Configuration.PositionClass = position;
+            Snackbar.Add(message, severity);
+        }
+        void notifyMessage(string content)
+        {
+            AlertMessage(content, Defaults.Classes.Position.BottomRight, Severity.Warning);
         }
     }
 }
