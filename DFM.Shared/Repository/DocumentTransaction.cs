@@ -527,11 +527,13 @@ namespace DFM.Shared.Repository
                         
                         if (isExist == null)
                         {
+                            var position = countDraft.FirstOrDefault(x => x.roleId == item.RoleID);
                             result.Add(new PersonalReportSummary
                             {
                                 RoleID = item.RoleID,
-                                Position = countDraft.FirstOrDefault(x => x.roleId == item.RoleID)!.roleName,
-                                Draft = item.Count
+                                Position = position!.roleName,
+                                Draft = item.Count,
+                                FullName = position!.fullName
                             });
                         }
                         else
@@ -554,11 +556,13 @@ namespace DFM.Shared.Repository
                         var isExist = result.FirstOrDefault(x => x.RoleID!.Equals(item.RoleID));
                         if (isExist == null)
                         {
+                            var position = countFinished.FirstOrDefault(x => x.roleId == item.RoleID);
                             result.Add(new PersonalReportSummary
                             {
                                 RoleID = item.RoleID,
-                                Position = countFinished.FirstOrDefault(x => x.roleId == item.RoleID)!.roleName,
-                                Finished = item.Count
+                                Position = position!.roleName,
+                                Finished = item.Count,
+                                FullName = position!.fullName
                             });
                         }
                         else
@@ -581,11 +585,13 @@ namespace DFM.Shared.Repository
                         var isExist = result.FirstOrDefault(x => x.RoleID!.Equals(item.RoleID));
                         if (isExist == null)
                         {
+                            var position = countInprogress.FirstOrDefault(x => x.roleId == item.RoleID);
                             result.Add(new PersonalReportSummary
                             {
                                 RoleID = item.RoleID,
-                                Position = countInprogress.FirstOrDefault(x => x.roleId == item.RoleID)!.roleName,
-                                InProgress = item.Count
+                                Position = position!.roleName,
+                                InProgress = item.Count,
+                                FullName = position!.fullName
                             });
                         }
                         else

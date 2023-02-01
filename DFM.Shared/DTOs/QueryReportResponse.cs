@@ -11,6 +11,7 @@ namespace DFM.Shared.DTOs
     {
         public string? id { get; set; }
         public string? roleName { get; set; }
+        public string? fullName { get; set; }
         public string? roleId { get; set; }
         public decimal createDate { get; set; }
         public DocumentModel? content { get; set; } = new();

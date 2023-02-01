@@ -18,6 +18,8 @@ namespace DFM.Shared.DTOs
         public int InProgress { get; set; }
         public int Finished { get; set; }
         public string? Position { get; set; }
+        public string? FullName { get; set; }
+
         public string? RoleID { get; set; }
     }
     public class ReportPersonalGroup

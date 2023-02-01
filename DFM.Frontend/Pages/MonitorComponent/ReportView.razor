@@ -1,5 +1,46 @@
-﻿<h3>ReportView</h3>
+﻿@inject IHttpService httpService
+@inject AccessTokenStorage accessToken
+@inject ServiceEndpoint endpoint
+@inject LocalStorageHelper storageHelper
+@implements IDisposable
+
+<MudContainer>
+    <MudGrid>
+        <MudItem xs="12" sm="12">
+            <MudDataGrid T="DocumentDto" MultiSelection="true" Items="@Elements" SortMode="SortMode.Multiple" Filterable="true"
+                         FilterMode="@DataGridFilterMode.ColumnFilterRow" Hideable="true" Hover="true" Class="cursor-pointer"
+                         RowClick="@RowClicked" SelectedItemsChanged="@SelectedItemsChanged" Bordered="true" ColumnResizeMode="ResizeMode.Column">
+                @*<ToolBarContent>
+                <MudText Typo="Typo.h6"></MudText>
+                <MudSpacer />
+                <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                </ToolBarContent>*@
+                <Columns>
+                    @*<SelectColumn T="DocumentDto" />*@
+                    @*<Column T="DocumentDto" Field="Id" Hidden="true" />*@
+
+                    <Column T="DocumentDto" Field="DocNo" Title="ເລກທີເອກະສານ" CellStyleFunc="@_cellStyleFunc" />
+                    <Column T="DocumentDto" Field="Title" Title="ຫົວຂໍ້" CellStyleFunc="@_cellStyleFunc" />
+                    <Column T="DocumentDto" Field="FormType" Title="ປະເພດເອກະສານ" CellStyleFunc="@_cellStyleFunc" />
+                    <Column T="DocumentDto" Field="DocDate" Title="ວັນທີ່ໄດ້ຮັບ" CellStyleFunc="@_cellStyleFunc" />
+                    <Column T="DocumentDto" Field="UrgentLevel" Title="ຄວາມເລັ່ງດ່ວນ" CellStyleFunc="@_cellWithFontStyleFunc" />
+                </Columns>
+                <PagerContent>
+                    <MudDataGridPager T="DocumentDto" />
+                </PagerContent>
+            </MudDataGrid>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
 
 @code {
+    [Parameter] public string? Link { get; set; }
+    [Parameter] public TraceStatus TraceStatus { get; set; }
+    [Parameter] public string? RoleId { get; set; }
+    [Parameter] public EventCallback<DocumentModel> OnRowClick { get; set; }
 
+    public void Dispose()
+    {
+    }
 }

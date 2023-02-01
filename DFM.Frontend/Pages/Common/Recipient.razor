@@ -19,7 +19,17 @@
                     <MudTh>ຜູ້ຕິດຕາມ</MudTh>
                 </HeaderContent>
                 <RowTemplate>
-                    <MudTd>@context.Role.Display.Local</MudTd>
+                    @if (context.RoleType == RoleTypeModel.PrimeSecretary || context.RoleType == RoleTypeModel.DeputyPrimeSecretary ||
+                    context.RoleType == RoleTypeModel.InboundGeneral || context.RoleType == RoleTypeModel.InboundOfficePrime || context.RoleType == RoleTypeModel.InboundPrime ||
+                    context.RoleType == RoleTypeModel.OutboundGeneral || context.RoleType == RoleTypeModel.OutboundOfficePrime || context.RoleType == RoleTypeModel.OutboundPrime)
+                    {
+                        <MudTd>@context.Role.Display.Local (@context.Employee.Name.Local)</MudTd>
+                    }
+                    else
+                    {
+                        <MudTd>@context.Role.Display.Local</MudTd>
+                    }
+
                     <MudRadioGroup @bind-SelectedOption="@MainReceiver!.Id">
                         <MudTd>
                             <MudRadio Option="@context.Role.RoleID" Color="Color.Primary"></MudRadio>
@@ -43,7 +53,7 @@
 
 </MudContainer>
 @code {
-    
+
     [Parameter] public string? RoleId { get; set; }
     [Parameter] public MainReceiver? MainReceiver { get; set; }
     [Parameter] public IEnumerable<RoleTreeModel>? Recipients { get; set; }

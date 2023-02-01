@@ -23,12 +23,12 @@
 
                                 @if (isDrillDown == ReportDrillDownEnum.List)
                                 {
-                                    @*<MudButton StartIcon="@Icons.Material.Filled.ArrowBack" OnClick="onPrevoiusToSearch">@previousBtn</MudButton>*@
+                                    <MudButton StartIcon="@Icons.Material.Filled.ArrowBack" OnClick="onPrevoiusToSearch">@previousBtn</MudButton>
                                     <MudButton Disabled="true">@current</MudButton>
                                 }
                                 else if (isDrillDown == ReportDrillDownEnum.Detail)
                                 {
-                                    @*<MudButton StartIcon="@Icons.Material.Filled.ArrowBack" OnClick="onPrevoiusToList">@previousBtn</MudButton>*@
+                                    <MudButton StartIcon="@Icons.Material.Filled.ArrowBack" OnClick="onPrevoiusToList">@previousBtn</MudButton>
                                     <MudButton Disabled="true">@current</MudButton>
                                 }
                                 else
@@ -45,19 +45,19 @@
                 {
                     if (isDrillDown == ReportDrillDownEnum.List)
                     {
-                        @*<DFM.Frontend.Pages.ReportComponent.ReportView Link="@Link" RoleId="@itemClick.RoleID"
-                                                                       TraceStatus="itemClick.TraceStatus" OnRowClick="onRowClick"></DFM.Frontend.Pages.ReportComponent.ReportView>*@
+                        <DFM.Frontend.Pages.MonitorComponent.ReportView Link="@Link" RoleId="@itemClick.RoleID"
+                                                                       TraceStatus="itemClick.TraceStatus" OnRowClick="onRowClick"></DFM.Frontend.Pages.MonitorComponent.ReportView>
                     }
                     else if (isDrillDown == ReportDrillDownEnum.Search)
                     {
-                        @*<DFM.Frontend.Pages.ReportComponent.ReportList InboxType="InboxType.Inbound"
+                        <DFM.Frontend.Pages.MonitorComponent.ReportList InboxType="InboxType.Inbound"
                                                                        OnSearch="onSearch" RoleIDs="roleIds" ReportSummary="reportSummary"
-                                                                       OnProcessing="onProcessing" OnReportItemClick="onItemReportClick"></DFM.Frontend.Pages.ReportComponent.ReportList>*@
+                                                                       OnProcessing="onProcessing" OnReportItemClick="onItemReportClick"></DFM.Frontend.Pages.MonitorComponent.ReportList>
                     }
                     else if (isDrillDown == ReportDrillDownEnum.Detail)
                     {
-                       @* <DFM.Frontend.Pages.Inbound.DocumentView RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument"
-                                                                 DocumentModel="documentModel"></DFM.Frontend.Pages.Inbound.DocumentView>*@
+                        <DFM.Frontend.Pages.Inbound.DocumentView RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument"
+                                                                 DocumentModel="documentModel"></DFM.Frontend.Pages.Inbound.DocumentView>
                     }
 
                 }
@@ -65,19 +65,19 @@
                 {
                     if (isDrillDown == ReportDrillDownEnum.List)
                     {
-                        @*<DFM.Frontend.Pages.ReportComponent.ReportView Link="@Link" RoleId="@itemClick.RoleID"
-                                                                       TraceStatus="itemClick.TraceStatus" OnRowClick="onRowClick"></DFM.Frontend.Pages.ReportComponent.ReportView>*@
+                        <DFM.Frontend.Pages.MonitorComponent.ReportView Link="@Link" RoleId="@itemClick.RoleID"
+                                                                       TraceStatus="itemClick.TraceStatus" OnRowClick="onRowClick"></DFM.Frontend.Pages.MonitorComponent.ReportView>
                     }
                     else if (isDrillDown == ReportDrillDownEnum.Search)
                     {
-                        @*<DFM.Frontend.Pages.ReportComponent.ReportList InboxType="InboxType.Outbound"
+                        <DFM.Frontend.Pages.MonitorComponent.ReportList InboxType="InboxType.Outbound"
                                                                        OnSearch="onSearch" RoleIDs="roleIds" ReportSummary="reportSummary"
-                                                                       OnProcessing="onProcessing" OnReportItemClick="onItemReportClick"></DFM.Frontend.Pages.ReportComponent.ReportList>*@
+                                                                       OnProcessing="onProcessing" OnReportItemClick="onItemReportClick"></DFM.Frontend.Pages.MonitorComponent.ReportList>
                     }
                     else if (isDrillDown == ReportDrillDownEnum.Detail)
                     {
-                        @*<DFM.Frontend.Pages.Outbound.DocumentView RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument"
-                                                                  DocumentModel="documentModel"></DFM.Frontend.Pages.Outbound.DocumentView>*@
+                        <DFM.Frontend.Pages.Outbound.DocumentView RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument"
+                                                                  DocumentModel="documentModel"></DFM.Frontend.Pages.Outbound.DocumentView>
                     }
 
                 }
@@ -94,6 +94,12 @@
 @code {
     [Parameter] public string? Link { get; set; }
 
+    List<string> roleIds = new();
+    private GetPersonalReportRequest? searchRequest = new();
+    bool onProcessing;
+    string? roleId;
+    DocumentModel? documentModel = new();
+    RawDocumentData? rawDocument = new();
     public void Dispose()
     {
     }
