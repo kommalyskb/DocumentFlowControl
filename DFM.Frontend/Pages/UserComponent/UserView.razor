@@ -5,6 +5,7 @@
 @inject LocalStorageHelper storageHelper
 @inject EnvConf envConf
 @inject IDialogService DialogService
+@inject IMinioService minio
 
 <MudContainer Class="mt-2">
     <MudGrid>
@@ -90,7 +91,12 @@
                         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
                             <MudField Label="ອີເມວ" Variant="Variant.Text">@Employee!.Contact.Email</MudField>
                         </MudItem>
-
+                        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+                            <h2>ຮູບພາບໂປຣຟາຍ</h2>
+                        </MudItem>
+                        <MudItem xs="12" md="6">
+                            <img src="@imageUri" />
+                        </MudItem>
                     </MudGrid>
                 </MudContainer>
             </MudPaper>

@@ -29,9 +29,12 @@ namespace DFM.Frontend.Pages.Outbound
             if (result.Success)
             {
                 tabItems = result.Response.Where(x => x.Role.RoleType != RoleTypeModel.InboundPrime && x.Role.RoleType != RoleTypeModel.InboundOfficePrime && x.Role.RoleType != RoleTypeModel.InboundGeneral).ToList();
-
-                // Callback event 
-                await OnTabChangeEvent.InvokeAsync(tabItems[_panelIndex].Role);
+                if (tabItems.Count > 0)
+                {
+                    // Callback event 
+                    await OnTabChangeEvent.InvokeAsync(tabItems[_panelIndex].Role);
+                }
+               
             }
 
         }

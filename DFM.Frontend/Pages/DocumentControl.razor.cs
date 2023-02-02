@@ -574,11 +574,11 @@ namespace DFM.Frontend.Pages
             // Attachment file
             foreach (var item in newAttachFiles)
             {
-                var readStream = item.File!.OpenReadStream(maxFileSize);
+                using Stream readStream = item.File!.OpenReadStream(maxFileSize);
 
                 var buf = new byte[readStream.Length];
 
-                var ms = new MemoryStream(buf);
+                using MemoryStream ms = new MemoryStream(buf);
 
                 await readStream.CopyToAsync(ms);
 
@@ -592,11 +592,11 @@ namespace DFM.Frontend.Pages
             foreach (var item in newRelFiles)
             {
 
-                var readStream = item.File!.OpenReadStream(maxFileSize);
+                using Stream readStream = item.File!.OpenReadStream(maxFileSize);
 
                 var buf = new byte[readStream.Length];
 
-                var ms = new MemoryStream(buf);
+                using MemoryStream ms = new MemoryStream(buf);
 
                 await readStream.CopyToAsync(ms);
 
@@ -657,7 +657,11 @@ namespace DFM.Frontend.Pages
             var result = await httpService.Get<IEnumerable<RoleTreeModel>>(urlGetOrgItem, new AuthorizeHeader("bearer", token));
             if (result.Success)
             {
-                recipients = result.Response;
+                var expected = result.Response.ToList();
+                expected.RemoveAll(x => x.Role.RoleID == roleId);
+                recipients = expected;
+
+                
             }
 
             // Get Publisher

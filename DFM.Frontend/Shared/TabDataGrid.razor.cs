@@ -56,7 +56,7 @@ namespace DFM.Frontend.Shared
             string style = $"";
 
             if (!x.IsRead)
-                style = "font-weight:bold; background-color:#ff4081ff; color:#ffffff";
+                style = "font-weight:bold; background-color:#cce6f7; color:#002f57";
             
 
             return style;
@@ -66,7 +66,7 @@ namespace DFM.Frontend.Shared
             string style = $"{x.FontColor};";
 
             if (!x.IsRead)
-                style = "font-weight:bold; background-color:#ff4081ff; color:#ffffff";
+                style = "font-weight:bold; background-color:#cce6f7; color:#002f57";
 
 
             return style;
@@ -134,13 +134,13 @@ namespace DFM.Frontend.Shared
                         Id = item.id,
                         DocDate = myDoc!.ReceiveDate,
                         DocNo = rawDocumentData!.DocNo,
-                        FormType = docTypeLabel!.DocType,
+                        FormType = docTypeLabel != null ? docTypeLabel!.DocType : "",
                         Title = rawDocumentData!.Title,
-                        UrgentLevel = urgentLabel!.Level!,
+                        UrgentLevel = urgentLabel != null ? urgentLabel!.Level! : "",
                         IsRead = myDoc!.IsRead,
                         Uid = myDoc!.UId,
                         CreateDate = myDoc!.CreateDate,
-                        FontColor = urgentLabel.FontColor!
+                        FontColor = urgentLabel != null ? urgentLabel.FontColor! : ""
                     });
                 }
                 //unread = Elements.Count(x => !x.IsRead);

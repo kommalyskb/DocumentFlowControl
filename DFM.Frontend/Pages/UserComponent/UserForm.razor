@@ -4,7 +4,7 @@
 @inject LocalStorageHelper storageHelper
 @inject EnvConf envConf
 @inject IDialogService DialogService
-
+@inject IMinioService minio
 
 <MudContainer>
 
@@ -116,7 +116,23 @@
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
             <MudTextField Disabled="OnProcessing" @bind-Value="Employee!.Contact.Email" Required="true" T="string" Counter="1000" MaxLength="1000" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ທີ່ຢູ່ ອີເມວ" Label="ອີເມວ" />
         </MudItem>
+        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+            <h2>ຮູບພາບໂປຣຟາຍ</h2>
+        </MudItem>
+        <MudItem xs="12" md="2">
+            <InputFile id="attachment" OnChange="uploadFiles" hidden accept="image/*" />
+            <MudButton Disabled="OnProcessing" HtmlTag="label"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Filled.CloudUpload"
+                       for="attachment">
+                ອັບໂຫຼດຮູບ
+            </MudButton>
 
+        </MudItem>
+        <MudItem xs="12" md="6">
+            <img src="@imageUri" />
+        </MudItem>
     </MudGrid>
 </MudContainer>
 
@@ -127,4 +143,5 @@
     [Parameter] public FormMode Mode { get; set; }
     [Parameter] public bool OnProcessing { get; set; }
     [Parameter] public bool Notify { get; set; }
+    [Parameter] public AttachmentDto? ProfileImage { get; set; }
 }

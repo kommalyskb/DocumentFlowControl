@@ -409,6 +409,12 @@ namespace DFM.API.Controllers
                                 mainBehavior = BehaviorStatus.ReadWrite;
                             }
                         }
+                        else if(receiverRole.Content.RoleType == RoleTypeModel.PrimeSecretary || receiverRole.Content.RoleType == RoleTypeModel.DeputyPrimeSecretary)
+                        {
+                            // No need dupplicate
+                            rawDataId = request.RawDocument!.DataID;
+                            mainBehavior = BehaviorStatus.ProcessOnly;
+                        }
                         else
                         {
                             var isSameParent = await organization.IsInSameParent(myRole.Content.OrganizationID, myRole.Content.id, receiverRole.Content.id, cancellationToken);
@@ -850,6 +856,12 @@ namespace DFM.API.Controllers
                                 });
                                 mainBehavior = BehaviorStatus.ReadWrite;
                             }
+                        }
+                        else if (receiverRole.Content.RoleType == RoleTypeModel.PrimeSecretary || receiverRole.Content.RoleType == RoleTypeModel.DeputyPrimeSecretary)
+                        {
+                            // No need dupplicate
+                            rawDataId = request.RawDocument!.DataID;
+                            mainBehavior = BehaviorStatus.ProcessOnly;
                         }
                         else
                         {

@@ -1,6 +1,7 @@
 ﻿using DFM.Shared.Common;
 using DFM.Shared.DTOs;
 using DFM.Shared.Entities;
+using Google.Protobuf.WellKnownTypes;
 using HttpClientService;
 using MudBlazor;
 
@@ -8,6 +9,7 @@ namespace DFM.Frontend.Pages
 {
     public partial class UserControl
     {
+        long maxFileSize = 1024 * 1024 * 25; // 5 MB or whatever, don't just use max int
         string? editBreadcrumbText = "";
         readonly int delayTime = 500;
         private EmployeeModel? employee;
@@ -61,7 +63,13 @@ namespace DFM.Frontend.Pages
             }
             string url = $"{endpoint.API}/api/v1/Employee/SaveItem?notify={isNotify}";
             string token = await accessToken.GetTokenAsync();
+
+
+            // Upload file via Minio SDK
+            await manageFileToServer();
+
             employeeModel.OrganizationID = employee.OrganizationID;
+            employeeModel.ProfileImage = attachment.Info;
             // Send request for save document
             var result = await httpService.Post<EmployeeModel, CommonResponse>(url, employeeModel!, new AuthorizeHeader("bearer", token));
 
@@ -114,5 +122,23 @@ namespace DFM.Frontend.Pages
             Snackbar.Configuration.PositionClass = position;
             Snackbar.Add(message, severity);
         }
+
+        private async Task manageFileToServer()
+        {
+
+            // Upload new file
+            using Stream readStream = attachment.File!.OpenReadStream(maxFileSize);
+
+            var buf = new byte[readStream.Length];
+
+            using MemoryStream ms = new MemoryStream(buf);
+
+            await readStream.CopyToAsync(ms);
+            var buffer = ms.ToArray();
+
+            await minio.PutObject(attachment.Info.Bucket!, attachment.Info.FileName!, buffer);
+
+        }
+
     }
 }

@@ -42,6 +42,8 @@ namespace DFM.Shared.Entities
         public string? Username { get; set; }
         [Indexed]
         public string? Password { get; set; }
+        [Indexed(CascadeDepth = 1)]
+        public AttachmentModel? ProfileImage { get; set; } = new();
     }
     
 }

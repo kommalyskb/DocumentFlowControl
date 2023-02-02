@@ -1,16 +1,33 @@
 ﻿@inherits LayoutComponentBase
 @inject NavigationManager UriHelper
+@inject LocalStorageHelper storageHelper
+@inject IMinioService minio
 
 <PageTitle>DFM.Frontend</PageTitle>
 <MudThemeProvider Theme="customTheme" />
 <MudDialogProvider />
 <MudSnackbarProvider />
 <MudLayout>
-    <header class="mud-appbar mud-appbar-dense mud-elevation-4 mud-theme-primary">
+    @*<header class="mud-appbar mud-appbar-dense mud-elevation-4 mud-theme-primary">
         <div class="mud-toolbar mud-toolbar-dense mud-toolbar-gutters mud-toolbar-appbar" style="text-align: center; background-color: #20629b;">
             <img src="images/cse-logo.png" alt="logo" class="mud-image object-cover object-center mud-elevation-25 rounded-lg" width="45" height="45" style="margin: auto" />
         </div>
-    </header>
+    </header>*@
+
+    <MudAppBar Fixed="false">
+        <MudText>CSE's Document Control</MudText>
+        <MudSpacer />
+        <MudImage Src="images/cse-logo.png" Alt="logo" Height="45" Width="45" />
+        <MudSpacer />
+        @if (employee != null)
+        {
+            if(employee.ProfileImage != null)
+            {
+                <MudImage Src="@imageUri" Alt="photo" Height="45" Width="45" Class="mr-2"/>
+            }
+            <MudText>@employee.Name.Local @employee.FamilyName.Local</MudText>
+        }
+    </MudAppBar>
 
     <MudDrawer @bind-Open="_drawerOpen" Elevation="0" ClipMode="DrawerClipMode.Always" Variant="@DrawerVariant.Mini">
 
@@ -36,6 +53,8 @@
 
 @code
 {
+    string? imageUri = "images/user.png";
+    private EmployeeModel? employee;
     bool _drawerOpen = true;
     private MudTheme customTheme = new()
         {
@@ -54,5 +73,28 @@
     void ToggleMenu()
     {
         _drawerOpen = !_drawerOpen;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (employee == null)
+        {
+            employee = await storageHelper.GetEmployeeProfileAsync();
+            if (employee.ProfileImage != null)
+            {
+                await previewImageProfile(employee.ProfileImage.Bucket, employee.ProfileImage.FileName);
+
+            }
+        }
+    }
+    private async Task previewImageProfile(string bucket, string fileName)
+    {
+        // Generate link
+        var link = await minio.GenerateLink(bucket, fileName);
+        if (link.IsSuccess)
+        {
+            imageUri = link.Response;
+        }
+
     }
 }

@@ -6,6 +6,8 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using DFM.Shared.Configurations;
+using Confluent.Kafka;
+using System.Runtime.CompilerServices;
 
 namespace DFM.Shared.Helper
 {
@@ -38,11 +40,7 @@ namespace DFM.Shared.Helper
         }
         public async Task Send(EmailProperty emailProperty)
         {
-            SmtpClient smtp = new SmtpClient(smtpConf.Server, smtpConf.Port);
-            smtp.EnableSsl = true;
-            smtp.Credentials = new NetworkCredential(smtpConf.Email, smtpConf.Password);
 
-           
             MailMessage message = new MailMessage();
             message.From = new MailAddress(emailProperty.From!);
             message.Subject = emailProperty.Subject;
@@ -62,7 +60,20 @@ namespace DFM.Shared.Helper
 
             try
             {
-                await smtp.SendMailAsync(message);
+                using (SmtpClient smtp = new SmtpClient())
+                {
+
+                    smtp.Host = smtpConf.Server;
+                    smtp.Port = smtpConf.Port;
+                    smtp.EnableSsl = true;
+                    
+                    NetworkCredential netCre = new NetworkCredential(smtpConf.Email, smtpConf.Password);
+                    smtp.UseDefaultCredentials = false;
+                    smtp.Credentials = netCre;
+
+                    await smtp.SendMailAsync(message);
+
+                }
             }
             catch (SmtpException)
             {

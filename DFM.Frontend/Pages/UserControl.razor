@@ -4,6 +4,7 @@
 @inject ServiceEndpoint endpoint
 @inject LocalStorageHelper storageHelper
 @inject ISnackbar Snackbar
+@inject IMinioService minio
 
 <PageTitle>User Management - CSE's Document Control</PageTitle>
 
@@ -26,7 +27,7 @@
                 }
                 else if (formMode == FormMode.Create || formMode == FormMode.Edit)
                 {
-                    <DFM.Frontend.Pages.UserComponent.UserForm Mode="formMode" Employee="employeeModel" OnProcessing="onProcessing" Notify="notify"></DFM.Frontend.Pages.UserComponent.UserForm>
+                    <DFM.Frontend.Pages.UserComponent.UserForm Mode="formMode" Employee="employeeModel" OnProcessing="onProcessing" Notify="notify" ProfileImage="attachment"></DFM.Frontend.Pages.UserComponent.UserForm>
                 }
             </MudPaper>
         </MudItem>
@@ -43,4 +44,5 @@
     EmployeeModel? employeeModel = new();
     bool onProcessing = false;
     bool notify = false;
+    private AttachmentDto? attachment = new();
 }
