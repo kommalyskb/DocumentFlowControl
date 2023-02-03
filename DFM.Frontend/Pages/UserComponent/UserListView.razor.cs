@@ -59,7 +59,8 @@ namespace DFM.Frontend.Pages.UserComponent
                     Fullname = $"{x.Name.Local} {x.FamilyName.Local}",
                     Gender = x.Gender == Gender.Male ? "ທ່ານ" : "ທ່ານ ນາງ",
                     Id = x.id,
-                    Phone = x.Contact.Phone
+                    Phone = x.Contact.Phone,
+                    
                 }).ToList();
             }
         }

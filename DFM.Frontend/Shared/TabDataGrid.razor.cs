@@ -140,7 +140,8 @@ namespace DFM.Frontend.Shared
                         IsRead = myDoc!.IsRead,
                         Uid = myDoc!.UId,
                         CreateDate = myDoc!.CreateDate,
-                        FontColor = urgentLabel != null ? urgentLabel.FontColor! : ""
+                        FontColor = urgentLabel != null ? urgentLabel.FontColor! : "",
+                        
                     });
                 }
                 //unread = Elements.Count(x => !x.IsRead);
