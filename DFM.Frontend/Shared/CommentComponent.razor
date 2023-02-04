@@ -1,0 +1,24 @@
+﻿
+<MudIconButton Icon="@Icons.Material.Filled.Comment" Color="Color.Secondary" aria-label="comment" OnClick="@ToggleOpen"></MudIconButton>
+<MudPopover Open="@_isOpen" Fixed="true" Class="px-4 pt-4">
+    <div class="d-flex flex-column">
+        <MudText>
+            @Message
+        </MudText>
+        <MudButton OnClick="@ToggleOpen" Class="ml-auto mr-n3 mb-1" Color="Color.Error">ປິດ</MudButton>
+    </div>
+</MudPopover>
+
+@code {
+    [Parameter] public string? Message { get; set; }
+
+    public bool _isOpen;
+
+    public void ToggleOpen()
+    {
+        if (_isOpen)
+            _isOpen = false;
+        else
+            _isOpen = true;
+    }
+}

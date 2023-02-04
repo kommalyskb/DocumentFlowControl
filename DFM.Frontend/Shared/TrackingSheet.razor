@@ -28,7 +28,7 @@
         <MudTd>@DecodeEnumStatus.decodeTraceStatus(context.DocStatus)</MudTd>
         <MudTd>@context.SendDate</MudTd>
         <MudTd>
-            <MudIconButton Icon="@Icons.Material.Filled.Comment" Color="Color.Secondary" aria-label="comment"></MudIconButton>
+            <CommentComponent Message="@context.Comment.Comment"></CommentComponent>
         </MudTd>
     </RowTemplate>
     <FooterContent>
@@ -42,4 +42,5 @@
 @code {
 
     [Parameter] public IEnumerable<Reciepient>? Reciepients { get; set; }
+    
 }

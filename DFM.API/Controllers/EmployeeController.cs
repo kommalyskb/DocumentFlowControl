@@ -90,130 +90,201 @@ namespace DFM.API.Controllers
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> SaveItemV1([FromBody] EmployeeModel request, string notify, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (string.IsNullOrWhiteSpace(request.Username))
+            try
             {
-                return BadRequest(new CommonResponse
-                {
-                    Code = nameof(ResultCode.USERNAME_COULD_NOT_EMPTY),
-                    Success = false,
-                    Message = ResultCode.USERNAME_COULD_NOT_EMPTY,
-                    Detail = ResultCode.USERNAME_COULD_NOT_EMPTY
-                });
-            }
-            //get admin token
-            var checkAdminToken = await identityHelper.GetAdminAccessToken();
-            var validateResult = await identityHelper.ValidateUser(request.Username, checkAdminToken.Token);
-
-            bool isNewUser = false;
-
-            if (validateResult.SearchState == 2)
-            {
-                // Found user
-                request.id = validateResult.UserID;
-                isNewUser = false;
-            }
-            else
-            {
-                isNewUser = true;
-                // Register new User
-                var r = new UserRegisterRequestResponse
-                {
-                    userName = request.Username,
-                    accessFailedCount = 0,
-                    email = request.Contact.Email,
-                    emailConfirmed = true,
-                    lockoutEnabled = false,
-                    lockoutEnd = DateTime.UtcNow,
-                    phoneNumber = request.Contact.Phone,
-                    phoneNumberConfirmed = true,
-                    twoFactorEnabled = false
-
-                };
-                var reqUser = await httpService.Post<UserRegisterRequestResponse>($"{endpoint.IdentityAPI}/api/Users", r, new AuthorizeHeader("bearer", checkAdminToken.Token), cancellationToken);
-                if (reqUser.Success)
-                {
-                    var reqUserContent = await reqUser.HttpResponseMessage.Content.ReadAsStringAsync();
-                    var userResponse = JsonSerializer.Deserialize<UserRegisterRequestResponse>(reqUserContent);
-                    request.id = userResponse?.id;
-                    request.UserID = userResponse?.id;
-                    string password = $"{request.Password}@Dfm.codecamp";
-                    // Send email
-                    if (!string.IsNullOrWhiteSpace(notify))
-                    {
-                        if (notify == "yes")
-                        {
-                            try
-                            {
-                                string emailBody = emailHelper.RegisterMailBody($"{request.Name.Local} {request.FamilyName.Local}", request.Username, request.Password);
-                                await emailHelper.Send(new EmailProperty
-                                {
-                                    Body = emailBody,
-                                    From = smtp.Email,
-                                    To = new List<string> { request.Contact.Email },
-                                    Subject = $"ລົງທະບຽນນຳໃຊ້ລະບົບຈໍລະຈອນເອກະສານ"
-                                });
-                            }
-                            catch (Exception)
-                            {
-
-                            }
-                           
-                        }
-                    }
-
-
-                    // Set password
-                    await httpService.Post<UserResetRequest>($"{endpoint.IdentityAPI}/api/Users/ChangePassword", new UserResetRequest
-                    {
-                        userId = userResponse?.id,
-                        password = password,
-                        confirmPassword = password
-
-                    }, new AuthorizeHeader("bearer", checkAdminToken.Token), cancellationToken);
-
-                    if (aesConf.Base == BaseConfig.HEX)
-                    {
-                        request.Password = aes.Encrypt(password, aesConf.Key.FromHEX(), aesConf.IV.FromHEX()).ToHEX();
-                    }
-                    else
-                    {
-                        request.Password = aes.Encrypt(password, aesConf.Key.FromBase64(), aesConf.IV.FromBase64()).ToBase64();
-                    }
-                }
-                else
+                if (string.IsNullOrWhiteSpace(request.Username))
                 {
                     return BadRequest(new CommonResponse
                     {
-                        Code = nameof(ResultCode.REG_USER_FAIL),
+                        Code = nameof(ResultCode.USERNAME_COULD_NOT_EMPTY),
                         Success = false,
-                        Message = ResultCode.REG_USER_FAIL,
-                        Detail = ResultCode.REG_USER_FAIL
+                        Message = ResultCode.USERNAME_COULD_NOT_EMPTY,
+                        Detail = ResultCode.USERNAME_COULD_NOT_EMPTY
                     });
                 }
-            }
+                //get admin token
+                var checkAdminToken = await identityHelper.GetAdminAccessToken();
+                var validateResult = await identityHelper.ValidateUser(request.Username, checkAdminToken.Token);
 
-            if (isNewUser)
+                bool isNewUser = false;
+
+                if (validateResult.SearchState == 2)
+                {
+                    // Found user
+                    request.id = validateResult.UserID;
+                    isNewUser = false;
+                }
+                else
+                {
+                    isNewUser = true;
+                    // Register new User
+                    var r = new UserRegisterRequestResponse
+                    {
+                        userName = request.Username,
+                        accessFailedCount = 0,
+                        email = request.Contact.Email,
+                        emailConfirmed = true,
+                        lockoutEnabled = false,
+                        lockoutEnd = DateTime.UtcNow,
+                        phoneNumber = request.Contact.Phone,
+                        phoneNumberConfirmed = true,
+                        twoFactorEnabled = false
+
+                    };
+                    var reqUser = await httpService.Post<UserRegisterRequestResponse>($"{endpoint.IdentityAPI}/api/Users", r, new AuthorizeHeader("bearer", checkAdminToken.Token), cancellationToken);
+                    if (reqUser.Success)
+                    {
+                        var reqUserContent = await reqUser.HttpResponseMessage.Content.ReadAsStringAsync();
+                        var userResponse = JsonSerializer.Deserialize<UserRegisterRequestResponse>(reqUserContent);
+                        request.id = userResponse?.id;
+                        request.UserID = userResponse?.id;
+                        string password = $"{request.Password}@Dfm.codecamp";
+                        // Send email
+                        if (!string.IsNullOrWhiteSpace(notify))
+                        {
+                            if (notify == "yes")
+                            {
+                                try
+                                {
+                                    string emailBody = emailHelper.RegisterMailBody($"{request.Name.Local} {request.FamilyName.Local}", request.Username, request.Password);
+                                    await emailHelper.Send(new EmailProperty
+                                    {
+                                        Body = emailBody,
+                                        From = smtp.Email,
+                                        To = new List<string> { request.Contact.Email },
+                                        Subject = $"ລົງທະບຽນນຳໃຊ້ລະບົບຈໍລະຈອນເອກະສານ"
+                                    });
+                                }
+                                catch (Exception)
+                                {
+
+                                }
+
+                            }
+                        }
+
+
+                        // Set password
+                        await httpService.Post<UserResetRequest>($"{endpoint.IdentityAPI}/api/Users/ChangePassword", new UserResetRequest
+                        {
+                            userId = userResponse?.id,
+                            password = password,
+                            confirmPassword = password
+
+                        }, new AuthorizeHeader("bearer", checkAdminToken.Token), cancellationToken);
+
+                        if (aesConf.Base == BaseConfig.HEX)
+                        {
+                            request.Password = aes.Encrypt(password, aesConf.Key.FromHEX(), aesConf.IV.FromHEX()).ToHEX();
+                        }
+                        else
+                        {
+                            request.Password = aes.Encrypt(password, aesConf.Key.FromBase64(), aesConf.IV.FromBase64()).ToBase64();
+                        }
+                    }
+                    else
+                    {
+                        return BadRequest(new CommonResponse
+                        {
+                            Code = nameof(ResultCode.REG_USER_FAIL),
+                            Success = false,
+                            Message = ResultCode.REG_USER_FAIL,
+                            Detail = ResultCode.REG_USER_FAIL
+                        });
+                    }
+                }
+
+                if (isNewUser)
+                {
+
+                    // New employee
+                    var result = await employeeManager.NewEmployeeProfile(request, cancellationToken);
+
+                    if (result.Success)
+                    {
+                        return Ok(result);
+                    }
+                    return BadRequest(result);
+                }
+                else
+                {
+                    // Update
+                    var result = await employeeManager.EditEmployeeProfile(request, cancellationToken);
+                    if (result.Success)
+                    {
+                        return Ok(result);
+                    }
+                    return BadRequest(result);
+                }
+            }
+            catch (Exception)
             {
 
-                // New employee
-                var result = await employeeManager.NewEmployeeProfile(request, cancellationToken);
+                throw;
+            }
+           
+        }
 
-                if (result.Success)
-                {
-                    return Ok(result);
-                }
-                return BadRequest(result);
-            }
-            else
+        [HttpPost("ResetPassword")]
+        [MapToApiVersion("1.0")]
+        [ProducesResponseType(typeof(CommonResponseId), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> ResetPasswordV1([FromBody] EmployeeModel request, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            try
             {
-                // Update
-                var result = await employeeManager.EditEmployeeProfile(request, cancellationToken);
-                if (result.Success)
+                if (string.IsNullOrWhiteSpace(request.Username))
                 {
-                    return Ok(result);
+                    return BadRequest(new CommonResponse
+                    {
+                        Code = nameof(ResultCode.USERNAME_COULD_NOT_EMPTY),
+                        Success = false,
+                        Message = ResultCode.USERNAME_COULD_NOT_EMPTY,
+                        Detail = ResultCode.USERNAME_COULD_NOT_EMPTY
+                    });
                 }
-                return BadRequest(result);
+                //get admin token
+                var checkAdminToken = await identityHelper.GetAdminAccessToken();
+                var validateResult = await identityHelper.ValidateUser(request.Username, checkAdminToken.Token);
+
+                string password = $"{request.Password}@Dfm.codecamp";
+
+                // Set password
+                await httpService.Post<UserResetRequest>($"{endpoint.IdentityAPI}/api/Users/ChangePassword", new UserResetRequest
+                {
+                    userId = request.id,
+                    password = password,
+                    confirmPassword = password
+
+                }, new AuthorizeHeader("bearer", checkAdminToken.Token), cancellationToken);
+
+                if (aesConf.Base == BaseConfig.HEX)
+                {
+                    request.Password = aes.Encrypt(password, aesConf.Key.FromHEX(), aesConf.IV.FromHEX()).ToHEX();
+                }
+                else
+                {
+                    request.Password = aes.Encrypt(password, aesConf.Key.FromBase64(), aesConf.IV.FromBase64()).ToBase64();
+                }
+
+                return Ok(new CommonResponseId
+                {
+                    Code = nameof(ResultCode.SUCCESS_OPERATION),
+                    Success = true,
+                    Id = request.Password,
+                    Detail = ResultCode.SUCCESS_OPERATION,
+                    Message = ResultCode.SUCCESS_OPERATION
+                });
             }
+            catch (Exception)
+            {
+
+                throw;
+            }
+           
+
+
+
         }
 
         [HttpPost("ResendRegisterEmail")]

@@ -49,6 +49,51 @@ namespace DFM.Frontend.Pages
 
         }
 
+        private async Task openResetPasswordBox()
+        {
+            bool? isOpen = await mbox!.Show();
+            if (isOpen.HasValue)
+            {
+                if (isOpen.Value)
+                {
+                    onProcessing = true;
+                    if (employee == null)
+                    {
+                        employee = await storageHelper.GetEmployeeProfileAsync();
+                    }
+                    
+                    string url = $"{endpoint.API}/api/v1/Employee/ResetPassword";
+                    string token = await accessToken.GetTokenAsync();
+
+                    var result = await httpService.Post<EmployeeModel, CommonResponseId>(url, employeeModel!, new AuthorizeHeader("bearer", token));
+
+
+                    onProcessing = false;
+
+                    Console.WriteLine($"-------------------------------");
+                    Console.WriteLine($"Result: {await result.HttpResponseMessage.Content.ReadAsStringAsync()}");
+                    Console.WriteLine($"-------------------------------");
+
+                    if (result.Success)
+                    {
+                        employeeModel!.Password = result.Response.Id;
+                        AlertMessage("ປ່ຽນລະຫັດຜ່ານ ສຳເລັດ", Defaults.Classes.Position.BottomRight, Severity.Success);
+                    }
+                    else
+                    {
+                        AlertMessage("ປ່ຽນລະຫັດຜ່ານ ຜິດພາດ", Defaults.Classes.Position.BottomRight, Severity.Error);
+                    }
+
+                    await Task.Delay(delayTime);
+
+                }
+            }
+        }
+        private IEnumerable<string> PasswordCharacters(string ch)
+        {
+            if (!string.IsNullOrEmpty(ch) && 6 < ch?.Length)
+                yield return "ອັກສອນສູງສຸດ 12 ອັກສອນ";
+        }
         async Task onSaveClickAsync()
         {
             onProcessing = true;

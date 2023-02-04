@@ -27,7 +27,9 @@
                 }
                 else if (formMode == FormMode.Create || formMode == FormMode.Edit)
                 {
-                    <DFM.Frontend.Pages.UserComponent.UserForm Mode="formMode" Employee="employeeModel" OnProcessing="onProcessing" Notify="notify" ProfileImage="attachment"></DFM.Frontend.Pages.UserComponent.UserForm>
+                    <DFM.Frontend.Pages.UserComponent.UserForm Mode="formMode" Employee="employeeModel" 
+                    OnProcessing="onProcessing" Notify="notify" ProfileImage="attachment"
+                    OpenResetPasswordBox="openResetPasswordBox"></DFM.Frontend.Pages.UserComponent.UserForm>
                 }
             </MudPaper>
         </MudItem>
@@ -35,7 +37,19 @@
 </MudContainer>
 
 
+<MudMessageBox @ref="mbox" Title="ປ່ຽນລະຫັດຜ່ານ" style="width:300px">
+    <MessageContent>
+        <MudGrid xs="12" md="12">
+            <MudItem>
+                <MudTextField Disabled="onProcessing" @bind-Value="employeeModel!.Password" InputType="InputType.Password" Required="true" T="string" Counter="12" MaxLength="12" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(PasswordCharacters))" HelperText="ລະຫັດຜ່ານ" Label="Password" />
+            </MudItem>
+        </MudGrid>
 
+    </MessageContent>
+    <YesButton>
+        <MudButton Disabled="onProcessing" Variant="Variant.Filled" Color="Color.Success" StartIcon="@Icons.Material.Filled.CheckCircle">ຢືນຢັນ</MudButton>
+    </YesButton>
+</MudMessageBox>
 
 @code {
     private FormMode formMode;
@@ -45,4 +59,6 @@
     bool onProcessing = false;
     bool notify = false;
     private AttachmentDto? attachment = new();
+    MudMessageBox? mbox { get; set; }
+
 }
