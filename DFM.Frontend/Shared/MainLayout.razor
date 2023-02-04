@@ -75,11 +75,23 @@
         _drawerOpen = !_drawerOpen;
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (employee == null)
         {
             employee = await storageHelper.GetEmployeeProfileAsync();
+            if (employee != null)
+            {
+                if (employee.ProfileImage != null)
+                {
+                    await previewImageProfile(employee.ProfileImage.Bucket, employee.ProfileImage.FileName);
+
+                }
+            }
+
+        }
+        else
+        {
             if (employee.ProfileImage != null)
             {
                 await previewImageProfile(employee.ProfileImage.Bucket, employee.ProfileImage.FileName);

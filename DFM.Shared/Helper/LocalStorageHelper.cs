@@ -24,8 +24,12 @@ namespace DFM.Shared.Helper
             try
             {
                 var value = await jsRuntime.InvokeAsync<string>("localStorage.getItem", "employeeProfile");
-                var hexEncodedBytes = value.FromHEX();
-                return JsonSerializer.Deserialize<EmployeeModel>(hexEncodedBytes)!;
+                if (value != null)
+                {
+                    var hexEncodedBytes = value.FromHEX();
+                    return JsonSerializer.Deserialize<EmployeeModel>(hexEncodedBytes)!;
+                }
+                return null;
             }
             catch (Exception)
             {
