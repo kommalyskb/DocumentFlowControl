@@ -213,7 +213,7 @@ namespace DFM.Frontend.Pages.Inbound
                 var result = await httpService.Get<IEnumerable<FolderModel>>(url, new AuthorizeHeader("bearer", token));
                 if (result.Success)
                 {
-                    var jsonDoc = JsonSerializer.Serialize(result.Response);
+                    var jsonDoc = JsonSerializer.Serialize(result.Response.OrderBy(x => x.Seq));
                     await writer.WriteAsync((result.Success, component, jsonDoc));
                 }
                 else

@@ -2,10 +2,10 @@
     <MudGrid>
         
         <MudItem xs="12" sm="6">
-            <MudDatePicker Disabled="OnProcessing" @bind-Text="@startDate" Required="true" PickerVariant="PickerVariant.Inline" Label="ວັນທີເລີ່ມຕົ້ນ" HelperText="ວັນທີເລີ່ມຕົ້ນ" DateFormat="dd/MM/yyyy" />
+            <MudDatePicker Variant="Variant.Outlined" Margin="Margin.Dense"  Disabled="OnProcessing" @bind-Text="@startDate" Required="true" PickerVariant="PickerVariant.Inline" Label="ວັນທີເລີ່ມຕົ້ນ" HelperText="ວັນທີເລີ່ມຕົ້ນ" DateFormat="dd/MM/yyyy" />
         </MudItem>
         <MudItem xs="12" sm="6">
-            <MudDatePicker Disabled="OnProcessing" @bind-Text="@endDate" Required="true" PickerVariant="PickerVariant.Inline" Label="ວັນທີສິ້ນສຸດ" HelperText="ວັນທີສິ້ນສຸດ" DateFormat="dd/MM/yyyy" />
+            <MudDatePicker Variant="Variant.Outlined" Margin="Margin.Dense"  Disabled="OnProcessing" @bind-Text="@endDate" Required="true" PickerVariant="PickerVariant.Inline" Label="ວັນທີສິ້ນສຸດ" HelperText="ວັນທີສິ້ນສຸດ" DateFormat="dd/MM/yyyy" />
 
         </MudItem>
         <MudItem xs="12" sm="12" Style="text-align: center">
@@ -17,7 +17,7 @@
             <div class="mud-table mud-sm-table mud-table-hover mud-elevation-1">
                 <div class="mud-table-container">
                     <table class="mud-table-root">
-                        <thead class="mud-table-head">
+                        <thead class="mud-table-head" style="background-color: #d9dfe4">
                             <tr class="mud-table-row">
                                 <th class="mud-table-cell">
                                     ຕຳແໜ່ງ
@@ -61,13 +61,13 @@
                                             @item.Total
                                         </td>
                                         <td class="mud-table-cell">
-                                            <MudButton Variant="Variant.Text" Color="Color.Secondary" OnClick="@(() => onReportClick(TraceStatus.Draft, item.RoleID!))">@item.Draft</MudButton>
+                                            <MudButton Variant="Variant.Outlined" Color="Color.Secondary" OnClick="@(() => onReportClick(TraceStatus.Draft, item.RoleID!))">@item.Draft</MudButton>
                                         </td>
                                         <td class="mud-table-cell">
-                                            <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => onReportClick(TraceStatus.InProgress, item.RoleID!))">@item.InProgress</MudButton>
+                                            <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="@(() => onReportClick(TraceStatus.InProgress, item.RoleID!))">@item.InProgress</MudButton>
                                         </td>
                                         <td class="mud-table-cell">
-                                            <MudButton Variant="Variant.Text" Color="Color.Success" OnClick="@(() => onReportClick(TraceStatus.Completed, item.RoleID!))">@item.Finished</MudButton>
+                                            <MudButton Variant="Variant.Outlined" Color="Color.Success" OnClick="@(() => onReportClick(TraceStatus.Completed, item.RoleID!))">@item.Finished</MudButton>
                                         </td>
                                     </tr>
                                 }

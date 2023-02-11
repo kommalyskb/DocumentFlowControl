@@ -1121,6 +1121,7 @@ namespace DFM.API.Controllers
         }
 
         [HttpGet("{bucket}/{filename}/{title}/Download")]
+        [AllowAnonymous]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(FileResult), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(NotFoundResult), StatusCodes.Status404NotFound)]

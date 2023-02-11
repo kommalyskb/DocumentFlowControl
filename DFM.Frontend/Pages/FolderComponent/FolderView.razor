@@ -5,37 +5,37 @@
 <MudContainer>
     <MudGrid>
         <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ຊື່ແຟ້ມ" Variant="Variant.Text">@FolderModel!.Title</MudField>
+            <MudField Margin="Margin.Dense"  Label="ຊື່ແຟ້ມ" Variant="Variant.Outlined">@FolderModel!.Title</MudField>
         </MudItem>
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ເລກທີ່ເລີ່ມຕົ້ນ" Variant="Variant.Text">@FolderModel!.Start</MudField>
+            <MudField Margin="Margin.Dense"  Label="ເລກທີ່ເລີ່ມຕົ້ນ" Variant="Variant.Outlined">@FolderModel!.Start</MudField>
         </MudItem>
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ເລກທີຖັດໄປ" Variant="Variant.Text">@FolderModel!.NextNumber</MudField>
+            <MudField Margin="Margin.Dense"  Label="ເລກທີຖັດໄປ" Variant="Variant.Outlined">@FolderModel!.NextNumber</MudField>
         </MudItem>
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ລຳດັບແຟ້ມ" Variant="Variant.Text">@FolderModel!.Seq</MudField>
+            <MudField Margin="Margin.Dense"  Label="ລຳດັບແຟ້ມ" Variant="Variant.Outlined">@FolderModel!.Seq</MudField>
         </MudItem>
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ອັກສອນນຳຫນ້າ" Variant="Variant.Text">@FolderModel!.Prefix</MudField>
+            <MudField Margin="Margin.Dense"  Label="ອັກສອນນຳຫນ້າ" Variant="Variant.Outlined">@FolderModel!.Prefix</MudField>
         </MudItem>
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ວັນທີ່ນຳໃຊ້ແຟ້ມ" Variant="Variant.Text">@FolderModel!.StartDate</MudField>
+            <MudField Margin="Margin.Dense"  Label="ວັນທີ່ນຳໃຊ້ແຟ້ມ" Variant="Variant.Outlined">@FolderModel!.StartDate</MudField>
         </MudItem>
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ວັນທີປິດແຟ້ມ" Variant="Variant.Text">@FolderModel!.ExpiredDate</MudField>
+            <MudField Margin="Margin.Dense"  Label="ວັນທີປິດແຟ້ມ" Variant="Variant.Outlined">@FolderModel!.ExpiredDate</MudField>
         </MudItem>
         
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ຕົວຫຍໍ້ອົງກອນ" Variant="Variant.Text">@FolderModel!.ShortName</MudField>
+            <MudField Margin="Margin.Dense"  Label="ຕົວຫຍໍ້ອົງກອນ" Variant="Variant.Outlined">@FolderModel!.ShortName</MudField>
         </MudItem>
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ຮູບແບບເລກທີ" Variant="Variant.Text">
+            <MudField Margin="Margin.Dense"  Label="ຮູບແບບເລກທີ" Variant="Variant.Outlined">
                 @displayFormat
             </MudField>
         </MudItem>
         <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ຫນ່ວຍງານຮັບຜິດຊອບ" Variant="Variant.Text">
+            <MudField Margin="Margin.Dense"  Label="ຫນ່ວຍງານຮັບຜິດຊອບ" Variant="Variant.Outlined">
                 @foreach (var item in FolderModel!.Supervisors)
                 {
                     if (supervisors != null)
@@ -50,7 +50,7 @@
             </MudField>
         </MudItem>
         <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
-             <MudField Label="ປະເພດເອກະສານ" Variant="Variant.Text">
+             <MudField Margin="Margin.Dense"  Label="ປະເພດເອກະສານ" Variant="Variant.Outlined">
                 @foreach (var item in FolderModel!.SupportDocTypes)
                 {
                     if (docTypeModels != null)

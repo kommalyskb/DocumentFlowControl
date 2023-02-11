@@ -65,7 +65,7 @@ namespace DFM.API.Controllers
             return Ok(result);
         }
 
-        [HttpPut("UpdateItem")]
+        [HttpPost("UpdateItem")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]

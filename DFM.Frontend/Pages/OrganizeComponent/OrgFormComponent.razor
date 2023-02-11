@@ -12,13 +12,13 @@
             <h2>ຂໍ້ມູນຕຳແຫນ່ງ</h2>
         </MudItem>
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <MudTextField T="string" Counter="1000" MaxLength="1000" Required="true" @bind-Value="RoleTreeModel!.Role.Display.Local" Disabled="@disabled" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ຊື່ທີ່ເປັນພາສາທ້ອງຖີ່ນ" Label="ຊື່ເປັນພາສາລາວ" />
+            <MudTextField Margin="Margin.Dense" T="string" Counter="1000" MaxLength="1000" Required="true" @bind-Value="RoleTreeModel!.Role.Display.Local" Disabled="@disabled" Immediate="true" Variant="Variant.Outlined" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ຊື່ທີ່ເປັນພາສາທ້ອງຖີ່ນ" Label="ຊື່ເປັນພາສາລາວ" />
         </MudItem>
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <MudTextField T="string" Counter="1000" MaxLength="1000" Required="true" @bind-Value="RoleTreeModel!.Role.Display.Eng" Disabled="@disabled" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ຊື່ທີ່ເປັນພາສາສາກົນ" Label="ຊື່ເປັນພາສາອັງກິດ" />
+            <MudTextField Margin="Margin.Dense" T="string" Counter="1000" MaxLength="1000" Required="true" @bind-Value="RoleTreeModel!.Role.Display.Eng" Disabled="@disabled" Immediate="true" Variant="Variant.Outlined" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ຊື່ທີ່ເປັນພາສາສາກົນ" Label="ຊື່ເປັນພາສາອັງກິດ" />
         </MudItem>
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <MudSelect T="RoleTypeModel" HelperText="ລະດັບຕຳແຫນ່ງ" Label="ຕຳແຫນ່ງ" @bind-Value="RoleTreeModel!.Role.RoleType" SelectedValuesChanged="onSelectedRoleChanged" Variant="Variant.Text" Disabled="@disabled">
+            <MudSelect Margin="Margin.Dense" T="RoleTypeModel" HelperText="ລະດັບຕຳແຫນ່ງ" Label="ຕຳແຫນ່ງ" @bind-Value="RoleTreeModel!.Role.RoleType" SelectedValuesChanged="onSelectedRoleChanged" Variant="Variant.Outlined" Disabled="@disabled">
                 <MudSelectItem Value="RoleTypeModel.Prime">ປະທານບໍລິສັດ</MudSelectItem>
                 <MudSelectItem Value="RoleTypeModel.DeputyPrime">ຮອງປະທານບໍລິສັດ</MudSelectItem>
                 <MudDivider></MudDivider>
@@ -69,7 +69,7 @@
         <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
             @if (!groupList.IsNullOrEmpty())
             {
-                <MudSelect SelectedValues="groupSelectValues" SelectedValuesChanged="onSelectedGroupChanged" T="string" @bind-Value="@group" HelperText="ຝ່າຍທີ່ສັງກັດ" Label="ສັງກັດ" Variant="Variant.Text" Disabled="@disabled">
+                <MudSelect Margin="Margin.Dense" SelectedValues="groupSelectValues" SelectedValuesChanged="onSelectedGroupChanged" T="string" @bind-Value="@group" HelperText="ຝ່າຍທີ່ສັງກັດ" Label="ສັງກັດ" Variant="Variant.Outlined" Disabled="@disabled">
 
                     @foreach (var item in groupList!)
                     {
@@ -82,7 +82,7 @@
         <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
             @if (!leaderList.IsNullOrEmpty())
             {
-                <MudSelect T="string" SelectedValues="parentSelectValues" SelectedValuesChanged="onSelectedParentChanged" @bind-Value="RoleTreeModel!.ParentID" HelperText="ຜູ້ໃຫ້ທິດຊີ້ນຳ" Label="ຜູ້ໃຫ້ທິດ" Variant="Variant.Text" Disabled="@disabled">
+                <MudSelect Margin="Margin.Dense" T="string" SelectedValues="parentSelectValues" SelectedValuesChanged="onSelectedParentChanged" @bind-Value="RoleTreeModel!.ParentID" HelperText="ຜູ້ໃຫ້ທິດຊີ້ນຳ" Label="ຜູ້ໃຫ້ທິດ" Variant="Variant.Outlined" Disabled="@disabled">
 
                     @foreach (var item in leaderList!)
                     {
@@ -93,13 +93,13 @@
             
         </MudItem>
         <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-            <MudTextField T="string" @bind-Value="RoleTreeModel!.Publisher" Counter="1000" MaxLength="1000" Disabled="@disabled" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ຊື່ປະກາດໃຊ້ທີ່ສະແດງໃນ ແຜນຜັງ" Label="ຊື່ປະກາດໃຊ້" />
+            <MudTextField Margin="Margin.Dense" T="string" @bind-Value="RoleTreeModel!.Publisher" Counter="1000" MaxLength="1000" Disabled="@disabled" Immediate="true" Variant="Variant.Outlined" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ຊື່ປະກາດໃຊ້ທີ່ສະແດງໃນ ແຜນຜັງ" Label="ຊື່ປະກາດໃຊ້" />
         </MudItem>
         <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
             <h2>ຂໍ້ມູນບຸກຄະລາກອນ</h2>
         </MudItem>
         <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ຊື່ ນາມສະກຸນ" Variant="Variant.Text">@fullname</MudField>
+            <MudField Margin="Margin.Dense"  Label="ຊື່ ນາມສະກຸນ" Variant="Variant.Outlined">@fullname</MudField>
         </MudItem>
         <MudItem xs="12" md="4">
             <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="openEmployeeSelector">ເລືອກ ບຸກຄະລາກອນ</MudButton>

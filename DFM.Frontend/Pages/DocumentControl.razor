@@ -121,7 +121,7 @@
     <MessageContent>
         <MudGrid xs="12" md="12">
             <MudItem>
-                <MudTextField Lines="5" T="string" @bind-Value="terminateComment" Counter="1000" MaxLength="1000" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" Label="ຄຳເຫັນ" />
+                <MudTextField Margin="Margin.Dense" Lines="5" T="string" @bind-Value="terminateComment" Counter="1000" MaxLength="1000" Immediate="true" Variant="Variant.Outlined" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" Label="ຄຳເຫັນ" />
             </MudItem>
         </MudGrid>
 

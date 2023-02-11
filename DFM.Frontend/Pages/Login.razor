@@ -23,9 +23,9 @@
             <MudForm>
                 <h1 style="text-align: center">CSE's Doc Control'</h1>
 
-                <MudTextField T="string" Label="Username" Required="true" RequiredError="User name is required!" @bind-Value="@userName" />
+                <MudTextField Margin="Margin.Dense" T="string" Label="Username" Required="true" RequiredError="User name is required!" @bind-Value="@userName" />
 
-                <MudTextField T="string" Label="Password" HelperText="Choose a strong password"
+                <MudTextField Margin="Margin.Dense" T="string" Label="Password" HelperText="Choose a strong password"
                               InputType="InputType.Password"
                               Required="true" @bind-Value="@password"
                               RequiredError="Password is required!" />

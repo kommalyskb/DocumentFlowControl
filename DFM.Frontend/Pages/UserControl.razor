@@ -41,7 +41,7 @@
     <MessageContent>
         <MudGrid xs="12" md="12">
             <MudItem>
-                <MudTextField Disabled="onProcessing" @bind-Value="employeeModel!.Password" InputType="InputType.Password" Required="true" T="string" Counter="12" MaxLength="12" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(PasswordCharacters))" HelperText="ລະຫັດຜ່ານ" Label="Password" />
+                <MudTextField Margin="Margin.Dense" Disabled="onProcessing" @bind-Value="employeeModel!.Password" InputType="InputType.Password" Required="true" T="string" Counter="12" MaxLength="12" Immediate="true" Variant="Variant.Outlined" Validation="@(new Func<string, IEnumerable<string>>(PasswordCharacters))" HelperText="ລະຫັດຜ່ານ" Label="Password" />
             </MudItem>
         </MudGrid>
 

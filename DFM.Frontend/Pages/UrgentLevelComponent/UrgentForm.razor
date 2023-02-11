@@ -6,10 +6,10 @@
 <MudContainer>
     <MudGrid>
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <MudTextField Disabled="OnProcessing" @bind-Value="DocumentUrgentModel!.Level" Required="true" T="string" Counter="1000" MaxLength="1000" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ຊື່ຂອງລະດັບຄວາມເລັ່ງດ່ວນ" Label="ລະດັບຄວາມເລັ່ງດ່ວນ" />
+            <MudTextField Margin="Margin.Dense" Disabled="OnProcessing" @bind-Value="DocumentUrgentModel!.Level" Required="true" T="string" Counter="1000" MaxLength="1000" Immediate="true" Variant="Variant.Outlined" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ຊື່ຂອງລະດັບຄວາມເລັ່ງດ່ວນ" Label="ລະດັບຄວາມເລັ່ງດ່ວນ" />
         </MudItem>
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <MudTextField Disabled="OnProcessing" @bind-Value="DocumentUrgentModel!.SortOrder" T="int" Immediate="true" Variant="Variant.Text" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ລຳດັບການສະແດງຜົນ" Label="ລຳດັບ" />
+            <MudTextField Margin="Margin.Dense" Disabled="OnProcessing" @bind-Value="DocumentUrgentModel!.SortOrder" T="int" Immediate="true" Variant="Variant.Outlined" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ລຳດັບການສະແດງຜົນ" Label="ລຳດັບ" />
         </MudItem>
     </MudGrid>
 </MudContainer>

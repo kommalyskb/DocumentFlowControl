@@ -11,14 +11,14 @@
             <h2>ຂໍ້ມູນເອກະສານ</h2>
         </MudItem>
         <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ຫົວຂໍ້" Variant="Variant.Text">@RawDocument!.Title</MudField>
+            <MudField Margin="Margin.Dense"  Label="ຫົວຂໍ້" Variant="Variant.Outlined">@RawDocument!.Title</MudField>
         </MudItem>
         <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ຫນ່ວຍງານຮັບຜິດຊອບ" Variant="Variant.Text">@RawDocument!.ResponseUnit</MudField>
+            <MudField Margin="Margin.Dense"  Label="ຫນ່ວຍງານຮັບຜິດຊອບ" Variant="Variant.Outlined">@RawDocument!.ResponseUnit</MudField>
         </MudItem>
 
         <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ລະດັບຄວາມລັບ" Variant="Variant.Text">
+            <MudField Margin="Margin.Dense"  Label="ລະດັບຄວາມລັບ" Variant="Variant.Outlined">
                 @if (securityModels != null)
                 {
                     if (securityModels!.FirstOrDefault(x => x.id == RawDocument!.Security.id) != null)
@@ -30,7 +30,7 @@
         </MudItem>
 
         <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ລະດັບຄວາມເລັ່ງດ່ວນ" Variant="Variant.Text">
+            <MudField Margin="Margin.Dense"  Label="ລະດັບຄວາມເລັ່ງດ່ວນ" Variant="Variant.Outlined">
                 @if (urgentModels != null)
                 {
                     if (urgentModels!.FirstOrDefault(x => x.id == RawDocument!.Urgent.id) != null)
@@ -45,17 +45,17 @@
         </MudItem>
 
         <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ກຳຫນົດມື້ແກ້ເອກະສານ" Variant="Variant.Text">@RawDocument!.ExpiredDate</MudField>
+            <MudField Margin="Margin.Dense"  Label="ກຳຫນົດມື້ແກ້ເອກະສານ" Variant="Variant.Outlined">@RawDocument!.ExpiredDate</MudField>
         </MudItem>
         <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
             @if (RawDocument!.IsOriginalFile)
             {
-                <MudField Label="ບໍ່ມີເອກະສານສະບັບແທ້" Variant="Variant.Text">ມີເອກະສານສະບັບແທ້</MudField>
+                <MudField Margin="Margin.Dense"  Label="ບໍ່ມີເອກະສານສະບັບແທ້" Variant="Variant.Outlined">ມີເອກະສານສະບັບແທ້</MudField>
 
             }
             else
             {
-                <MudField Label="ບໍ່ມີເອກະສານສະບັບແທ້" Variant="Variant.Text">ບໍ່ມີເອກະສານສະບັບແທ້</MudField>
+                <MudField Margin="Margin.Dense"  Label="ບໍ່ມີເອກະສານສະບັບແທ້" Variant="Variant.Outlined">ບໍ່ມີເອກະສານສະບັບແທ້</MudField>
 
             }
         </MudItem>
@@ -63,22 +63,22 @@
             <h2>ກິດສຳພັນ</h2>
         </MudItem>
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ເລກທີຂອງກິດສຳພັນ" Variant="Variant.Text">@RawDocument!.CommentNo</MudField>
+            <MudField Margin="Margin.Dense"  Label="ເລກທີຂອງກິດສຳພັນ" Variant="Variant.Outlined">@RawDocument!.CommentNo</MudField>
         </MudItem>
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ຫົວຂໍ້ຂອງກິດສຳພັນ" Variant="Variant.Text">@RawDocument!.CommentTitle</MudField>
+            <MudField Margin="Margin.Dense"  Label="ຫົວຂໍ້ຂອງກິດສຳພັນ" Variant="Variant.Outlined">@RawDocument!.CommentTitle</MudField>
         </MudItem>
         <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ເນື້ອໃນໃບກິດສຳພັນ" Variant="Variant.Text">@RawDocument!.CommentDetail</MudField>
+            <MudField Margin="Margin.Dense"  Label="ເນື້ອໃນໃບກິດສຳພັນ" Variant="Variant.Outlined">@RawDocument!.CommentDetail</MudField>
         </MudItem>
         <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
             <h2>ອັບໂຫຼດເອກະສານ</h2>
         </MudItem>
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <MudField Variant="Variant.Text">ເອກະສານຕິດຄັດ</MudField>
+            <MudField Margin="Margin.Dense"  Variant="Variant.Outlined">ເອກະສານຕິດຄັດ</MudField>
         </MudItem>
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <MudField Variant="Variant.Text">ເອກະສານກ່ຽວຂ້ອງ</MudField>
+            <MudField Margin="Margin.Dense"  Variant="Variant.Outlined">ເອກະສານກ່ຽວຂ້ອງ</MudField>
         </MudItem>
 
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
@@ -100,7 +100,7 @@
                                     {
                                         <MudIconButton Color="Color.Warning" Icon="@Icons.Material.Filled.Preview" aria-label="preview" Disabled="previewButton" OnClick="@(() => previewPdf(file!.Bucket, file!.FileName, file!.Display))"></MudIconButton>
                                     }
-                                    <a class="mud-button-root mud-icon-button mud-warning-text hover:mud-warning-hover mud-ripple mud-ripple-icon" target="_blank" href="@endpoint.API/api/v1/Document/@file.Bucket/@file.FileName/@file.Display/Download">
+                                    <a class="mud-button-root mud-icon-button mud-warning-text hover:mud-warning-hover mud-ripple mud-ripple-icon" target="_blank" href="@endpoint.PublicAPI/api/v1/Document/@file.Bucket/@file.FileName/@file.Display/Download">
                                         <span class="mud-icon-button-label">
                                             <MudIcon Icon="@Icons.Material.Filled.Download" Color="Color.Primary" />
                                         </span>
@@ -134,7 +134,7 @@
                                     {
                                         <MudIconButton Color="Color.Warning" Icon="@Icons.Material.Filled.Preview" aria-label="preview" Disabled="previewButton" OnClick="@(() => previewPdf(file!.Bucket, file!.FileName, file!.Display))"></MudIconButton>
                                     }
-                                    <a class="mud-button-root mud-icon-button mud-warning-text hover:mud-warning-hover mud-ripple mud-ripple-icon" target="_blank" href="@endpoint.API/api/v1/Document/@file.Bucket/@file.FileName/@file.Display/Download">
+                                    <a class="mud-button-root mud-icon-button mud-warning-text hover:mud-warning-hover mud-ripple mud-ripple-icon" target="_blank" href="@endpoint.PublicAPI/api/v1/Document/@file.Bucket/@file.FileName/@file.Display/Download">
                                         <span class="mud-icon-button-label">
                                             <MudIcon Icon="@Icons.Material.Filled.Download" Color="Color.Primary" />
                                         </span>
@@ -152,7 +152,7 @@
             <h2>ຂໍ້ມູນການເກັບຮັກສາສຳເນົາ</h2>
         </MudItem>
         <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ແຟ້ມເກັບເອກະສານ" Variant="Variant.Text">
+            <MudField Margin="Margin.Dense"  Label="ແຟ້ມເກັບເອກະສານ" Variant="Variant.Outlined">
                 @if (folderModels != null && !string.IsNullOrWhiteSpace(RawDocument!.FolderId))
                 {
                     <text>
@@ -162,10 +162,10 @@
             </MudField>
         </MudItem>
         <MudItem xs="12" md="3" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ຮູບແບບເອກະສານ" Variant="Variant.Text">@RawDocument!.FormType</MudField>
+            <MudField Margin="Margin.Dense"  Label="ຮູບແບບເອກະສານ" Variant="Variant.Outlined">@RawDocument!.FormType</MudField>
         </MudItem>
         <MudItem xs="12" md="3" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ປະເພດເອກະສານ" Variant="Variant.Text">
+            <MudField Margin="Margin.Dense"  Label="ປະເພດເອກະສານ" Variant="Variant.Outlined">
                 @if (docTypeModels != null && !string.IsNullOrWhiteSpace(RawDocument!.DocType))
                 {
                     <text>
@@ -175,16 +175,16 @@
             </MudField>
         </MudItem>
         <MudItem xs="12" md="2" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ເລກທີ" Variant="Variant.Text">@RawDocument!.DocNo</MudField>
+            <MudField Margin="Margin.Dense"  Label="ເລກທີ" Variant="Variant.Outlined">@RawDocument!.DocNo</MudField>
         </MudItem>
         <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ວັນທີ່ສົ່ງເອກະສານ" Variant="Variant.Text">@RawDocument!.SetDate</MudField>
+            <MudField Margin="Margin.Dense"  Label="ວັນທີ່ສົ່ງເອກະສານ" Variant="Variant.Outlined">@RawDocument!.SetDate</MudField>
         </MudItem>
         <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ຫນ່ວຍງານພາຍນອກ" Variant="Variant.Text">@RawDocument!.ExternalUnit</MudField>
+            <MudField Margin="Margin.Dense"  Label="ຫນ່ວຍງານພາຍນອກ" Variant="Variant.Outlined">@RawDocument!.ExternalUnit</MudField>
         </MudItem>
         <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-            <MudField Label="ຜູ້ເຊັນເອກະສານ" Variant="Variant.Text">@RawDocument!.Signer</MudField>
+            <MudField Margin="Margin.Dense"  Label="ຜູ້ເຊັນເອກະສານ" Variant="Variant.Outlined">@RawDocument!.Signer</MudField>
         </MudItem>
 
         <MudItem xs="12" md="12">

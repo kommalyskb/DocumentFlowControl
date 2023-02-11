@@ -2,19 +2,19 @@
     <ToolBarContent>
         <MudText Typo="Typo.h6">ປະຫວັດການເຄື່ອນໄຫວເອກະສານ</MudText>
         <MudSpacer />
-        <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        <MudTextField Margin="Margin.Dense" @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0" />
     </ToolBarContent>
 
     <HeaderContent>
-        <MudTh>ຜູ້ຮັບ</MudTh>
-        <MudTh>ເວລາຮັບ</MudTh>
-        <MudTh>ເວລາເປີດອ່ານ</MudTh>
-        <MudTh>ຜູ້ທີ່ເປີດອ່ານ</MudTh>
-        <MudTh>ສະຖານະຮັບ</MudTh>
-        <MudTh>ສະຖານະສົ່ງ</MudTh>
-        <MudTh>ສະຖານະເອກະສານ</MudTh>
-        <MudTh>ເວລາສົ່ງອອກ</MudTh>
-        <MudTh>ຄຳເຫັນ</MudTh>
+        <MudTh Style="font-weight: bold; background-color: #d9dfe4">ຜູ້ຮັບ</MudTh>
+        <MudTh Style="font-weight: bold; background-color: #d9dfe4">ເວລາຮັບ</MudTh>
+        <MudTh Style="font-weight: bold; background-color: #d9dfe4">ເວລາເປີດອ່ານ</MudTh>
+        <MudTh Style="font-weight: bold; background-color: #d9dfe4">ຜູ້ທີ່ເປີດອ່ານ</MudTh>
+        <MudTh Style="font-weight: bold; background-color: #d9dfe4">ສະຖານະຮັບ</MudTh>
+        <MudTh Style="font-weight: bold; background-color: #d9dfe4">ສະຖານະສົ່ງ</MudTh>
+        <MudTh Style="font-weight: bold; background-color: #d9dfe4">ສະຖານະເອກະສານ</MudTh>
+        <MudTh Style="font-weight: bold; background-color: #d9dfe4">ເວລາສົ່ງອອກ</MudTh>
+        <MudTh Style="font-weight: bold; background-color: #d9dfe4">ຄຳເຫັນ</MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd>@context.RecipientInfo.Position.Local</MudTd>

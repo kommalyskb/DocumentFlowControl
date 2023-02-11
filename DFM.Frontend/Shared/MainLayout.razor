@@ -15,9 +15,9 @@
     </header>*@
 
     <MudAppBar Fixed="false">
+        <MudImage Src="images/cse-logo.png" Alt="logo" Height="45" Width="45" Class="mr-2" />
         <MudText>CSE's Document Control</MudText>
-        <MudSpacer />
-        <MudImage Src="images/cse-logo.png" Alt="logo" Height="45" Width="45" />
+        
         <MudSpacer />
         @if (employee != null)
         {
@@ -25,7 +25,13 @@
             {
                 <MudImage Src="@imageUri" Alt="photo" Height="45" Width="45" Class="mr-2"/>
             }
-            <MudText>@employee.Name.Local @employee.FamilyName.Local</MudText>
+            <MudText Class="mr-2">@employee.Name.Local @employee.FamilyName.Local</MudText>
+            <MudButton Href="/authorize"
+                       Variant="Variant.Text"
+                       EndIcon="@Icons.Material.Outlined.Logout"
+                       Style="text-transform:none; color:white; font-weight:bold">
+                ອອກຈາກລະບົບ
+            </MudButton>
         }
     </MudAppBar>
 
@@ -66,7 +72,7 @@
                 //Success = "#2ECC40",
                 //Warning = "#FF851B",
                 //Error = "#F012BE",
-                AppbarBackground = "#20629b",
+                AppbarBackground = "#20629b"
                 // more color properties
             }
         };

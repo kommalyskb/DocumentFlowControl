@@ -49,16 +49,18 @@ namespace DFM.API.Controllers
                 var provider = new RedisConnectionProvider(redisConnector.Connection);
                 // re-create index when new deploy version
                 await Task.WhenAll(provider.Connection.DropIndexAsync(typeof(RoleManagementModel)),
-                    provider.Connection.DropIndexAsync(typeof(OrganizationModel)),
-                    provider.Connection.DropIndexAsync(typeof(FolderModel)),
-                    provider.Connection.DropIndexAsync(typeof(EmployeeModel)),
-                    provider.Connection.DropIndexAsync(typeof(DynamicFlowModel)),
-                    provider.Connection.DropIndexAsync(typeof(DocumentUrgentModel)),
-                    provider.Connection.DropIndexAsync(typeof(DocumentSecurityModel)),
-                    provider.Connection.DropIndexAsync(typeof(DocumentModel)),
-                    provider.Connection.DropIndexAsync(typeof(DataTypeModel)),
-                    provider.Connection.DropIndexAsync(typeof(MinioLinkCache))
-                    );
+                provider.Connection.DropIndexAsync(typeof(OrganizationModel)),
+                provider.Connection.DropIndexAsync(typeof(FolderModel)),
+                provider.Connection.DropIndexAsync(typeof(EmployeeModel)),
+                provider.Connection.DropIndexAsync(typeof(DynamicFlowModel)),
+                provider.Connection.DropIndexAsync(typeof(DocumentUrgentModel)),
+                provider.Connection.DropIndexAsync(typeof(DocumentSecurityModel)),
+                provider.Connection.DropIndexAsync(typeof(DocumentModel)),
+                provider.Connection.DropIndexAsync(typeof(DataTypeModel)),
+                provider.Connection.DropIndexAsync(typeof(MinioLinkCache)),
+                provider.Connection.DropIndexAsync(typeof(TokenEndPointResponse)),
+                provider.Connection.DropIndexAsync(typeof(NotificationModel))
+                );
 
 
                 await Task.WhenAll(provider.Connection.CreateIndexAsync(typeof(RoleManagementModel)),
@@ -70,7 +72,9 @@ namespace DFM.API.Controllers
                     provider.Connection.CreateIndexAsync(typeof(DocumentSecurityModel)),
                     provider.Connection.CreateIndexAsync(typeof(DocumentModel)),
                     provider.Connection.CreateIndexAsync(typeof(DataTypeModel)),
-                    provider.Connection.CreateIndexAsync(typeof(MinioLinkCache))
+                    provider.Connection.CreateIndexAsync(typeof(MinioLinkCache)),
+                    provider.Connection.CreateIndexAsync(typeof(TokenEndPointResponse)),
+                    provider.Connection.CreateIndexAsync(typeof(NotificationModel))
                     );
 
                 if (reindexOnly == 1)
@@ -97,6 +101,7 @@ namespace DFM.API.Controllers
                 allCreateTableTasks.Add(tryCreateDatabase("dfm_role_db"));
                 allCreateTableTasks.Add(tryCreateDatabase("dfm_security_db"));
                 allCreateTableTasks.Add(tryCreateDatabase("dfm_urgent_db"));
+                allCreateTableTasks.Add(tryCreateDatabase("dfm_notice_db"));
 
                 await Task.WhenAll(allCreateTableTasks);
 

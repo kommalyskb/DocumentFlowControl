@@ -16,7 +16,7 @@
                     @if (!selectValues.IsNullOrEmpty())
                     {
                         Console.WriteLine($"{selectValues.FirstOrDefault()}");
-                        <MudSelect SelectedValues="selectValues" Disabled="onProcessing" @bind-Value="roleID" T="string" HelperText="ຕຳແໜ່ງຂອງທ່ານ" Label="ຕຳແໜ່ງ" Variant="Variant.Text">
+                        <MudSelect Margin="Margin.Dense" SelectedValues="selectValues" Disabled="onProcessing" @bind-Value="roleID" T="string" HelperText="ຕຳແໜ່ງຂອງທ່ານ" Label="ຕຳແໜ່ງ" Variant="Variant.Outlined">
                             @if (roles is not null)
                             {
                                 foreach (var item in roles!)
@@ -29,7 +29,7 @@
                     }
                     @*else
                     {
-                        <MudSelect Disabled="onProcessing" @bind-Value="roleID" T="string" HelperText="ຕຳແໜ່ງຂອງທ່ານ" Label="ຕຳແໜ່ງ" Variant="Variant.Text">
+                        <MudSelect Margin="Margin.Dense" Disabled="onProcessing" @bind-Value="roleID" T="string" HelperText="ຕຳແໜ່ງຂອງທ່ານ" Label="ຕຳແໜ່ງ" Variant="Variant.Outlined">
                             @if (roles is not null)
                             {
                                 foreach (var item in roles!)

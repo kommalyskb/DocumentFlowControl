@@ -48,7 +48,7 @@ namespace DFM.Frontend.Shared
             var result = await httpService.Get<IEnumerable<FolderModel>>(url, new AuthorizeHeader("bearer", token));
             if (result.Success)
             {
-                Elements = result.Response.ToList();
+                Elements = result.Response.OrderBy(x => x.Seq).ToList();
             }
         }
 
@@ -64,7 +64,7 @@ namespace DFM.Frontend.Shared
                 var result = await httpService.Get<IEnumerable<FolderModel>>(url, new AuthorizeHeader("bearer", token));
                 if (result.Success)
                 {
-                    Elements = result.Response.ToList();
+                    Elements = result.Response.OrderBy(x => x.Seq).ToList();
                 }
                 else
                 {
