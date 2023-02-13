@@ -20,10 +20,10 @@
             <MudTextField Margin="Margin.Dense" Disabled="OnProcessing" @bind-Value="FolderModel!.Prefix" T="string" Counter="500" MaxLength="500" Immediate="true" Variant="Variant.Outlined" Validation="@(new Func<string, IEnumerable<string>>(MediumCharacters))" HelperText="ຕົວອັກສອນນຳຫນ້າ" Label="ອັກສອນນຳຫນ້າ" />
         </MudItem>
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <MudDatePicker Variant="Variant.Outlined" Margin="Margin.Dense"  Disabled="OnProcessing" @bind-Text="FolderModel!.StartDate" Required="true" PickerVariant="PickerVariant.Inline" Label="ວັນທີ່ນຳໃຊ້ແຟ້ມ" HelperText="ວັນທີ່ເລີ່ມນຳໃຊ້ແຟ້ມ" DateFormat="dd/MM/yyyy" />
+            <MudDatePicker Variant="Variant.Outlined" Margin="Margin.Dense"  Disabled="OnProcessing" @bind-Text="FolderModel!.StartDate" Required="true" PickerVariant="PickerVariant.Dialog" Label="ວັນທີ່ນຳໃຊ້ແຟ້ມ" HelperText="ວັນທີ່ເລີ່ມນຳໃຊ້ແຟ້ມ" DateFormat="dd/MM/yyyy" />
         </MudItem>
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <MudDatePicker Variant="Variant.Outlined" Margin="Margin.Dense"  Disabled="OnProcessing" @bind-Text="FolderModel!.ExpiredDate" Required="true" PickerVariant="PickerVariant.Inline" Label="ວັນທີປິດແຟ້ມ" HelperText="ວັນທີ່ແຟ້ມຫມົດອາຍຸ" DateFormat="dd/MM/yyyy" />
+            <MudDatePicker Variant="Variant.Outlined" Margin="Margin.Dense"  Disabled="OnProcessing" @bind-Text="FolderModel!.ExpiredDate" Required="true" PickerVariant="PickerVariant.Dialog" Label="ວັນທີປິດແຟ້ມ" HelperText="ວັນທີ່ແຟ້ມຫມົດອາຍຸ" DateFormat="dd/MM/yyyy" />
         </MudItem>
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
             <MudTextField Margin="Margin.Dense" Disabled="OnProcessing" @bind-Value="FolderModel!.ShortName" Required="true" T="string" Immediate="true" Variant="Variant.Outlined" HelperText="ຕົວຫຍໍ້ທີ່ເອົາມາສະແດງໃນເລກທີເອກະສານ" Label="ຕົວຫຍໍ້ອົງກອນ" />
