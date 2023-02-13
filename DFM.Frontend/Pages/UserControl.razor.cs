@@ -4,6 +4,7 @@ using DFM.Shared.Entities;
 using Google.Protobuf.WellKnownTypes;
 using HttpClientService;
 using MudBlazor;
+using System;
 
 namespace DFM.Frontend.Pages
 {
@@ -32,7 +33,42 @@ namespace DFM.Frontend.Pages
 
         async Task onDeleteButtonClick()
         {
-            bool? result = await delBox!.Show();
+            bool? isDelete = await delBox!.Show();
+            if (isDelete.HasValue)
+            {
+                if (isDelete.Value)
+                {
+                    // Delete button had fire
+                    onProcessing = true;
+                    if (employee == null)
+                    {
+                        employee = await storageHelper.GetEmployeeProfileAsync();
+                    }
+                    await InvokeAsync(StateHasChanged);
+                    string url = $"{endpoint.API}/api/v1/Employee/RemoveItem/{employeeModel!.id}";
+                    string token = await accessToken.GetTokenAsync();
+                    // Send request for save document
+                    var result = await httpService.Get<CommonResponse, CommonResponse>(url, new AuthorizeHeader("bearer", token));
+                    onProcessing = false;
+
+                    Console.WriteLine($"-------------------------------");
+                    Console.WriteLine($"Result: {await result.HttpResponseMessage.Content.ReadAsStringAsync()}");
+                    Console.WriteLine($"-------------------------------");
+
+                    if (result.Success)
+                    {
+                        AlertMessage("ທຸລະກຳຂອງທ່ານ ສຳເລັດ", Defaults.Classes.Position.BottomRight, Severity.Success);
+                    }
+                    else
+                    {
+                        AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ", Defaults.Classes.Position.BottomRight, Severity.Error);
+                    }
+
+                    await Task.Delay(delayTime);
+                    disposedObj();
+                    formMode = FormMode.List;
+                }
+            }
         }
 
         void onEditButtonClick()
@@ -45,7 +81,7 @@ namespace DFM.Frontend.Pages
             employeeModel = item;
             // Row click
             formMode = FormMode.Edit;
-            
+
 
         }
 
@@ -61,7 +97,7 @@ namespace DFM.Frontend.Pages
                     {
                         employee = await storageHelper.GetEmployeeProfileAsync();
                     }
-                    
+
                     string url = $"{endpoint.API}/api/v1/Employee/ResetPassword";
                     string token = await accessToken.GetTokenAsync();
 
@@ -139,10 +175,6 @@ namespace DFM.Frontend.Pages
             disposedObj();
             formMode = FormMode.List;
         }
-        async Task onDeleteClickAsync()
-        {
-            formMode = FormMode.List;
-        }
         void disposedObj()
         {
             employeeModel = new();
@@ -170,18 +202,21 @@ namespace DFM.Frontend.Pages
 
         private async Task manageFileToServer()
         {
+            if (attachment.File != null)
+            {
+                // Upload new file
+                using Stream readStream = attachment.File!.OpenReadStream(maxFileSize);
 
-            // Upload new file
-            using Stream readStream = attachment.File!.OpenReadStream(maxFileSize);
+                var buf = new byte[readStream.Length];
 
-            var buf = new byte[readStream.Length];
+                using MemoryStream ms = new MemoryStream(buf);
 
-            using MemoryStream ms = new MemoryStream(buf);
+                await readStream.CopyToAsync(ms);
+                var buffer = ms.ToArray();
 
-            await readStream.CopyToAsync(ms);
-            var buffer = ms.ToArray();
+                await minio.PutObject(attachment.Info.Bucket!, attachment.Info.FileName!, buffer);
+            }
 
-            await minio.PutObject(attachment.Info.Bucket!, attachment.Info.FileName!, buffer);
 
         }
 

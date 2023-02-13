@@ -316,7 +316,21 @@ namespace DFM.API.Controllers
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> RemoveItemV1(string id, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return Ok();
+            try
+            {
+                var result = await employeeManager.RemoveEmployeeProfile(id, cancellationToken);
+
+                if (!result.Success)
+                {
+                    return BadRequest(result);
+                }
+                return Ok(result);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
     }
 }

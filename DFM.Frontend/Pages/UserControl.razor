@@ -36,6 +36,14 @@
     </MudGrid>
 </MudContainer>
 
+<MudMessageBox @ref="delBox" Title="ລຶບຂໍ້ມູນຜູ້ໃຊ້">
+    <MessageContent>
+        <h2>ທ່ານຕ້ອງການ ລຶບຂໍ້ມູນຜູ້ໃຊ້ ນີ້ແທ້ບໍ່?</h2>
+    </MessageContent>
+    <YesButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Error" StartIcon="@Icons.Material.Filled.Delete">ຢືນຢັນ</MudButton>
+    </YesButton>
+</MudMessageBox>
 
 <MudMessageBox @ref="mbox" Title="ປ່ຽນລະຫັດຜ່ານ" style="width:300px">
     <MessageContent>

@@ -574,35 +574,42 @@ namespace DFM.Frontend.Pages
             // Attachment file
             foreach (var item in newAttachFiles)
             {
-                using Stream readStream = item.File!.OpenReadStream(maxFileSize);
+                if (item.File != null)
+                {
+                    using Stream readStream = item.File!.OpenReadStream(maxFileSize);
 
-                var buf = new byte[readStream.Length];
+                    var buf = new byte[readStream.Length];
 
-                using MemoryStream ms = new MemoryStream(buf);
+                    using MemoryStream ms = new MemoryStream(buf);
 
-                await readStream.CopyToAsync(ms);
+                    await readStream.CopyToAsync(ms);
 
-                var buffer = ms.ToArray();
+                    var buffer = ms.ToArray();
 
-                tasks.Add(minio.PutObject(item.Info.Bucket!, item.Info.FileName!, buffer));
+                    tasks.Add(minio.PutObject(item.Info.Bucket!, item.Info.FileName!, buffer));
+                }
+               
             }
 
             // Relate file
             var newRelFiles = relateFiles.Where(x => !x.Info.IsRemove && x.Info.IsNewFile).ToList();
             foreach (var item in newRelFiles)
             {
+                if (item.File != null)
+                {
+                    using Stream readStream = item.File!.OpenReadStream(maxFileSize);
 
-                using Stream readStream = item.File!.OpenReadStream(maxFileSize);
+                    var buf = new byte[readStream.Length];
 
-                var buf = new byte[readStream.Length];
+                    using MemoryStream ms = new MemoryStream(buf);
 
-                using MemoryStream ms = new MemoryStream(buf);
+                    await readStream.CopyToAsync(ms);
 
-                await readStream.CopyToAsync(ms);
+                    var buffer = ms.ToArray();
 
-                var buffer = ms.ToArray();
-
-                tasks.Add(minio.PutObject(item.Info.Bucket!, item.Info.FileName!, buffer));
+                    tasks.Add(minio.PutObject(item.Info.Bucket!, item.Info.FileName!, buffer));
+                }
+               
             }
 
             // Remove files
