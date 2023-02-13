@@ -17,6 +17,7 @@ namespace DFM.Frontend.Pages.ReportComponent
         private int unread = 0;
         private EmployeeModel? employee;
         IEnumerable<DocumentUrgentModel>? urgentModels;
+        private IEnumerable<DataTypeModel> docTypeModel;
         TraceStatus oldStatus;
 
         // events
@@ -105,6 +106,13 @@ namespace DFM.Frontend.Pages.ReportComponent
             {
                 urgentModels = urgentLevel.Response;
             }
+            // Load Document Type
+            string docTypeUrl = $"{endpoint.API}/api/v1/DocumentType/GetItems/{employee!.OrganizationID}";
+            var docType = await httpService.Get<IEnumerable<DataTypeModel>>(docTypeUrl, new AuthorizeHeader("bearer", token));
+            if (docType.Success)
+            {
+                docTypeModel = docType.Response;
+            }
 
             // Load document
             string url = $"{endpoint.API}/api/v1/Document/GetDocument/{TraceStatus}/{Link}/{RoleId}";
@@ -119,22 +127,24 @@ namespace DFM.Frontend.Pages.ReportComponent
                     var myDoc = item.Recipients!.LastOrDefault(x => x.RecipientInfo.RoleID == RoleId);
                     var rawDocumentData = item.RawDatas!.LastOrDefault(x => x.DataID == myDoc!.DataID);
                     var urgentLabel = urgentModels!.FirstOrDefault(x => x.id == rawDocumentData!.Urgent.id)!;
+                    var docTypeLabel = docTypeModel.FirstOrDefault(x => x.id == rawDocumentData!.DocType)!;
 
                     Elements.Add(new DocumentDto
                     {
                         Id = item.id,
                         DocDate = myDoc!.ReceiveDate,
                         DocNo = rawDocumentData!.DocNo,
-                        FormType = rawDocumentData!.FormType,
+                        FormType = docTypeLabel != null ? docTypeLabel!.DocType : "",
                         Title = rawDocumentData!.Title,
-                        UrgentLevel = urgentLabel.Level!,
+                        UrgentLevel = urgentLabel != null ? urgentLabel!.Level! : "",
                         IsRead = myDoc!.IsRead,
                         Uid = myDoc!.UId,
                         CreateDate = myDoc!.CreateDate,
-                        FontColor = urgentLabel.FontColor!
+                        FontColor = urgentLabel != null ? urgentLabel.FontColor! : "",
+
                     });
                 }
-                unread = Elements.Count(x => !x.IsRead);
+                //unread = Elements.Count(x => !x.IsRead);
 
                 // Order Element
                 Elements = Elements.OrderByDescending(x => x.CreateDate).ToList();

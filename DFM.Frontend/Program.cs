@@ -121,7 +121,8 @@ builder.Services.AddServerSideBlazor(options =>
                 options.MaximumReceiveMessageSize = 86 * 1024;
                 options.StreamBufferCapacity = 10;
             });
-
+//register health check
+builder.Services.AddHealthChecks();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -129,9 +130,15 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
 }
+//use health check
+app.MapHealthChecks("/healthcheck");
 
+// Forward header
+app.AddForwardHeaders();
 
 app.UseStaticFiles();
+// Use cookie policies
+app.UseCookiePolicy();
 
 app.UseRouting();
 
