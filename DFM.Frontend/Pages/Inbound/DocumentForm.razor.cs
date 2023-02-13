@@ -132,11 +132,19 @@ namespace DFM.Frontend.Pages.Inbound
                         // Remove Expire folder
                         foreach (var folder in allFolders!)
                         {
-                            var expiredDate = DateTime.ParseExact(folder.ExpiredDate!, "dd/MM/yyyy", null); 
-                            if (DateTime.Now <= expiredDate)
+                            if (!string.IsNullOrWhiteSpace(folder.ExpiredDate))
+                            {
+                                var expiredDate = DateTime.ParseExact(folder.ExpiredDate!, "dd/MM/yyyy", null);
+                                if (DateTime.Now <= expiredDate)
+                                {
+                                    folderModels!.Add(folder);
+                                }
+                            }
+                            else
                             {
                                 folderModels!.Add(folder);
                             }
+
                         }
                     }
                     if (item.component == 5)
@@ -280,7 +288,7 @@ namespace DFM.Frontend.Pages.Inbound
                         string url = $"{endpoint.API}/api/v1/Folder/UpdateItem";
                         var resultFolder = await httpService.Post<FolderModel, CommonResponseId>(url, folderModel, new AuthorizeHeader("bearer", token));
 
-                         if (resultFolder.Success)
+                        if (resultFolder.Success)
                         {
                             await Notice.InvokeAsync("ທຸລະກຳຂອງທ່ານ(ສ້າງແຟ້ມ) ສຳເລັດ");
                         }
@@ -457,7 +465,7 @@ namespace DFM.Frontend.Pages.Inbound
             //TODO upload the files to the server
             await InvokeAsync(StateHasChanged);
         }
-        
+
         private async Task onSelectedFolderChanged(IEnumerable<string> values)
         {
             // Get Folder ID where index = 0
@@ -506,11 +514,19 @@ namespace DFM.Frontend.Pages.Inbound
                 // Remove Expire folder
                 foreach (var folder in result.Response!)
                 {
-                    var expiredDate = DateTime.ParseExact(folder.ExpiredDate!, "dd/MM/yyyy", null);
-                    if (DateTime.Now <= expiredDate)
+                    if (!string.IsNullOrWhiteSpace(folder.ExpiredDate))
+                    {
+                        var expiredDate = DateTime.ParseExact(folder.ExpiredDate!, "dd/MM/yyyy", null);
+                        if (DateTime.Now <= expiredDate)
+                        {
+                            folderModels!.Add(folder);
+                        }
+                    }
+                    else
                     {
                         folderModels!.Add(folder);
                     }
+
                 }
                 await Notice.InvokeAsync("ດຶງຂໍ້ມູນແຟ້ມເອກະສານມາໃຫມ່ສຳເລັດ");
                 await InvokeAsync(StateHasChanged);

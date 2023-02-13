@@ -128,8 +128,15 @@ namespace DFM.Frontend.Pages.Outbound
                         // Remove Expire folder
                         foreach (var folder in allFolders!)
                         {
-                            var expiredDate = DateTime.ParseExact(folder.ExpiredDate!, "dd/MM/yyyy", null);
-                            if (DateTime.Now <= expiredDate)
+                            if (!string.IsNullOrWhiteSpace(folder.ExpiredDate))
+                            {
+                                var expiredDate = DateTime.ParseExact(folder.ExpiredDate!, "dd/MM/yyyy", null);
+                                if (DateTime.Now <= expiredDate)
+                                {
+                                    folderModels!.Add(folder);
+                                }
+                            }
+                            else
                             {
                                 folderModels!.Add(folder);
                             }
@@ -503,8 +510,15 @@ namespace DFM.Frontend.Pages.Outbound
                 // Remove Expire folder
                 foreach (var folder in result.Response!)
                 {
-                    var expiredDate = DateTime.ParseExact(folder.ExpiredDate!, "dd/MM/yyyy", null);
-                    if (DateTime.Now <= expiredDate)
+                    if (!string.IsNullOrWhiteSpace(folder.ExpiredDate))
+                    {
+                        var expiredDate = DateTime.ParseExact(folder.ExpiredDate!, "dd/MM/yyyy", null);
+                        if (DateTime.Now <= expiredDate)
+                        {
+                            folderModels!.Add(folder);
+                        }
+                    }
+                    else
                     {
                         folderModels!.Add(folder);
                     }

@@ -149,7 +149,7 @@
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
             @if (Attachments != null)
             {
-                <MudText Typo="@Typo.h6">@Attachments.Count() File@(Attachments.Count() == 1 ? "" : "s"):</MudText>
+                <MudText Typo="@Typo.h6">@Attachments.Where(x => !x.Info.IsRemove).Count() File @(Attachments.Where(x => !x.Info.IsRemove).Count() == 1 ? "" : "s"):</MudText>
                 <MudList>
                     @foreach (var file in Attachments)
                     {
@@ -196,7 +196,7 @@
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
             @if (RelateFiles != null)
             {
-                <MudText Typo="@Typo.h6">@RelateFiles.Count() File@(RelateFiles.Count() == 1 ? "" : "s"):</MudText>
+                <MudText Typo="@Typo.h6">@RelateFiles.Where(x => !x.Info.IsRemove).Count() File @(RelateFiles.Where(x => !x.Info.IsRemove).Count() == 1 ? "" : "s"):</MudText>
                 <MudList>
                     @foreach (var file in RelateFiles)
                     {

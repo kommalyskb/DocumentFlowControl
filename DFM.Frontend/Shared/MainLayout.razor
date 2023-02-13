@@ -2,6 +2,7 @@
 @inject NavigationManager UriHelper
 @inject LocalStorageHelper storageHelper
 @inject IMinioService minio
+@inject ServiceEndpoint endpoint
 
 <PageTitle>DFM.Frontend</PageTitle>
 <MudThemeProvider Theme="customTheme" />
@@ -14,8 +15,8 @@
         </div>
     </header>*@
 
-    <MudAppBar Fixed="false">
-        <MudImage Src="images/cse-logo.png" Alt="logo" Height="45" Width="45" Class="mr-2" />
+    <MudAppBar Fixed="true">
+        <MudImage Src="images/cse-logo.png" Alt="logo" Height="45" Width="45" Class="mr-2 rounded-lg" ObjectFit="ObjectFit.Cover" />
         <MudText>CSE's Document Control</MudText>
         
         <MudSpacer />
@@ -23,7 +24,7 @@
         {
             if(employee.ProfileImage != null)
             {
-                <MudImage Src="@imageUri" Alt="photo" Height="45" Width="45" Class="mr-2"/>
+                <MudImage Src="@imageUri" Alt="photo" Height="45" Width="45" Class="mr-2 rounded-lg" ObjectFit="ObjectFit.Cover" />
             }
             <MudText Class="mr-2">@employee.Name.Local @employee.FamilyName.Local</MudText>
             <MudButton Href="/authorize"
@@ -39,7 +40,7 @@
 
         <NavMenu OpenDrawer="ToggleMenu" IsOpen="@_drawerOpen" />
     </MudDrawer>
-    <MudMainContent>
+    <MudMainContent Class="mt-4">
         @*@Body*@
         <CustomAuthorizeView>
             <Authorized>
@@ -111,8 +112,8 @@
         var link = await minio.GenerateLink(bucket, fileName);
         if (link.IsSuccess)
         {
-            imageUri = link.Response;
-        }
+            //imageUri = link.Response.Replace(endpoint.MinioAPI, endpoint.StorageAPI);
+            imageUri = link.Response;        }
 
     }
 }

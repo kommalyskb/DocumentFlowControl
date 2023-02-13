@@ -12,5 +12,7 @@ namespace DFM.Shared.Configurations
         public string? IdentityAPI { get; set; }
         public string? Frontend { get; set; }
         public string? PublicAPI { get; set; }
+        public string? StorageAPI { get; set; }
+        public string? MinioAPI { get; set; }
     }
 }
