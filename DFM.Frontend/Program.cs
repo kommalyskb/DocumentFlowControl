@@ -121,6 +121,15 @@ builder.Services.AddServerSideBlazor(options =>
                 options.MaximumReceiveMessageSize = 86 * 1024;
                 options.StreamBufferCapacity = 10;
             });
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromSeconds(10);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+    options.Cookie.SameSite = SameSiteMode.Strict;
+});
+
 //register health check
 builder.Services.AddHealthChecks();
 var app = builder.Build();
@@ -139,6 +148,7 @@ app.AddForwardHeaders();
 app.UseStaticFiles();
 // Use cookie policies
 app.UseCookiePolicy();
+app.UseSession();
 
 app.UseRouting();
 
