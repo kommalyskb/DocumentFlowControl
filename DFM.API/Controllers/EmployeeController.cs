@@ -194,6 +194,7 @@ namespace DFM.API.Controllers
                     }
                 }
 
+                var existingFromDB = await employeeManager.GetProfile(request.id);
                 if (isNewUser)
                 {
 
@@ -208,13 +209,74 @@ namespace DFM.API.Controllers
                 }
                 else
                 {
-                    // Update
-                    var result = await employeeManager.EditEmployeeProfile(request, cancellationToken);
-                    if (result.Success)
+                    if (existingFromDB.Response.Success)
                     {
-                        return Ok(result);
+                        // Update
+                        var result = await employeeManager.EditEmployeeProfile(request, cancellationToken);
+                        if (result.Success)
+                        {
+                            return Ok(result);
+                        }
+                        return BadRequest(result);
                     }
-                    return BadRequest(result);
+                    else
+                    {
+                        // This user is already delete from database but not delete from SSO
+                        // Then try to reset password
+                        // Set password
+                        string password = $"{request.Password}@Dfm.codecamp";
+                        // Send email
+                        if (!string.IsNullOrWhiteSpace(notify))
+                        {
+                            if (notify == "yes")
+                            {
+                                try
+                                {
+                                    string emailBody = emailHelper.RegisterMailBody($"{request.Name.Local} {request.FamilyName.Local}", request.Username, request.Password);
+                                    await emailHelper.Send(new EmailProperty
+                                    {
+                                        Body = emailBody,
+                                        From = smtp.Email,
+                                        To = new List<string> { request.Contact.Email },
+                                        Subject = $"ລົງທະບຽນນຳໃຊ້ລະບົບຈໍລະຈອນເອກະສານ"
+                                    });
+                                }
+                                catch (Exception)
+                                {
+
+                                }
+
+                            }
+                        }
+
+
+                        await httpService.Post<UserResetRequest>($"{endpoint.IdentityAPI}/api/Users/ChangePassword", new UserResetRequest
+                        {
+                            userId = validateResult.UserID,
+                            password = password,
+                            confirmPassword = password
+
+                        }, new AuthorizeHeader("bearer", checkAdminToken.Token), cancellationToken);
+
+                        if (aesConf.Base == BaseConfig.HEX)
+                        {
+                            request.Password = aes.Encrypt(password, aesConf.Key.FromHEX(), aesConf.IV.FromHEX()).ToHEX();
+                        }
+                        else
+                        {
+                            request.Password = aes.Encrypt(password, aesConf.Key.FromBase64(), aesConf.IV.FromBase64()).ToBase64();
+                        }
+                        request.UserID = validateResult.UserID;
+                        // New employee
+                        var result = await employeeManager.NewEmployeeProfile(request, cancellationToken);
+
+                        if (result.Success)
+                        {
+                            return Ok(result);
+                        }
+                        return BadRequest(result);
+                    }
+                    
                 }
             }
             catch (Exception)
