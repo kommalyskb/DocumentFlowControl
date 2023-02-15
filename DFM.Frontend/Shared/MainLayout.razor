@@ -24,6 +24,7 @@
         {
             if(employee.ProfileImage != null)
             {
+                
                 <MudImage Src="@imageUri" Alt="photo" Height="45" Width="45" Class="mr-2 rounded-lg" ObjectFit="ObjectFit.Cover" />
             }
             <MudText Class="mr-2">@employee.Name.Local @employee.FamilyName.Local</MudText>
@@ -108,12 +109,13 @@
     }
     private async Task previewImageProfile(string bucket, string fileName)
     {
-        // Generate link
-        var link = await minio.GenerateLink(bucket, fileName);
-        if (link.IsSuccess)
+        // get file obj
+        var obj = await minio.GetObject(bucket, fileName);
+        if (obj.IsSuccess)
         {
             //imageUri = link.Response.Replace(endpoint.MinioAPI, endpoint.StorageAPI);
-            imageUri = link.Response;        }
+            imageUri = $"data:image/png;base64,{obj.ByteStream.ToBase64()}";
+        }
 
     }
 }

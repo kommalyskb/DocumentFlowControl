@@ -488,14 +488,18 @@ namespace DFM.Frontend.Pages.Outbound
             }
             else
             {
-                string formatType = selectFolder!.FormatType!;
-                formatType = formatType.Replace("$docno", $"{selectFolder.Prefix!}{docNumber}");
-                formatType = formatType.Replace("$sn", $"{selectFolder.ShortName}");
-                formatType = formatType.Replace("$yyyy", $"{DateTime.Now.Year}");
+                if (selectFolder != null)
+                {
+                    string formatType = selectFolder!.FormatType!;
+                    formatType = formatType.Replace("$docno", $"{selectFolder.Prefix!}{docNumber}");
+                    formatType = formatType.Replace("$sn", $"{selectFolder.ShortName}");
+                    formatType = formatType.Replace("$yyyy", $"{DateTime.Now.Year}");
 
+                    RawDocument!.DocNo = formatType;
+                    RawDocument!.FolderNum = docNumber;
 
-                RawDocument!.DocNo = formatType;
-                RawDocument!.FolderNum = docNumber;
+                }
+                
             }
             await InvokeAsync(StateHasChanged);
         }

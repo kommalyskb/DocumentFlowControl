@@ -1,4 +1,5 @@
 ﻿using DFM.Shared.Entities;
+using DFM.Shared.Extensions;
 using Google.Protobuf.WellKnownTypes;
 
 namespace DFM.Frontend.Pages.UserComponent
@@ -19,11 +20,12 @@ namespace DFM.Frontend.Pages.UserComponent
 
         private async Task previewImageProfile(string bucket, string fileName)
         {
-            // Generate link
-            var link = await minio.GenerateLink(bucket, fileName);
-            if (link.IsSuccess)
+            // get file obj
+            var obj = await minio.GetObject(bucket, fileName);
+            if (obj.IsSuccess)
             {
-                imageUri = link.Response;
+                //imageUri = link.Response.Replace(endpoint.MinioAPI, endpoint.StorageAPI);
+                imageUri = $"data:image/png;base64,{obj.ByteStream.ToBase64()}";
             }
 
         }

@@ -34,13 +34,13 @@
                     else if (formMode == FormMode.Create)
                     {
 
-                        <DFM.Frontend.Pages.Inbound.DocumentForm RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument"
+                        <DFM.Frontend.Pages.Inbound.DocumentForm RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument" NoNeedFolder="noNeedFolder"
                                                                  DocumentModel="documentModel" Attachments="files" Notice="onMessageAlert" MyRole="selectedRole"
                                                                  RelateFiles="relateFiles" Mode="formMode"></DFM.Frontend.Pages.Inbound.DocumentForm>
                     }
                     else if (formMode == FormMode.Edit)
                     {
-                        <DFM.Frontend.Pages.Inbound.DocumentForm RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument"
+                        <DFM.Frontend.Pages.Inbound.DocumentForm RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument" NoNeedFolder="noNeedFolder"
                                                                  DocumentModel="documentModel" Attachments="files" Notice="onMessageAlert" MyRole="selectedRole"
                                                                  RelateFiles="relateFiles" Mode="formMode"></DFM.Frontend.Pages.Inbound.DocumentForm>
                     }
@@ -61,13 +61,13 @@
                     }
                     else if (formMode == FormMode.Create)
                     {
-                        <DFM.Frontend.Pages.Outbound.DocumentForm RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument"
+                        <DFM.Frontend.Pages.Outbound.DocumentForm RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument" NoNeedFolder="noNeedFolder"
                                                                   DocumentModel="documentModel" Attachments="files" Notice="onMessageAlert" MyRole="selectedRole"
                                                                   RelateFiles="relateFiles" Mode="formMode"></DFM.Frontend.Pages.Outbound.DocumentForm>
                     }
                     else if (formMode == FormMode.Edit)
                     {
-                        <DFM.Frontend.Pages.Outbound.DocumentForm RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument"
+                        <DFM.Frontend.Pages.Outbound.DocumentForm RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument" NoNeedFolder="noNeedFolder"
                                                                   DocumentModel="documentModel" Attachments="files" Notice="onMessageAlert" MyRole="selectedRole"
                                                                   RelateFiles="relateFiles" Mode="formMode"></DFM.Frontend.Pages.Outbound.DocumentForm>
                     }
@@ -151,6 +151,7 @@
     IList<AttachmentDto> files = new List<AttachmentDto>();
     IList<AttachmentDto> relateFiles = new List<AttachmentDto>();
     Reciepient? myRole = new();
+    bool noNeedFolder = true;
 
     public void Dispose()
     {

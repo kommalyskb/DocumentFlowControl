@@ -245,43 +245,50 @@
         <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
             <h2>ຂໍ້ມູນການເກັບຮັກສາສຳເນົາ</h2>
         </MudItem>
-        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+            <MudCheckBox Disabled="OnProcessing" @bind-Checked="NoNeedFolder" Label="ບໍ່ຕ້ອງການໃຫ້ໃສ່ເລກທີ່" Color="Color.Primary"></MudCheckBox>
+        </MudItem>
+        @if (!NoNeedFolder)
+        {
+            <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
 
-            @if (selectFolderValues != null)
-            {
-                <MudSelect Margin="Margin.Dense" SelectedValues="selectFolderValues" Disabled="OnProcessing" SelectedValuesChanged="onSelectedFolderChanged" @bind-Value="RawDocument!.FolderId" T="string" HelperText="ບ່ອນເກັບຂອງເອກະສານ" Label="ແຟ້ມເກັບເອກະສານ" Variant="Variant.Outlined">
-                    @if (folderModels is not null)
-                    {
-                        foreach (var item in folderModels!)
+                @if (selectFolderValues != null)
+                {
+                    <MudSelect Margin="Margin.Dense" SelectedValues="selectFolderValues" Required="true" Disabled="OnProcessing" SelectedValuesChanged="onSelectedFolderChanged" @bind-Value="RawDocument!.FolderId" T="string" HelperText="ບ່ອນເກັບຂອງເອກະສານ" Label="ແຟ້ມເກັບເອກະສານ" Variant="Variant.Outlined">
+                        @if (folderModels is not null)
                         {
-                            <MudSelectItem Value="item.id">@item.Title</MudSelectItem>
+                            foreach (var item in folderModels!)
+                            {
+                                <MudSelectItem Value="item.id">@item.Title</MudSelectItem>
+                            }
                         }
-                    }
-                </MudSelect>
-            }
-            else
-            {
-                <MudSelect Margin="Margin.Dense" Disabled="OnProcessing" SelectedValuesChanged="onSelectedFolderChanged" @bind-Value="RawDocument!.FolderId" T="string" HelperText="ບ່ອນເກັບຂອງເອກະສານ" Label="ແຟ້ມເກັບເອກະສານ" Variant="Variant.Outlined">
-                    @if (folderModels is not null)
-                    {
-                        foreach (var item in folderModels!)
+                    </MudSelect>
+                }
+                else
+                {
+                    <MudSelect Margin="Margin.Dense" Disabled="OnProcessing" Required="true" SelectedValuesChanged="onSelectedFolderChanged" @bind-Value="RawDocument!.FolderId" T="string" HelperText="ບ່ອນເກັບຂອງເອກະສານ" Label="ແຟ້ມເກັບເອກະສານ" Variant="Variant.Outlined">
+                        @if (folderModels is not null)
                         {
-                            <MudSelectItem Value="item.id">@item.Title</MudSelectItem>
+                            foreach (var item in folderModels!)
+                            {
+                                <MudSelectItem Value="item.id">@item.Title</MudSelectItem>
+                            }
                         }
-                    }
-                </MudSelect>
-            }
+                    </MudSelect>
+                }
 
-            
 
-        </MudItem>
-        <MudItem xs="12" md="2" Class="d-flex flex-grow-1 gap-4">
-            <MudFab Disabled="OnProcessing" Color="Color.Success" Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="refreshFolder" />
-            <MudFab Disabled="OnProcessing" Color="Color.Primary" Icon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="displayFolderDialogAsync" />
-        </MudItem>
-        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4" ondblclick="@onDocNoClick">
-            <MudField Margin="Margin.Dense" Label="ເລກທີ" Variant="Variant.Filled">@RawDocument!.DocNo</MudField>
-        </MudItem>
+
+            </MudItem>
+            <MudItem xs="12" md="2" Class="d-flex flex-grow-1 gap-4">
+                <MudFab Disabled="OnProcessing" Color="Color.Success" Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="refreshFolder" />
+                <MudFab Disabled="OnProcessing" Color="Color.Primary" Icon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="displayFolderDialogAsync" />
+            </MudItem>
+            <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4" ondblclick="@onDocNoClick">
+                <MudField Margin="Margin.Dense" Label="ເລກທີ" Variant="Variant.Filled">@RawDocument!.DocNo</MudField>
+            </MudItem>
+        }
+
         <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
             <MudSelect Margin="Margin.Dense" Disabled="OnProcessing" @bind-Value="RawDocument!.CopyType" T="string" HelperText="ຮູບແບບການສຳເນົາເອກະສານ" Label="ປະເພດສຳເນົາ" Variant="Variant.Outlined">
                 <MudSelectItem Value="@("ເອກະສານແທ້")" />
@@ -370,6 +377,7 @@
     [Parameter] public EventCallback<string> Notice { get; set; }
     [Parameter] public RawDocumentData? RawDocument { get; set; }
     [Parameter] public PartialRole? MyRole { get; set; }
+    [Parameter] public bool NoNeedFolder { get; set; }
 
     bool previewButton = false;
     string? token = "";

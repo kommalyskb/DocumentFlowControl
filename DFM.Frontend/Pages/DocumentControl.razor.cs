@@ -339,6 +339,13 @@ namespace DFM.Frontend.Pages
                     {
                         employee = await storageHelper.GetEmployeeProfileAsync();
                     }
+                    // Validate field
+                    if (!validateField())
+                    {
+                        AlertMessage("ກະລຸນາປ້ອນຂໍ້ມູນໃຫ້ຄົບຖ້ວນ", Defaults.Classes.Position.BottomRight, Severity.Warning);
+                        onProcessing = false;
+                        return;
+                    }
                     string url = $"{endpoint.API}/api/v1/Document/SaveDocument/{roleId}";
                     string token = await accessToken.GetTokenAsync();
 
@@ -398,6 +405,14 @@ namespace DFM.Frontend.Pages
                     {
                         documentModel!.InboxType = InboxType.Outbound;
                     }
+
+                    if (noNeedFolder)
+                    {
+                        rawDocument.DocNo = "";
+                        rawDocument.FolderNum = -1;
+                        rawDocument.FolderId = "";
+                    }
+
                     documentRequest.RawDocument = rawDocument;
                     documentRequest.DocumentModel = documentModel;
                     // Bind Receiver
@@ -480,6 +495,16 @@ namespace DFM.Frontend.Pages
             
         }
 
+
+        bool validateField()
+        {
+
+            if (string.IsNullOrWhiteSpace(rawDocument.Title) || string.IsNullOrWhiteSpace(rawDocument.ExternalDocID))
+            {
+                return false;
+            }
+            return true;
+        }
         async Task onSaveClickAsync()
         {
             onProcessing = true;
@@ -487,6 +512,16 @@ namespace DFM.Frontend.Pages
             {
                 employee = await storageHelper.GetEmployeeProfileAsync();
             }
+
+            // Validate field
+            if (!validateField())
+            {
+                AlertMessage("ກະລຸນາປ້ອນຂໍ້ມູນໃຫ້ຄົບຖ້ວນ", Defaults.Classes.Position.BottomRight, Severity.Warning);
+                onProcessing = false;
+                return;
+            }
+
+
             string url = $"{endpoint.API}/api/v1/Document/SaveDocument/{roleId}";
             string token = await accessToken.GetTokenAsync();
 
@@ -508,7 +543,12 @@ namespace DFM.Frontend.Pages
             {
                 documentModel!.InboxType = InboxType.Outbound;
             }
-
+            if (noNeedFolder)
+            {
+                rawDocument.DocNo = "";
+                rawDocument.FolderNum = -1;
+                rawDocument.FolderId = "";
+            }
             documentRequest.RawDocument = rawDocument;
             documentRequest.DocumentModel = documentModel;
             // Send request for save document
@@ -554,6 +594,7 @@ namespace DFM.Frontend.Pages
             relateFiles = new List<AttachmentDto>();
             mainReciver = new();
             rawDocument!.ResponseUnit = publisher!.Id;
+            noNeedFolder = true;
         }
         void onMessageAlert(string message)
         {
