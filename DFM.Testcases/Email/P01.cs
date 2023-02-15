@@ -16,11 +16,10 @@ namespace DFM.Testcases.Email
             emailHelper = new EmailHelper(new Shared.Configurations.SMTPConf
             {
                 Email = "docunent.cse2023@gmail.com",
-                IsActivate = true,
                 Password = "bcniqluyumopgbrb",
                 Server = "smtp.gmail.com",
                 Port = 587
-            });
+            }, new Shared.Configurations.SendGridConf(), new Shared.Configurations.EnvConf());
         }
 
         [Fact]

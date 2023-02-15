@@ -7,9 +7,10 @@
 @inject StorageConfiguration storageConf
 @inject NavigationManager nav
 @inject ISnackbar Snackbar
+@inject EnvConf envConf
 @implements IDisposable
 
-<PageTitle>Report - CSE's Document Control</PageTitle>
+<PageTitle>Report - @envConf.PageTitle</PageTitle>
 
 <MudContainer Class="mt-2">
     <MudGrid>

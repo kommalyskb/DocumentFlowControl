@@ -8,6 +8,10 @@ using System.Threading.Tasks;
 using DFM.Shared.Configurations;
 using Confluent.Kafka;
 using System.Runtime.CompilerServices;
+using Serilog;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 
 namespace DFM.Shared.Helper
 {
@@ -33,52 +37,84 @@ namespace DFM.Shared.Helper
     public class EmailHelper : IEmailHelper
     {
         private readonly SMTPConf smtpConf;
+        private readonly SendGridConf sendGridConf;
+        private readonly EnvConf envConf;
 
-        public EmailHelper(SMTPConf smtpConf)
+        public EmailHelper(SMTPConf smtpConf, SendGridConf sendGridConf, EnvConf envConf)
         {
             this.smtpConf = smtpConf;
+            this.sendGridConf = sendGridConf;
+            this.envConf = envConf;
         }
         public async Task Send(EmailProperty emailProperty)
         {
-
-            MailMessage message = new MailMessage();
-            message.From = new MailAddress(emailProperty.From!);
-            message.Subject = emailProperty.Subject;
-            foreach (var item in emailProperty.To!)
+            if (envConf.Option == EmailEnum.PURESMTP)
             {
-                message.To.Add(item);
-            }
-            
-            AlternateView htmlView = AlternateView.CreateAlternateViewFromString(
-              $"{emailProperty.Body}",
-              null,
-              "text/html"
-            );
-
-
-            message.AlternateViews.Add(htmlView);
-
-            try
-            {
-                using (SmtpClient smtp = new SmtpClient())
+                MailMessage message = new MailMessage();
+                message.From = new MailAddress(emailProperty.From!);
+                message.Subject = emailProperty.Subject;
+                foreach (var item in emailProperty.To!)
                 {
+                    message.To.Add(item);
+                }
 
-                    smtp.Host = smtpConf.Server;
-                    smtp.Port = smtpConf.Port;
-                    smtp.EnableSsl = true;
-                    
-                    NetworkCredential netCre = new NetworkCredential(smtpConf.Email, smtpConf.Password);
-                    smtp.UseDefaultCredentials = false;
-                    smtp.Credentials = netCre;
+                AlternateView htmlView = AlternateView.CreateAlternateViewFromString(
+                  $"{emailProperty.Body}",
+                  null,
+                  "text/html"
+                );
 
-                    await smtp.SendMailAsync(message);
 
+                message.AlternateViews.Add(htmlView);
+
+                try
+                {
+                    using (SmtpClient smtp = new SmtpClient())
+                    {
+
+                        smtp.Host = smtpConf.Server;
+                        smtp.Port = smtpConf.Port;
+                        smtp.EnableSsl = true;
+
+                        NetworkCredential netCre = new NetworkCredential(smtpConf.Email, smtpConf.Password);
+                        smtp.UseDefaultCredentials = false;
+                        smtp.Credentials = netCre;
+
+                        await smtp.SendMailAsync(message);
+
+                    }
+                }
+                catch (SmtpException)
+                {
+                    throw;
                 }
             }
-            catch (SmtpException)
+            else if (envConf.Option == EmailEnum.SENDGRID)
             {
-                throw;
+                try
+                {
+                    var client = new SendGridClient(sendGridConf.APIKey);
+                    var from = new EmailAddress(emailProperty.From!, "Document Notify");
+                    List<EmailAddress> tos = new();
+                    foreach (var item in emailProperty.To!)
+                    {
+                        tos.Add(new EmailAddress(item));
+                    }
+                    var plainTextContent = "";
+                    var msg = MailHelper.CreateSingleEmailToMultipleRecipients(from, tos, emailProperty.Subject, plainTextContent, emailProperty.Body);
+                    var response = await client.SendEmailAsync(msg);
+                    Log.Information($"Send email: {response.Body.ReadAsStringAsync().Result}");
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+                
             }
+
+
+            Log.Warning("No Email Option route was configured");
         }
         //<img src= 'https://erpstack.la/images/Logo_w.png' style='width:10rem;height:4rem;margin-left: auto;margin-right: auto;'/>
 

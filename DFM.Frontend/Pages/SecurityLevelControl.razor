@@ -7,9 +7,10 @@
 @inject StorageConfiguration storageConf
 @inject NavigationManager nav
 @inject ISnackbar Snackbar
+@inject EnvConf envConf
 @implements IDisposable
 
-<PageTitle>Security Level - CSE's Document Control</PageTitle>
+<PageTitle>Security Level - @envConf.PageTitle</PageTitle>
 
 <DFM.Frontend.Pages.Common.ButtonPanel FormMode="formMode" ShowTerminateButton="false" ShowCreateButton="true" ShowDeleteButton="true"
                                        ShowEditButton="true" ShowSaveButton="true" ShowSendButton="false" Behavior="BehaviorStatus.ReadWrite"

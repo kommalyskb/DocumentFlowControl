@@ -10,8 +10,10 @@
 @inject ISnackbar Snackbar
 @inject ICascadingService cascading
 @inject FrontendIdentity identity
+@inject EnvConf envConf
 @implements IDisposable
-<PageTitle>Login - CSE's Document Control</PageTitle>
+
+<PageTitle>Login - @envConf.PageTitle</PageTitle>
 
 <MudGrid Class="mt-16">
     <MudItem xs="12" sm="12" md="4"></MudItem>
@@ -21,7 +23,7 @@
         </div>
         <MudPaper Class="pa-4">
             <MudForm>
-                <h1 style="text-align: center">CSE's Doc Control'</h1>
+                <h1 style="text-align: center">@envConf.PageTitle</h1>
 
                 <MudTextField Margin="Margin.Dense" T="string" Label="Username" Required="true" RequiredError="User name is required!" @bind-Value="@userName" />
 

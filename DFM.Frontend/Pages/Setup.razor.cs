@@ -50,7 +50,8 @@ namespace DFM.Frontend.Pages
                 var empResult = await httpService.Post<EmployeeModel, CommonResponse>(urlEmployee, employee, new AuthorizeHeader("bearer", token));
                 if (empResult.Success)
                 {
-                    AlertMessage("ທຸລະກຳຂອງທ່ານສຳເລັດ", Defaults.Classes.Position.BottomRight, Severity.Success);
+                    nav.NavigateTo($"/authorize", true);
+                    AlertMessage("ທຸລະກຳຂອງທ່ານສຳເລັດ, ກະລຸນາກວດສອບກ່ອງ ອີເມວຂາເຂົ້າຂອງທ່ານ", Defaults.Classes.Position.BottomRight, Severity.Success);
                 }
                 else
                 {

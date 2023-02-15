@@ -6,8 +6,9 @@
 @inject ServiceEndpoint endpoint
 @inject ICascadingService cascading
 @inject LocalStorageHelper storageHelper
+@inject EnvConf envConf
 
-<PageTitle>Welcome - CSE's Document Control</PageTitle>
+<PageTitle>Welcome - @envConf.PageTitle</PageTitle>
 <MudContainer>
     <MudGrid>
         <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">

@@ -11,8 +11,9 @@
 @inject ICascadingService cascading
 @inject FrontendIdentity identity
 @inject ISnackbar Snackbar
+@inject EnvConf envConf
 @implements IDisposable
-<PageTitle>Setup - CSE's Document Control</PageTitle>
+<PageTitle>Setup - @envConf.PageTitle</PageTitle>
 
 <MudContainer Class="mt-2">
     <MudGrid>

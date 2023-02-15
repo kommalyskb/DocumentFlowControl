@@ -81,6 +81,12 @@ Console.WriteLine($"-----------Frontend OpenID Configurations----------");
 Console.WriteLine(JsonSerializer.Serialize(frontendSts));
 Console.WriteLine($"-------------------------------------------");
 
+var sendgrid = builder.Configuration.GetSection(nameof(SendGridConf)).Get<SendGridConf>();
+builder.Services.AddSingleton(sendgrid);
+Console.WriteLine($"-----------Sendgrid Configurations----------");
+Console.WriteLine(JsonSerializer.Serialize(sendgrid));
+Console.WriteLine($"-------------------------------------------");
+
 // Redis Cache for IDistributedCache
 //var redisOptions = ConfigurationOptions.Parse($"{redisConf.Server}:{redisConf.Port}");
 //redisOptions.User = redisConf.User;

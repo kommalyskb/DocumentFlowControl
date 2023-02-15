@@ -33,10 +33,11 @@ namespace DFM.API.Controllers
         private readonly IEmailHelper emailHelper;
         private readonly ServiceEndpoint endpoint;
         private readonly SMTPConf smtp;
+        private readonly EnvConf envConf;
 
         public DocumentController(IDocumentTransaction documentTransaction, IRoleManager roleManager, IEmployeeManager employeeManager,
             IFolderManager folderManager, IMinioService minio, IOrganizationChart organization, IRedisConnector redisConnector,
-            IEmailHelper emailHelper, ServiceEndpoint endpoint, SMTPConf smtp)
+            IEmailHelper emailHelper, ServiceEndpoint endpoint, SMTPConf smtp, EnvConf envConf)
         {
             this.documentTransaction = documentTransaction;
             this.roleManager = roleManager;
@@ -48,6 +49,7 @@ namespace DFM.API.Controllers
             this.emailHelper = emailHelper;
             this.endpoint = endpoint;
             this.smtp = smtp;
+            this.envConf = envConf;
         }
 
         /// <summary>
@@ -511,7 +513,7 @@ namespace DFM.API.Controllers
                         // Get Email from main recipient
                         //
                         //
-                        if (smtp.IsActivate)
+                        if (envConf.EmailNotify)
                         {
                             var mainRole = await organization.GetEmployee(request.DocumentModel!.OrganizationID, receiverRole.Content!.id);
                             var mainProfile = await employeeManager.GetProfile(mainRole.Content.Employee.UserID);
@@ -574,7 +576,7 @@ namespace DFM.API.Controllers
                             // Get Email from coprocess recipient
                             //
                             //
-                            if (smtp.IsActivate)
+                            if (envConf.EmailNotify)
                             {
                                 var itemRole = await organization.GetEmployee(request.DocumentModel!.OrganizationID, item.Role.RoleID);
                                 var itemProfile = await employeeManager.GetProfile(itemRole.Content.Employee.UserID);
@@ -617,7 +619,7 @@ namespace DFM.API.Controllers
                             // Set Reciepient
                             request.DocumentModel.Recipients!.Add(coUser);
                         }
-                        if (smtp.IsActivate)
+                        if (envConf.EmailNotify)
                         {
                             var mailBody = emailHelper.NotificationMailBody($"{endpoint.Frontend}", $"{ownRoleTrace.Fullname.Name.Local}", $"{request.RawDocument.Title}");
                             tasks.Add(emailHelper.Send(new EmailProperty
@@ -696,7 +698,7 @@ namespace DFM.API.Controllers
                         // New Record
                         await documentTransaction.NewDocument(request.DocumentModel, cancellationToken);
                         // Send email
-                        if (smtp.IsActivate)
+                        if (envConf.EmailNotify)
                         {
                             await Task.WhenAll(tasks);
                         }
@@ -957,7 +959,7 @@ namespace DFM.API.Controllers
                         // Get Email from main recipient
                         //
                         //
-                        if (smtp.IsActivate)
+                        if (envConf.EmailNotify)
                         {
                             var mainRole = await organization.GetEmployee(request.DocumentModel!.OrganizationID, receiverRole.Content!.id);
                             var mainProfile = await employeeManager.GetProfile(mainRole.Content.Employee.UserID);
@@ -1017,7 +1019,7 @@ namespace DFM.API.Controllers
                             // Get Email from coprocess recipient
                             //
                             //
-                            if (smtp.IsActivate)
+                            if (envConf.EmailNotify)
                             {
                                 var itemRole = await organization.GetEmployee(request.DocumentModel!.OrganizationID, item.Role.RoleID);
                                 var itemProfile = await employeeManager.GetProfile(itemRole.Content.Employee.UserID);
@@ -1059,7 +1061,7 @@ namespace DFM.API.Controllers
                             // Set Reciepient
                             doc!.Content.Recipients!.Add(coUser);
                         }
-                        if (smtp.IsActivate)
+                        if (envConf.EmailNotify)
                         {
                             var mailBody = emailHelper.NotificationMailBody($"{endpoint.Frontend}", $"{sender.RecipientInfo.Fullname.Name.Local}", $"{request.RawDocument.Title}");
                             tasks.Add(emailHelper.Send(new EmailProperty
@@ -1080,7 +1082,7 @@ namespace DFM.API.Controllers
 
                     var result = await documentTransaction.EditDocument(request.DocumentModel, cancellationToken);
                     // Send email
-                    if (smtp.IsActivate)
+                    if (envConf.EmailNotify)
                     {
                         await Task.WhenAll(tasks);
                     }

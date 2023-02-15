@@ -2,6 +2,7 @@
 @inject NavigationManager UriHelper
 @inject LocalStorageHelper storageHelper
 @inject IMinioService minio
+@inject EnvConf envConf
 @inject ServiceEndpoint endpoint
 
 <PageTitle>DFM.Frontend</PageTitle>
@@ -9,15 +10,10 @@
 <MudDialogProvider />
 <MudSnackbarProvider />
 <MudLayout>
-    @*<header class="mud-appbar mud-appbar-dense mud-elevation-4 mud-theme-primary">
-        <div class="mud-toolbar mud-toolbar-dense mud-toolbar-gutters mud-toolbar-appbar" style="text-align: center; background-color: #20629b;">
-            <img src="images/cse-logo.png" alt="logo" class="mud-image object-cover object-center mud-elevation-25 rounded-lg" width="45" height="45" style="margin: auto" />
-        </div>
-    </header>*@
 
     <MudAppBar Fixed="true">
-        <MudImage Src="images/cse-logo.png" Alt="logo" Height="45" Width="45" Class="mr-2 rounded-lg" ObjectFit="ObjectFit.Cover" />
-        <MudText>CSE's Document Control</MudText>
+        <MudImage Src="@envConf.LogoUrl" Alt="logo" Height="45" Width="45" Class="mr-2 rounded-lg" ObjectFit="ObjectFit.Cover" />
+        <MudText>@envConf.PageTitle</MudText>
         
         <MudSpacer />
         @if (employee != null)

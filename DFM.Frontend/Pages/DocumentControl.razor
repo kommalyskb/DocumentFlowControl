@@ -7,9 +7,10 @@
 @inject StorageConfiguration storageConf
 @inject NavigationManager nav
 @inject ISnackbar Snackbar
+@inject EnvConf envConf
 @implements IDisposable
 
-<PageTitle>Document - CSE's Document Control</PageTitle>
+<PageTitle>Document - @envConf.PageTitle</PageTitle>
 
 <DFM.Frontend.Pages.Common.ButtonPanel FormMode="formMode" ShowTerminateButton="true" ShowCreateButton="showCreateButton" OnProcessing="onProcessing" ShowHistoryButton="false"
                                        ShowDeleteButton="true" ShowEditButton="true" ShowSaveButton="true" ShowSendButton="showSendButton" ShowRestoreButton="true"

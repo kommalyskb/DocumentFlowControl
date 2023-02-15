@@ -5,8 +5,10 @@
 @inject LocalStorageHelper storageHelper
 @inject ISnackbar Snackbar
 @inject IMinioService minio
+@inject EnvConf envConf
 
-<PageTitle>User Management - CSE's Document Control</PageTitle>
+
+<PageTitle>User Management - @envConf.PageTitle</PageTitle>
 
 <DFM.Frontend.Pages.Common.ButtonPanel FormMode="formMode" ShowTerminateButton="false" ShowCreateButton="true" ShowDeleteButton="true"
                                        ShowEditButton="true" ShowSaveButton="true" ShowSendButton="false" ShowHistoryButton="false" ShowRestoreButton="false"

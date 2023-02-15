@@ -8,8 +8,9 @@
 @inject NavigationManager nav
 @inject ISnackbar Snackbar
 @implements IDisposable
+@inject EnvConf envConf
 
-<PageTitle>Monitoring - CSE's Document Control</PageTitle>
+<PageTitle>Monitoring - @envConf.PageTitle</PageTitle>
 
 
 <MudContainer Class="mt-2">
