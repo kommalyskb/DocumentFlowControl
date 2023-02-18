@@ -55,7 +55,8 @@
                                     @foreach (var item in notices)
                                     {
                                         string link = item.ModuleType == ModuleType.DocumentInbound ? "inbound" : "outbound";
-                                        string urlPage = $"/pages/doc/{link}/inbox/{item.DocID}/{item.RoleID}/{item.id}";
+                                        string urlPage = $"/pages/doc/{link}/inbox/{item.RefDocument}/{item.RoleID}/{item.id}";
+                                        
                                         if (!item.IsRead)
                                         {
                                             <MudListItem IconColor="Color.Secondary" AdornmentColor="Color.Secondary" Text="@item.Title" Href="@urlPage" Icon="@Icons.Material.Filled.MarkEmailUnread" OnClick="(() => _isOpen = false)" />

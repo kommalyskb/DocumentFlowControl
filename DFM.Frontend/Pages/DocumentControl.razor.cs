@@ -476,7 +476,7 @@ namespace DFM.Frontend.Pages
                             // Save notification
                             NotificationModel noticeRequest = new NotificationModel
                             {
-                                DocID = result.Response.Id,
+                                RefDocument = result.Response.Id,
                                 id = Guid.NewGuid().ToString("N"),
                                 IsRead = false,
                                 ModuleType = moduleType,

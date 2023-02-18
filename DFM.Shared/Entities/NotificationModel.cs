@@ -32,7 +32,7 @@ namespace DFM.Shared.Entities
         [Indexed]
         public string? UserIDRead { get; set; }
         [Indexed]
-        public string? DocID { get; set; }
+        public string? RefDocument { get; set; }
 
     }
 }
