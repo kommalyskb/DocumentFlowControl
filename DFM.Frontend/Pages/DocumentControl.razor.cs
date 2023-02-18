@@ -483,7 +483,7 @@ namespace DFM.Frontend.Pages
                                 Title = documentRequest.RawDocument.Title,
                                 SendFrom = $"{employee.Name.Local} {employee.FamilyName.Local}"
                             };
-                            await httpService.Post<NotificationModel, CommonResponse>($"{endpoint.API}/api/v1/Notification/Create", noticeRequest, new AuthorizeHeader("bearer", token));
+                            await httpService.Post<NotificationModel, CommonResponse>($"{endpoint.API}/api/v1/Notification/Create/{result.Response.Id}", noticeRequest, new AuthorizeHeader("bearer", token));
 
                             AlertMessage("ທຸລະກຳຂອງທ່ານ ສຳເລັດ", Defaults.Classes.Position.BottomRight, Severity.Success);
                             // Send EventNotify
@@ -589,6 +589,7 @@ namespace DFM.Frontend.Pages
                 {
                     nav.NavigateTo($"/pages/doc/{Link}/draft", true);
                     AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, ບໍ່ສາມາດ ໂຫຼດເອກະສານໄດ້", Defaults.Classes.Position.BottomRight, Severity.Error);
+                    return;
                 }
 
                 await bindDocumentModel(doc.Response); // Bind document model

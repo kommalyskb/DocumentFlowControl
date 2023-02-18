@@ -122,7 +122,7 @@ namespace DFM.Shared.Repository
                 if (result.IsSuccess)
                 {
                     request.rev = result.Rev;
-                    await context.InsertAsync(request);
+                    await context.UpdateAsync(request);
 
                     return new CommonResponseId()
                     {
