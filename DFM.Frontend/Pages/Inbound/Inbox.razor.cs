@@ -6,11 +6,12 @@ namespace DFM.Frontend.Pages.Inbound
 {
     public partial class Inbox
     {
-        string? token = "";
+        //string? token = "";
         int _panelIndex = 0;
         int panelIndex { get { return _panelIndex; } set { _panelIndex = value; OnTabChangeEvent.InvokeAsync(tabItems![value].Role); } }
         private EmployeeModel? employee;
         List<TabItemDto>? tabItems;
+        IEnumerable<TabItemDto>? myRoles;
         protected override async Task OnInitializedAsync()
         {
             if (employee == null)
@@ -18,22 +19,19 @@ namespace DFM.Frontend.Pages.Inbound
                 employee = await storageHelper.GetEmployeeProfileAsync();
             }
             // Load tab
-            string url = $"{endpoint.API}/api/v1/Organization/GetRole";
-
-
-            token = await accessToken.GetTokenAsync();
-
-            var result = await httpService.Get<IEnumerable<TabItemDto>>(url, new AuthorizeHeader("bearer", token));
-            if (result.Success)
+            if (myRoles == null)
             {
-                tabItems = result.Response.Where(x => x.Role.RoleType != RoleTypeModel.OutboundPrime && x.Role.RoleType != RoleTypeModel.OutboundOfficePrime && x.Role.RoleType != RoleTypeModel.OutboundGeneral).ToList();
-                if (tabItems.Count > 0)
-                {
-                    // Callback event 
-                    await OnTabChangeEvent.InvokeAsync(tabItems[_panelIndex].Role);
-                }
+                myRoles = await storageHelper.GetRolesAsync();
+
             }
-           
+
+            tabItems = myRoles.ToList().Where(x => x.Role.RoleType != RoleTypeModel.OutboundPrime && x.Role.RoleType != RoleTypeModel.OutboundOfficePrime && x.Role.RoleType != RoleTypeModel.OutboundGeneral).ToList();
+            if (tabItems.Count > 0)
+            {
+                // Callback event 
+                await OnTabChangeEvent.InvokeAsync(tabItems[_panelIndex].Role);
+            }
+
         }
         async Task onRowClick(DocumentModel item)
         {

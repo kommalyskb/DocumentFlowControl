@@ -18,7 +18,7 @@ namespace DFM.Frontend.Pages.UserComponent
             //Console.WriteLine(JsonSerializer.Serialize(args.Item));
 
             // Open new page
-            var item = allEmployees.FirstOrDefault(z => z.id == args.Item.Id);
+            var item = allEmployees!.FirstOrDefault(z => z.id == args.Item.Id);
             await OnRowClick.InvokeAsync(item);
         }
 
@@ -46,7 +46,10 @@ namespace DFM.Frontend.Pages.UserComponent
             employee = await storageHelper.GetEmployeeProfileAsync();
             // Load document
             string url = $"{endpoint.API}/api/v1/Employee/GetItems/{employee.OrganizationID}";
-            token = await accessToken.GetTokenAsync();
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                token = await accessToken.GetTokenAsync();
+            }
 
             var result = await httpService.Get<IEnumerable<EmployeeModel>>(url, new AuthorizeHeader("bearer", token));
             if (result.Success)
@@ -65,25 +68,6 @@ namespace DFM.Frontend.Pages.UserComponent
             }
         }
 
-        protected override async Task OnParametersSetAsync()
-        {
-            //if (oldLink != Link)
-            //{
-            //    oldLink = Link;
-            //    // Load document
-            //    string url = $"{endpoint.API}/api/v1/Folder/GetItems/{RoleId}/{Link}";
-            //    token = await accessToken.GetTokenAsync();
-
-            //    var result = await httpService.Get<IEnumerable<FolderModel>>(url, new AuthorizeHeader("bearer", token));
-            //    if (result.Success)
-            //    {
-            //        Elements = result.Response.ToList();
-            //    }
-            //    else
-            //    {
-            //        Elements.Clear();
-            //    }
-            //}
-        }
+        
     }
 }

@@ -46,7 +46,10 @@ namespace DFM.Frontend.Pages
                     }
                     await InvokeAsync(StateHasChanged);
                     string url = $"{endpoint.API}/api/v1/Employee/RemoveItem/{employeeModel!.id}";
-                    string token = await accessToken.GetTokenAsync();
+                    if (string.IsNullOrWhiteSpace(token))
+                    {
+                        token = await accessToken.GetTokenAsync();
+                    }
                     // Send request for save document
                     var result = await httpService.Get<CommonResponse, CommonResponse>(url, new AuthorizeHeader("bearer", token));
                     onProcessing = false;
@@ -99,7 +102,10 @@ namespace DFM.Frontend.Pages
                     }
 
                     string url = $"{endpoint.API}/api/v1/Employee/ResetPassword";
-                    string token = await accessToken.GetTokenAsync();
+                    if (string.IsNullOrWhiteSpace(token))
+                    {
+                        token = await accessToken.GetTokenAsync();
+                    }
 
                     var result = await httpService.Post<EmployeeModel, CommonResponseId>(url, employeeModel!, new AuthorizeHeader("bearer", token));
 
@@ -137,20 +143,38 @@ namespace DFM.Frontend.Pages
             {
                 employee = await storageHelper.GetEmployeeProfileAsync();
             }
+            if (string.IsNullOrWhiteSpace(employee.Name.Local) || string.IsNullOrWhiteSpace(employee.Name.Eng) ||
+               string.IsNullOrWhiteSpace(employee.FamilyName.Local) || string.IsNullOrWhiteSpace(employee.FamilyName.Eng))
+            {
+                AlertMessage("ກະລຸນາ ປ້ອນຊື່ ພະນັກງານ ທີ່ຈະເປັນ ຜູ້ດູແລລະບົບ", Defaults.Classes.Position.BottomRight, Severity.Error);
+                onProcessing = false;
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(employee.Username) || string.IsNullOrWhiteSpace(employee.Password) ||
+                string.IsNullOrWhiteSpace(employee.Contact.Email) || string.IsNullOrWhiteSpace(employee.Contact.Phone))
+            {
+                AlertMessage("ກະລຸນາ ກວດເບີ່ງວ່າຂໍ້ມູນ Username, Password, Email, Phone ປ້ອນແລ້ວບໍ່", Defaults.Classes.Position.BottomRight, Severity.Error);
+                onProcessing = false;
+                return;
+            }
             string isNotify = "no";
             if (notify)
             {
                 isNotify = "yes";
             }
             string url = $"{endpoint.API}/api/v1/Employee/SaveItem?notify={isNotify}";
-            string token = await accessToken.GetTokenAsync();
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                token = await accessToken.GetTokenAsync();
+            }
 
 
             // Upload file via Minio SDK
             await manageFileToServer();
 
-            employeeModel.OrganizationID = employee.OrganizationID;
-            employeeModel.ProfileImage = attachment.Info;
+            employeeModel!.OrganizationID = employee.OrganizationID;
+            employeeModel!.ProfileImage = attachment!.Info;
             // Send request for save document
             var result = await httpService.Post<EmployeeModel, CommonResponse>(url, employeeModel!, new AuthorizeHeader("bearer", token));
 
@@ -202,7 +226,7 @@ namespace DFM.Frontend.Pages
 
         private async Task manageFileToServer()
         {
-            if (attachment.File != null)
+            if (attachment!.File != null)
             {
                 // Upload new file
                 using Stream readStream = attachment.File!.OpenReadStream(maxFileSize);

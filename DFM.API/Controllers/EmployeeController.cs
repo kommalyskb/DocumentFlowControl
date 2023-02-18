@@ -146,12 +146,12 @@ namespace DFM.API.Controllers
                             {
                                 try
                                 {
-                                    string emailBody = emailHelper.RegisterMailBody($"{request.Name.Local} {request.FamilyName.Local}", request.Username, request.Password);
+                                    string emailBody = emailHelper.RegisterMailBody($"{request.Name.Local} {request.FamilyName.Local}", request.Username, request.Password!);
                                     await emailHelper.Send(new EmailProperty
                                     {
                                         Body = emailBody,
                                         From = smtp.Email,
-                                        To = new List<string> { request.Contact.Email },
+                                        To = new List<string> { request.Contact.Email! },
                                         Subject = $"ລົງທະບຽນນຳໃຊ້ລະບົບຈໍລະຈອນເອກະສານ"
                                     });
                                 }
@@ -175,11 +175,11 @@ namespace DFM.API.Controllers
 
                         if (aesConf.Base == BaseConfig.HEX)
                         {
-                            request.Password = aes.Encrypt(password, aesConf.Key.FromHEX(), aesConf.IV.FromHEX()).ToHEX();
+                            request.Password = aes.Encrypt(password, aesConf.Key!.FromHEX(), aesConf.IV!.FromHEX()).ToHEX();
                         }
                         else
                         {
-                            request.Password = aes.Encrypt(password, aesConf.Key.FromBase64(), aesConf.IV.FromBase64()).ToBase64();
+                            request.Password = aes.Encrypt(password, aesConf.Key!.FromBase64(), aesConf.IV!.FromBase64()).ToBase64();
                         }
                     }
                     else
@@ -194,7 +194,7 @@ namespace DFM.API.Controllers
                     }
                 }
 
-                var existingFromDB = await employeeManager.GetProfile(request.id);
+                var existingFromDB = await employeeManager.GetProfile(request.id!);
                 if (isNewUser)
                 {
 
@@ -232,12 +232,12 @@ namespace DFM.API.Controllers
                             {
                                 try
                                 {
-                                    string emailBody = emailHelper.RegisterMailBody($"{request.Name.Local} {request.FamilyName.Local}", request.Username, request.Password);
+                                    string emailBody = emailHelper.RegisterMailBody($"{request.Name.Local} {request.FamilyName.Local}", request.Username, request.Password!);
                                     await emailHelper.Send(new EmailProperty
                                     {
                                         Body = emailBody,
                                         From = smtp.Email,
-                                        To = new List<string> { request.Contact.Email },
+                                        To = new List<string> { request.Contact.Email! },
                                         Subject = $"ລົງທະບຽນນຳໃຊ້ລະບົບຈໍລະຈອນເອກະສານ"
                                     });
                                 }
@@ -260,11 +260,11 @@ namespace DFM.API.Controllers
 
                         if (aesConf.Base == BaseConfig.HEX)
                         {
-                            request.Password = aes.Encrypt(password, aesConf.Key.FromHEX(), aesConf.IV.FromHEX()).ToHEX();
+                            request.Password = aes.Encrypt(password, aesConf.Key!.FromHEX(), aesConf.IV!.FromHEX()).ToHEX();
                         }
                         else
                         {
-                            request.Password = aes.Encrypt(password, aesConf.Key.FromBase64(), aesConf.IV.FromBase64()).ToBase64();
+                            request.Password = aes.Encrypt(password, aesConf.Key!.FromBase64(), aesConf.IV!.FromBase64()).ToBase64();
                         }
                         request.UserID = validateResult.UserID;
                         // New employee
@@ -322,11 +322,11 @@ namespace DFM.API.Controllers
 
                 if (aesConf.Base == BaseConfig.HEX)
                 {
-                    request.Password = aes.Encrypt(password, aesConf.Key.FromHEX(), aesConf.IV.FromHEX()).ToHEX();
+                    request.Password = aes.Encrypt(password, aesConf.Key!.FromHEX(), aesConf.IV!.FromHEX()).ToHEX();
                 }
                 else
                 {
-                    request.Password = aes.Encrypt(password, aesConf.Key.FromBase64(), aesConf.IV.FromBase64()).ToBase64();
+                    request.Password = aes.Encrypt(password, aesConf.Key!.FromBase64(), aesConf.IV!.FromBase64()).ToBase64();
                 }
 
                 return Ok(new CommonResponseId
@@ -357,12 +357,12 @@ namespace DFM.API.Controllers
         public async Task<IActionResult> ResendRegisterEmailV1([FromBody] ResendRegisterEmail request, CancellationToken cancellationToken = default(CancellationToken))
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
-            string emailBody = emailHelper.RegisterMailBody($"{request.Name} {request.Surname}", request.Username, request.Password);
+            string emailBody = emailHelper.RegisterMailBody($"{request.Name} {request.Surname}", request.Username!, request.Password!);
             await emailHelper.Send(new EmailProperty
             {
                 Body = emailBody,
                 From = smtp.Email,
-                To = new List<string> { request.Email },
+                To = new List<string> { request.Email! },
                 Subject = $"ລົງທະບຽນນຳໃຊ້ລະບົບຈໍລະຈອນເອກະສານ"
             });
 

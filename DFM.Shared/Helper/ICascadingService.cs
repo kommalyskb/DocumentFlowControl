@@ -1,4 +1,5 @@
 ﻿using DFM.Shared.Configurations;
+using DFM.Shared.DTOs;
 using DFM.Shared.Entities;
 using HttpClientService;
 using System;
@@ -13,6 +14,7 @@ namespace DFM.Shared.Helper
     {
         Task<(bool Success, EmployeeModel Content)> GetEmployeeProfile(string token, string userId, CancellationToken cancellationToken = default);
         Task<(bool Success, EmployeeModel Content)> GetEmployeeProfile(string token, CancellationToken cancellationToken = default);
+        Task<(bool Success, IEnumerable<TabItemDto> Contents)> GetRoles(string token, CancellationToken cancellationToken = default);
     }
     public class CascadingService : ICascadingService
     {
@@ -27,7 +29,6 @@ namespace DFM.Shared.Helper
 
         public async Task<(bool Success, EmployeeModel Content)> GetEmployeeProfile(string token, string userId, CancellationToken cancellationToken = default(CancellationToken))
         {
-            // Load tab
             string url = $"{endpoint.API}/api/v1/Employee/GetItem";
 
             var result = await httpService.Get<EmployeeModel>(url, new AuthorizeHeader("bearer", token), cancellationToken);
@@ -35,10 +36,17 @@ namespace DFM.Shared.Helper
         }
         public async Task<(bool Success, EmployeeModel Content)> GetEmployeeProfile(string token, CancellationToken cancellationToken = default(CancellationToken))
         {
-            // Load tab
             string url = $"{endpoint.API}/api/v1/Employee/GetItem";
 
             var result = await httpService.Get<EmployeeModel>(url, new AuthorizeHeader("bearer", token), cancellationToken);
+            return (result.Success, result.Response);
+        }
+
+        public async Task<(bool Success, IEnumerable<TabItemDto> Contents)> GetRoles(string token, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            string url = $"{endpoint.API}/api/v1/Organization/GetRole";
+
+            var result = await httpService.Get<IEnumerable<TabItemDto>>(url, new AuthorizeHeader("bearer", token));
             return (result.Success, result.Response);
         }
     }

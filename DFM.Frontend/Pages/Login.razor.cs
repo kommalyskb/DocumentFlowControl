@@ -17,19 +17,19 @@ namespace DFM.Frontend.Pages
         {
             await accessToken.RemoveTokenAsync();
         }
-        private async Task authorize()
+        private async Task OnValidSubmit()
         {
             onProcessing = true;
             string url = $"{endpoint.API}/api/v1/Connected/token";
             httpService.MediaType = MediaType.JSON;
-            if (userName != "admin")
+            if (model.Username != "admin")
             {
-                password = $"{password}@Dfm.codecamp";
+                model.Password = $"{model.Password}@Dfm.codecamp";
             }
             TokenEndPointRequest request = new TokenEndPointRequest
             {
-                Username = userName,
-                Password = password,
+                Username = model.Username,
+                Password = model.Password,
                 ClientID = identity.ClientID, // create client for production
                 GrantType = "password",
                 Secret = identity.Secret, // Get secret
@@ -42,14 +42,21 @@ namespace DFM.Frontend.Pages
             Console.WriteLine(await result.HttpResponseMessage.Content.ReadAsStringAsync());
             if (result.Success)
             {
-                await accessToken.SetTokenAsync(result.Response.AccessToken);
-                await accessToken.SetRefreshTokenAsync(result.Response.RefreshToken);
+                // Set access token to local storage
+                
+                // Set refresh token to local storage
 
-                var employeeProfile = await cascading.GetEmployeeProfile(result.Response.AccessToken);
+                // Get Profile to local storage
+                var employeeProfile = await cascading.GetEmployeeProfile(result.Response.AccessToken!);
+                // Get Roles to local storage
+                var roles = await cascading.GetRoles(result.Response.AccessToken!);
 
-                await storageHelper.SetEmployeeProfileAsync(employeeProfile.Content);
+                await Task.WhenAll(accessToken.SetTokenAsync(result.Response.AccessToken),
+                    accessToken.SetRefreshTokenAsync(result.Response.RefreshToken),
+                    storageHelper.SetEmployeeProfileAsync(employeeProfile.Content),
+                    storageHelper.SetRolesAsync(roles.Contents));
 
-                if (userName == "admin")
+                if (model.Username == "admin")
                 {
                     nav.NavigateTo("/setup", true);
                 }

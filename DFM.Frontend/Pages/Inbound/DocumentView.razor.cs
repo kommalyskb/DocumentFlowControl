@@ -15,7 +15,10 @@ namespace DFM.Frontend.Pages.Inbound
        
         protected override async Task OnInitializedAsync()
         {
-            token = await accessToken.GetTokenAsync();
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                token = await accessToken.GetTokenAsync();
+            }
             employee = await storageHelper.GetEmployeeProfileAsync();
             await Task.Delay(500);
 

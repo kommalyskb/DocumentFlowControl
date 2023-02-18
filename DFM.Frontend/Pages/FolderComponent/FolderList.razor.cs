@@ -7,13 +7,13 @@ namespace DFM.Frontend.Pages.FolderComponent
 {
     public partial class FolderList
     {
-        string? token = "";
+        //string? token = "";
         int _panelIndex = 0;
         string? oldLink = "";
         int panelIndex { get { return _panelIndex; } set { _panelIndex = value; OnTabChangeEvent.InvokeAsync(tabItems![value].Role.RoleID); } }
         private EmployeeModel? employee;
         List<TabItemDto>? tabItems;
-        private IEnumerable<TabItemDto> allTabs;
+        private IEnumerable<TabItemDto>? allTabs;
 
         async Task onRowClick(FolderModel item)
         {
@@ -26,33 +26,29 @@ namespace DFM.Frontend.Pages.FolderComponent
             {
                 employee = await storageHelper.GetEmployeeProfileAsync();
             }
-            // Load tab
-            string url = $"{endpoint.API}/api/v1/Organization/GetRole";
 
-
-            token = await accessToken.GetTokenAsync();
-
-            var result = await httpService.Get<IEnumerable<TabItemDto>>(url, new AuthorizeHeader("bearer", token));
-            if (result.Success)
+            if (allTabs == null)
             {
-                allTabs = result.Response;
-                if (Link == "outbound")
-                {
-                    tabItems = allTabs.Where(x => x.Role.RoleType != RoleTypeModel.InboundPrime && x.Role.RoleType != RoleTypeModel.InboundOfficePrime && x.Role.RoleType != RoleTypeModel.InboundGeneral).ToList();
-
-                }
-                else
-                {
-                    tabItems = allTabs.Where(x => x.Role.RoleType != RoleTypeModel.OutboundPrime && x.Role.RoleType != RoleTypeModel.OutboundOfficePrime && x.Role.RoleType != RoleTypeModel.OutboundGeneral).ToList();
-                }
-                if (tabItems.Count > 0)
-                {
-                    // Callback event 
-                    await OnTabChangeEvent.InvokeAsync(tabItems[_panelIndex].Role.RoleID);
-
-                }
+                allTabs = await storageHelper.GetRolesAsync();
+                
             }
-            
+
+            if (Link == "outbound")
+            {
+                tabItems = allTabs.Where(x => x.Role.RoleType != RoleTypeModel.InboundPrime && x.Role.RoleType != RoleTypeModel.InboundOfficePrime && x.Role.RoleType != RoleTypeModel.InboundGeneral).ToList();
+
+            }
+            else
+            {
+                tabItems = allTabs.Where(x => x.Role.RoleType != RoleTypeModel.OutboundPrime && x.Role.RoleType != RoleTypeModel.OutboundOfficePrime && x.Role.RoleType != RoleTypeModel.OutboundGeneral).ToList();
+            }
+            if (tabItems.Count > 0)
+            {
+                // Callback event 
+                await OnTabChangeEvent.InvokeAsync(tabItems[_panelIndex].Role.RoleID);
+
+            }
+
         }
         protected override async Task OnParametersSetAsync()
         {
@@ -61,12 +57,12 @@ namespace DFM.Frontend.Pages.FolderComponent
                 oldLink = Link;
                 if (Link == "outbound")
                 {
-                    tabItems = allTabs.Where(x => x.Role.RoleType != RoleTypeModel.InboundPrime && x.Role.RoleType != RoleTypeModel.InboundOfficePrime && x.Role.RoleType != RoleTypeModel.InboundGeneral).ToList();
+                    tabItems = allTabs!.Where(x => x.Role.RoleType != RoleTypeModel.InboundPrime && x.Role.RoleType != RoleTypeModel.InboundOfficePrime && x.Role.RoleType != RoleTypeModel.InboundGeneral).ToList();
 
                 }
                 else
                 {
-                    tabItems = allTabs.Where(x => x.Role.RoleType != RoleTypeModel.OutboundPrime && x.Role.RoleType != RoleTypeModel.OutboundOfficePrime && x.Role.RoleType != RoleTypeModel.OutboundGeneral).ToList();
+                    tabItems = allTabs!.Where(x => x.Role.RoleType != RoleTypeModel.OutboundPrime && x.Role.RoleType != RoleTypeModel.OutboundOfficePrime && x.Role.RoleType != RoleTypeModel.OutboundGeneral).ToList();
                 }
                 if (tabItems.Count > 0)
                 {

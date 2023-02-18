@@ -26,7 +26,7 @@ namespace DFM.Frontend.Shared
         {
             if (status)
             {
-                return readDate;
+                return readDate!;
             }
             return "ຍັງບໍ່ທັນເປີດອ່ານ";
         }

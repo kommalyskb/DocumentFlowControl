@@ -6,8 +6,8 @@ namespace DFM.Frontend.Pages.DocumentType
 {
     public partial class DocumentTypeForm
     {
-        private EmployeeModel? employee;
-        string? token = "";
+        //private EmployeeModel? employee;
+        //string? token = "";
 
         private IEnumerable<string> MaxCharacters(string ch)
         {

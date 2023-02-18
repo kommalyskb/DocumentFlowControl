@@ -311,7 +311,7 @@ namespace DFM.API.Controllers
                     BehaviorStatus ownerBehavior = BehaviorStatus.ReadWrite;
                     OperationType sendRoleType = OperationType.NoProcess;
 
-                    if (!string.IsNullOrWhiteSpace(request.Main.Id))
+                    if (!string.IsNullOrWhiteSpace(request.Main!.Id))
                     {
                         ownerStatus = TraceStatus.Completed;
                         ownerSendDate = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
@@ -515,8 +515,8 @@ namespace DFM.API.Controllers
                         //
                         if (envConf.EmailNotify)
                         {
-                            var mainRole = await organization.GetEmployee(request.DocumentModel!.OrganizationID, receiverRole.Content!.id);
-                            var mainProfile = await employeeManager.GetProfile(mainRole.Content.Employee.UserID);
+                            var mainRole = await organization.GetEmployee(request.DocumentModel!.OrganizationID!, receiverRole.Content!.id!);
+                            var mainProfile = await employeeManager.GetProfile(mainRole.Content.Employee.UserID!);
                             var mailBody = emailHelper.NotificationMailBody($"{endpoint.Frontend}", $"{ownRoleTrace.Fullname.Name.Local}", $"{request.RawDocument.Title}");
 
                             // Add to email task
@@ -524,7 +524,7 @@ namespace DFM.API.Controllers
                             {
                                 Body = mailBody,
                                 From = smtp.Email,
-                                To = new List<string> { mainProfile.Content.Contact.Email },
+                                To = new List<string> { mainProfile.Content.Contact.Email! },
                                 Subject = $"ເອກະສານມາໃຫມ່ - {request.RawDocument.Title}"
                             }));
                         }
@@ -578,10 +578,10 @@ namespace DFM.API.Controllers
                             //
                             if (envConf.EmailNotify)
                             {
-                                var itemRole = await organization.GetEmployee(request.DocumentModel!.OrganizationID, item.Role.RoleID);
-                                var itemProfile = await employeeManager.GetProfile(itemRole.Content.Employee.UserID);
+                                var itemRole = await organization.GetEmployee(request.DocumentModel!.OrganizationID!, item.Role.RoleID!);
+                                var itemProfile = await employeeManager.GetProfile(itemRole.Content.Employee.UserID!);
 
-                                emails.Add(itemProfile.Content.Contact.Email);
+                                emails.Add(itemProfile.Content.Contact.Email!);
                             }
 
 
@@ -961,16 +961,16 @@ namespace DFM.API.Controllers
                         //
                         if (envConf.EmailNotify)
                         {
-                            var mainRole = await organization.GetEmployee(request.DocumentModel!.OrganizationID, receiverRole.Content!.id);
-                            var mainProfile = await employeeManager.GetProfile(mainRole.Content.Employee.UserID);
-                            var mailBody = emailHelper.NotificationMailBody($"{endpoint.Frontend}", $"{sender.RecipientInfo.Fullname.Name.Local}", $"{request.RawDocument.Title}");
+                            var mainRole = await organization.GetEmployee(request.DocumentModel!.OrganizationID!, receiverRole.Content!.id!);
+                            var mainProfile = await employeeManager.GetProfile(mainRole.Content.Employee.UserID!);
+                            var mailBody = emailHelper.NotificationMailBody($"{endpoint.Frontend}", $"{sender!.RecipientInfo.Fullname.Name.Local}", $"{request.RawDocument.Title}");
 
                             // Add to email task
                             tasks.Add(emailHelper.Send(new EmailProperty
                             {
                                 Body = mailBody,
                                 From = smtp.Email,
-                                To = new List<string> { mainProfile.Content.Contact.Email },
+                                To = new List<string> { mainProfile.Content.Contact.Email! },
                                 Subject = $"ເອກະສານມາໃຫມ່ - {request.RawDocument.Title}"
                             }));
                         }
@@ -1021,9 +1021,9 @@ namespace DFM.API.Controllers
                             //
                             if (envConf.EmailNotify)
                             {
-                                var itemRole = await organization.GetEmployee(request.DocumentModel!.OrganizationID, item.Role.RoleID);
-                                var itemProfile = await employeeManager.GetProfile(itemRole.Content.Employee.UserID);
-                                emails.Add(itemProfile.Content.Contact.Email);
+                                var itemRole = await organization.GetEmployee(request.DocumentModel!.OrganizationID!, item.Role.RoleID!);
+                                var itemProfile = await employeeManager.GetProfile(itemRole.Content.Employee.UserID! );
+                                emails.Add(itemProfile.Content.Contact.Email!);
                             }
 
 
@@ -1063,7 +1063,7 @@ namespace DFM.API.Controllers
                         }
                         if (envConf.EmailNotify)
                         {
-                            var mailBody = emailHelper.NotificationMailBody($"{endpoint.Frontend}", $"{sender.RecipientInfo.Fullname.Name.Local}", $"{request.RawDocument.Title}");
+                            var mailBody = emailHelper.NotificationMailBody($"{endpoint.Frontend}", $"{sender!.RecipientInfo.Fullname.Name.Local}", $"{request.RawDocument.Title}");
                             tasks.Add(emailHelper.Send(new EmailProperty
                             {
                                 Body = mailBody,

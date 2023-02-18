@@ -21,7 +21,10 @@ namespace DFM.Frontend.Pages.OrganizeComponent
             {
                 employee = await storageHelper.GetEmployeeProfileAsync();
             }
-            token = await accessToken.GetTokenAsync();
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                token = await accessToken.GetTokenAsync();
+            }
 
             string url = $"{endpoint.API}/api/v1/Organization/GetItem/{employee.OrganizationID!}";
             var result = await httpService.Get<IEnumerable<RoleTreeModel>>(url, new AuthorizeHeader("bearer", token));

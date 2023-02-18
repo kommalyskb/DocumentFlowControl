@@ -4,8 +4,8 @@ namespace DFM.Frontend.Pages.UrgentLevelComponent
 {
     public partial class UrgentForm
     {
-        private EmployeeModel? employee;
-        string? token = "";
+        //private EmployeeModel? employee;
+        //string? token = "";
 
         private IEnumerable<string> MaxCharacters(string ch)
         {

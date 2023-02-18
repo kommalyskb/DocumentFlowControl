@@ -7,6 +7,8 @@ using Microsoft.JSInterop;
 using MudBlazor.Services;
 using StackExchange.Redis;
 using System.Text.Json;
+using Microsoft.AspNetCore.ResponseCompression;
+using DFM.Frontend.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -127,7 +129,11 @@ builder.Services.AddServerSideBlazor(options =>
                 options.MaximumReceiveMessageSize = 86 * 1024;
                 options.StreamBufferCapacity = 10;
             });
-
+builder.Services.AddResponseCompression(opts =>
+{
+    opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+        new[] { "application/octet-stream" });
+});
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromSeconds(10);
@@ -145,6 +151,8 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
 }
+// Use response compression
+app.UseResponseCompression();
 //use health check
 app.MapHealthChecks("/healthcheck");
 
@@ -159,6 +167,7 @@ app.UseSession();
 app.UseRouting();
 
 app.MapBlazorHub();
+app.MapHub<NotifyHub>("/notifyhub");
 app.MapFallbackToPage("/_Host");
 
 app.Run();

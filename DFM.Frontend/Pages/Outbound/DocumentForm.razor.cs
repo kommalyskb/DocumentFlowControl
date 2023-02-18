@@ -21,7 +21,10 @@ namespace DFM.Frontend.Pages.Outbound
 
         protected override async Task OnInitializedAsync()
         {
-            token = await accessToken.GetTokenAsync();
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                token = await accessToken.GetTokenAsync();
+            }
             if (employee == null)
             {
                 employee = await storageHelper.GetEmployeeProfileAsync();
@@ -251,7 +254,10 @@ namespace DFM.Frontend.Pages.Outbound
                 if (result.Value)
                 {
                     onFolderProcessing = true;
-                    string token = await accessToken.GetTokenAsync();
+                    if (string.IsNullOrWhiteSpace(token))
+                    {
+                        token = await accessToken.GetTokenAsync();
+                    }
                     await InvokeAsync(StateHasChanged);
 
                     folderModel!.InboxType = InboxType.Outbound; // Inbound folder
@@ -510,7 +516,7 @@ namespace DFM.Frontend.Pages.Outbound
             var result = await httpService.Get<IEnumerable<FolderModel>>(url, new AuthorizeHeader("bearer", token));
             if (result.Success)
             {
-                folderModels.Clear();
+                folderModels!.Clear();
                 // Remove Expire folder
                 foreach (var folder in result.Response!)
                 {

@@ -17,6 +17,7 @@ namespace DFM.Frontend.Pages
         string? token;
         private List<TabItemDto> tabItems = new();
         private List<PersonalReportSummary> reportSummary = new();
+        IEnumerable<TabItemDto>? myRoles;
         string? current;
         string? previousBtn = "";
         string? oldLink = "";
@@ -38,15 +39,17 @@ namespace DFM.Frontend.Pages
                 employee = await storageHelper.GetEmployeeProfileAsync();
             }
             // Load tab
-            string url = $"{endpoint.API}/api/v1/Organization/GetRole";
+            if (myRoles == null)
+            {
+                myRoles = await storageHelper.GetRolesAsync();
+
+                tabItems = myRoles.ToList();
+
+            }
             token = await accessToken.GetTokenAsync();
 
-            var result = await httpService.Get<IEnumerable<TabItemDto>>(url, new AuthorizeHeader("bearer", token));
-            if (result.Success)
-            {
-                //tabItems = result.Response.ToList();
-                roleIds = result.Response.Select(x => x.Role.RoleID).ToList()!;
-            }
+            roleIds = tabItems.Select(x => x.Role.RoleID).ToList()!;
+
             await InvokeAsync(StateHasChanged);
         }
         protected override void OnParametersSet()

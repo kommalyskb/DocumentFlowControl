@@ -3,13 +3,14 @@ using DFM.Shared.DTOs;
 using DFM.Shared.Entities;
 using HttpClientService;
 using MudBlazor;
+using Newtonsoft.Json.Linq;
 using System.Text.Json;
 
 namespace DFM.Frontend.Pages
 {
     public partial class Setup
     {
-
+        string? token;
         private IEnumerable<string> MaxCharacters(string ch)
         {
             if (!string.IsNullOrEmpty(ch) && 1000 < ch?.Length)
@@ -35,7 +36,33 @@ namespace DFM.Frontend.Pages
         async Task startSetup()
         {
             onProcessing = true;
-            string token = await accessToken.GetTokenAsync();
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                token = await accessToken.GetTokenAsync();
+            }
+
+            if (string.IsNullOrWhiteSpace(model.Name.Local) || string.IsNullOrWhiteSpace(model.Name.Eng))
+            {
+                AlertMessage("ກະລຸນາ ປ້ອນຊື່ອົງກອນຂອງທ່ານ", Defaults.Classes.Position.BottomRight, Severity.Error);
+                onProcessing = false;
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(employee.Name.Local) || string.IsNullOrWhiteSpace(employee.Name.Eng) ||
+                string.IsNullOrWhiteSpace(employee.FamilyName.Local) || string.IsNullOrWhiteSpace(employee.FamilyName.Eng))
+            {
+                AlertMessage("ກະລຸນາ ປ້ອນຊື່ ພະນັກງານ ທີ່ຈະເປັນ ຜູ້ດູແລລະບົບ", Defaults.Classes.Position.BottomRight, Severity.Error);
+                onProcessing = false;
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(employee.Username) || string.IsNullOrWhiteSpace(employee.Password) ||
+                string.IsNullOrWhiteSpace(employee.Contact.Email) || string.IsNullOrWhiteSpace(employee.Contact.Phone))
+            {
+                AlertMessage("ກະລຸນາ ກວດເບີ່ງວ່າຂໍ້ມູນ Username, Password, Email, Phone ປ້ອນແລ້ວບໍ່", Defaults.Classes.Position.BottomRight, Severity.Error);
+                onProcessing = false;
+                return;
+            }
             string url = $"{endpoint.API}/api/v1/Organization/NewItem";
             NewOrganizationRequest req = new NewOrganizationRequest()
             {

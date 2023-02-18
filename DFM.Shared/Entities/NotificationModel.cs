@@ -16,7 +16,7 @@ namespace DFM.Shared.Entities
         [Indexed]
         public string? Title { get; set; }
         [Indexed]
-        public string? SendDate { get; set; }
+        public string? SendDate { get; set; } = $"{DateTime.Now.ToString("dd/MM/yyyy HH:mm")}";
         [Indexed]
         public string? SendFrom { get; set; }
         [Indexed]

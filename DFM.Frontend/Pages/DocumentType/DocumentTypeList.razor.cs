@@ -6,10 +6,11 @@ namespace DFM.Frontend.Pages.DocumentType
 {
     public partial class DocumentTypeList
     {
-        string? token = "";
+        //string? token = "";
         int _panelIndex = 0;
         int panelIndex { get { return _panelIndex; } set { _panelIndex = value; OnTabChangeEvent.InvokeAsync(tabItems![value].Role.RoleID); } }
         private EmployeeModel? employee;
+        IEnumerable<TabItemDto>? myRoles;
         List<TabItemDto>? tabItems;
         async Task onRowClick(DataTypeModel item)
         {
@@ -22,15 +23,11 @@ namespace DFM.Frontend.Pages.DocumentType
                 employee = await storageHelper.GetEmployeeProfileAsync();
             }
             // Load tab
-            string url = $"{endpoint.API}/api/v1/Organization/GetRole";
-
-
-            token = await accessToken.GetTokenAsync();
-
-            var result = await httpService.Get<IEnumerable<TabItemDto>>(url, new AuthorizeHeader("bearer", token));
-            if (result.Success)
+            if (myRoles == null)
             {
-                tabItems = result.Response.ToList();
+                myRoles = await storageHelper.GetRolesAsync();
+
+                tabItems = myRoles.ToList();
 
                 // Callback event 
                 await OnTabChangeEvent.InvokeAsync(tabItems[_panelIndex].Role.RoleID);

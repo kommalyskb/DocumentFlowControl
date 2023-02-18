@@ -1,4 +1,5 @@
 ﻿@page "/authorize"
+@using System.ComponentModel.DataAnnotations;
 @layout SubLayout
 @inject IHttpService httpService
 @inject AccessTokenStorage accessToken
@@ -22,35 +23,47 @@
             <img src="images/cse-icon.jpg" alt="logo" class="mud-image object-cover object-center mud-elevation-25 rounded-lg" width="100" height="100" style="margin: auto" />
         </div>
         <MudPaper Class="pa-4">
-            <MudForm>
+            <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
                 <h1 style="text-align: center">@envConf.PageTitle</h1>
 
-                <MudTextField Margin="Margin.Dense" T="string" Label="Username" Required="true" RequiredError="User name is required!" @bind-Value="@userName" />
+                <MudTextField Margin="Margin.Dense" T="string" Label="Username" Required="true" RequiredError="User name is required!" @bind-Value="@model.Username" />
 
                 <MudTextField Margin="Margin.Dense" T="string" Label="Password" HelperText="Choose a strong password"
                               InputType="InputType.Password"
-                              Required="true" @bind-Value="@password"
+                              Required="true" @bind-Value="@model.Password"
                               RequiredError="Password is required!" />
 
                 <div class="d-flex align-center justify-space-between pa-4">
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="authorize" FullWidth="true" Class="ml-auto">Login</MudButton>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit" FullWidth="true" Class="ml-auto">Login</MudButton>
                 </div>
                 <div class="d-flex align-center justify-space-between pa-4" style="text-align: center">
                     <MudLink Href="#" Style="margin: auto">Lost your passoword?</MudLink>
                 </div>
                 
-            </MudForm>
+            </EditForm>
         </MudPaper>
     </MudItem>
     <MudItem xs="12" sm="12" md="4"></MudItem>
 </MudGrid>
 
 @code {
-    string? userName;
-    string? password;
     bool onProcessing = false;
+    LoginForm model = new();
     public void Dispose()
     {
     }
+    public class LoginForm
+    {
+        [Required]
+        [StringLength(8, ErrorMessage = "Name length can't be more than 8.")]
+        public string? Username { get; set; }
 
+        //[Required]
+        //[EmailAddress]
+        //public string Email { get; set; }
+
+        [Required]
+        [StringLength(30, ErrorMessage = "Password must be at least 8 characters long.", MinimumLength = 8)]
+        public string? Password { get; set; }
+    }
 }

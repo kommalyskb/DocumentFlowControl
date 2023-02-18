@@ -10,21 +10,10 @@ namespace DFM.Frontend.Shared
         //[Inject] AccessTokenStorage accessToken { get; set; }
         private async Task Open()
         {
-            OpenDrawer.InvokeAsync();
+            await OpenDrawer.InvokeAsync();
         }
         string token = "";
         bool isAdmin;
-        protected override async Task OnInitializedAsync()
-        {
-            //token = await accessToken.GetTokenAsync();
-            //var tokenHandler = new JwtSecurityTokenHandler();
-            //var jwtSecurityToken = tokenHandler.ReadJwtToken(token);
-
-            //if (jwtSecurityToken.Claims.Where(x => x.Type == "role").FirstOrDefault() != null)
-            //{
-            //    isAdmin = jwtSecurityToken.Claims.Where(x => x.Type == "role").FirstOrDefault().Value == "Telbiz-Admin";
-            //    await InvokeAsync(StateHasChanged);
-            //}
-        }
+        
     }
 }

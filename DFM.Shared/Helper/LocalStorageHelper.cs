@@ -1,4 +1,5 @@
-﻿using DFM.Shared.Entities;
+﻿using DFM.Shared.DTOs;
+using DFM.Shared.Entities;
 using DFM.Shared.Extensions;
 using Microsoft.JSInterop;
 using System;
@@ -29,7 +30,7 @@ namespace DFM.Shared.Helper
                     var hexEncodedBytes = value.FromHEX();
                     return JsonSerializer.Deserialize<EmployeeModel>(hexEncodedBytes)!;
                 }
-                return null;
+                return null!;
             }
             catch (Exception)
             {
@@ -38,7 +39,27 @@ namespace DFM.Shared.Helper
             }
             
         }
-            
+
+        public async Task<IEnumerable<TabItemDto>> GetRolesAsync()
+        {
+            try
+            {
+                var value = await jsRuntime.InvokeAsync<string>("localStorage.getItem", "roles");
+                if (value != null)
+                {
+                    var hexEncodedBytes = value.FromHEX();
+                    return JsonSerializer.Deserialize<IEnumerable<TabItemDto>>(hexEncodedBytes)!;
+                }
+                return null!;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+
 
         public async Task SetEmployeeProfileAsync(EmployeeModel value)
         {
@@ -58,6 +79,25 @@ namespace DFM.Shared.Helper
                 throw;
             }
             
+        }
+
+        public async Task SetRolesAsync(IEnumerable<TabItemDto> value)
+        {
+            try
+            {
+                var jsonDoc = JsonSerializer.Serialize(value);
+                Console.WriteLine(jsonDoc);
+                var plainTextBytes = Encoding.UTF8.GetBytes(jsonDoc).ToHEX();
+                Console.WriteLine(plainTextBytes);
+                await jsRuntime.InvokeAsync<object>("localStorage.setItem",
+                                                       "roles", plainTextBytes);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
         }
     }
 }

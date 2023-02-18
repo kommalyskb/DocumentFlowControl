@@ -36,9 +36,20 @@ namespace DFM.Frontend.Pages
                 employee = await storageHelper.GetEmployeeProfileAsync();
             }
             string url = $"{endpoint.API}/api/v1/Organization/SavePosition/{employee.OrganizationID}";
-            string token = await accessToken.GetTokenAsync();
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                token = await accessToken.GetTokenAsync();
+            }
+            if (string.IsNullOrWhiteSpace(roleTreeModel!.Publisher) || string.IsNullOrWhiteSpace(roleTreeModel!.Role.Display.Local) ||
+                string.IsNullOrWhiteSpace(roleTreeModel!.Role.Display.Eng) || string.IsNullOrWhiteSpace(roleTreeModel!.Employee.UserID))
+            {
+                AlertMessage("ກະລຸນາ ປ້ອນຂໍ້ມູນໃຫ້ຄົບຖ້ວນ", Defaults.Classes.Position.BottomRight, Severity.Error);
+                onProcessing = false;
+                return;
+            }
+
             // Send request for save document
-            roleTreeModel.RoleType = roleTreeModel.Role.RoleType;
+            roleTreeModel!.RoleType = roleTreeModel.Role.RoleType;
             var result = await httpService.Post<RoleTreeModel, CommonResponse>(url, roleTreeModel!, new AuthorizeHeader("bearer", token));
 
             // Open dialog success message or make small progress bar on top-corner
@@ -64,7 +75,7 @@ namespace DFM.Frontend.Pages
         }
         async Task onDeleteButtonClick()
         {
-            var delResult = await delBox.Show();
+            var delResult = await delBox!.Show();
             if (delResult.HasValue)
             {
                 if (delResult.Value)
@@ -75,7 +86,10 @@ namespace DFM.Frontend.Pages
                         employee = await storageHelper.GetEmployeeProfileAsync();
                     }
                     string url = $"{endpoint.API}/api/v1/Organization/RemovePosition/{employee.OrganizationID}/{roleTreeModel!.Role.RoleID}";
-                    string token = await accessToken.GetTokenAsync();
+                    if (string.IsNullOrWhiteSpace(token))
+                    {
+                        token = await accessToken.GetTokenAsync();
+                    }
                     var result = await httpService.Get<CommonResponse>(url, new AuthorizeHeader("bearer", token));
                     onProcessing = false;
 

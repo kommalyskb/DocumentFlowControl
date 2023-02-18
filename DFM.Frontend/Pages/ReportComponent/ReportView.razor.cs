@@ -17,7 +17,7 @@ namespace DFM.Frontend.Pages.ReportComponent
         private int unread = 0;
         private EmployeeModel? employee;
         IEnumerable<DocumentUrgentModel>? urgentModels;
-        private IEnumerable<DataTypeModel> docTypeModel;
+        private IEnumerable<DataTypeModel>? docTypeModel;
         TraceStatus oldStatus;
 
         // events
@@ -93,7 +93,10 @@ namespace DFM.Frontend.Pages.ReportComponent
         {
             Elements.Clear();
 
-            token = await accessToken.GetTokenAsync();
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                token = await accessToken.GetTokenAsync();
+            }
             if (employee == null)
             {
                 employee = await storageHelper.GetEmployeeProfileAsync();
@@ -127,7 +130,7 @@ namespace DFM.Frontend.Pages.ReportComponent
                     var myDoc = item.Recipients!.LastOrDefault(x => x.RecipientInfo.RoleID == RoleId);
                     var rawDocumentData = item.RawDatas!.LastOrDefault(x => x.DataID == myDoc!.DataID);
                     var urgentLabel = urgentModels!.FirstOrDefault(x => x.id == rawDocumentData!.Urgent.id)!;
-                    var docTypeLabel = docTypeModel.FirstOrDefault(x => x.id == rawDocumentData!.DocType)!;
+                    var docTypeLabel = docTypeModel!.FirstOrDefault(x => x.id == rawDocumentData!.DocType)!;
 
                     Elements.Add(new DocumentDto
                     {

@@ -1,4 +1,5 @@
 ﻿@page "/pages/doc/{Link}/{Page}"
+@page "/pages/doc/{Link}/{Page}/{DocId}/{MessageId}"
 @inject IHttpService httpService
 @inject AccessTokenStorage accessToken
 @inject ServiceEndpoint endpoint
@@ -133,8 +134,12 @@
 </MudMessageBox>
 
 @code {
+    [CascadingParameter] protected EventCallback<SocketSendModel> EventNotify { get; set; } // Event Callback ສຳລັບສົ່ງ Notification
+
     [Parameter] public string? Link { get; set; }
     [Parameter] public string? Page { get; set; }
+    [Parameter] public string? DocId { get; set; }
+    [Parameter] public string? MessageId { get; set; }
     private FormMode formMode;
     private TraceStatus traceStatus;
     string? roleId = "";

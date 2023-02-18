@@ -22,7 +22,21 @@ namespace DFM.Frontend.Pages
         PartialRole? selectedRole;
         CommonResponseId? publisher;
         readonly int delayTime = 500;
-        protected override void OnParametersSet()
+        //protected override void OnParametersSet()
+        //{
+            
+
+        //    base.OnParametersSet();
+        //}
+
+
+        //protected override void OnInitialized()
+        //{
+
+
+        //    base.OnInitialized();
+        //}
+        protected override async Task OnParametersSetAsync()
         {
             if (Page == "inbox")
             {
@@ -43,26 +57,42 @@ namespace DFM.Frontend.Pages
 
             if (oldPage != Page)
             {
-                formMode = FormMode.List;
+                if (!string.IsNullOrWhiteSpace(DocId) && !string.IsNullOrWhiteSpace(MessageId))
+                {
+                    await loadDocumentModel();
+                }
+                else
+                {
+                    formMode = FormMode.List;
+                }
                 oldPage = Page!;
             }
             if (oldLink != Link)
             {
-                formMode = FormMode.List;
+                if (!string.IsNullOrWhiteSpace(DocId) && !string.IsNullOrWhiteSpace(MessageId))
+                {
+                    await loadDocumentModel();
+                }
+                else
+                {
+                    formMode = FormMode.List;
+                }
                 oldLink = Link!;
             }
-
-            base.OnParametersSet();
         }
-
-
-        protected override void OnInitialized()
+        protected override async Task OnInitializedAsync()
         {
-            formMode = FormMode.List;
+            if (!string.IsNullOrWhiteSpace(DocId) && !string.IsNullOrWhiteSpace(MessageId))
+            {
+                await loadDocumentModel();
+            }
+            else
+            {
+                formMode = FormMode.List;
+            }
+
             oldLink = Link!;
             oldPage = Page!;
-
-            base.OnInitialized();
         }
 
         void onCreateButtonClick()
@@ -77,138 +107,160 @@ namespace DFM.Frontend.Pages
 
         async Task onDeleteButtonClick()
         {
-            bool? isDelete = await delBox!.Show();
-            if (isDelete.HasValue)
+            try
             {
-                if (isDelete.Value)
+                bool? isDelete = await delBox!.Show();
+                if (isDelete.HasValue)
                 {
-                    // Delete button had fire
-                    onProcessing = true;
-                    if (employee == null)
+                    if (isDelete.Value)
                     {
-                        employee = await storageHelper.GetEmployeeProfileAsync();
+                        // Delete button had fire
+                        onProcessing = true;
+                        if (employee == null)
+                        {
+                            employee = await storageHelper.GetEmployeeProfileAsync();
+                        }
+                        await InvokeAsync(StateHasChanged);
+                        string url = $"{endpoint.API}/api/v1/Document/SaveDocument/{roleId}";
+                        if (string.IsNullOrWhiteSpace(token))
+                        {
+                            token = await accessToken.GetTokenAsync();
+                        }
+
+                        // Set current status to delete
+                        var index = documentModel!.Recipients!.IndexOf(myRole!);
+                        documentModel!.Recipients![index].DocStatus = TraceStatus.Trash;
+                        //documentModel!.Reciepients![index].Behavior = BehaviorStatus.ReadOnly;
+
+                        DocumentRequest documentRequest = new DocumentRequest();
+                        if (Link == "inbound")
+                        {
+                            documentModel!.InboxType = InboxType.Inbound;
+
+                        }
+                        else
+                        {
+                            documentModel!.InboxType = InboxType.Outbound;
+                        }
+                        documentRequest.RawDocument = rawDocument;
+                        documentRequest.DocumentModel = documentModel;
+
+                        // Send request for save document
+                        var result = await httpService.Post<DocumentRequest, CommonResponse>(url, documentRequest, new AuthorizeHeader("bearer", token));
+
+                        onProcessing = false;
+
+                        if (result.Success)
+                        {
+                            nav.NavigateTo($"/pages/doc/{Link}/{Page}", true);
+                            AlertMessage("ທຸລະກຳຂອງທ່ານ ສຳເລັດ", Defaults.Classes.Position.BottomRight, Severity.Success);
+                        }
+                        else
+                        {
+                            AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ", Defaults.Classes.Position.BottomRight, Severity.Error);
+                        }
+                        await Task.Delay(delayTime);
+
+                        disposedObj();
+                        formMode = FormMode.List;
                     }
-                    await InvokeAsync(StateHasChanged);
-                    string url = $"{endpoint.API}/api/v1/Document/SaveDocument/{roleId}";
-                    string token = await accessToken.GetTokenAsync();
-
-                    // Set current status to delete
-                    var index = documentModel!.Recipients!.IndexOf(myRole!);
-                    documentModel!.Recipients![index].DocStatus = TraceStatus.Trash;
-                    //documentModel!.Reciepients![index].Behavior = BehaviorStatus.ReadOnly;
-
-                    DocumentRequest documentRequest = new DocumentRequest();
-                    if (Link == "inbound")
-                    {
-                        documentModel!.InboxType = InboxType.Inbound;
-
-                    }
-                    else
-                    {
-                        documentModel!.InboxType = InboxType.Outbound;
-                    }
-                    documentRequest.RawDocument = rawDocument;
-                    documentRequest.DocumentModel = documentModel;
-
-                    // Send request for save document
-                    var result = await httpService.Post<DocumentRequest, CommonResponse>(url, documentRequest, new AuthorizeHeader("bearer", token));
-
-                    onProcessing = false;
-
-                    if (result.Success)
-                    {
-                        nav.NavigateTo($"/pages/doc/{Link}/{Page}", true);
-                        AlertMessage("ທຸລະກຳຂອງທ່ານ ສຳເລັດ", Defaults.Classes.Position.BottomRight, Severity.Success);
-                    }
-                    else
-                    {
-                        AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ", Defaults.Classes.Position.BottomRight, Severity.Error);
-                    }
-                    await Task.Delay(delayTime);
-
-                    disposedObj();
-                    formMode = FormMode.List;
                 }
             }
+            catch (Exception)
+            {
+                AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, (INTERNAL_SERVER_ERROR)", Defaults.Classes.Position.BottomRight, Severity.Error);
+            }
+            
 
         }
         async Task onTerminateButtonClick()
         {
-            bool? isTerminated = await terminateBox!.Show();
-            if (isTerminated.HasValue)
+            try
             {
-                if (isTerminated.Value)
+                bool? isTerminated = await terminateBox!.Show();
+                if (isTerminated.HasValue)
                 {
-                    if (employee == null)
+                    if (isTerminated.Value)
                     {
-                        employee = await storageHelper.GetEmployeeProfileAsync();
-                    }
-                    // Delete button had fire
-                    onProcessing = true;
-                    await InvokeAsync(StateHasChanged);
-                    string url = $"{endpoint.API}/api/v1/Document/SaveDocument/{roleId}";
-                    string token = await accessToken.GetTokenAsync();
-
-                    // Set current status to delete
-                    var index = documentModel!.Recipients!.IndexOf(myRole!);
-                    documentModel!.Recipients![index].DocStatus = TraceStatus.Terminated;
-                    documentModel!.Recipients![index].BeforeMoveToTrash = TraceStatus.Terminated;
-                    documentModel!.Recipients![index].Behavior = BehaviorStatus.ReadOnly;
-                    documentModel!.Recipients![index].Comment = new CommentModel
-                    {
-                        Comment = terminateComment,
-                        CommentDate = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                        RoleTrace = new RoleTraceModel
+                        if (employee == null)
                         {
-                            Fullname = new ShortEmpInfo
+                            employee = await storageHelper.GetEmployeeProfileAsync();
+                        }
+                        // Delete button had fire
+                        onProcessing = true;
+                        await InvokeAsync(StateHasChanged);
+                        string url = $"{endpoint.API}/api/v1/Document/SaveDocument/{roleId}";
+                        if (string.IsNullOrWhiteSpace(token))
+                        {
+                            token = await accessToken.GetTokenAsync();
+                        }
+
+                        // Set current status to delete
+                        var index = documentModel!.Recipients!.IndexOf(myRole!);
+                        documentModel!.Recipients![index].DocStatus = TraceStatus.Terminated;
+                        documentModel!.Recipients![index].BeforeMoveToTrash = TraceStatus.Terminated;
+                        documentModel!.Recipients![index].Behavior = BehaviorStatus.ReadOnly;
+                        documentModel!.Recipients![index].Comment = new CommentModel
+                        {
+                            Comment = terminateComment,
+                            CommentDate = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                            RoleTrace = new RoleTraceModel
                             {
-                                EmployeeID = employee.EmployeeID,
-                                Name = new MultiLanguage
+                                Fullname = new ShortEmpInfo
                                 {
-                                    Eng = $"{employee.Name.Eng} {employee.FamilyName.Local}",
-                                    Local = $"{employee.Name.Local} {employee.FamilyName.Local}"
-                                }
-                            },
-                            RoleID = myRole!.RecipientInfo.RoleID,
-                            RoleType = myRole.RecipientInfo.RoleType,
-                            Position = myRole.RecipientInfo.Position
+                                    EmployeeID = employee.EmployeeID,
+                                    Name = new MultiLanguage
+                                    {
+                                        Eng = $"{employee.Name.Eng} {employee.FamilyName.Local}",
+                                        Local = $"{employee.Name.Local} {employee.FamilyName.Local}"
+                                    }
+                                },
+                                RoleID = myRole!.RecipientInfo.RoleID,
+                                RoleType = myRole.RecipientInfo.RoleType,
+                                Position = myRole.RecipientInfo.Position
+
+                            }
+                        };
+
+                        DocumentRequest documentRequest = new DocumentRequest();
+                        if (Link == "inbound")
+                        {
+                            documentModel!.InboxType = InboxType.Inbound;
 
                         }
-                    };
+                        else
+                        {
+                            documentModel!.InboxType = InboxType.Outbound;
+                        }
+                        documentRequest.RawDocument = rawDocument;
+                        documentRequest.DocumentModel = documentModel;
 
-                    DocumentRequest documentRequest = new DocumentRequest();
-                    if (Link == "inbound")
-                    {
-                        documentModel!.InboxType = InboxType.Inbound;
+                        // Send request for save document
+                        var result = await httpService.Post<DocumentRequest, CommonResponse>(url, documentRequest, new AuthorizeHeader("bearer", token));
 
+                        onProcessing = false;
+
+                        if (result.Success)
+                        {
+                            nav.NavigateTo($"/pages/doc/{Link}/{Page}", true);
+                            AlertMessage("ທຸລະກຳຂອງທ່ານ ສຳເລັດ", Defaults.Classes.Position.BottomRight, Severity.Success);
+                        }
+                        else
+                        {
+                            AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ", Defaults.Classes.Position.BottomRight, Severity.Error);
+                        }
+                        await Task.Delay(delayTime);
+
+                        disposedObj();
+                        formMode = FormMode.List;
                     }
-                    else
-                    {
-                        documentModel!.InboxType = InboxType.Outbound;
-                    }
-                    documentRequest.RawDocument = rawDocument;
-                    documentRequest.DocumentModel = documentModel;
-
-                    // Send request for save document
-                    var result = await httpService.Post<DocumentRequest, CommonResponse>(url, documentRequest, new AuthorizeHeader("bearer", token));
-
-                    onProcessing = false;
-
-                    if (result.Success)
-                    {
-                        nav.NavigateTo($"/pages/doc/{Link}/{Page}", true);
-                        AlertMessage("ທຸລະກຳຂອງທ່ານ ສຳເລັດ", Defaults.Classes.Position.BottomRight, Severity.Success);
-                    }
-                    else
-                    {
-                        AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ", Defaults.Classes.Position.BottomRight, Severity.Error);
-                    }
-                    await Task.Delay(delayTime);
-
-                    disposedObj();
-                    formMode = FormMode.List;
                 }
             }
+            catch (Exception)
+            {
+                AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, (INTERNAL_SERVER_ERROR)", Defaults.Classes.Position.BottomRight, Severity.Error);
+            }
+            
 
         }
         void onEditButtonClick()
@@ -221,285 +273,420 @@ namespace DFM.Frontend.Pages
         }
         async Task onRestoreButtonClick()
         {
-            bool? isRestore = await restoreBox!.Show();
-            if (isRestore.HasValue)
+            try
             {
-                if (isRestore.Value)
+                bool? isRestore = await restoreBox!.Show();
+                if (isRestore.HasValue)
                 {
-                    // Delete button had fire
-                    onProcessing = true;
-                    await InvokeAsync(StateHasChanged);
-                    if (employee == null)
+                    if (isRestore.Value)
                     {
-                        employee = await storageHelper.GetEmployeeProfileAsync();
+                        // Delete button had fire
+                        onProcessing = true;
+                        await InvokeAsync(StateHasChanged);
+                        if (employee == null)
+                        {
+                            employee = await storageHelper.GetEmployeeProfileAsync();
+                        }
+                        string url = $"{endpoint.API}/api/v1/Document/SaveDocument/{roleId}";
+                        if (string.IsNullOrWhiteSpace(token))
+                        {
+                            token = await accessToken.GetTokenAsync();
+                        }
+
+                        // Set current status to delete
+                        var index = documentModel!.Recipients!.IndexOf(myRole!);
+                        documentModel!.Recipients![index].DocStatus = myRole!.BeforeMoveToTrash;
+
+                        DocumentRequest documentRequest = new DocumentRequest();
+                        if (Link == "inbound")
+                        {
+                            documentModel!.InboxType = InboxType.Inbound;
+
+                        }
+                        else
+                        {
+                            documentModel!.InboxType = InboxType.Outbound;
+                        }
+                        documentRequest.RawDocument = rawDocument;
+                        documentRequest.DocumentModel = documentModel;
+
+                        // Send request for save document
+                        var result = await httpService.Post<DocumentRequest, CommonResponse>(url, documentRequest, new AuthorizeHeader("bearer", token));
+
+                        onProcessing = false;
+
+                        if (result.Success)
+                        {
+                            nav.NavigateTo($"/pages/doc/{Link}/{Page}", true);
+                            AlertMessage("ທຸລະກຳຂອງທ່ານ ສຳເລັດ", Defaults.Classes.Position.BottomRight, Severity.Success);
+                        }
+                        else
+                        {
+                            AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ", Defaults.Classes.Position.BottomRight, Severity.Error);
+                        }
+                        await Task.Delay(delayTime);
+
+                        disposedObj();
+                        formMode = FormMode.List;
                     }
-                    string url = $"{endpoint.API}/api/v1/Document/SaveDocument/{roleId}";
-                    string token = await accessToken.GetTokenAsync();
-
-                    // Set current status to delete
-                    var index = documentModel!.Recipients!.IndexOf(myRole!);
-                    documentModel!.Recipients![index].DocStatus = myRole!.BeforeMoveToTrash;
-
-                    DocumentRequest documentRequest = new DocumentRequest();
-                    if (Link == "inbound")
-                    {
-                        documentModel!.InboxType = InboxType.Inbound;
-
-                    }
-                    else
-                    {
-                        documentModel!.InboxType = InboxType.Outbound;
-                    }
-                    documentRequest.RawDocument = rawDocument;
-                    documentRequest.DocumentModel = documentModel;
-
-                    // Send request for save document
-                    var result = await httpService.Post<DocumentRequest, CommonResponse>(url, documentRequest, new AuthorizeHeader("bearer", token));
-
-                    onProcessing = false;
-
-                    if (result.Success)
-                    {
-                        nav.NavigateTo($"/pages/doc/{Link}/{Page}", true);
-                        AlertMessage("ທຸລະກຳຂອງທ່ານ ສຳເລັດ", Defaults.Classes.Position.BottomRight, Severity.Success);
-                    }
-                    else
-                    {
-                        AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ", Defaults.Classes.Position.BottomRight, Severity.Error);
-                    }
-                    await Task.Delay(delayTime);
-
-                    disposedObj();
-                    formMode = FormMode.List;
                 }
             }
+            catch (Exception)
+            {
+                AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, (INTERNAL_SERVER_ERROR)", Defaults.Classes.Position.BottomRight, Severity.Error);
+            }
+            
 
         }
         async void onRowClick(DocumentModel item)
         {
-            // Row click
-            documentModel = item;
-            myRole = documentModel!.Recipients!.LastOrDefault(x => x.RecipientInfo.RoleID == roleId);
-            rawDocument = documentModel!.RawDatas!.LastOrDefault(x => x.DataID == myRole!.DataID);
-            files = rawDocument!.Attachments.Select(x => new AttachmentDto
-            {
-                Info = x,
-            }).ToList();
-            relateFiles = rawDocument.RelateFles.Select(x => new AttachmentDto
-            {
-                Info = x,
-            }).ToList();
-
-            if (Link == "inbound" && string.IsNullOrWhiteSpace(rawDocument.DocNo))
-            {
-                showSendButton = false;
-            }
-            else
-            {
-                showSendButton = true;
-            }
-
-            // Update when document first open
-            if (!myRole!.IsRead)
-            {
-                await onUpdateWhenOpenDocument();
-            }
-
-            // Check this is from Trash or View
-            if (myRole!.DocStatus == TraceStatus.Trash)
-            {
-                formMode = FormMode.Trash;
-
-
-            }
-            else if (myRole.DocStatus == TraceStatus.Terminated)
-            {
-                formMode = FormMode.Terminated;
-            }
-            else
-            {
-                formMode = FormMode.View;
-
-            }
+           
+            onProcessing = true;
+            await bindDocumentModel(item);
             onProcessing = false;
             await InvokeAsync(StateHasChanged);
 
         }
         async Task onSendButtonClick()
         {
-            bool? sendBox = await mbox!.Show();
-            if (sendBox.HasValue)
+            try
             {
-                if (sendBox.Value)
+                bool? sendBox = await mbox!.Show();
+                if (sendBox.HasValue)
                 {
-                    onProcessing = true;
-                    await InvokeAsync(StateHasChanged);
-                    // Add receiver to model before save
-                    if (employee == null)
+                    if (sendBox.Value)
                     {
-                        employee = await storageHelper.GetEmployeeProfileAsync();
-                    }
-                    // Validate field
-                    if (!validateField())
-                    {
-                        AlertMessage("ກະລຸນາປ້ອນຂໍ້ມູນໃຫ້ຄົບຖ້ວນ", Defaults.Classes.Position.BottomRight, Severity.Warning);
-                        onProcessing = false;
-                        return;
-                    }
-                    string url = $"{endpoint.API}/api/v1/Document/SaveDocument/{roleId}";
-                    string token = await accessToken.GetTokenAsync();
-
-                    // Upload file via Minio SDK
-                    await manageFileToServer();
-
-                    // Bind Files
-                    rawDocument!.Attachments = files.Select(x => x.Info).ToList();
-                    rawDocument!.RelateFles = relateFiles.Select(x => x.Info).ToList();
-
-                    DocumentRequest documentRequest = new DocumentRequest();
-                    if (myRole != null)
-                    {
-                        documentRequest.Uid = myRole!.UId;
-                        var index = documentModel!.Recipients!.IndexOf(myRole!);
-                        if (index >= 0)
+                        onProcessing = true;
+                        await InvokeAsync(StateHasChanged);
+                        // Add receiver to model before save
+                        if (employee == null)
                         {
-                            documentModel!.Recipients![index].DocStatus = TraceStatus.Completed;
-                            documentModel!.Recipients![index].BeforeMoveToTrash = TraceStatus.Completed;
-                            documentModel!.Recipients![index].Behavior = BehaviorStatus.ReadOnly;
-                            documentModel!.Recipients![index].SendRoleType = myRole!.ReceiveRoleType;
-                            documentModel!.Recipients![index].SendDate = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
-                            documentModel!.Recipients![index].Comment = new CommentModel
-                            {
-                                Comment = mainReciver!.Comment!.Comment,
-                                CommentDate = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                                RoleTrace = new RoleTraceModel
-                                {
-                                    Fullname = new ShortEmpInfo
-                                    {
-                                        EmployeeID = employee!.EmployeeID,
-                                        Name = new MultiLanguage
-                                        {
-                                            Eng = $"{employee.Name.Eng} {employee.FamilyName.Local}",
-                                            Local = $"{employee.Name.Local} {employee.FamilyName.Local}"
-                                        }
-                                    },
-                                    RoleID = myRole!.RecipientInfo.RoleID,
-                                    RoleType = myRole.RecipientInfo.RoleType,
-                                    Position = myRole.RecipientInfo.Position
-
-                                }
-                            };
+                            employee = await storageHelper.GetEmployeeProfileAsync();
                         }
-                        
-                    }
-                    if (string.IsNullOrWhiteSpace(rawDocument.SendDate))
-                    {
-                        rawDocument.SendDate = DateTime.Now.ToString("dd/MM/yyyy");
-                    }
-                    if (Link == "inbound")
-                    {
-                        documentModel!.InboxType = InboxType.Inbound;
-
-                    }
-                    else
-                    {
-                        documentModel!.InboxType = InboxType.Outbound;
-                    }
-
-                    if (noNeedFolder)
-                    {
-                        rawDocument.DocNo = "";
-                        rawDocument.FolderNum = -1;
-                        rawDocument.FolderId = "";
-                    }
-
-                    documentRequest.RawDocument = rawDocument;
-                    documentRequest.DocumentModel = documentModel;
-                    // Bind Receiver
-                    documentRequest.Main = mainReciver;
-                    documentRequest.CoProcesses = recipients!.Where(x => x.CoProcess && x.Role.RoleID != mainReciver!.Id).ToList();
-
-                    // Send request for save document
-                    var result = await httpService.Post<DocumentRequest, CommonResponse>(url, documentRequest, new AuthorizeHeader("bearer", token));
-
-
-
-                    onProcessing = false;
-
-                    if (result.Success)
-                    {
-                        if (result.Response.Code == nameof(ResultCode.NEW_DOCUMENT))
+                        // Validate field
+                        if (!validateField())
                         {
-                            nav.NavigateTo($"/pages/doc/{Link}/draft", true);
+                            AlertMessage("ກະລຸນາປ້ອນຂໍ້ມູນໃຫ້ຄົບຖ້ວນ", Defaults.Classes.Position.BottomRight, Severity.Warning);
+                            onProcessing = false;
+                            return;
+                        }
+                        if (string.IsNullOrWhiteSpace(mainReciver!.Id))
+                        {
+                            AlertMessage("ກະລຸນາເລືອກຜູ້ຮັບ", Defaults.Classes.Position.BottomRight, Severity.Warning);
+                            onProcessing = false;
+                            return;
+                        }
+
+                        string url = $"{endpoint.API}/api/v1/Document/SaveDocument/{roleId}";
+                        if (string.IsNullOrWhiteSpace(token))
+                        {
+                            token = await accessToken.GetTokenAsync();
+                        }
+
+                        // Upload file via Minio SDK
+                        await manageFileToServer();
+
+                        // Bind Files
+                        rawDocument!.Attachments = files.Select(x => x.Info).ToList();
+                        rawDocument!.RelateFles = relateFiles.Select(x => x.Info).ToList();
+
+                        DocumentRequest documentRequest = new DocumentRequest();
+                        if (myRole != null)
+                        {
+                            documentRequest.Uid = myRole!.UId;
+                            var index = documentModel!.Recipients!.IndexOf(myRole!);
+                            if (index >= 0)
+                            {
+                                documentModel!.Recipients![index].DocStatus = TraceStatus.Completed;
+                                documentModel!.Recipients![index].BeforeMoveToTrash = TraceStatus.Completed;
+                                documentModel!.Recipients![index].Behavior = BehaviorStatus.ReadOnly;
+                                documentModel!.Recipients![index].SendRoleType = myRole!.ReceiveRoleType;
+                                documentModel!.Recipients![index].SendDate = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
+                                documentModel!.Recipients![index].Comment = new CommentModel
+                                {
+                                    Comment = mainReciver!.Comment!.Comment,
+                                    CommentDate = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+                                    RoleTrace = new RoleTraceModel
+                                    {
+                                        Fullname = new ShortEmpInfo
+                                        {
+                                            EmployeeID = employee!.EmployeeID,
+                                            Name = new MultiLanguage
+                                            {
+                                                Eng = $"{employee.Name.Eng} {employee.FamilyName.Local}",
+                                                Local = $"{employee.Name.Local} {employee.FamilyName.Local}"
+                                            }
+                                        },
+                                        RoleID = myRole!.RecipientInfo.RoleID,
+                                        RoleType = myRole.RecipientInfo.RoleType,
+                                        Position = myRole.RecipientInfo.Position
+
+                                    }
+                                };
+                            }
+
+                        }
+                        if (string.IsNullOrWhiteSpace(rawDocument.SendDate))
+                        {
+                            rawDocument.SendDate = DateTime.Now.ToString("dd/MM/yyyy");
+                        }
+                        if (Link == "inbound")
+                        {
+                            documentModel!.InboxType = InboxType.Inbound;
+
                         }
                         else
                         {
-                            nav.NavigateTo($"/pages/doc/{Link}/{Page}", true);
-
+                            documentModel!.InboxType = InboxType.Outbound;
                         }
-                        AlertMessage("ທຸລະກຳຂອງທ່ານ ສຳເລັດ", Defaults.Classes.Position.BottomRight, Severity.Success);
-                    }
-                    else
-                    {
-                        AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ", Defaults.Classes.Position.BottomRight, Severity.Error);
-                    }
-                    await Task.Delay(delayTime);
 
-                    disposedObj();
-                    formMode = FormMode.List;
+                        if (noNeedFolder)
+                        {
+                            rawDocument.DocNo = "";
+                            rawDocument.FolderNum = -1;
+                            rawDocument.FolderId = "";
+                        }
+
+                        documentRequest.RawDocument = rawDocument;
+                        documentRequest.DocumentModel = documentModel;
+                        // Bind Receiver
+                        documentRequest.Main = mainReciver;
+                        documentRequest.CoProcesses = recipients!.Where(x => x.CoProcess && x.Role.RoleID != mainReciver!.Id).ToList();
+
+                        // Send request for save document
+                        var result = await httpService.Post<DocumentRequest, CommonResponse>(url, documentRequest, new AuthorizeHeader("bearer", token));
+
+
+
+                        onProcessing = false;
+
+                        if (result.Success)
+                        {
+                            if (result.Response.Code == nameof(ResultCode.NEW_DOCUMENT))
+                            {
+                                nav.NavigateTo($"/pages/doc/{Link}/draft", true);
+                            }
+                            else
+                            {
+                                nav.NavigateTo($"/pages/doc/{Link}/{Page}", true);
+
+                            }
+                            AlertMessage("ທຸລະກຳຂອງທ່ານ ສຳເລັດ", Defaults.Classes.Position.BottomRight, Severity.Success);
+                            // Send EventNotify
+                            List<string>? notifyRole = new List<string>() { documentRequest.Main.Id };
+                            notifyRole.AddRange(documentRequest.CoProcesses.Select(x => x.Role.RoleID)!);
+                            Console.WriteLine($"[{DateTime.Now}] Send message to Notify Roles: {JsonSerializer.Serialize(notifyRole)}");
+                            await EventNotify.InvokeAsync(new SocketSendModel
+                            {
+                                Topic = new SocketTopic
+                                {
+                                    SocketType = SocketType.PUSH_NOTIFY,
+                                    RoleIDs = notifyRole
+                                },
+                                Message = "new document come over"
+                            });
+                        }
+                        else
+                        {
+                            AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ", Defaults.Classes.Position.BottomRight, Severity.Error);
+                        }
+                        await Task.Delay(delayTime);
+
+                        disposedObj();
+                        formMode = FormMode.List;
+                    }
                 }
             }
+            catch (Exception)
+            {
+                AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, (INTERNAL_SERVER_ERROR)", Defaults.Classes.Position.BottomRight, Severity.Error);
+            }
+            
         }
 
         async Task onUpdateWhenOpenDocument()
         {
-            onProcessing = true;
-            if (employee == null)
+            try
             {
-                employee = await storageHelper.GetEmployeeProfileAsync();
-            }
-            string url = $"{endpoint.API}/api/v1/Document/SaveDocument/{roleId}";
-            string token = await accessToken.GetTokenAsync();
-
-             // Bind Files
-            rawDocument!.Attachments = files.Select(x => x.Info).ToList();
-            rawDocument!.RelateFles = relateFiles.Select(x => x.Info).ToList();
-
-            DocumentRequest documentRequest = new DocumentRequest();
-            if (Link == "inbound")
-            {
-                documentModel!.InboxType = InboxType.Inbound;
-
-            }
-            else
-            {
-                documentModel!.InboxType = InboxType.Outbound;
-            }
-            documentRequest.RawDocument = rawDocument;
-            documentRequest.DocumentModel = documentModel;
-            int index = documentRequest.DocumentModel.Recipients.IndexOf(myRole);
-            documentRequest.DocumentModel.Recipients[index].IsRead = true;
-            documentRequest.DocumentModel.Recipients[index].ReadDate = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
-            documentRequest.DocumentModel.Recipients[index].RecipientInfo.Fullname = new ShortEmpInfo
-            {
-                EmployeeID = employee.EmployeeID,
-                Name = new MultiLanguage
+                onProcessing = true;
+                if (employee == null)
                 {
-                    Eng = $"{employee.Name.Eng} {employee.FamilyName.Eng}",
-                    Local = $"{employee.Name.Local} {employee.FamilyName.Local}"
+                    employee = await storageHelper.GetEmployeeProfileAsync();
                 }
-            };
-            // Send request for save document
-            var result = await httpService.Post<DocumentRequest, CommonResponse>(url, documentRequest, new AuthorizeHeader("bearer", token));
-            await Task.Delay(delayTime);
+                string url = $"{endpoint.API}/api/v1/Document/SaveDocument/{roleId}";
+                if (string.IsNullOrWhiteSpace(token))
+                {
+                    token = await accessToken.GetTokenAsync();
+                }
+
+                // Bind Files
+                rawDocument!.Attachments = files.Select(x => x.Info).ToList();
+                rawDocument!.RelateFles = relateFiles.Select(x => x.Info).ToList();
+
+                DocumentRequest documentRequest = new DocumentRequest();
+                if (Link == "inbound")
+                {
+                    documentModel!.InboxType = InboxType.Inbound;
+
+                }
+                else
+                {
+                    documentModel!.InboxType = InboxType.Outbound;
+                }
+                documentRequest.RawDocument = rawDocument;
+                documentRequest.DocumentModel = documentModel;
+                int index = documentRequest.DocumentModel.Recipients!.IndexOf(myRole!);
+                documentRequest.DocumentModel.Recipients[index].IsRead = true;
+                documentRequest.DocumentModel.Recipients[index].ReadDate = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
+                documentRequest.DocumentModel.Recipients[index].RecipientInfo.Fullname = new ShortEmpInfo
+                {
+                    EmployeeID = employee.EmployeeID,
+                    Name = new MultiLanguage
+                    {
+                        Eng = $"{employee.Name.Eng} {employee.FamilyName.Eng}",
+                        Local = $"{employee.Name.Local} {employee.FamilyName.Local}"
+                    }
+                };
+                // Send request for save document
+                var result = await httpService.Post<DocumentRequest, CommonResponse>(url, documentRequest, new AuthorizeHeader("bearer", token));
+                await Task.Delay(delayTime);
+            }
+            catch (Exception)
+            {
+                AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, (INTERNAL_SERVER_ERROR)", Defaults.Classes.Position.BottomRight, Severity.Error);
+            }
             
+
         }
 
+        private async Task loadDocumentModel()
+        {
+            try
+            {
+                onProcessing = true;
+                string url = $"{endpoint.API}/api/v1/Document/GetDocument/{DocId}";
+                if (string.IsNullOrWhiteSpace(token))
+                {
+                    token = await accessToken.GetTokenAsync();
+                } 
 
+                var doc = await httpService.Get<DocumentModel, CommonResponse>(url, new AuthorizeHeader("bearer", token));
+
+                if (!doc.Success)
+                {
+                    nav.NavigateTo($"/pages/doc/{Link}/draft", true);
+                    AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, ບໍ່ສາມາດ ໂຫຼດເອກະສານໄດ້", Defaults.Classes.Position.BottomRight, Severity.Error);
+                }
+
+                await bindDocumentModel(doc.Response); // Bind document model
+                await onUpdateNotification(); // Update notification
+                onProcessing = false;
+                await InvokeAsync(StateHasChanged);
+            }
+            catch (Exception)
+            {
+                nav.NavigateTo($"/pages/doc/{Link}/draft", true);
+                AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, ບໍ່ສາມາດ ໂຫຼດເອກະສານໄດ້", Defaults.Classes.Position.BottomRight, Severity.Error);
+            }
+        }
+
+        private async Task onUpdateNotification()
+        {
+            try
+            {
+                onProcessing = true;
+                if (employee == null)
+                {
+                    employee = await storageHelper.GetEmployeeProfileAsync();
+                }
+                string url = $"{endpoint.API}/api/v1/Notification/Read/{MessageId}";
+                if (string.IsNullOrWhiteSpace(token))
+                {
+                    token = await accessToken.GetTokenAsync();
+                }
+
+                var result = await httpService.Get<CommonResponse>(url, new AuthorizeHeader("bearer", token));
+
+                // Send notification when read 
+                Console.WriteLine($"[{DateTime.Now}] Send message to Notify Owner when read from notification: {employee.id}");
+                await EventNotify.InvokeAsync(new SocketSendModel
+                {
+                    Topic = new SocketTopic
+                    {
+                        SocketType = SocketType.READ_NOTIIFY,
+                        UserID = employee.id
+                    },
+                    Message = $"read document: {DocId}"
+                });
+
+            }
+            catch (Exception)
+            {
+
+                
+            }
+        }
+
+        private async Task bindDocumentModel(DocumentModel doc)
+        {
+            try
+            {
+                // Row click
+                documentModel = doc;
+                myRole = documentModel!.Recipients!.LastOrDefault(x => x.RecipientInfo.RoleID == roleId);
+                rawDocument = documentModel!.RawDatas!.LastOrDefault(x => x.DataID == myRole!.DataID);
+                files = rawDocument!.Attachments.Select(x => new AttachmentDto
+                {
+                    Info = x,
+                }).ToList();
+                relateFiles = rawDocument.RelateFles.Select(x => new AttachmentDto
+                {
+                    Info = x,
+                }).ToList();
+
+                if (Link == "inbound" && string.IsNullOrWhiteSpace(rawDocument.DocNo)) // ຖ້າເປັນຂາເຂົ້າ ແລ້ວເອກະສານບໍ່ມີເລກທີຈະສົ່ງຕໍ່ບໍ່ໄດ້
+                {
+                    showSendButton = false;
+                }
+                else
+                {
+                    showSendButton = true;
+                }
+
+                // Update when document first open
+                if (!myRole!.IsRead)
+                {
+                    await onUpdateWhenOpenDocument(); // Update document
+
+                }
+
+                // Check this is from Trash or View
+                if (myRole!.DocStatus == TraceStatus.Trash)
+                {
+                    formMode = FormMode.Trash;
+
+
+                }
+                else if (myRole.DocStatus == TraceStatus.Terminated)
+                {
+                    formMode = FormMode.Terminated;
+                }
+                else
+                {
+                    formMode = FormMode.View;
+
+                }
+            }
+            catch (Exception)
+            {
+                AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, (INTERNAL_SERVER_ERROR)", Defaults.Classes.Position.BottomRight, Severity.Error);
+            }
+           
+        }
         bool validateField()
         {
 
-            if (string.IsNullOrWhiteSpace(rawDocument.Title) || string.IsNullOrWhiteSpace(rawDocument.ExternalDocID))
+            if (string.IsNullOrWhiteSpace(rawDocument!.Title) || string.IsNullOrWhiteSpace(rawDocument.ExternalDocID))
             {
                 return false;
             }
@@ -507,82 +694,93 @@ namespace DFM.Frontend.Pages
         }
         async Task onSaveClickAsync()
         {
-            onProcessing = true;
-            if (employee == null)
+            try
             {
-                employee = await storageHelper.GetEmployeeProfileAsync();
-            }
-
-            // Validate field
-            if (!validateField())
-            {
-                AlertMessage("ກະລຸນາປ້ອນຂໍ້ມູນໃຫ້ຄົບຖ້ວນ", Defaults.Classes.Position.BottomRight, Severity.Warning);
-                onProcessing = false;
-                return;
-            }
-
-
-            string url = $"{endpoint.API}/api/v1/Document/SaveDocument/{roleId}";
-            string token = await accessToken.GetTokenAsync();
-
-            // Upload file via Minio SDK
-            await manageFileToServer();
-
-            // Bind Files
-            rawDocument!.Attachments = files.Select(x => x.Info).ToList();
-            rawDocument!.RelateFles = relateFiles.Select(x => x.Info).ToList();
-
-            DocumentRequest documentRequest = new DocumentRequest();
-
-            if (Link == "inbound")
-            {
-                documentModel!.InboxType = InboxType.Inbound;
-
-            }
-            else
-            {
-                documentModel!.InboxType = InboxType.Outbound;
-            }
-            if (noNeedFolder)
-            {
-                rawDocument.DocNo = "";
-                rawDocument.FolderNum = -1;
-                rawDocument.FolderId = "";
-            }
-            documentRequest.RawDocument = rawDocument;
-            documentRequest.DocumentModel = documentModel;
-            // Send request for save document
-            var result = await httpService.Post<DocumentRequest, CommonResponse>(url, documentRequest, new AuthorizeHeader("bearer", token));
-
-            // Open dialog success message or make small progress bar on top-corner
-
-            onProcessing = false;
-
-            Console.WriteLine($"-------------------------------");
-            Console.WriteLine($"Result: {await result.HttpResponseMessage.Content.ReadAsStringAsync()}");
-            Console.WriteLine($"-------------------------------");
-
-            if (result.Success)
-            {
-                if (result.Response.Code == nameof(ResultCode.NEW_DOCUMENT))
+                onProcessing = true;
+                if (employee == null)
                 {
-                    nav.NavigateTo($"/pages/doc/{Link}/draft", true);
+                    employee = await storageHelper.GetEmployeeProfileAsync();
+                }
+
+                // Validate field
+                if (!validateField())
+                {
+                    AlertMessage("ກະລຸນາປ້ອນຂໍ້ມູນໃຫ້ຄົບຖ້ວນ", Defaults.Classes.Position.BottomRight, Severity.Warning);
+                    onProcessing = false;
+                    return;
+                }
+
+
+                string url = $"{endpoint.API}/api/v1/Document/SaveDocument/{roleId}";
+                if (string.IsNullOrWhiteSpace(token))
+                {
+                    token = await accessToken.GetTokenAsync();
+                }
+
+                // Upload file via Minio SDK
+                await manageFileToServer();
+
+                // Bind Files
+                rawDocument!.Attachments = files.Select(x => x.Info).ToList();
+                rawDocument!.RelateFles = relateFiles.Select(x => x.Info).ToList();
+
+                DocumentRequest documentRequest = new DocumentRequest();
+
+                if (Link == "inbound")
+                {
+                    documentModel!.InboxType = InboxType.Inbound;
+
                 }
                 else
                 {
-                    nav.NavigateTo($"/pages/doc/{Link}/{Page}", true);
-
+                    documentModel!.InboxType = InboxType.Outbound;
                 }
-                AlertMessage("ທຸລະກຳຂອງທ່ານ ສຳເລັດ", Defaults.Classes.Position.BottomRight, Severity.Success);
-            }
-            else
-            {
-                AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ", Defaults.Classes.Position.BottomRight, Severity.Error);
-            }
+                if (noNeedFolder)
+                {
+                    rawDocument.DocNo = "";
+                    rawDocument.FolderNum = -1;
+                    rawDocument.FolderId = "";
+                }
+                documentRequest.RawDocument = rawDocument;
+                documentRequest.DocumentModel = documentModel;
+                // Send request for save document
+                var result = await httpService.Post<DocumentRequest, CommonResponse>(url, documentRequest, new AuthorizeHeader("bearer", token));
 
-            await Task.Delay(delayTime);
-            disposedObj();
-            formMode = FormMode.List;
+                // Open dialog success message or make small progress bar on top-corner
+
+                onProcessing = false;
+
+                Console.WriteLine($"-------------------------------");
+                Console.WriteLine($"Result: {await result.HttpResponseMessage.Content.ReadAsStringAsync()}");
+                Console.WriteLine($"-------------------------------");
+
+                if (result.Success)
+                {
+                    if (result.Response.Code == nameof(ResultCode.NEW_DOCUMENT))
+                    {
+                        nav.NavigateTo($"/pages/doc/{Link}/draft", true);
+                    }
+                    else
+                    {
+                        nav.NavigateTo($"/pages/doc/{Link}/{Page}", true);
+
+                    }
+                    AlertMessage("ທຸລະກຳຂອງທ່ານ ສຳເລັດ", Defaults.Classes.Position.BottomRight, Severity.Success);
+                }
+                else
+                {
+                    AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ", Defaults.Classes.Position.BottomRight, Severity.Error);
+                }
+
+                await Task.Delay(delayTime);
+                disposedObj();
+                formMode = FormMode.List;
+            }
+            catch (Exception)
+            {
+                AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, (INTERNAL_SERVER_ERROR)", Defaults.Classes.Position.BottomRight, Severity.Error);
+            }
+           
 
         }
 
@@ -608,123 +806,138 @@ namespace DFM.Frontend.Pages
         }
         private async Task manageFileToServer()
         {
-
-            List<Task> tasks = new();
-            // Upload new file
-            var newAttachFiles = files.Where(x => !x.Info.IsRemove && x.Info.IsNewFile).ToList();
-            // Attachment file
-            foreach (var item in newAttachFiles)
+            try
             {
-                if (item.File != null)
+                List<Task> tasks = new();
+                // Upload new file
+                var newAttachFiles = files.Where(x => !x.Info.IsRemove && x.Info.IsNewFile).ToList();
+                // Attachment file
+                foreach (var item in newAttachFiles)
                 {
-                    using Stream readStream = item.File!.OpenReadStream(maxFileSize);
+                    if (item.File != null)
+                    {
+                        using Stream readStream = item.File!.OpenReadStream(maxFileSize);
 
-                    var buf = new byte[readStream.Length];
+                        var buf = new byte[readStream.Length];
 
-                    using MemoryStream ms = new MemoryStream(buf);
+                        using MemoryStream ms = new MemoryStream(buf);
 
-                    await readStream.CopyToAsync(ms);
+                        await readStream.CopyToAsync(ms);
 
-                    var buffer = ms.ToArray();
+                        var buffer = ms.ToArray();
 
-                    tasks.Add(minio.PutObject(item.Info.Bucket!, item.Info.FileName!, buffer));
+                        tasks.Add(minio.PutObject(item.Info.Bucket!, item.Info.FileName!, buffer));
+                    }
+
                 }
-               
-            }
 
-            // Relate file
-            var newRelFiles = relateFiles.Where(x => !x.Info.IsRemove && x.Info.IsNewFile).ToList();
-            foreach (var item in newRelFiles)
-            {
-                if (item.File != null)
+                // Relate file
+                var newRelFiles = relateFiles.Where(x => !x.Info.IsRemove && x.Info.IsNewFile).ToList();
+                foreach (var item in newRelFiles)
                 {
-                    using Stream readStream = item.File!.OpenReadStream(maxFileSize);
+                    if (item.File != null)
+                    {
+                        using Stream readStream = item.File!.OpenReadStream(maxFileSize);
 
-                    var buf = new byte[readStream.Length];
+                        var buf = new byte[readStream.Length];
 
-                    using MemoryStream ms = new MemoryStream(buf);
+                        using MemoryStream ms = new MemoryStream(buf);
 
-                    await readStream.CopyToAsync(ms);
+                        await readStream.CopyToAsync(ms);
 
-                    var buffer = ms.ToArray();
+                        var buffer = ms.ToArray();
 
-                    tasks.Add(minio.PutObject(item.Info.Bucket!, item.Info.FileName!, buffer));
+                        tasks.Add(minio.PutObject(item.Info.Bucket!, item.Info.FileName!, buffer));
+                    }
+
                 }
-               
-            }
 
-            // Remove files
-            var removeAttachFiles = files.Where(x => x.Info.IsRemove && !x.Info.IsNewFile).ToList();
-            var removeRelFiles = relateFiles.Where(x => x.Info.IsRemove && !x.Info.IsNewFile).ToList();
-            foreach (var item in removeAttachFiles)
-            {
-                tasks.Add(minio.RemoveObject(item.Info.Bucket!, item.Info.FileName!));
-            }
-            foreach (var item in removeRelFiles)
-            {
-                tasks.Add(minio.RemoveObject(item.Info.Bucket!, item.Info.FileName!));
-            }
+                // Remove files
+                var removeAttachFiles = files.Where(x => x.Info.IsRemove && !x.Info.IsNewFile).ToList();
+                var removeRelFiles = relateFiles.Where(x => x.Info.IsRemove && !x.Info.IsNewFile).ToList();
+                foreach (var item in removeAttachFiles)
+                {
+                    tasks.Add(minio.RemoveObject(item.Info.Bucket!, item.Info.FileName!));
+                }
+                foreach (var item in removeRelFiles)
+                {
+                    tasks.Add(minio.RemoveObject(item.Info.Bucket!, item.Info.FileName!));
+                }
 
-            await Task.WhenAll(tasks);
+                await Task.WhenAll(tasks);
+            }
+            catch (Exception)
+            {
+                AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, (INTERNAL_SERVER_ERROR)", Defaults.Classes.Position.BottomRight, Severity.Error);
+            }
+            
 
         }
 
 
         async Task onTabChangeEventAsync(PartialRole roleItem)
         {
-            onProcessing = true;
-            roleId = roleItem.RoleID;
-            selectedRole = roleItem;
-            if (employee == null)
+            try
             {
-                employee = await storageHelper.GetEmployeeProfileAsync();
-            }
-            if (string.IsNullOrWhiteSpace(token))
-            {
-                token = await accessToken.GetTokenAsync();
-            }
-            if (Link == "inbound")
-            {
-                if (selectedRole.RoleType == RoleTypeModel.InboundGeneral ||
-                    selectedRole.RoleType == RoleTypeModel.InboundOfficePrime ||
-                    selectedRole.RoleType == RoleTypeModel.InboundPrime)
+                onProcessing = true;
+                roleId = roleItem.RoleID;
+                selectedRole = roleItem;
+                if (employee == null)
                 {
-                    showCreateButton = true;
+                    employee = await storageHelper.GetEmployeeProfileAsync();
+                }
+                if (string.IsNullOrWhiteSpace(token))
+                {
+                    token = await accessToken.GetTokenAsync();
+                }
+                if (Link == "inbound")
+                {
+                    if (selectedRole.RoleType == RoleTypeModel.InboundGeneral ||
+                        selectedRole.RoleType == RoleTypeModel.InboundOfficePrime ||
+                        selectedRole.RoleType == RoleTypeModel.InboundPrime)
+                    {
+                        showCreateButton = true;
+                    }
+                    else
+                    {
+                        showCreateButton = false;
+                    }
                 }
                 else
                 {
-                    showCreateButton = false;
+                    showCreateButton = true;
                 }
+
+                string urlGetOrgItem = $"{endpoint.API}/api/v1/Organization/GetItem/{employee.OrganizationID!}/{roleId}/{Link}";
+                var result = await httpService.Get<IEnumerable<RoleTreeModel>>(urlGetOrgItem, new AuthorizeHeader("bearer", token));
+                if (result.Success)
+                {
+                    var expected = result.Response.ToList();
+                    expected.RemoveAll(x => x.Role.RoleID == roleId);
+                    recipients = expected;
+
+
+                }
+
+                // Get Publisher
+                string urlGetPublisher = $"{endpoint.API}/api/v1/Organization/GetPublisher/{employee.OrganizationID!}/{roleId}";
+                var publisherResult = await httpService.Get<CommonResponseId>(urlGetPublisher, new AuthorizeHeader("bearer", token));
+
+                if (publisherResult.Success)
+                {
+                    publisher = publisherResult.Response;
+                }
+
+
+                onProcessing = false;
+
+                await InvokeAsync(StateHasChanged);
             }
-            else
+            catch (Exception)
             {
-                showCreateButton = true;
+                AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, (INTERNAL_SERVER_ERROR)", Defaults.Classes.Position.BottomRight, Severity.Error);
             }
-
-            string urlGetOrgItem = $"{endpoint.API}/api/v1/Organization/GetItem/{employee.OrganizationID!}/{roleId}/{Link}";
-            var result = await httpService.Get<IEnumerable<RoleTreeModel>>(urlGetOrgItem, new AuthorizeHeader("bearer", token));
-            if (result.Success)
-            {
-                var expected = result.Response.ToList();
-                expected.RemoveAll(x => x.Role.RoleID == roleId);
-                recipients = expected;
-
-                
-            }
-
-            // Get Publisher
-            string urlGetPublisher = $"{endpoint.API}/api/v1/Organization/GetPublisher/{employee.OrganizationID!}/{roleId}";
-            var publisherResult = await httpService.Get<CommonResponseId>(urlGetPublisher, new AuthorizeHeader("bearer", token));
-
-            if (publisherResult.Success)
-            {
-                publisher = publisherResult.Response;
-            }
-
             
-            onProcessing = false;
-
-            await InvokeAsync(StateHasChanged);
 
         }
         private IEnumerable<string> MaxCharacters(string ch)

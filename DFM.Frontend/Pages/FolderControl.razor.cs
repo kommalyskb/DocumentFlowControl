@@ -4,6 +4,7 @@ using DFM.Shared.Entities;
 using DFM.Shared.Resources;
 using HttpClientService;
 using MudBlazor;
+using Newtonsoft.Json.Linq;
 using System;
 
 namespace DFM.Frontend.Pages
@@ -12,6 +13,7 @@ namespace DFM.Frontend.Pages
     {
         string? oldLink = "";
         readonly int delayTime = 500;
+        string? token;
         private EmployeeModel? employee;
         protected override void OnInitialized()
         {
@@ -39,7 +41,10 @@ namespace DFM.Frontend.Pages
                 if (isDelete.Value)
                 {
                     onProcessing = true;
-                    string token = await accessToken.GetTokenAsync();
+                    if (string.IsNullOrWhiteSpace(token))
+                    {
+                        token = await accessToken.GetTokenAsync();
+                    }
 
                     string url = $"{endpoint.API}/api/v1/Folder/RemoveItem/{folderModel!.id}";
                     var result = await httpService.Get<CommonResponse>(url, new AuthorizeHeader("bearer", token));
@@ -79,7 +84,28 @@ namespace DFM.Frontend.Pages
         async Task onSaveClickAsync()
         {
             onProcessing = true;
-            string token = await accessToken.GetTokenAsync();
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                token = await accessToken.GetTokenAsync();
+            }
+            if (string.IsNullOrWhiteSpace(folderModel!.Title))
+            {
+                AlertMessage("ກະລຸນາ ປ້ອນ ຊື່ແຟ້ມເອກະສານ", Defaults.Classes.Position.BottomRight, Severity.Error);
+                onProcessing = false;
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(folderModel!.StartDate) || string.IsNullOrWhiteSpace(folderModel!.ExpiredDate))
+            {
+                AlertMessage("ກະລຸນາ ປ້ອນ ວັນທີນຳໃຊ້ ແລະ ໝົດອາຍຸ ແຟ້ມ", Defaults.Classes.Position.BottomRight, Severity.Error);
+                onProcessing = false;
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(folderModel!.ShortName))
+            {
+                AlertMessage("ກະລຸນາ ປ້ອນ ຕົວຫຍໍ້ອົງກອນ", Defaults.Classes.Position.BottomRight, Severity.Error);
+                onProcessing = false;
+                return;
+            }
             await InvokeAsync(StateHasChanged);
             if (Link == "inbound")
             {

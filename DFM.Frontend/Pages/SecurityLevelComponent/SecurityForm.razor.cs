@@ -6,7 +6,7 @@ namespace DFM.Frontend.Pages.SecurityLevelComponent
     public partial class SecurityForm
     {
         private EmployeeModel? employee;
-        string? token = "";
+        //string? token = "";
         IEnumerable<string>? authorizeOption;
         string? authorizeView = "ກະລຸນາເລືອກ ຢ່າງຫນ້ອຍ 1 ຢ່າງ";
         IDictionary<string, string>? authorizeTemplates;

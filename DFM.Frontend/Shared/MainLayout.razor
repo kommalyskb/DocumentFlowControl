@@ -3,7 +3,11 @@
 @inject LocalStorageHelper storageHelper
 @inject IMinioService minio
 @inject EnvConf envConf
+@inject IHttpService httpService
+@inject AccessTokenStorage accessToken
 @inject ServiceEndpoint endpoint
+@inject NavigationManager nav
+@implements IAsyncDisposable
 
 <PageTitle>DFM.Frontend</PageTitle>
 <MudThemeProvider Theme="customTheme" />
@@ -14,13 +18,64 @@
     <MudAppBar Fixed="true">
         <MudImage Src="@envConf.LogoUrl" Alt="logo" Height="45" Width="45" Class="mr-2 rounded-lg" ObjectFit="ObjectFit.Cover" />
         <MudText>@envConf.PageTitle</MudText>
-        
+
         <MudSpacer />
         @if (employee != null)
         {
-            if(employee.ProfileImage != null)
+            <div>
+                @if (newMailMessage > 0)
+                {
+                    <MudBadge Content="@newMailMessage" Color="Color.Secondary" Overlap="true" Class="mx-6 my-4">
+                        <MudButton Variant="Variant.Text" OnClick="@ToggleOpen" DisableElevation="true"
+                                   EndIcon="@Icons.Material.Filled.NotificationsActive"
+                                   Style="text-transform:none; color:white; font-weight:bold">
+                        </MudButton>
+                    </MudBadge>
+                }
+                else
+                {
+                    <MudButton Variant="Variant.Text" OnClick="@ToggleOpen" DisableElevation="true"
+                               EndIcon="@Icons.Material.Filled.NotificationsActive"
+                               Style="text-transform:none; color:white; font-weight:bold">
+                    </MudButton>
+                }
+                <MudPopover Style="text-align: center" Open="_isOpen" OverflowBehavior="OverflowBehavior.FlipAlways" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.BottomCenter" Paper="false">
+                    <MudPaper Width="300px">
+                        <br />
+                        @if (isLoading)
+                        {
+                            <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
+                            <h3 style="margin: auto"><i>ກຳລັງຮັບການແຈ້ງເຕືອນໃຫມ່</i></h3>
+                        }
+                        else
+                        {
+                            if (notices != null)
+                            {
+                                <MudList Clickable="true">
+                                    @foreach (var item in notices)
+                                    {
+                                        string link = item.ModuleType == ModuleType.DocumentInbound ? "inbound" : "outbound";
+                                        string urlPage = $"/pages/doc/{link}/inbox/{item.DocumentID}/{item.id}";
+                                        <MudListItem Text="@item.Title" Href="@urlPage" />
+                                    }
+
+                                </MudList>
+                            }
+                            else
+                            {
+                                <h3 style="margin: auto"><i>ບໍ່ມີຂໍ້ມູນການແຈ້ງເຕືອນ</i></h3>
+                                <MudDivider />
+                                <MudButton Style="margin: auto" OnClick="@ToggleOpen" Class="ml-auto mr-n3 mb-1" Color="Color.Error">ປິດ</MudButton>
+                            }
+                        }
+                    </MudPaper>
+
+                </MudPopover>
+            </div>
+
+            if (employee.ProfileImage != null)
             {
-                
+
                 <MudImage Src="@imageUri" Alt="photo" Height="45" Width="45" Class="mr-2 rounded-lg" ObjectFit="ObjectFit.Cover" />
             }
             <MudText Class="mr-2">@employee.Name.Local @employee.FamilyName.Local</MudText>
@@ -38,10 +93,11 @@
         <NavMenu OpenDrawer="ToggleMenu" IsOpen="@_drawerOpen" />
     </MudDrawer>
     <MudMainContent Class="mt-4">
-        @*@Body*@
         <CustomAuthorizeView>
             <Authorized>
-                @Body
+                <CascadingValue Value=EventNotify>
+                    @Body
+                </CascadingValue>
             </Authorized>
             <NotAuthorized>
                 @{
@@ -54,12 +110,26 @@
 
 </MudLayout>
 
+<input type="hidden" id="newMessage" @bind-value="@newMailMessage" />
 
 @code
 {
+
+    EventCallback<SocketSendModel> EventNotify => EventCallback.Factory.Create<SocketSendModel>(this, SendNotify); //
+
     string? imageUri = "images/user.png";
     private EmployeeModel? employee;
     bool _drawerOpen = true;
+    bool isLoading = false;
+    string token = "";
+    public Origin TransformOrigin { get; set; } = Origin.TopLeft;
+    public Origin AnchorOrigin { get; set; } = Origin.BottomLeft;
+    IEnumerable<NotificationModel>? notices;
+    IEnumerable<TabItemDto>? myRoles;
+    int newMailMessage = 0;
+    private HubConnection? hubConnection;
+
+
     private MudTheme customTheme = new()
         {
             Palette = new Palette
@@ -81,6 +151,11 @@
 
     protected override async Task OnInitializedAsync()
     {
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            token = await accessToken.GetTokenAsync();
+        }
+
         if (employee == null)
         {
             employee = await storageHelper.GetEmployeeProfileAsync();
@@ -88,9 +163,11 @@
             {
                 if (employee.ProfileImage != null)
                 {
-                    await previewImageProfile(employee.ProfileImage.Bucket, employee.ProfileImage.FileName);
+                    await previewImageProfile(employee.ProfileImage.Bucket!, employee.ProfileImage.FileName!);
 
                 }
+                // Start hub
+                await connectToNotifyHub();
             }
 
         }
@@ -98,9 +175,98 @@
         {
             if (employee.ProfileImage != null)
             {
-                await previewImageProfile(employee.ProfileImage.Bucket, employee.ProfileImage.FileName);
+                await previewImageProfile(employee.ProfileImage.Bucket!, employee.ProfileImage.FileName!);
 
             }
+            // Start hub
+            await connectToNotifyHub();
+        }
+
+        Console.WriteLine($"[{DateTime.Now}] Connect to Notify HUB: {IsConnected}");
+    }
+    async Task connectToNotifyHub()
+    {
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(nav.ToAbsoluteUri("/notifyhub"))
+            .Build();
+
+        hubConnection.On<string, string>("ReceiveMessage", async (topic, message) =>
+        {
+            var socketTopic = JsonSerializer.Deserialize<SocketTopic>(topic);
+            if (socketTopic!.SocketType == SocketType.READ_NOTIIFY) // ໃຊ້ໃນກໍລະນີທີ່ User ກົດອ່ານແຈ້ງເຕືອນ
+            {
+                if (socketTopic.UserID == employee!.id)
+                {
+                    await loadNotifications();
+
+                    await InvokeAsync(StateHasChanged);
+                }
+
+            }
+            else if (socketTopic.SocketType == SocketType.PUSH_NOTIFY) // ກໍລະນີແຈ້ງເຕືອນແບບອື່ນ
+            {
+                var validTopic = await isInRoles(socketTopic.RoleIDs!);
+                if (validTopic)
+                {
+                    await loadNotifications();
+
+                    await InvokeAsync(StateHasChanged);
+                }
+            }
+
+        });
+
+        await hubConnection.StartAsync();
+    }
+    public bool IsConnected =>
+        hubConnection?.State == HubConnectionState.Connected;
+
+
+    private async Task<bool> isInRoles(List<string> validRoles)
+    {
+        if (myRoles == null)
+        {
+            myRoles = await storageHelper.GetRolesAsync();
+        }
+
+        var isInRole = myRoles.Where(x => validRoles.Any(v => v == x.Role.RoleID));
+        if (isInRole.Count() > 0)
+        {
+            return true;
+        }
+        return false;
+
+
+    }
+    private async Task SendNotify(SocketSendModel model)
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("SendMessage", JsonSerializer.Serialize(model.Topic), model.Message);
+        }
+    }
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+    private async Task loadNotifications()
+    {
+        try
+        {
+            string url = $"{endpoint.API}/api/v1/Notification/GetMyNotice";
+            var result = await httpService.Get<IEnumerable<NotificationModel>, CommonResponse>(url, new AuthorizeHeader("bearer", token));
+            if (result.Success)
+            {
+                notices = result.Response;
+                newMailMessage = notices.Where(x => !x.IsRead).Count();
+            }
+        }
+        catch (Exception)
+        {
+
         }
     }
     private async Task previewImageProfile(string bucket, string fileName)
@@ -113,5 +279,22 @@
             imageUri = obj.Response;//$"data:image/png;base64,{obj.ByteStream.ToBase64()}";
         }
 
+    }
+    public bool _isOpen;
+
+    public async Task ToggleOpen()
+    {
+        if (_isOpen)
+            _isOpen = false;
+        else
+        {
+            isLoading = true;
+            // Load notify
+            _isOpen = true;
+
+            await loadNotifications();
+            await Task.Delay(1000);
+            isLoading = false;
+        }
     }
 }

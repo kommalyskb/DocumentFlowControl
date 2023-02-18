@@ -12,10 +12,10 @@ namespace DFM.Frontend.Shared
         [Parameter] public RenderFragment? Authorized { get; set; }
         [Parameter] public RenderFragment? NotAuthorized { get; set; }
         [Parameter] public RenderFragment? Authorizing { get; set; }
-        [Inject] AccessTokenStorage accessToken { get; set; }
-        [Inject] public IHttpService httpService { get; set; }
-        [Inject] public ServiceEndpoint endpoint { get; set; }
-        [Inject] public FrontendIdentity identity { get; set; }
+        [Inject] AccessTokenStorage? accessToken { get; set; }
+        [Inject] public IHttpService? httpService { get; set; }
+        [Inject] public ServiceEndpoint? endpoint { get; set; }
+        [Inject] public FrontendIdentity? identity { get; set; }
 
         string token = "";
         public int State = 0;
@@ -28,7 +28,6 @@ namespace DFM.Frontend.Shared
         {
             State = 0;
             await InvokeAsync(StateHasChanged);
-
 
             token = await accessToken.GetTokenAsync();
             if (string.IsNullOrEmpty(token))
@@ -43,11 +42,11 @@ namespace DFM.Frontend.Shared
                 {
                     var refreshTokenReq = new RefreshTokenEndPointRequest
                     {
-                        ClientID = identity.ClientID,
+                        ClientID = identity!.ClientID,
                         RefreshToken = refreshToken,
                         Secret = identity.Secret
                     };
-                    var refreshTokenResult = await httpService.Post<RefreshTokenEndPointRequest, TokenEndPointResponse, CommonResponse>($"{endpoint.API}/api/v1/Connect/refreshToken", refreshTokenReq);
+                    var refreshTokenResult = await httpService!.Post<RefreshTokenEndPointRequest, TokenEndPointResponse, CommonResponse>($"{endpoint!.API}/api/v1/Connect/refreshToken", refreshTokenReq);
                     if (refreshTokenResult.Success)
                     {
                         await accessToken.SetTokenAsync(refreshTokenResult.Response.AccessToken!);

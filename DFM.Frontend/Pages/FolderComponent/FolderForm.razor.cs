@@ -36,7 +36,10 @@ namespace DFM.Frontend.Pages.FolderComponent
             {
                 employee = await storageHelper.GetEmployeeProfileAsync();
             }
-            token = await accessToken.GetTokenAsync();
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                token = await accessToken.GetTokenAsync();
+            }
             await Task.Delay(500);
             if (employee is not null)
             {

@@ -18,7 +18,10 @@ namespace DFM.Frontend.Shared
             {
                 employee = await storageHelper.GetEmployeeProfileAsync();
             }
-            token = await accessToken.GetTokenAsync();
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                token = await accessToken.GetTokenAsync();
+            }
 
             await loadContent();
 
@@ -35,16 +38,24 @@ namespace DFM.Frontend.Shared
 
         private async Task loadContent()
         {
-            string url = $"{endpoint.API}/api/v1/Document/GetDashboard";
-            var result = await httpService.Post<GetDashboardRequest, PersonalReportSummary>(url, new GetDashboardRequest
+            try
             {
-                inboxType = InboxType,
-                roleID = RoleId
-            }, new AuthorizeHeader("bearer", token));
-            if (result.Success)
-            {
-                summary = result.Response;
+                string url = $"{endpoint.API}/api/v1/Document/GetDashboard";
+                var result = await httpService.Post<GetDashboardRequest, PersonalReportSummary>(url, new GetDashboardRequest
+                {
+                    inboxType = InboxType,
+                    roleID = RoleId
+                }, new AuthorizeHeader("bearer", token));
+                if (result.Success)
+                {
+                    summary = result.Response;
+                }
             }
+            catch (Exception)
+            {
+
+            }
+            
         }
     }
 }

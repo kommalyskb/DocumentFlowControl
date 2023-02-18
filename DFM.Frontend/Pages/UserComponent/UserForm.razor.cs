@@ -47,7 +47,7 @@ namespace DFM.Frontend.Pages.UserComponent
             {
                 var ext = Path.GetExtension(file.Name);
                 var name = file.Name.Replace(ext, "");
-                ProfileImage.File = file;
+                ProfileImage!.File = file;
                 decimal fileSize = ProfileImage.File.Size / 1048576M;
                 string? fileFormat = Icons.Custom.FileFormats.FileDocument;
                 if (file.ContentType.Contains("word"))
@@ -116,7 +116,7 @@ namespace DFM.Frontend.Pages.UserComponent
             {
                 if (Employee.ProfileImage != null)
                 {
-                    await previewImageProfile(Employee.ProfileImage.Bucket, Employee.ProfileImage.FileName);
+                    await previewImageProfile(Employee.ProfileImage.Bucket!, Employee.ProfileImage.FileName!);
 
                 }
             }

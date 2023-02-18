@@ -9,7 +9,7 @@ namespace DFM.Frontend.Pages.Common
         private string searchString = "";
        
         //private EmployeeModel? employee;
-        string? token = "";
+        //string? token = "";
         private bool FilterFunc(RoleTreeModel element)
         {
             if (string.IsNullOrWhiteSpace(searchString))

@@ -2,6 +2,7 @@
 using DFM.Shared.Entities;
 using HttpClientService;
 using MudBlazor;
+using Newtonsoft.Json.Linq;
 
 namespace DFM.Frontend.Pages
 {
@@ -9,6 +10,7 @@ namespace DFM.Frontend.Pages
     {
         readonly int delayTime = 500;
         private EmployeeModel? employee;
+        string? token;
         protected override void OnInitialized()
         {
             formMode = FormMode.List;
@@ -34,7 +36,10 @@ namespace DFM.Frontend.Pages
                 if (isDelete.Value)
                 {
                     onProcessing = true;
-                    string token = await accessToken.GetTokenAsync();
+                    if (string.IsNullOrWhiteSpace(token))
+                    {
+                        token = await accessToken.GetTokenAsync();
+                    }
 
                     string url = $"{endpoint.API}/api/v1/SecurityLevel/RemoveItem/{documentSecurityModel!.id}";
                     var result = await httpService.Get<CommonResponse>(url, new AuthorizeHeader("bearer", token));
@@ -74,11 +79,19 @@ namespace DFM.Frontend.Pages
         async Task onSaveClickAsync()
         {
             onProcessing = true;
-            string token = await accessToken.GetTokenAsync();
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                token = await accessToken.GetTokenAsync();
+            }
             await InvokeAsync(StateHasChanged);
 
             httpService.MediaType = MediaType.JSON;
-
+            if (string.IsNullOrWhiteSpace(documentSecurityModel.Level))
+            {
+                AlertMessage("ກະລຸນາ ປ້ອນຂໍ້ມູນໃຫ້ຄົບຖ້ວນ", Defaults.Classes.Position.BottomRight, Severity.Error);
+                onProcessing = false;
+                return;
+            }
 
             if (string.IsNullOrWhiteSpace(documentSecurityModel.id))
             {

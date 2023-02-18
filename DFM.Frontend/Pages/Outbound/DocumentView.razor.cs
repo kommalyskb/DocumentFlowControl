@@ -12,7 +12,10 @@ namespace DFM.Frontend.Pages.Outbound
     {
         protected override async Task OnInitializedAsync()
         {
-            token = await accessToken.GetTokenAsync();
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                token = await accessToken.GetTokenAsync();
+            }
             if (employee == null)
             {
                 employee = await storageHelper.GetEmployeeProfileAsync();

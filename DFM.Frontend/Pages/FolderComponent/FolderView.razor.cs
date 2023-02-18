@@ -30,7 +30,10 @@ namespace DFM.Frontend.Pages.FolderComponent
             {
                 employee = await storageHelper.GetEmployeeProfileAsync();
             }
-            token = await accessToken.GetTokenAsync();
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                token = await accessToken.GetTokenAsync();
+            }
 
             // Use chanel to control concurrency
             var channel = Channel.CreateUnbounded<(bool success, int component, string response)>();

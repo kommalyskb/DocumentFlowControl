@@ -35,7 +35,10 @@ namespace DFM.Frontend.Pages
             }
 
             string url = $"{endpoint.API}/api/v1/Organization/GetItem/{employee.OrganizationID}";
-            token = await accessToken.GetTokenAsync();
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                token = await accessToken.GetTokenAsync();
+            }
 
             var result = await httpService.Get<IEnumerable<RoleTreeModel>>(url, new AuthorizeHeader("bearer", token));
             if (result.Success)

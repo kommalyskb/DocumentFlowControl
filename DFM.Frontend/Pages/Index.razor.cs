@@ -17,20 +17,15 @@ namespace DFM.Frontend.Pages
             {
                 employee = await storageHelper.GetEmployeeProfileAsync();
             }
-            // Load tab
-            string url = $"{endpoint.API}/api/v1/Organization/GetRole";
 
-
-            string token = await accessToken.GetTokenAsync();
-
-            var result = await httpService.Get<IEnumerable<TabItemDto>>(url, new AuthorizeHeader("bearer", token));
-            if (result.Success)
+            if (roles == null)
             {
-                roles = result.Response;
-                roleID = roles!.FirstOrDefault()!.Role!.RoleID!;
-                selectValues = new List<string>() { roleID };
-                
+                roles = await storageHelper.GetRolesAsync();
+               
             }
+            roleID = roles!.FirstOrDefault()!.Role!.RoleID!;
+            selectValues = new List<string>() { roleID };
+
             await InvokeAsync(StateHasChanged);
 
         }

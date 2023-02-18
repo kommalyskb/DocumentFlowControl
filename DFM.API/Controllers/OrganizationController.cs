@@ -67,7 +67,7 @@ namespace DFM.API.Controllers
         {
 
             // Get User Profile
-            var userProfile = await employeeManager.GetProfile(userId, cancellationToken);
+            var userProfile = await employeeManager.GetProfile(userId!, cancellationToken);
 
             if (!userProfile.Response.Success)
             {

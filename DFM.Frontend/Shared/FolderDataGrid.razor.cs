@@ -40,37 +40,60 @@ namespace DFM.Frontend.Shared
         };
         protected override async Task OnInitializedAsync()
         {
-            oldLink = Link;
-            // Load document
-            string url = $"{endpoint.API}/api/v1/Folder/GetItems/{RoleId}/{Link}";
-            token = await accessToken.GetTokenAsync();
-
-            var result = await httpService.Get<IEnumerable<FolderModel>>(url, new AuthorizeHeader("bearer", token));
-            if (result.Success)
-            {
-                Elements = result.Response.OrderBy(x => x.Seq).ToList();
-            }
-        }
-
-        protected override async Task OnParametersSetAsync()
-        {
-            if (oldLink != Link)
+            try
             {
                 oldLink = Link;
                 // Load document
                 string url = $"{endpoint.API}/api/v1/Folder/GetItems/{RoleId}/{Link}";
-                token = await accessToken.GetTokenAsync();
+                if (string.IsNullOrWhiteSpace(token))
+                {
+                    token = await accessToken.GetTokenAsync();
+                }
 
                 var result = await httpService.Get<IEnumerable<FolderModel>>(url, new AuthorizeHeader("bearer", token));
                 if (result.Success)
                 {
                     Elements = result.Response.OrderBy(x => x.Seq).ToList();
                 }
-                else
+            }
+            catch (Exception)
+            {
+
+            }
+            
+        }
+
+        protected override async Task OnParametersSetAsync()
+        {
+            try
+            {
+                if (oldLink != Link)
                 {
-                    Elements.Clear();
+                    oldLink = Link;
+                    // Load document
+                    string url = $"{endpoint.API}/api/v1/Folder/GetItems/{RoleId}/{Link}";
+                    if (string.IsNullOrWhiteSpace(token))
+                    {
+                        token = await accessToken.GetTokenAsync();
+                    }
+
+                    var result = await httpService.Get<IEnumerable<FolderModel>>(url, new AuthorizeHeader("bearer", token));
+                    if (result.Success)
+                    {
+                        Elements = result.Response.OrderBy(x => x.Seq).ToList();
+                    }
+                    else
+                    {
+                        Elements.Clear();
+                    }
                 }
             }
+            catch (Exception)
+            {
+
+             
+            }
+            
         }
     }
 }

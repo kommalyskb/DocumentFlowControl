@@ -8,33 +8,28 @@ namespace DFM.Frontend.Pages.Outbound
 {
     public partial class Inbox
     {
-        string? token = "";
+        //string? token = "";
         int _panelIndex = 0;
         int panelIndex { get { return _panelIndex; } set { _panelIndex = value; OnTabChangeEvent.InvokeAsync(tabItems![value].Role); } }
         private EmployeeModel? employee;
         List<TabItemDto>? tabItems;
+        IEnumerable<TabItemDto>? myRoles;
         protected override async Task OnInitializedAsync()
         {
             if (employee == null)
             {
                 employee = await storageHelper.GetEmployeeProfileAsync();
             }
-            // Load tab
-            string url = $"{endpoint.API}/api/v1/Organization/GetRole";
-
-
-            token = await accessToken.GetTokenAsync();
-
-            var result = await httpService.Get<IEnumerable<TabItemDto>>(url, new AuthorizeHeader("bearer", token));
-            if (result.Success)
+            if (myRoles == null)
             {
-                tabItems = result.Response.Where(x => x.Role.RoleType != RoleTypeModel.InboundPrime && x.Role.RoleType != RoleTypeModel.InboundOfficePrime && x.Role.RoleType != RoleTypeModel.InboundGeneral).ToList();
-                if (tabItems.Count > 0)
-                {
-                    // Callback event 
-                    await OnTabChangeEvent.InvokeAsync(tabItems[_panelIndex].Role);
-                }
-               
+                myRoles = await storageHelper.GetRolesAsync();
+
+            }
+            tabItems = myRoles.ToList().Where(x => x.Role.RoleType != RoleTypeModel.InboundPrime && x.Role.RoleType != RoleTypeModel.InboundOfficePrime && x.Role.RoleType != RoleTypeModel.InboundGeneral).ToList();
+            if (tabItems.Count > 0)
+            {
+                // Callback event 
+                await OnTabChangeEvent.InvokeAsync(tabItems[_panelIndex].Role);
             }
 
         }

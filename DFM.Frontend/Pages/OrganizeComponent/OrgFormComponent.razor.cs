@@ -47,7 +47,10 @@ namespace DFM.Frontend.Pages.OrganizeComponent
                 disabled = true;
             }
 
-            string token = await accessToken.GetTokenAsync();
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                token = await accessToken.GetTokenAsync();
+            }
             if (employee == null)
             {
                 employee = await storageHelper.GetEmployeeProfileAsync();
@@ -100,7 +103,10 @@ namespace DFM.Frontend.Pages.OrganizeComponent
                     string url = $"{endpoint.API}/api/v1/Organization/GetRole/{selectedUser!.UserID}";
 
 
-                    token = await accessToken.GetTokenAsync();
+                    if (string.IsNullOrWhiteSpace(token))
+                    {
+                        token = await accessToken.GetTokenAsync();
+                    }
 
                     var roleResult = await httpService.Get<IEnumerable<TabItemDto>>(url, new AuthorizeHeader("bearer", token));
                     tabItems = roleResult.Response;

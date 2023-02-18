@@ -54,13 +54,24 @@ namespace DFM.Testcases.Notification
         [Fact(DisplayName = "ບັນທຶກຂໍ້ມູນໄປລົງໃນ Notification")]
         public async Task SaveNotify()
         {
-            //NotificationModel request = new NotificationModel
-            //{
-                
-            //};
-            //var result = await notificationManager.CreateNotice(request);
+            NotificationModel request = new NotificationModel
+            {
+
+            };
+            var result = await notificationManager.CreateNotice(request);
+            Assert.True(result.Success);
         }
-        //[Fact(DisplayName = "ອັບເດດການອ່ານແຈ້ງເຕືອນ")]
-        //[Fact(DisplayName = "ດຶງລາຍການແຈ້ງເຕືອນຕາມ RoleID")]
+        [Fact(DisplayName = "ອັບເດດການອ່ານແຈ້ງເຕືອນ")]
+        public async Task ReadNotify()
+        {
+            var result = await notificationManager.ReadNotice("", "");
+            Assert.True(result.Success);
+        }
+        [Fact(DisplayName = "ດຶງລາຍການແຈ້ງເຕືອນຕາມ RoleID")]
+        public async Task ListNotifies()
+        {
+            var result = await notificationManager.ListNotices(default!);
+            Assert.True(result.Response.Success);
+        }
     }
 }

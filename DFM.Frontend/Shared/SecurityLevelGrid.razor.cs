@@ -41,19 +41,30 @@ namespace DFM.Frontend.Shared
         };
         protected override async Task OnInitializedAsync()
         {
-            // Load document
-            if (employee == null)
+            try
             {
-                employee = await storageHelper.GetEmployeeProfileAsync();
-            }
-            string url = $"{endpoint.API}/api/v1/SecurityLevel/GetItems/{employee.OrganizationID}";
-            token = await accessToken.GetTokenAsync();
+                // Load document
+                if (employee == null)
+                {
+                    employee = await storageHelper.GetEmployeeProfileAsync();
+                }
+                string url = $"{endpoint.API}/api/v1/SecurityLevel/GetItems/{employee.OrganizationID}";
+                if (string.IsNullOrWhiteSpace(token))
+                {
+                    token = await accessToken.GetTokenAsync();
+                }
 
-            var result = await httpService.Get<IEnumerable<DocumentSecurityModel>>(url, new AuthorizeHeader("bearer", token));
-            if (result.Success)
-            {
-                Elements = result.Response.ToList();
+                var result = await httpService.Get<IEnumerable<DocumentSecurityModel>>(url, new AuthorizeHeader("bearer", token));
+                if (result.Success)
+                {
+                    Elements = result.Response.ToList();
+                }
             }
+            catch (Exception)
+            {
+
+            }
+
         }
     }
 }
