@@ -99,21 +99,21 @@ namespace DFM.API.Controllers
             try
             {
                 // Get UserID
-                var userId = "";
+                //var userId = "";
 
-                if (User.Claims.FirstOrDefault(x => x.Type == "sub") != null)
-                {
-                    userId = User.Claims.FirstOrDefault(x => x.Type == "sub")!.Value;
+                //if (User.Claims.FirstOrDefault(x => x.Type == "sub") != null)
+                //{
+                //    userId = User.Claims.FirstOrDefault(x => x.Type == "sub")!.Value;
 
-                }
+                //}
 
-                // Get User Profile
-                var userProfile = await employeeManager.GetProfile(userId, cancellationToken);
+                //// Get User Profile
+                //var userProfile = await employeeManager.GetProfile(userId, cancellationToken);
 
-                if (!userProfile.Response.Success)
-                {
-                    return BadRequest(userProfile.Response);
-                }
+                //if (!userProfile.Response.Success)
+                //{
+                //    return BadRequest(userProfile.Response);
+                //}
 
                 request.UserIDRead = "";
                 request.IsRead = false;

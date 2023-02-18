@@ -431,13 +431,16 @@ namespace DFM.Frontend.Pages
                         {
                             rawDocument.SendDate = DateTime.Now.ToString("dd/MM/yyyy");
                         }
+
+                        ModuleType moduleType = ModuleType.DocumentInbound;
                         if (Link == "inbound")
                         {
                             documentModel!.InboxType = InboxType.Inbound;
-
+                            moduleType = ModuleType.DocumentInbound;
                         }
                         else
                         {
+                            moduleType = ModuleType.DocumentOutbound;
                             documentModel!.InboxType = InboxType.Outbound;
                         }
 
@@ -450,7 +453,7 @@ namespace DFM.Frontend.Pages
                         documentRequest.CoProcesses = recipients!.Where(x => x.CoProcess && x.Role.RoleID != mainReciver!.Id).ToList();
 
                         // Send request for save document
-                        var result = await httpService.Post<DocumentRequest, CommonResponse>(url, documentRequest, new AuthorizeHeader("bearer", token));
+                        var result = await httpService.Post<DocumentRequest, CommonResponseId>(url, documentRequest, new AuthorizeHeader("bearer", token));
 
 
 
@@ -467,10 +470,24 @@ namespace DFM.Frontend.Pages
                                 nav.NavigateTo($"/pages/doc/{Link}/{Page}", true);
 
                             }
-                            AlertMessage("ທຸລະກຳຂອງທ່ານ ສຳເລັດ", Defaults.Classes.Position.BottomRight, Severity.Success);
-                            // Send EventNotify
                             List<string>? notifyRole = new List<string>() { documentRequest.Main.Id };
                             notifyRole.AddRange(documentRequest.CoProcesses.Select(x => x.Role.RoleID)!);
+                            // Save notification
+                            NotificationModel noticeRequest = new NotificationModel
+                            {
+                                DocumentID = result.Response.Id,
+                                id = Guid.NewGuid().ToString("N"),
+                                IsRead = false,
+                                ModuleType = moduleType,
+                                RoleID = documentRequest.Main.Id,
+                                Title = documentRequest.RawDocument.Title,
+                                SendFrom = $"{employee.Name.Local} {employee.FamilyName.Local}"
+                            };
+                            await httpService.Post<NotificationModel, CommonResponse>($"{endpoint.API}/api/v1/Notification/Create", noticeRequest, new AuthorizeHeader("bearer", token));
+
+                            AlertMessage("ທຸລະກຳຂອງທ່ານ ສຳເລັດ", Defaults.Classes.Position.BottomRight, Severity.Success);
+                            // Send EventNotify
+                            
                             Console.WriteLine($"[{DateTime.Now}] Send message to Notify Roles: {JsonSerializer.Serialize(notifyRole)}");
                             await EventNotify.InvokeAsync(new SocketSendModel
                             {

@@ -258,7 +258,7 @@ namespace DFM.API.Controllers
         /// <returns></returns>
         [HttpPost("SaveDocument/{roleId}")]
         [MapToApiVersion("1.0")]
-        [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CommonResponseId), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> SaveDocumentV1([FromBody] DocumentRequest request, string roleId, CancellationToken cancellationToken = default(CancellationToken))
         {

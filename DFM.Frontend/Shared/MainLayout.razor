@@ -230,12 +230,16 @@
         {
             myRoles = await storageHelper.GetRolesAsync();
         }
-
-        var isInRole = myRoles.Where(x => validRoles.Any(v => v == x.Role.RoleID));
-        if (isInRole.Count() > 0)
+        
+        foreach (var item in myRoles)
         {
-            return true;
+            var isInRole = validRoles.Where(x => x == item.Role.RoleID);
+            if (isInRole.Count() > 0)
+            {
+                return true;
+            }
         }
+        
         return false;
 
 
