@@ -192,6 +192,8 @@
 
         hubConnection.On<string, string>("ReceiveMessage", async (topic, message) =>
         {
+            Console.WriteLine($"[{DateTime.Now}] - ReceiveMessage : {JsonSerializer.Serialize(topic)}, Message: {message}");
+            Console.WriteLine($"[{DateTime.Now}] - MyUserID : {employee!.id}, Roles: {JsonSerializer.Serialize(myRoles)}");
             var socketTopic = JsonSerializer.Deserialize<SocketTopic>(topic);
             if (socketTopic!.SocketType == SocketType.READ_NOTIIFY) // ໃຊ້ໃນກໍລະນີທີ່ User ກົດອ່ານແຈ້ງເຕືອນ
             {
