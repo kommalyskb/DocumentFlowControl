@@ -612,7 +612,7 @@ namespace DFM.Frontend.Pages
                 {
                     employee = await storageHelper.GetEmployeeProfileAsync();
                 }
-                string url = $"{endpoint.API}/api/v1/Notification/Read/{MessageId}";
+                string url = $"{endpoint.API}/api/v1/Notification/Read/{DocId}";
                 if (string.IsNullOrWhiteSpace(token))
                 {
                     token = await accessToken.GetTokenAsync();
