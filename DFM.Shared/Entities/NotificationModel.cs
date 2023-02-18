@@ -31,7 +31,8 @@ namespace DFM.Shared.Entities
         public string? RoleID { get; set; }
         [Indexed]
         public string? UserIDRead { get; set; }
-        
+        [Indexed]
+        public string? DocID { get; set; }
 
     }
 }

@@ -59,7 +59,7 @@ namespace DFM.Frontend.Pages
 
             if (oldPage != Page)
             {
-                if (!string.IsNullOrWhiteSpace(DocId))
+                if (!string.IsNullOrWhiteSpace(DocId) && !string.IsNullOrWhiteSpace(MessageID) && !string.IsNullOrWhiteSpace(MessageRole))
                 {
                     await loadDocumentModel();
                 }
@@ -71,7 +71,7 @@ namespace DFM.Frontend.Pages
             }
             if (oldLink != Link)
             {
-                if (!string.IsNullOrWhiteSpace(DocId))
+                if (!string.IsNullOrWhiteSpace(DocId) && !string.IsNullOrWhiteSpace(MessageID) && !string.IsNullOrWhiteSpace(MessageRole))
                 {
                     await loadDocumentModel();
                 }
@@ -84,7 +84,7 @@ namespace DFM.Frontend.Pages
         }
         protected override async Task OnInitializedAsync()
         {
-            if (!string.IsNullOrWhiteSpace(DocId))
+            if (!string.IsNullOrWhiteSpace(DocId) && !string.IsNullOrWhiteSpace(MessageID) && !string.IsNullOrWhiteSpace(MessageRole))
             {
                 await loadDocumentModel();
             }
@@ -476,7 +476,8 @@ namespace DFM.Frontend.Pages
                             // Save notification
                             NotificationModel noticeRequest = new NotificationModel
                             {
-                                id = result.Response.Id,
+                                DocID = result.Response.Id,
+                                id = Guid.NewGuid().ToString("N"),
                                 IsRead = false,
                                 ModuleType = moduleType,
                                 RoleID = documentRequest.Main.Id,
