@@ -55,8 +55,8 @@
                                     @foreach (var item in notices)
                                     {
                                         string link = item.ModuleType == ModuleType.DocumentInbound ? "inbound" : "outbound";
-                                        string urlPage = $"/pages/doc/{link}/inbox/{item.DocumentID}/{item.id}";
-                                        <MudListItem Text="@item.Title" Href="@urlPage" />
+                                        string urlPage = $"/pages/doc/{link}/inbox/{item.id}";
+                                        <MudListItem Text="@item.Title" Href="@urlPage" Icon="@Icons.Material.Filled.Inbox" />
                                     }
 
                                 </MudList>

@@ -58,7 +58,7 @@ namespace DFM.Frontend.Pages
 
             if (oldPage != Page)
             {
-                if (!string.IsNullOrWhiteSpace(DocId) && !string.IsNullOrWhiteSpace(MessageId))
+                if (!string.IsNullOrWhiteSpace(DocId))
                 {
                     await loadDocumentModel();
                 }
@@ -70,7 +70,7 @@ namespace DFM.Frontend.Pages
             }
             if (oldLink != Link)
             {
-                if (!string.IsNullOrWhiteSpace(DocId) && !string.IsNullOrWhiteSpace(MessageId))
+                if (!string.IsNullOrWhiteSpace(DocId))
                 {
                     await loadDocumentModel();
                 }
@@ -83,7 +83,7 @@ namespace DFM.Frontend.Pages
         }
         protected override async Task OnInitializedAsync()
         {
-            if (!string.IsNullOrWhiteSpace(DocId) && !string.IsNullOrWhiteSpace(MessageId))
+            if (!string.IsNullOrWhiteSpace(DocId))
             {
                 await loadDocumentModel();
             }
@@ -475,15 +475,14 @@ namespace DFM.Frontend.Pages
                             // Save notification
                             NotificationModel noticeRequest = new NotificationModel
                             {
-                                DocumentID = result.Response.Id,
-                                id = Guid.NewGuid().ToString("N"),
+                                id = result.Response.Id,
                                 IsRead = false,
                                 ModuleType = moduleType,
                                 RoleID = documentRequest.Main.Id,
                                 Title = documentRequest.RawDocument.Title,
                                 SendFrom = $"{employee.Name.Local} {employee.FamilyName.Local}"
                             };
-                            await httpService.Post<NotificationModel, CommonResponse>($"{endpoint.API}/api/v1/Notification/Create/{result.Response.Id}", noticeRequest, new AuthorizeHeader("bearer", token));
+                            await httpService.Post<NotificationModel, CommonResponse>($"{endpoint.API}/api/v1/Notification/Create", noticeRequest, new AuthorizeHeader("bearer", token));
 
                             AlertMessage("ທຸລະກຳຂອງທ່ານ ສຳເລັດ", Defaults.Classes.Position.BottomRight, Severity.Success);
                             // Send EventNotify

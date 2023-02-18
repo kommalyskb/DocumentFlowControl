@@ -90,11 +90,11 @@ namespace DFM.API.Controllers
             }
         }
 
-        [HttpPost("Create/{docID}")]
+        [HttpPost("Create")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(CommonResponseId), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateV1(string docID, [FromBody]NotificationModel request, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IActionResult> CreateV1([FromBody]NotificationModel request, CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
@@ -117,7 +117,6 @@ namespace DFM.API.Controllers
 
                 request.UserIDRead = "";
                 request.IsRead = false;
-                request.DocumentID = docID;
                 
                 var result = await notificationManager.CreateNotice(request, cancellationToken);
 
