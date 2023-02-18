@@ -222,7 +222,7 @@
             <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
                 <MudCheckBox Disabled="OnProcessing" @bind-Checked="NoNeedFolder" Label="ບໍ່ຕ້ອງການໃຫ້ໃສ່ເລກທີ່" Color="Color.Primary"></MudCheckBox>
             </MudItem>
-            @if (!NoNeedFolder!.Value)
+            @if (!NoNeedFolder)
             {
                 <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
 
@@ -365,7 +365,7 @@
     [Parameter] public EventCallback<string> Notice { get; set; }
     [Parameter] public RawDocumentData? RawDocument { get; set; }
     [Parameter] public PartialRole? MyRole { get; set; }
-    [Parameter] public bool? NoNeedFolder { get; set; }
+    [Parameter] public bool NoNeedFolder { get; set; }
     bool previewButton = false;
     string? token = "";
     private EmployeeModel? employee;

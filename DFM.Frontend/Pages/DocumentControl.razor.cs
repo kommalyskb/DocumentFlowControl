@@ -441,15 +441,7 @@ namespace DFM.Frontend.Pages
                             documentModel!.InboxType = InboxType.Outbound;
                         }
 
-                        if (noNeedFolder.HasValue)
-                        {
-                            if (noNeedFolder.Value)
-                            {
-                                rawDocument.DocNo = "";
-                                rawDocument.FolderNum = -1;
-                                rawDocument.FolderId = "";
-                            }
-                        }
+                        
 
                         documentRequest.RawDocument = rawDocument;
                         documentRequest.DocumentModel = documentModel;
@@ -681,6 +673,14 @@ namespace DFM.Frontend.Pages
                     formMode = FormMode.View;
 
                 }
+                if (string.IsNullOrWhiteSpace(rawDocument.FolderId))
+                {
+                    noNeedFolder = true;
+                }
+                else
+                {
+                    noNeedFolder = false;
+                }
             }
             catch (Exception)
             {
@@ -740,15 +740,7 @@ namespace DFM.Frontend.Pages
                 {
                     documentModel!.InboxType = InboxType.Outbound;
                 }
-                if (noNeedFolder.HasValue)
-                {
-                    if (noNeedFolder.Value)
-                    {
-                        rawDocument.DocNo = "";
-                        rawDocument.FolderNum = -1;
-                        rawDocument.FolderId = "";
-                    }
-                }
+                
                 documentRequest.RawDocument = rawDocument;
                 documentRequest.DocumentModel = documentModel;
                 // Send request for save document
