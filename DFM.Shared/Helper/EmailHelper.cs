@@ -132,7 +132,7 @@ namespace DFM.Shared.Helper
 
                         <div >
                             <div style= 'display: flex;justify-content: center; padding-top:2rem;padding-bottom:2rem;background-color: #20629b; '>
-                                <h1 style='color: #FFFFFF; text-align: center'>CSE's Document Control</h1>
+                                <h1 style='color: #FFFFFF; text-align: center'>{envConf.PageTitle}</h1>
                             </div>
                             <div  style= 'background-color: #FFFFFF; '>
        
@@ -179,15 +179,15 @@ namespace DFM.Shared.Helper
                                 </div>
                                 <div style='display:flex;padding-bottom: 0.5rem;padding-top: 0.5rem;padding-left:1rem;padding-right:1rem;'>
                                     <img src='https://cdn-icons-png.flaticon.com/512/1782/1782765.png' style= 'width:30px;height:30px;cursor: pointer;margin-right: 1rem;'/>
-                                    <span style='margin-top:auto ;margin-bottom:auto;'>{smtpConf.Email}</span>
+                                    <span style='margin-top:auto ;margin-bottom:auto;'>{envConf.ContactEmail}</span>
                                 </div>
                                 <div style='display:flex;padding-bottom: 1.5rem;padding-top: 0.5rem;padding-left:1rem;padding-right:1rem;'>
                                     <img src= 'https://cdn-icons-png.flaticon.com/512/1384/1384007.png' style= 'width:30px;height:30px;cursor: pointer;margin-right: 1rem;'/>
-                                    <span style='margin-top:auto ;margin-bottom:auto;'>021 417788-99</span>
+                                    <span style='margin-top:auto ;margin-bottom:auto;'>{envConf.ContactPhone}</span>
                                 </div>
 
                                 <div style='display: flex;justify-content:center;padding-top: 1rem;padding-bottom: 1rem;'>
-                                    <span style='margin-left:auto;margin-right: auto;'>Copyright © 2022 CHALEUN SEKONG ENERGY COMPANY LIMITED</span>
+                                    <span style='margin-left:auto;margin-right: auto;'>Copyright © {DateTime.Now.Year} {envConf.CopyRightCompany}</span>
                                 </div>
 
                         </div>
@@ -209,7 +209,7 @@ namespace DFM.Shared.Helper
 
                         <div>
                             <div style= 'display: flex;justify-content: center; padding-top:2rem;padding-bottom:2rem;background-color: #20629b; '>
-                                <h1 style='color: #FFFFFF; text-align: center'>CSE's Document Control</h1>
+                                <h1 style='color: #FFFFFF; text-align: center'>{envConf.PageTitle}</h1>
                             </div>
                             <div  style= 'background-color: #FFFFFF; '>
        
@@ -255,15 +255,15 @@ namespace DFM.Shared.Helper
                                 </div>
                                 <div style='display:flex;padding-bottom: 0.5rem;padding-top: 0.5rem;padding-left:1rem;padding-right:1rem;'>
                                     <img src='https://cdn-icons-png.flaticon.com/512/1782/1782765.png' style= 'width:30px;height:30px;cursor: pointer;margin-right: 1rem;'/>
-                                    <span style='margin-top:auto ;margin-bottom:auto;'>{smtpConf.Email}</span>
+                                    <span style='margin-top:auto ;margin-bottom:auto;'>{envConf.ContactEmail}</span>
                                 </div>
                                 <div style='display:flex;padding-bottom: 1.5rem;padding-top: 0.5rem;padding-left:1rem;padding-right:1rem;'>
                                     <img src= 'https://cdn-icons-png.flaticon.com/512/1384/1384007.png' style= 'width:30px;height:30px;cursor: pointer;margin-right: 1rem;'/>
-                                    <span style='margin-top:auto ;margin-bottom:auto;'>021 417788-99</span>
+                                    <span style='margin-top:auto ;margin-bottom:auto;'>{envConf.ContactPhone}</span>
                                 </div>
 
                                 <div style='display: flex;justify-content:center;padding-top: 1rem;padding-bottom: 1rem;'>
-                                    <span style='margin-left:auto;margin-right: auto;'>Copyright © 2022 CHALEUN SEKONG ENERGY COMPANY LIMITED</span>
+                                    <span style='margin-left:auto;margin-right: auto;'>Copyright © {DateTime.Now.Year} {envConf.CopyRightCompany}</span>
                                 </div>
 
                         </div>

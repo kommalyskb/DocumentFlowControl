@@ -13,7 +13,9 @@ namespace DFM.Shared.Configurations
         public string? PageTitle { get; set; }
         public EmailEnum Option { get; set; }
         public bool EmailNotify { get; set; }
-
+        public string? ContactPhone { get; set; }
+        public string? ContactEmail { get; set; }
+        public string? CopyRightCompany { get; set; }
     }
     public enum EmailEnum
     {
