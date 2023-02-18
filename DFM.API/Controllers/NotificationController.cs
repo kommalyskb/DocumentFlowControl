@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MyCouch.Requests;
+using Serilog;
+using System.Text.Json;
 
 namespace DFM.API.Controllers
 {
@@ -117,7 +119,7 @@ namespace DFM.API.Controllers
 
                 request.UserIDRead = "";
                 request.IsRead = false;
-                
+                Log.Information(JsonSerializer.Serialize(request));
                 var result = await notificationManager.CreateNotice(request, cancellationToken);
 
                 if (!result.Success)
