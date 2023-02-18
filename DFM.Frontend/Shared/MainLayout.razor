@@ -155,7 +155,10 @@
         {
             token = await accessToken.GetTokenAsync();
         }
-
+        if (myRoles == null)
+        {
+            myRoles = await storageHelper.GetRolesAsync();
+        }
         if (employee == null)
         {
             employee = await storageHelper.GetEmployeeProfileAsync();
@@ -230,7 +233,7 @@
         {
             myRoles = await storageHelper.GetRolesAsync();
         }
-        
+        Console.WriteLine($"[{DateTime.Now}] - MyUserID : {employee!.id}, Roles: {JsonSerializer.Serialize(myRoles)}");
         foreach (var item in myRoles)
         {
             var isInRole = validRoles.Where(x => x == item.Role.RoleID);
