@@ -1,5 +1,5 @@
 ﻿@page "/pages/doc/{Link}/{Page}"
-@page "/pages/doc/{Link}/{Page}/{DocId}"
+@page "/pages/doc/{Link}/{Page}/{DocId}/{MessageRole}"
 @inject IHttpService httpService
 @inject AccessTokenStorage accessToken
 @inject ServiceEndpoint endpoint
@@ -139,6 +139,8 @@
     [Parameter] public string? Link { get; set; }
     [Parameter] public string? Page { get; set; }
     [Parameter] public string? DocId { get; set; }
+    [Parameter] public string? MessageRole { get; set; }
+    
     private FormMode formMode;
     private TraceStatus traceStatus;
     string? roleId = "";

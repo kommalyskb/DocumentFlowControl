@@ -22,10 +22,11 @@ namespace DFM.Frontend.Pages
         PartialRole? selectedRole;
         CommonResponseId? publisher;
         readonly int delayTime = 500;
+        IEnumerable<TabItemDto>? myRoles;
 
         //protected override void OnParametersSet()
         //{
-            
+
 
         //    base.OnParametersSet();
         //}
@@ -580,8 +581,9 @@ namespace DFM.Frontend.Pages
                 if (string.IsNullOrWhiteSpace(token))
                 {
                     token = await accessToken.GetTokenAsync();
-                } 
+                }
 
+                roleId = MessageRole;
                 var doc = await httpService.Get<DocumentModel, CommonResponse>(url, new AuthorizeHeader("bearer", token));
 
                 if (!doc.Success)

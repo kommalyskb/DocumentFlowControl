@@ -55,8 +55,16 @@
                                     @foreach (var item in notices)
                                     {
                                         string link = item.ModuleType == ModuleType.DocumentInbound ? "inbound" : "outbound";
-                                        string urlPage = $"/pages/doc/{link}/inbox/{item.id}";
-                                        <MudListItem Text="@item.Title" Href="@urlPage" Icon="@Icons.Material.Filled.Inbox" />
+                                        string urlPage = $"/pages/doc/{link}/inbox/{item.id}/{item.RoleID}";
+                                        if (!item.IsRead)
+                                        {
+                                            <MudListItem IconColor="Color.Secondary" AdornmentColor="Color.Secondary" Text="@item.Title" Href="@urlPage" Icon="@Icons.Material.Filled.MarkEmailUnread" OnClick="(() => _isOpen = false)" />
+
+                                        }else
+                                        {
+                                            <MudListItem Text="@item.Title" Href="@urlPage" Icon="@Icons.Material.Filled.MarkEmailRead" OnClick="(() => _isOpen = false)" />
+
+                                        }
                                     }
 
                                 </MudList>
@@ -186,6 +194,7 @@
         }
 
         Console.WriteLine($"[{DateTime.Now}] Connect to Notify HUB: {IsConnected}");
+        await loadNotifications();
     }
     async Task connectToNotifyHub()
     {
@@ -269,7 +278,7 @@
             var result = await httpService.Get<IEnumerable<NotificationModel>, CommonResponse>(url, new AuthorizeHeader("bearer", token));
             if (result.Success)
             {
-                notices = result.Response;
+                notices = result.Response.OrderByDescending(x => x.TimeStamp);
                 newMailMessage = notices.Where(x => !x.IsRead).Count();
             }
         }
