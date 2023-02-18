@@ -220,9 +220,9 @@ namespace DFM.Shared.Repository
             try
             {
 
-                var contents = context.Where(x => roles.Contains(x.RoleID));
+                var contents = context.Where(x => roles.Contains(x.RoleID)).ToList();
 
-                if (contents.Count() == 0)
+                if (contents.Count == 0)
                 {
                     return (new CommonResponse()
                     {

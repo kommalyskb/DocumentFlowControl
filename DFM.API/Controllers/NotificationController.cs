@@ -31,6 +31,7 @@ namespace DFM.API.Controllers
         }
 
         [HttpGet("GetMyNotice")]
+        [AllowAnonymous]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(IEnumerable<NotificationModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
