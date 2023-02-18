@@ -22,6 +22,7 @@ namespace DFM.Frontend.Pages
         PartialRole? selectedRole;
         CommonResponseId? publisher;
         readonly int delayTime = 500;
+
         //protected override void OnParametersSet()
         //{
             
@@ -440,11 +441,14 @@ namespace DFM.Frontend.Pages
                             documentModel!.InboxType = InboxType.Outbound;
                         }
 
-                        if (noNeedFolder)
+                        if (noNeedFolder.HasValue)
                         {
-                            rawDocument.DocNo = "";
-                            rawDocument.FolderNum = -1;
-                            rawDocument.FolderId = "";
+                            if (noNeedFolder.Value)
+                            {
+                                rawDocument.DocNo = "";
+                                rawDocument.FolderNum = -1;
+                                rawDocument.FolderId = "";
+                            }
                         }
 
                         documentRequest.RawDocument = rawDocument;
@@ -633,6 +637,7 @@ namespace DFM.Frontend.Pages
             {
                 // Row click
                 documentModel = doc;
+
                 myRole = documentModel!.Recipients!.LastOrDefault(x => x.RecipientInfo.RoleID == roleId);
                 rawDocument = documentModel!.RawDatas!.LastOrDefault(x => x.DataID == myRole!.DataID);
                 files = rawDocument!.Attachments.Select(x => new AttachmentDto
@@ -735,11 +740,14 @@ namespace DFM.Frontend.Pages
                 {
                     documentModel!.InboxType = InboxType.Outbound;
                 }
-                if (noNeedFolder)
+                if (noNeedFolder.HasValue)
                 {
-                    rawDocument.DocNo = "";
-                    rawDocument.FolderNum = -1;
-                    rawDocument.FolderId = "";
+                    if (noNeedFolder.Value)
+                    {
+                        rawDocument.DocNo = "";
+                        rawDocument.FolderNum = -1;
+                        rawDocument.FolderId = "";
+                    }
                 }
                 documentRequest.RawDocument = rawDocument;
                 documentRequest.DocumentModel = documentModel;

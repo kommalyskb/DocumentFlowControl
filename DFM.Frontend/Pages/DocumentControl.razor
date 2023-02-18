@@ -157,7 +157,7 @@
     IList<AttachmentDto> files = new List<AttachmentDto>();
     IList<AttachmentDto> relateFiles = new List<AttachmentDto>();
     Reciepient? myRole = new();
-    bool noNeedFolder = true;
+    bool? noNeedFolder;
 
     public void Dispose()
     {
