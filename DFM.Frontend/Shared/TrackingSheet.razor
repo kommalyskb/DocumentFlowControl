@@ -17,16 +17,21 @@
         <MudTh Style="font-weight: bold; background-color: #d9dfe4">ຄຳເຫັນ</MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd>@context.RecipientInfo.Position.Local</MudTd>
-        <MudTd>@context.ReceiveDate</MudTd>
-        <MudTd>
+
+        @if(context.DocStatus == TraceStatus.Completed)
+        {
+            color = "color: #38c438";
+        }
+        <MudTd Style="@color">@context.RecipientInfo.Position.Local</MudTd>
+        <MudTd Style="@color">@context.ReceiveDate</MudTd>
+        <MudTd Style="@color">
             @isRead(context.IsRead, context.ReadDate)
         </MudTd>
-        <MudTd>@context.RecipientInfo.Fullname.Name.Local</MudTd>
-        <MudTd>@DecodeEnumStatus.decodeOperationType(context.ReceiveRoleType)</MudTd>
-        <MudTd>@DecodeEnumStatus.decodeOperationType(context.SendRoleType)</MudTd>
-        <MudTd>@DecodeEnumStatus.decodeTraceStatus(context.DocStatus)</MudTd>
-        <MudTd>@context.SendDate</MudTd>
+        <MudTd Style="@color">@context.RecipientInfo.Fullname.Name.Local</MudTd>
+        <MudTd Style="@color">@DecodeEnumStatus.decodeOperationType(context.ReceiveRoleType)</MudTd>
+        <MudTd Style="@color">@DecodeEnumStatus.decodeOperationType(context.SendRoleType)</MudTd>
+        <MudTd Style="@color">@DecodeEnumStatus.decodeTraceStatus(context.DocStatus)</MudTd>
+        <MudTd Style="@color">@context.SendDate</MudTd>
         <MudTd>
             <CommentComponent Message="@context.Comment.Comment"></CommentComponent>
         </MudTd>
@@ -42,5 +47,5 @@
 @code {
 
     [Parameter] public IEnumerable<Reciepient>? Reciepients { get; set; }
-    
+    string color = "";
 }

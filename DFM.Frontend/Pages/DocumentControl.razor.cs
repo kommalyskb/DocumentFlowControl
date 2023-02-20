@@ -23,7 +23,7 @@ namespace DFM.Frontend.Pages
         CommonResponseId? publisher;
         readonly int delayTime = 500;
         IEnumerable<TabItemDto>? myRoles;
-
+        string oldDocID = "none";
         //protected override void OnParametersSet()
         //{
 
@@ -84,6 +84,22 @@ namespace DFM.Frontend.Pages
                 }
                 oldLink = Link!;
             }
+            if (DocId == "none")
+            {
+                formMode = FormMode.List;
+            }
+
+            if (oldDocID != DocId)
+            {
+                Console.WriteLine($"[{DateTime.Now}] - Old: {oldDocID}, Doc: {DocId}");
+                oldDocID = DocId!;
+                if (!string.IsNullOrWhiteSpace(DocId) && !string.IsNullOrWhiteSpace(MessageID) && !string.IsNullOrWhiteSpace(MessageRole))
+                {
+                    await loadDocumentModel();
+                }
+            }
+
+            
         }
         protected override async Task OnInitializedAsync()
         {
@@ -157,7 +173,7 @@ namespace DFM.Frontend.Pages
 
                         if (result.Success)
                         {
-                            nav.NavigateTo($"/pages/doc/{Link}/{Page}", true);
+                            nav.NavigateTo($"/pages/doc/{Link}/{Page}/none", true);
                             AlertMessage("ທຸລະກຳຂອງທ່ານ ສຳເລັດ", Defaults.Classes.Position.BottomRight, Severity.Success);
                         }
                         else
@@ -247,7 +263,7 @@ namespace DFM.Frontend.Pages
 
                         if (result.Success)
                         {
-                            nav.NavigateTo($"/pages/doc/{Link}/{Page}", true);
+                            nav.NavigateTo($"/pages/doc/{Link}/{Page}/none", true);
                             AlertMessage("ທຸລະກຳຂອງທ່ານ ສຳເລັດ", Defaults.Classes.Position.BottomRight, Severity.Success);
                         }
                         else
@@ -322,7 +338,7 @@ namespace DFM.Frontend.Pages
 
                         if (result.Success)
                         {
-                            nav.NavigateTo($"/pages/doc/{Link}/{Page}", true);
+                            nav.NavigateTo($"/pages/doc/{Link}/{Page}/none", true);
                             AlertMessage("ທຸລະກຳຂອງທ່ານ ສຳເລັດ", Defaults.Classes.Position.BottomRight, Severity.Success);
                         }
                         else
@@ -467,11 +483,11 @@ namespace DFM.Frontend.Pages
                         {
                             if (result.Response.Code == nameof(ResultCode.NEW_DOCUMENT))
                             {
-                                nav.NavigateTo($"/pages/doc/{Link}/draft", true);
+                                nav.NavigateTo($"/pages/doc/{Link}/draft/none", true);
                             }
                             else
                             {
-                                nav.NavigateTo($"/pages/doc/{Link}/{Page}", true);
+                                nav.NavigateTo($"/pages/doc/{Link}/{Page}/none", true);
 
                             }
                             List<string>? notifyRole = new List<string>() { documentRequest.Main.Id };
@@ -592,7 +608,7 @@ namespace DFM.Frontend.Pages
 
                 if (!doc.Success)
                 {
-                    nav.NavigateTo($"/pages/doc/{Link}/draft", true);
+                    nav.NavigateTo($"/pages/doc/{Link}/draft/none", true);
                     AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, ບໍ່ສາມາດ ໂຫຼດເອກະສານໄດ້", Defaults.Classes.Position.BottomRight, Severity.Error);
                     return;
                 }
@@ -604,7 +620,7 @@ namespace DFM.Frontend.Pages
             }
             catch (Exception)
             {
-                nav.NavigateTo($"/pages/doc/{Link}/draft", true);
+                nav.NavigateTo($"/pages/doc/{Link}/draft/none", true);
                 AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, ບໍ່ສາມາດ ໂຫຼດເອກະສານໄດ້", Defaults.Classes.Position.BottomRight, Severity.Error);
             }
         }
@@ -781,11 +797,11 @@ namespace DFM.Frontend.Pages
                 {
                     if (result.Response.Code == nameof(ResultCode.NEW_DOCUMENT))
                     {
-                        nav.NavigateTo($"/pages/doc/{Link}/draft", true);
+                        nav.NavigateTo($"/pages/doc/{Link}/draft/none", true);
                     }
                     else
                     {
-                        nav.NavigateTo($"/pages/doc/{Link}/{Page}", true);
+                        nav.NavigateTo($"/pages/doc/{Link}/{Page}/none", true);
 
                     }
                     AlertMessage("ທຸລະກຳຂອງທ່ານ ສຳເລັດ", Defaults.Classes.Position.BottomRight, Severity.Success);
