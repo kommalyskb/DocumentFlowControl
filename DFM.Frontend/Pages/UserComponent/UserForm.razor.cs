@@ -31,7 +31,7 @@ namespace DFM.Frontend.Pages.UserComponent
         }
         private IEnumerable<string> PasswordCharacters(string ch)
         {
-            if (!string.IsNullOrEmpty(ch) && 6 < ch?.Length)
+            if (!string.IsNullOrEmpty(ch) && 12 < ch?.Length)
                 yield return "ອັກສອນສູງສຸດ 12 ອັກສອນ";
         }
 

@@ -56,7 +56,10 @@ namespace DFM.Frontend.Pages
             {
                 traceStatus = TraceStatus.Trash;
             }
-
+            else if (Page == "coprocess")
+            {
+                traceStatus = TraceStatus.CoProccess;
+            }
             if (oldPage != Page)
             {
                 if (!string.IsNullOrWhiteSpace(DocId) && !string.IsNullOrWhiteSpace(MessageID) && !string.IsNullOrWhiteSpace(MessageRole))
@@ -893,7 +896,6 @@ namespace DFM.Frontend.Pages
             
 
         }
-
 
         async Task onTabChangeEventAsync(PartialRole roleItem)
         {

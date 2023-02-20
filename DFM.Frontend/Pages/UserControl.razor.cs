@@ -148,6 +148,7 @@ namespace DFM.Frontend.Pages
             {
                 AlertMessage("ກະລຸນາ ປ້ອນຊື່ ພະນັກງານ ທີ່ຈະເປັນ ຜູ້ດູແລລະບົບ", Defaults.Classes.Position.BottomRight, Severity.Error);
                 onProcessing = false;
+                await InvokeAsync(StateHasChanged);
                 return;
             }
 
@@ -156,6 +157,7 @@ namespace DFM.Frontend.Pages
             {
                 AlertMessage("ກະລຸນາ ກວດເບີ່ງວ່າຂໍ້ມູນ Username, Password, Email, Phone ປ້ອນແລ້ວບໍ່", Defaults.Classes.Position.BottomRight, Severity.Error);
                 onProcessing = false;
+                await InvokeAsync(StateHasChanged);
                 return;
             }
             string isNotify = "no";
