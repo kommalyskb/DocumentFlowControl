@@ -730,7 +730,7 @@ namespace DFM.Frontend.Pages
         bool validateField()
         {
 
-            if (string.IsNullOrWhiteSpace(rawDocument!.Title) || string.IsNullOrWhiteSpace(rawDocument.ExternalDocID))
+            if (string.IsNullOrWhiteSpace(rawDocument!.Title))
             {
                 return false;
             }
