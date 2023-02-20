@@ -138,7 +138,6 @@ namespace DFM.Frontend.Pages
         }
         async Task onSaveClickAsync()
         {
-            onProcessing = true;
             if (employee == null)
             {
                 employee = await storageHelper.GetEmployeeProfileAsync();
@@ -147,8 +146,6 @@ namespace DFM.Frontend.Pages
                string.IsNullOrWhiteSpace(employeeModel!.FamilyName.Local) || string.IsNullOrWhiteSpace(employeeModel!.FamilyName.Eng))
             {
                 AlertMessage("ກະລຸນາ ປ້ອນຊື່ ພະນັກງານ ທີ່ຈະເປັນ ຜູ້ດູແລລະບົບ", Defaults.Classes.Position.BottomRight, Severity.Error);
-                onProcessing = false;
-                await InvokeAsync(StateHasChanged);
                 return;
             }
 
@@ -156,10 +153,10 @@ namespace DFM.Frontend.Pages
                 string.IsNullOrWhiteSpace(employeeModel!.Contact.Email) || string.IsNullOrWhiteSpace(employeeModel!.Contact.Phone))
             {
                 AlertMessage("ກະລຸນາ ກວດເບີ່ງວ່າຂໍ້ມູນ Username, Password, Email, Phone ປ້ອນແລ້ວບໍ່", Defaults.Classes.Position.BottomRight, Severity.Error);
-                onProcessing = false;
-                await InvokeAsync(StateHasChanged);
                 return;
             }
+            onProcessing = true;
+
             string isNotify = "no";
             if (notify)
             {

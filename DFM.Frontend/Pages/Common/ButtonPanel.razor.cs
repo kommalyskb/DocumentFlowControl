@@ -55,6 +55,15 @@ namespace DFM.Frontend.Pages.Common
                         terminateBtn = false;
                         historyBtn = false;
                     }
+
+                    if (TraceStatus == TraceStatus.CoProccess)
+                    {
+                        sendBtn = true;
+                    }
+                    else
+                    {
+                        sendBtn = false;
+                    }
                     break;
                 case FormMode.Trash:
                     createBtn = true;
@@ -90,11 +99,11 @@ namespace DFM.Frontend.Pages.Common
                     createBtn = true;
                     deleteBtn = false;
                     saveBtn = false;
-                    sendBtn = false;
                     editBtn = true;
                     terminateBtn = false;
                     restoreBtn = true;
                     historyBtn = false;
+                    sendBtn = false;
                     break;
                 case FormMode.List:
                     createBtn = false;
