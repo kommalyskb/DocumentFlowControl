@@ -143,16 +143,16 @@ namespace DFM.Frontend.Pages
             {
                 employee = await storageHelper.GetEmployeeProfileAsync();
             }
-            if (string.IsNullOrWhiteSpace(employee.Name.Local) || string.IsNullOrWhiteSpace(employee.Name.Eng) ||
-               string.IsNullOrWhiteSpace(employee.FamilyName.Local) || string.IsNullOrWhiteSpace(employee.FamilyName.Eng))
+            if (string.IsNullOrWhiteSpace(employeeModel!.Name.Local) || string.IsNullOrWhiteSpace(employeeModel!.Name.Eng) ||
+               string.IsNullOrWhiteSpace(employeeModel!.FamilyName.Local) || string.IsNullOrWhiteSpace(employeeModel!.FamilyName.Eng))
             {
                 AlertMessage("ກະລຸນາ ປ້ອນຊື່ ພະນັກງານ ທີ່ຈະເປັນ ຜູ້ດູແລລະບົບ", Defaults.Classes.Position.BottomRight, Severity.Error);
                 onProcessing = false;
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(employee.Username) || string.IsNullOrWhiteSpace(employee.Password) ||
-                string.IsNullOrWhiteSpace(employee.Contact.Email) || string.IsNullOrWhiteSpace(employee.Contact.Phone))
+            if (string.IsNullOrWhiteSpace(employeeModel!.Username) || string.IsNullOrWhiteSpace(employeeModel!.Password) ||
+                string.IsNullOrWhiteSpace(employeeModel!.Contact.Email) || string.IsNullOrWhiteSpace(employeeModel!.Contact.Phone))
             {
                 AlertMessage("ກະລຸນາ ກວດເບີ່ງວ່າຂໍ້ມູນ Username, Password, Email, Phone ປ້ອນແລ້ວບໍ່", Defaults.Classes.Position.BottomRight, Severity.Error);
                 onProcessing = false;
