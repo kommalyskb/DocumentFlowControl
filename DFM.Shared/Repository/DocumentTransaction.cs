@@ -516,15 +516,26 @@ namespace DFM.Shared.Repository
                 List<PersonalReportSummary> result = new();
                 if (countDraft.Count > 0)
                 {
-                    var draftResult = countDraft
+                    IEnumerable<ReportPersonalGroup>? draftResult;
+                    if (start == -1 && end == -1)
+                    {
+                        draftResult = countDraft
+                        .GroupBy(x => x.roleId)
+                        .Select(c => new ReportPersonalGroup { RoleID = c.Key, Count = c.Count() });
+                    }
+                    else
+                    {
+                        draftResult = countDraft
                         .Where(x => x.createDate >= start && x.createDate <= end)
                         .GroupBy(x => x.roleId)
                         .Select(c => new ReportPersonalGroup { RoleID = c.Key, Count = c.Count() });
+                    }
+
                     //draft = countDraft.Where(x => x.createDate >= start && x.createDate <= end).Count();
                     foreach (var item in draftResult)
                     {
                         var isExist = result.FirstOrDefault(x => x.RoleID!.Equals(item.RoleID));
-                        
+
                         if (isExist == null)
                         {
                             var position = countDraft.FirstOrDefault(x => x.roleId == item.RoleID);
@@ -540,16 +551,27 @@ namespace DFM.Shared.Repository
                         {
                             result[result.IndexOf(isExist)].Draft = item.Count;
                         }
-                        
+
                     }
                 }
 
                 if (countFinished.Count > 0)
                 {
-                    var finishedResult = countFinished
+                    IEnumerable<ReportPersonalGroup>? finishedResult;
+                    if (start == -1 && end == -1)
+                    {
+                        finishedResult = countFinished
+                        .GroupBy(x => x.roleId)
+                        .Select(c => new ReportPersonalGroup { RoleID = c.Key, Count = c.Count() });
+                    }
+                    else
+                    {
+                        finishedResult = countFinished
                         .Where(x => x.createDate >= start && x.createDate <= end)
                         .GroupBy(x => x.roleId)
                         .Select(c => new ReportPersonalGroup { RoleID = c.Key, Count = c.Count() });
+                    }
+                    
                     //finished = countFinished.Where(x => x.createDate >= start && x.createDate <= end).Count();
                     foreach (var item in finishedResult)
                     {
@@ -575,10 +597,21 @@ namespace DFM.Shared.Repository
 
                 if (countInprogress.Count > 0)
                 {
-                    var inprogressResult = countInprogress
+                    IEnumerable<ReportPersonalGroup>? inprogressResult;
+                    if (start == -1 && end == -1)
+                    {
+                        inprogressResult = countInprogress
+                        .GroupBy(x => x.roleId)
+                        .Select(c => new ReportPersonalGroup { RoleID = c.Key, Count = c.Count() });
+                    }
+                    else
+                    {
+                        inprogressResult = countInprogress
                         .Where(x => x.createDate >= start && x.createDate <= end)
                         .GroupBy(x => x.roleId)
                         .Select(c => new ReportPersonalGroup { RoleID = c.Key, Count = c.Count() });
+                    }
+                    
                     //inprogress = countInprogress.Where(x => x.createDate >= start && x.createDate <= end).Count();
                     foreach (var item in inprogressResult)
                     {
@@ -621,7 +654,7 @@ namespace DFM.Shared.Repository
                     inboxType = request.inboxType,
                     roleID = request.roleID
                 };
-                
+
 
                 List<QueryReportResponse> countDraft = await queryPersonalReport(req, "report_draft", cancellationToken);
                 List<QueryReportResponse> countFinished = await queryPersonalReport(req, "report_finished", cancellationToken);

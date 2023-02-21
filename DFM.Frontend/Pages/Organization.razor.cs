@@ -30,6 +30,12 @@ namespace DFM.Frontend.Pages
 
         async Task onSaveClickAsync()
         {
+            if (string.IsNullOrWhiteSpace(roleTreeModel!.Publisher) || string.IsNullOrWhiteSpace(roleTreeModel!.Role.Display.Local) ||
+                string.IsNullOrWhiteSpace(roleTreeModel!.Role.Display.Eng) || string.IsNullOrWhiteSpace(roleTreeModel!.Employee.UserID))
+            {
+                AlertMessage("ກະລຸນາ ປ້ອນຂໍ້ມູນໃຫ້ຄົບຖ້ວນ", Defaults.Classes.Position.BottomRight, Severity.Error);
+                return;
+            }
             onProcessing = true;
             if (employee == null)
             {
@@ -39,13 +45,6 @@ namespace DFM.Frontend.Pages
             if (string.IsNullOrWhiteSpace(token))
             {
                 token = await accessToken.GetTokenAsync();
-            }
-            if (string.IsNullOrWhiteSpace(roleTreeModel!.Publisher) || string.IsNullOrWhiteSpace(roleTreeModel!.Role.Display.Local) ||
-                string.IsNullOrWhiteSpace(roleTreeModel!.Role.Display.Eng) || string.IsNullOrWhiteSpace(roleTreeModel!.Employee.UserID))
-            {
-                AlertMessage("ກະລຸນາ ປ້ອນຂໍ້ມູນໃຫ້ຄົບຖ້ວນ", Defaults.Classes.Position.BottomRight, Severity.Error);
-                onProcessing = false;
-                return;
             }
 
             // Send request for save document

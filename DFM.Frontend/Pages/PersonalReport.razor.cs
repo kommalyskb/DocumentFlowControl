@@ -5,6 +5,7 @@ using Elasticsearch.Net;
 using HttpClientService;
 using Minio.DataModel;
 using MudBlazor;
+using MyCouch;
 using Newtonsoft.Json.Linq;
 using StackExchange.Redis;
 using static MudBlazor.CategoryTypes;
@@ -26,13 +27,16 @@ namespace DFM.Frontend.Pages
         protected override async Task OnInitializedAsync()
         {
             oldLink = Link!;
+            InboxType inboxType = InboxType.Inbound;
             if (Link == "inbound")
             {
                 current = "ລາຍງານເອກະສານຂາເຂົ້າ";
+                inboxType = InboxType.Inbound;
             }
             else
             {
                 current = "ລາຍງານເອກະສານຂາອອກ";
+                inboxType = InboxType.Outbound;
             }
             if (employee == null)
             {
@@ -50,12 +54,29 @@ namespace DFM.Frontend.Pages
 
             roleIds = tabItems.Select(x => x.Role.RoleID).ToList()!;
 
+            onProcessing = true;
+            string url = $"{endpoint.API}/api/v1/Document/GetPersonalReport";
+            var result = await httpService.Post<GetPersonalReportRequest, List<PersonalReportSummary>>(url, new GetPersonalReportRequest
+            {
+                end = -1,
+                start = -1,
+                inboxType = inboxType,
+                roleIDs = roleIds
+            }, new AuthorizeHeader("bearer", token));
+            if (result.Success)
+            {
+                reportSummary = result.Response;
+
+            }
+            onProcessing = false;
+
             await InvokeAsync(StateHasChanged);
         }
-        protected override void OnParametersSet()
+        protected override async Task OnParametersSetAsync()
         {
             if (oldLink != Link)
             {
+                InboxType inboxType = InboxType.Inbound;
                 isDrillDown = ReportDrillDownEnum.Search;
                 oldLink = Link!;
                 reportSummary = new();
@@ -65,11 +86,28 @@ namespace DFM.Frontend.Pages
                 if (Link == "inbound")
                 {
                     current = "ລາຍງານເອກະສານຂາເຂົ້າ";
+                    inboxType = InboxType.Inbound;
                 }
                 else
                 {
                     current = "ລາຍງານເອກະສານຂາອອກ";
+                    inboxType = InboxType.Outbound;
                 }
+                onProcessing = true;
+                string url = $"{endpoint.API}/api/v1/Document/GetPersonalReport";
+                var result = await httpService.Post<GetPersonalReportRequest, List<PersonalReportSummary>>(url, new GetPersonalReportRequest
+                {
+                    end = -1,
+                    start = -1,
+                    inboxType = inboxType,
+                    roleIDs = roleIds
+                }, new AuthorizeHeader("bearer", token));
+                if (result.Success)
+                {
+                    reportSummary = result.Response;
+
+                }
+                onProcessing = false;
             }
             base.OnParametersSet();
         }
@@ -81,7 +119,11 @@ namespace DFM.Frontend.Pages
             string url = $"{endpoint.API}/api/v1/Document/GetPersonalReport";
             var result = await httpService.Post<GetPersonalReportRequest, List<PersonalReportSummary>>(url, callback, new AuthorizeHeader("bearer", token));
 
-            reportSummary = result.Response;
+            if (result.Success)
+            {
+                reportSummary = result.Response;
+
+            }
             onProcessing = false;
             await InvokeAsync(StateHasChanged);
 

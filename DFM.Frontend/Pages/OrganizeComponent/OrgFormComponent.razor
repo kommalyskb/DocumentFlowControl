@@ -66,33 +66,34 @@
         <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
             <h2>ຜູ້ໃຫ້ທິດຊີ້ນຳ</h2>
         </MudItem>
-        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-            @if (!groupList.IsNullOrEmpty())
-            {
+        @if (!groupList.IsNullOrEmpty())
+        {
+            <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+
                 <MudSelect Margin="Margin.Dense" SelectedValues="groupSelectValues" SelectedValuesChanged="onSelectedGroupChanged" T="string" @bind-Value="@group" HelperText="ຝ່າຍທີ່ສັງກັດ" Label="ສັງກັດ" Variant="Variant.Outlined" Disabled="@disabled">
 
                     @foreach (var item in groupList!)
                     {
-                        <MudSelectItem T="string" Value="item.Role.RoleID">@item.Role.Display.Local - @item.Employee.Name.Local</MudSelectItem>
+                        <MudSelectItem T="string" Value="item.Role.RoleID">@item.Role.Display.Local</MudSelectItem>
                     }
                 </MudSelect>
-            }
+            </MudItem>
+        }
+        @if (!leaderList.IsNullOrEmpty())
+        {
+            <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
 
-        </MudItem>
-        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-            @if (!leaderList.IsNullOrEmpty())
-            {
                 <MudSelect Margin="Margin.Dense" T="string" SelectedValues="parentSelectValues" SelectedValuesChanged="onSelectedParentChanged" @bind-Value="RoleTreeModel!.ParentID" HelperText="ຜູ້ໃຫ້ທິດຊີ້ນຳ" Label="ຜູ້ໃຫ້ທິດ" Variant="Variant.Outlined" Disabled="@disabled">
 
                     @foreach (var item in leaderList!)
                     {
-                        <MudSelectItem T="string" Value="item.Role.RoleID">@item.Role.Display.Local - @item.Employee.Name.Local</MudSelectItem>
+                        <MudSelectItem T="string" Value="item.Role.RoleID">@item.Role.Display.Local</MudSelectItem>
                     }
                 </MudSelect>
-            }
-            
-        </MudItem>
-        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+            </MudItem>
+        }
+        
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
             <MudTextField Margin="Margin.Dense" T="string" @bind-Value="RoleTreeModel!.Publisher" Counter="1000" MaxLength="1000" Disabled="@disabled" Immediate="true" Variant="Variant.Outlined" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ຊື່ປະກາດໃຊ້ທີ່ສະແດງໃນ ແຜນຜັງ" Label="ຊື່ປະກາດໃຊ້" />
         </MudItem>
         <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">

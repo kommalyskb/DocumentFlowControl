@@ -9,7 +9,6 @@
 <MudContainer>
 
     <MudGrid>
-
         <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
             <h2>ຂໍ້ມູນພະນັກງານ</h2>
         </MudItem>
@@ -28,7 +27,7 @@
         </MudItem>
 
         <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-            <MudDatePicker Variant="Variant.Outlined" Margin="Margin.Dense"  Disabled="OnProcessing" @bind-Value="Employee!.Dob" Required="true" PickerVariant="PickerVariant.Dialog" Label="ວັນເດືອນປີເກີດ" HelperText="ວັນເດືອນປີເກີດ" DateFormat="dd/MM/yyyy" />
+            <MudDatePicker Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="OnProcessing" @bind-Text="Employee!.Dob" Required="true" PickerVariant="PickerVariant.Dialog" Label="ວັນເດືອນປີເກີດ" HelperText="ວັນເດືອນປີເກີດ" DateFormat="dd/MM/yyyy" />
         </MudItem>
         <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
             <MudSelect Margin="Margin.Dense" Disabled="OnProcessing" @bind-Value="Employee!.Gender" T="Gender" HelperText="ເພດ" Label="ເພດ" Variant="Variant.Outlined">
@@ -131,7 +130,7 @@
 
         </MudItem>
         <MudItem xs="12" md="6">
-            <img src="@imageUri" />
+            <MudImage Style="margin: auto" Src="@imageUri" Alt="photo" Height="120" Width="120" Class="mr-2 rounded-lg" ObjectFit="ObjectFit.Cover" Elevation="25" />
         </MudItem>
     </MudGrid>
 </MudContainer>

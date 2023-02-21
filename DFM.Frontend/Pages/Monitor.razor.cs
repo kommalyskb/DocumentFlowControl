@@ -3,7 +3,9 @@ using DFM.Shared.DTOs;
 using DFM.Shared.Entities;
 using HttpClientService;
 using MudBlazor;
+using MyCouch;
 using Newtonsoft.Json.Linq;
+using System;
 
 namespace DFM.Frontend.Pages
 {
@@ -20,14 +22,19 @@ namespace DFM.Frontend.Pages
         private ReportClickDTO? itemClick = new();
         protected override async Task OnInitializedAsync()
         {
+            onProcessing = true;
+
+            InboxType inboxType = InboxType.Inbound;
             oldLink = Link!;
             if (Link == "inbound")
             {
                 current = "ເອກະສານຂາເຂົ້າ";
+                inboxType = InboxType.Inbound;
             }
             else
             {
                 current = "ເອກະສານຂາອອກ";
+                inboxType = InboxType.Outbound;
             }
             if (employee == null)
             {
@@ -45,16 +52,32 @@ namespace DFM.Frontend.Pages
             {
                 //tabItems = result.Response.ToList();
                 roleIds = result.Response.Select(x => x.Role.RoleID).ToList()!;
+                url = $"{endpoint.API}/api/v1/Document/GetPersonalReport";
+                var reportResult = await httpService.Post<GetPersonalReportRequest, List<PersonalReportSummary>>(url, new GetPersonalReportRequest
+                {
+                    end = -1,
+                    start = -1,
+                    inboxType = inboxType,
+                    roleIDs = roleIds
+                }, new AuthorizeHeader("bearer", token));
+                if (reportResult.Success)
+                {
+                    reportSummary = reportResult.Response;
+
+                }
             }
+            onProcessing = false;
 
             await InvokeAsync(StateHasChanged);
 
         }
 
-        protected override void OnParametersSet()
+        protected override async Task OnParametersSetAsync()
         {
             if (oldLink != Link)
             {
+                onProcessing = true;
+                InboxType inboxType = InboxType.Inbound;
                 isDrillDown = ReportDrillDownEnum.Search;
                 oldLink = Link!;
                 reportSummary = new();
@@ -64,13 +87,28 @@ namespace DFM.Frontend.Pages
                 if (Link == "inbound")
                 {
                     current = "ລາຍງານເອກະສານຂາເຂົ້າ";
+                    inboxType = InboxType.Inbound;
                 }
                 else
                 {
                     current = "ລາຍງານເອກະສານຂາອອກ";
+                    inboxType = InboxType.Outbound;
                 }
+                string url = $"{endpoint.API}/api/v1/Document/GetPersonalReport";
+                var reportResult = await httpService.Post<GetPersonalReportRequest, List<PersonalReportSummary>>(url, new GetPersonalReportRequest
+                {
+                    end = -1,
+                    start = -1,
+                    inboxType = inboxType,
+                    roleIDs = roleIds
+                }, new AuthorizeHeader("bearer", token));
+                if (reportResult.Success)
+                {
+                    reportSummary = reportResult.Response;
+
+                }
+                onProcessing = false;
             }
-            base.OnParametersSet();
         }
 
         private async Task onSearch(GetPersonalReportRequest callback)

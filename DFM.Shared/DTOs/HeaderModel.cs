@@ -18,5 +18,12 @@ namespace DFM.Shared.DTOs
         [JsonProperty("_rev")]
         [Indexed]
         public string? rev { get; set; }
+
+        [JsonProperty("recordDate")]
+        [Indexed]
+        public string? RecordDate { get; set; } = $"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}";
+        [JsonProperty("lastModified")]
+        [Indexed]
+        public string? LastModified { get; set; } = $"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}";
     }
 }

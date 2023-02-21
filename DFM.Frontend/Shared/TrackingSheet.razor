@@ -18,9 +18,17 @@
     </HeaderContent>
     <RowTemplate>
 
-        @if(context.DocStatus == TraceStatus.Completed)
+        @if (context.DocStatus == TraceStatus.Completed || context.DocStatus == TraceStatus.Terminated)
         {
             color = "color: #38c438";
+        }
+        else if (!context.IsRead)
+        {
+            color = "color: #ff4081ff";
+        }
+        else
+        {
+            color = "";
         }
         <MudTd Style="@color">@context.RecipientInfo.Position.Local</MudTd>
         <MudTd Style="@color">@context.ReceiveDate</MudTd>
