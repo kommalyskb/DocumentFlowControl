@@ -15,5 +15,6 @@ namespace DFM.Shared.DTOs
         public string? Email { get; set; }
         public string? EmployeeID { get; set; }
         public string? Gender { get; set; }
+        public string? RecordDate { get; set; }
     }
 }

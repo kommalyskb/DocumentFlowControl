@@ -38,12 +38,18 @@ namespace DFM.Frontend.Pages
             {
                 if (isDelete.Value)
                 {
-                    // Delete button had fire
-                    onProcessing = true;
                     if (employee == null)
                     {
                         employee = await storageHelper.GetEmployeeProfileAsync();
                     }
+                    if (employeeModel!.id == employee!.id)
+                    {
+                        AlertMessage("ທ່ານບໍ່ສາມາດລຶບ User ຕົວເອງໄດ້ໃນຂະນະທີ່ໃຊ້ງານ", Defaults.Classes.Position.BottomRight, Severity.Warning);
+                        return;
+                    }
+                    // Delete button had fire
+                    onProcessing = true;
+                    
                     await InvokeAsync(StateHasChanged);
                     string url = $"{endpoint.API}/api/v1/Employee/RemoveItem/{employeeModel!.id}";
                     if (string.IsNullOrWhiteSpace(token))
@@ -133,7 +139,7 @@ namespace DFM.Frontend.Pages
         }
         private IEnumerable<string> PasswordCharacters(string ch)
         {
-            if (!string.IsNullOrEmpty(ch) && 6 < ch?.Length)
+            if (!string.IsNullOrEmpty(ch) && 12 < ch?.Length)
                 yield return "ອັກສອນສູງສຸດ 12 ອັກສອນ";
         }
         async Task onSaveClickAsync()

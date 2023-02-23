@@ -63,7 +63,7 @@ namespace DFM.Frontend.Pages.UserComponent
                     Gender = x.Gender == Gender.Male ? "ທ່ານ" : "ທ່ານ ນາງ",
                     Id = x.id,
                     Phone = x.Contact.Phone,
-                    
+                    RecordDate = x.RecordDate
                 }).ToList();
             }
         }

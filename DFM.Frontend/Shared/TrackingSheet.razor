@@ -41,7 +41,11 @@
         <MudTd Style="@color">@DecodeEnumStatus.decodeTraceStatus(context.DocStatus, context.IsRead)</MudTd>
         <MudTd>@context.SendDate</MudTd>
         <MudTd>
-            <CommentComponent Message="@context.Comment.Comment"></CommentComponent>
+            @if (!string.IsNullOrEmpty(context.Comment.Comment))
+            {
+                <CommentComponent Message="@context.Comment.Comment"></CommentComponent>
+
+            }
         </MudTd>
     </RowTemplate>
     <FooterContent>

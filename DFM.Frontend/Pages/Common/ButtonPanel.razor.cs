@@ -58,19 +58,19 @@ namespace DFM.Frontend.Pages.Common
                         createBtn = true;
                         deleteBtn = true;
                         saveBtn = true;
-                        sendBtn = false;
+                        //sendBtn = false;
                         editBtn = true;
                         restoreBtn = true;
                         terminateBtn = false;
                         historyBtn = false;
-                        //if (TraceStatus == TraceStatus.CoProccess)
-                        //{
-                        //    sendBtn = true;
-                        //}
-                        //else
-                        //{
-                        //    sendBtn = false;
-                        //}
+                        if (TraceStatus == TraceStatus.CoProccess)
+                        {
+                            sendBtn = true;
+                        }
+                        else
+                        {
+                            sendBtn = false;
+                        }
                     }
 
                     

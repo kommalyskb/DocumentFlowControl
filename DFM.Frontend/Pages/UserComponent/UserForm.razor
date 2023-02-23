@@ -58,7 +58,7 @@
         else
         {
             <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-                <MudField Margin="Margin.Dense"  Label="Username" Variant="Variant.Outlined">@Employee!.Username</MudField>
+                <MudTextField Margin="Margin.Dense" Disabled="OnProcessing" @bind-Value="Employee!.Username" Required="true" T="string" Counter="12" MaxLength="12" Immediate="true" Variant="Variant.Outlined" Validation="@(new Func<string, IEnumerable<string>>(UserCharacters))" HelperText="Username ທີ່ໃຊ້ລັອກອິນລະບົບ" Label="Username" />
             </MudItem>
             <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
                 <MudField Margin="Margin.Dense"  Label="Password" Variant="Variant.Outlined">******</MudField>

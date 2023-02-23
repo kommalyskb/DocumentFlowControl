@@ -12,7 +12,7 @@ namespace DFM.Frontend.Pages.UserComponent
     {
         private EmployeeModel? employee;
         string? token = "";
-        string? imageUri = "";
+        string? imageUri = "images/user.png";
         private IEnumerable<string> MaxCharacters(string ch)
         {
             if (!string.IsNullOrEmpty(ch) && 1000 < ch?.Length)
