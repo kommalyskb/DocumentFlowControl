@@ -25,14 +25,22 @@ namespace DFM.Shared.Helper
                     return "ບໍ່ມີການດຳເນີນການ";
             }
         }
-        public static string decodeTraceStatus(TraceStatus traceStatus)
+        public static string decodeTraceStatus(TraceStatus traceStatus, bool isRead = true)
         {
             switch (traceStatus)
             {
                 case TraceStatus.Draft:
                     return "ສະບັບຮ່າງ";
                 case TraceStatus.InProgress:
-                    return "ກຳລັງດຳເນີນການ";
+                    if (isRead)
+                    {
+                        return "ກຳລັງດຳເນີນການ";
+                    }
+                    else
+                    {
+                        return "ລໍຖ້າກຳເນີນງານ";
+                    }
+                   
                 case TraceStatus.Completed:
                     return "ສຳເລັດແລ້ວ";
                 case TraceStatus.Revoked:
@@ -42,7 +50,14 @@ namespace DFM.Shared.Helper
                 case TraceStatus.Following:
                     return "ຕິດຕາມ";
                 case TraceStatus.CoProccess:
-                    return "ແກ້ໄຂຮ່ວມ";
+                    if (isRead)
+                    {
+                        return "ກຳລັງດຳເນີນການ";
+                    }
+                    else
+                    {
+                        return "ລໍຖ້າກຳເນີນງານ";
+                    }
                 case TraceStatus.Rejected:
                     return "ຍົກເລີກ";
                 case TraceStatus.Trash:

@@ -38,7 +38,7 @@
         <MudTd>@context.RecipientInfo.Fullname.Name.Local</MudTd>
         <MudTd>@DecodeEnumStatus.decodeOperationType(context.ReceiveRoleType)</MudTd>
         <MudTd>@DecodeEnumStatus.decodeOperationType(context.SendRoleType)</MudTd>
-        <MudTd Style="@color">@DecodeEnumStatus.decodeTraceStatus(context.DocStatus)</MudTd>
+        <MudTd Style="@color">@DecodeEnumStatus.decodeTraceStatus(context.DocStatus, context.IsRead)</MudTd>
         <MudTd>@context.SendDate</MudTd>
         <MudTd>
             <CommentComponent Message="@context.Comment.Comment"></CommentComponent>
