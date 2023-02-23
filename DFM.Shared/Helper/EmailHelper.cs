@@ -12,6 +12,9 @@ using Serilog;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using SendGrid;
 using SendGrid.Helpers.Mail;
+using System.Net.Mime;
+using System.Net.Http;
+using System.Drawing;
 
 namespace DFM.Shared.Helper
 {
@@ -57,11 +60,11 @@ namespace DFM.Shared.Helper
                 {
                     message.To.Add(item);
                 }
-
+                message.IsBodyHtml = true;
                 AlternateView htmlView = AlternateView.CreateAlternateViewFromString(
                   $"{emailProperty.Body}",
                   null,
-                  "text/html"
+                  MediaTypeNames.Text.Html
                 );
 
 
@@ -72,14 +75,14 @@ namespace DFM.Shared.Helper
                     using (SmtpClient smtp = new SmtpClient())
                     {
 
-                        smtp.Host = smtpConf.Server;
+                        smtp.Host = smtpConf.Server!;
                         smtp.Port = smtpConf.Port;
                         smtp.EnableSsl = true;
 
                         NetworkCredential netCre = new NetworkCredential(smtpConf.Email, smtpConf.Password);
                         smtp.UseDefaultCredentials = false;
                         smtp.Credentials = netCre;
-
+                        smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
                         await smtp.SendMailAsync(message);
 
                     }
@@ -126,13 +129,13 @@ namespace DFM.Shared.Helper
                         <meta charset= 'UTF-8 '>
                         <meta http-equiv= 'X-UA-Compatible ' content= 'IE=edge '>
                         <meta name= 'viewport ' content= 'width=device-width, initial-scale=1.0 '>
-                        <title>Welcome To Document Control Flow System</title>
+                        <title>Welcome To {envConf.PageTitle}</title>
                     </head>
-                    <body style= 'background-color: #F1F1F1; padding-left: 28%;padding-right: 28%;'>
+                    <body style='background-color: #F1F1F1; padding-left: 10%;padding-right: 10%;'>
 
-                        <div >
+                        <div>
                             <div style= 'display: flex;justify-content: center; padding-top:2rem;padding-bottom:2rem;background-color: #20629b; '>
-                                <h1 style='color: #FFFFFF; text-align: center'>{envConf.PageTitle}</h1>
+                                <h1 style='color: #FFFFFF; text-align: center; margin-left:auto;margin-right: auto;'>{envConf.PageTitle}</h1>
                             </div>
                             <div  style= 'background-color: #FFFFFF; '>
        
@@ -141,8 +144,8 @@ namespace DFM.Shared.Helper
                                     </div>
                                     <div style='display: flex;padding:0 1rem 1rem 1rem;'>
                                         <div style='padding-right: 1rem;'>ທ່ານ {name} ລົງທະບຽນສຳເລັດເລັດແລ້ວ ກະລຸນາໃຊ້ username: 
-                                         <span style= 'font-size:1.2rem;font-weight: bold; '>{username}</span></span> ແລະລະຫັດຜ່ານຂອງທ່ານແມ່ນ 
-                                         <span style= 'font-size:1.2rem;font-weight: bold; '>{password}</span></span>
+                                         <span style= 'font-size:1.2rem;font-weight: bold; '>{username}</span> ແລະ ລະຫັດຜ່ານຂອງທ່ານແມ່ນ 
+                                         <span style= 'font-size:1.2rem;font-weight: bold; '>{password}</span>
                                         </div>
                                     </div>
                                     <div style='display: flex;padding: 0 1rem 1rem 1rem;'>
@@ -152,21 +155,36 @@ namespace DFM.Shared.Helper
                                             <h3 style= 'font-weight:bold;margin: 0;'>ລາຍລະອຽດການລົງທະບຽນ</h5>
                                     </div>
                                     <div style='display: flex;padding: 0 1rem 1rem 1rem;'>
-                                            <form>
-                                                <div style='display: block;'>
-                                                    <span style= 'font-weight: bold; '>ຊື່ ແລະ ນາມສະກຸນ: </span>
-                                                    <span style='padding-left: 0.75rem;'>{name}</span>
-                                                </div>
-                                                <div style='display: block;'>
-                                                    <span style= 'font-weight: bold; '>Email: </span>
-                                                    <span style='padding-left: 0.75rem;'>{username}</span>
-                                                </div>
-                                                <div style='display: block;'>
-                                                    <span style= 'font-weight: bold; '>ວັນທີ່ລົງທະບຽນ: </span>
-                                                    <span style='padding-left: 0.75rem;'>{DateTime.Now.ToString("dd/MM/yyyy")}</span>
-                                                </div>
-                                            </form>
-                                        </div>
+                                        <table>
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <span style= 'font-weight: bold; '>ຊື່ ແລະ ນາມສະກຸນ: </span>
+                                                    </td>
+                                                    <td>
+                                                        <span style='padding-left: 0.75rem;'>{name}</span>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <span style= 'font-weight: bold; '>Email: </span>
+                                                    </td>
+                                                    <td>
+                                                        <span style='padding-left: 0.75rem;'>{username}</span>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                         <span style= 'font-weight: bold; '>ວັນທີ່ລົງທະບຽນ: </span>
+                                                    </td>
+                                                    <td>
+                                                        <span style='padding-left: 0.75rem;'>{DateTime.Now.ToString("dd/MM/yyyy HH:mm")}</span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                           
+                                    </div>
  
                                 <div style='display: d-flex; border-bottom: 1px solid #192664;margin-left: 1rem;margin-right: 1rem;'></div>
                                 
@@ -186,7 +204,7 @@ namespace DFM.Shared.Helper
                                     <span style='margin-top:auto ;margin-bottom:auto;'>{envConf.ContactPhone}</span>
                                 </div>
 
-                                <div style='display: flex;justify-content:center;padding-top: 1rem;padding-bottom: 1rem;'>
+                                <div style='display: flex;padding: 0 1rem 1rem 1rem;'>
                                     <span style='margin-left:auto;margin-right: auto;'>Copyright © {DateTime.Now.Year} {envConf.CopyRightCompany}</span>
                                 </div>
 
@@ -203,13 +221,14 @@ namespace DFM.Shared.Helper
                         <meta charset= 'UTF-8 '>
                         <meta http-equiv= 'X-UA-Compatible ' content= 'IE=edge '>
                         <meta name= 'viewport ' content= 'width=device-width, initial-scale=1.0 '>
-                        <title>Welcome To Document Control Flow System</title>
+                        <title>Welcome To {envConf.PageTitle}</title>
+                        
                     </head>
                     <body style= 'background-color: #F1F1F1; padding-left: 28%;padding-right: 28%;'>
 
                         <div>
                             <div style= 'display: flex;justify-content: center; padding-top:2rem;padding-bottom:2rem;background-color: #20629b; '>
-                                <h1 style='color: #FFFFFF; text-align: center'>{envConf.PageTitle}</h1>
+                                <h1 style='color: #FFFFFF; text-align: center; margin-left:auto;margin-right: auto;'>{envConf.PageTitle}</h1>
                             </div>
                             <div  style= 'background-color: #FFFFFF; '>
        
@@ -218,7 +237,7 @@ namespace DFM.Shared.Helper
                                     </div>
                                     <div style='display: flex;padding:0 1rem 1rem 1rem;'>
                                         <div style='padding-right: 1rem;'>ມີເອກະສານສົ່ງຫາທ່ານ ກະລຸນາເຂົ້າກວດສອບເອກະສານ
-                                         <span style= 'font-size:1.2rem;font-weight: bold;'>{link}</span></span>
+                                         <a href='{link}'>ກົດລິ້ງບ່ອນນີ້</a>
                                         </div>
                                     </div>
                                     <div style='display: flex;padding: 0 1rem 1rem 1rem;'>
@@ -228,21 +247,35 @@ namespace DFM.Shared.Helper
                                             <h3 style= 'font-weight:bold;margin: 0;'>ລາຍລະອຽດເອກະສານ</h5>
                                     </div>
                                     <div style='display: flex;padding: 0 1rem 1rem 1rem;'>
-                                            <form>
-                                                <div style='display: block;'>
-                                                    <span style= 'font-weight: bold; '>ສົ່ງຈາກ: </span>
-                                                    <span style='padding-left: 0.75rem;'>{from}</span>
-                                                </div>
-                                                <div style='display: block;'>
-                                                    <span style= 'font-weight: bold; '>ຫົວຂໍ້: </span>
-                                                    <span style='padding-left: 0.75rem;'>{title}</span>
-                                                </div>
-                                                <div style='display: block;'>
-                                                    <span style= 'font-weight: bold; '>ວັນທີສົ່ງເອກະສານ: </span>
-                                                    <span style='padding-left: 0.75rem;'>{DateTime.Now.ToString("dd/MM/yyyy HH:mm")}</span>
-                                                </div>
-                                            </form>
-                                        </div>
+                                        <table>
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <span style= 'font-weight: bold; '>ສົ່ງຈາກ: </span>
+                                                    </td>
+                                                    <td>
+                                                        <span style='padding-left: 0.75rem;'>{from}</span>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <span style= 'font-weight: bold; '>ຫົວຂໍ້: </span>
+                                                    </td>
+                                                    <td>
+                                                        <span style='padding-left: 0.75rem;'>{title}</span>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                         <span style= 'font-weight: bold; '>ວັນທີສົ່ງເອກະສານ: </span>
+                                                    </td>
+                                                    <td>
+                                                        <span style='padding-left: 0.75rem;'>{DateTime.Now.ToString("dd/MM/yyyy HH:mm")}</span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
  
                                 <div style='display: d-flex; border-bottom: 1px solid #192664;margin-left: 1rem;margin-right: 1rem;'></div>
                                 
@@ -262,7 +295,7 @@ namespace DFM.Shared.Helper
                                     <span style='margin-top:auto ;margin-bottom:auto;'>{envConf.ContactPhone}</span>
                                 </div>
 
-                                <div style='display: flex;justify-content:center;padding-top: 1rem;padding-bottom: 1rem;'>
+                                <div style='display: flex;padding: 0 1rem 1rem 1rem;'>
                                     <span style='margin-left:auto;margin-right: auto;'>Copyright © {DateTime.Now.Year} {envConf.CopyRightCompany}</span>
                                 </div>
 
