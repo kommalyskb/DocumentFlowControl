@@ -9,9 +9,34 @@ using StackExchange.Redis;
 using System.Text.Json;
 using Microsoft.AspNetCore.ResponseCompression;
 using DFM.Frontend.Hubs;
+using Serilog;
+using Serilog.Sinks.Elasticsearch;
 
 var builder = WebApplication.CreateBuilder(args);
+#region Custom log used serial log
 
+builder.Host.UseSerilog((context, configuration) =>
+{
+    configuration.Enrich.FromLogContext()
+    .Enrich.WithMachineName()
+    .WriteTo.Console()
+    .WriteTo.Elasticsearch
+    (
+        new ElasticsearchSinkOptions
+        (
+            new Uri(context.Configuration["LogServer:Uri"])
+        )
+        {
+            IndexFormat = $"{context.Configuration["AppName"]}-logs-{context.HostingEnvironment.EnvironmentName?.ToLower().Replace(".", "-")}-{DateTime.Now:yyyy-MM}",
+            AutoRegisterTemplate = true,
+            NumberOfShards = 2,
+            NumberOfReplicas = 1
+        }
+    )
+    .Enrich.WithProperty("Environment", context.HostingEnvironment.EnvironmentName)
+    .ReadFrom.Configuration(context.Configuration);
+});
+#endregion
 //#region Change appsettings when in develop
 //#if DEBUG
 //builder.Configuration.AddJsonFile("appsettings.Development.json", false, true);

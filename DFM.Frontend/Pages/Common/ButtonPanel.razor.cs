@@ -140,10 +140,11 @@ namespace DFM.Frontend.Pages.Common
         }
         protected override Task OnParametersSetAsync()
         {
-            if (oldMode != FormMode)
-            {
-                disableButton();
-            }
+            //if (oldMode != FormMode)
+            //{
+            //    disableButton();
+            //}
+            disableButton();
             switch (FormMode)
             {
                 case FormMode.View:

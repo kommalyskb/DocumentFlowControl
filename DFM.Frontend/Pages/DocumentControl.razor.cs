@@ -726,6 +726,7 @@ namespace DFM.Frontend.Pages
             {
                 AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, (INTERNAL_SERVER_ERROR)", Defaults.Classes.Position.BottomRight, Severity.Error);
             }
+
            
         }
         bool validateField()
