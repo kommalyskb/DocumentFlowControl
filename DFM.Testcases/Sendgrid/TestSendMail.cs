@@ -35,7 +35,7 @@ namespace DFM.Testcases.Sendgrid
                 MailMessage message = new MailMessage();
                 message.From = new MailAddress("doc.cse@csenergy.la");
                 message.Subject = "CSE Document Notify";
-                message.To.Add("kommalyskb@gmail.com");
+                message.To.Add("phetmany.i@csenergy.la");
 
                 AlternateView htmlView = AlternateView.CreateAlternateViewFromString(
                   $"{body}",
