@@ -137,7 +137,7 @@
     IEnumerable<TabItemDto>? myRoles;
     int newMailMessage = 0;
     private HubConnection? hubConnection;
-
+    private CancellationTokenSource cts = new CancellationTokenSource();
 
     private MudTheme customTheme = new()
         {
@@ -279,13 +279,15 @@
         {
             await hubConnection.DisposeAsync();
         }
+        cts.Cancel();
+        cts.Dispose();
     }
     private async Task loadNotifications()
     {
         try
         {
             string url = $"{endpoint.API}/api/v1/Notification/GetMyNotice";
-            var result = await httpService.Get<IEnumerable<NotificationModel>, CommonResponse>(url, new AuthorizeHeader("bearer", token));
+            var result = await httpService.Get<IEnumerable<NotificationModel>, CommonResponse>(url, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
             if (result.Success)
             {
                 notices = result.Response.OrderByDescending(x => x.TimeStamp);

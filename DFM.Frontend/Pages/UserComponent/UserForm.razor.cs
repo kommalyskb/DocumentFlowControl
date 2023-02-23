@@ -10,8 +10,8 @@ namespace DFM.Frontend.Pages.UserComponent
 {
     public partial class UserForm
     {
-        private EmployeeModel? employee;
-        string? token = "";
+        //private EmployeeModel? employee;
+        //string? token = "";
         string? imageUri = "images/user.png";
         private IEnumerable<string> MaxCharacters(string ch)
         {

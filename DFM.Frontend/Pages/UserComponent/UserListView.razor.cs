@@ -51,7 +51,7 @@ namespace DFM.Frontend.Pages.UserComponent
                 token = await accessToken.GetTokenAsync();
             }
 
-            var result = await httpService.Get<IEnumerable<EmployeeModel>>(url, new AuthorizeHeader("bearer", token));
+            var result = await httpService.Get<IEnumerable<EmployeeModel>>(url, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
             if (result.Success)
             {
                 allEmployees = result.Response;

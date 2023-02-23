@@ -13,7 +13,7 @@ namespace DFM.Frontend.Pages.UserComponent
             Employee = await storageHelper.GetEmployeeProfileAsync();
             if (Employee.ProfileImage != null)
             {
-                await previewImageProfile(Employee.ProfileImage.Bucket, Employee.ProfileImage.FileName);
+                await previewImageProfile(Employee.ProfileImage.Bucket!, Employee.ProfileImage.FileName!);
 
             }
         }

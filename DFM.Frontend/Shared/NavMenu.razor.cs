@@ -12,8 +12,8 @@ namespace DFM.Frontend.Shared
         {
             await OpenDrawer.InvokeAsync();
         }
-        string token = "";
-        bool isAdmin;
+        //string token = "";
+        //bool isAdmin;
         
     }
 }

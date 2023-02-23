@@ -24,7 +24,10 @@
     [Parameter] public TabItemDto? TabItem { get; set; }
     [Parameter] public EventCallback<DocumentSecurityModel> OnRowClick { get; set; }
 
+    private CancellationTokenSource cts = new CancellationTokenSource();
     public void Dispose()
     {
+        cts.Cancel();
+        cts.Dispose();
     }
 }

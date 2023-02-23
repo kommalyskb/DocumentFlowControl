@@ -5,7 +5,7 @@
 @implements IDisposable
 
 
-<MudTabPanel Text="@TabItem.Role.Display.Local" Icon="@Icons.Material.Filled.People" BadgeColor="Color.Error">
+<MudTabPanel Text="@TabItem!.Role.Display.Local" Icon="@Icons.Material.Filled.People" BadgeColor="Color.Error">
     <MudDataGrid T="DocumentDto" MultiSelection="true" Items="@Elements" SortMode="SortMode.Multiple" Filterable="true"
               FilterMode="@DataGridFilterMode.ColumnFilterRow" Hideable="true" Hover="true" Class="cursor-pointer"
               RowClick="@RowClicked" SelectedItemsChanged="@SelectedItemsChanged" Bordered="true" ColumnResizeMode="ResizeMode.Column">
@@ -38,7 +38,10 @@
     [Parameter] public EventCallback<DocumentModel> OnRowClick { get; set; }
     [Parameter] public bool OnProcessing { get; set; }
 
+    private CancellationTokenSource cts = new CancellationTokenSource();
     public void Dispose()
     {
+        cts.Cancel();
+        cts.Dispose();
     }
 }

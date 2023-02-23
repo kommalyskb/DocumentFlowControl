@@ -40,7 +40,10 @@
     [Parameter] public string? RoleId { get; set; }
     [Parameter] public EventCallback<DocumentModel> OnRowClick { get; set; }
 
+    private CancellationTokenSource cts = new CancellationTokenSource();
     public void Dispose()
     {
+        cts.Cancel();
+        cts.Dispose();
     }
 }

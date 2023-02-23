@@ -53,7 +53,7 @@ namespace DFM.Frontend.Shared
                     token = await accessToken.GetTokenAsync();
                 }
 
-                var result = await httpService.Get<IEnumerable<DocumentUrgentModel>>(url, new AuthorizeHeader("bearer", token));
+                var result = await httpService.Get<IEnumerable<DocumentUrgentModel>>(url, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
                 if (result.Success)
                 {
                     Elements = result.Response.ToList();

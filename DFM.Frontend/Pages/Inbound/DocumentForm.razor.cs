@@ -176,7 +176,7 @@ namespace DFM.Frontend.Pages.Inbound
             if (component == 1)
             {
                 // Load Urgent Level
-                var result = await httpService.Get<IEnumerable<DocumentUrgentModel>>(url, new AuthorizeHeader("bearer", token));
+                var result = await httpService.Get<IEnumerable<DocumentUrgentModel>>(url, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
                 if (result.Success)
                 {
                     var jsonDoc = JsonSerializer.Serialize(result.Response);
@@ -191,7 +191,7 @@ namespace DFM.Frontend.Pages.Inbound
             if (component == 2)
             {
                 // Load Security Level
-                var result = await httpService.Get<IEnumerable<DocumentSecurityModel>>(url, new AuthorizeHeader("bearer", token));
+                var result = await httpService.Get<IEnumerable<DocumentSecurityModel>>(url, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
                 if (result.Success)
                 {
                     var jsonDoc = JsonSerializer.Serialize(result.Response);
@@ -206,7 +206,7 @@ namespace DFM.Frontend.Pages.Inbound
             if (component == 3)
             {
                 // Load Document Type
-                var result = await httpService.Get<IEnumerable<DataTypeModel>>(url, new AuthorizeHeader("bearer", token));
+                var result = await httpService.Get<IEnumerable<DataTypeModel>>(url, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
                 if (result.Success)
                 {
                     var jsonDoc = JsonSerializer.Serialize(result.Response);
@@ -221,7 +221,7 @@ namespace DFM.Frontend.Pages.Inbound
             if (component == 4)
             {
                 // Load Folder
-                var result = await httpService.Get<IEnumerable<FolderModel>>(url, new AuthorizeHeader("bearer", token));
+                var result = await httpService.Get<IEnumerable<FolderModel>>(url, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
                 if (result.Success)
                 {
                     var jsonDoc = JsonSerializer.Serialize(result.Response.OrderBy(x => x.Seq));
@@ -236,7 +236,7 @@ namespace DFM.Frontend.Pages.Inbound
             if (component == 5)
             {
                 // Load Document
-                var result = await httpService.Get<DocumentModel>(url, new AuthorizeHeader("bearer", token));
+                var result = await httpService.Get<DocumentModel>(url, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
                 if (result.Success)
                 {
                     var jsonDoc = JsonSerializer.Serialize(result.Response);
@@ -277,7 +277,7 @@ namespace DFM.Frontend.Pages.Inbound
                         folderModel.OrganizationID = employee.OrganizationID;
                         // New folder
                         string url = $"{endpoint.API}/api/v1/Folder/NewItem";
-                        var resultFolder = await httpService.Post<FolderModel, CommonResponseId>(url, folderModel, new AuthorizeHeader("bearer", token));
+                        var resultFolder = await httpService.Post<FolderModel, CommonResponseId>(url, folderModel, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
 
                         if (resultFolder.Success)
                         {
@@ -292,7 +292,7 @@ namespace DFM.Frontend.Pages.Inbound
                     {
                         // Update folder
                         string url = $"{endpoint.API}/api/v1/Folder/UpdateItem";
-                        var resultFolder = await httpService.Post<FolderModel, CommonResponseId>(url, folderModel, new AuthorizeHeader("bearer", token));
+                        var resultFolder = await httpService.Post<FolderModel, CommonResponseId>(url, folderModel, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
 
                         if (resultFolder.Success)
                         {
@@ -516,7 +516,7 @@ namespace DFM.Frontend.Pages.Inbound
         private async Task refreshFolder()
         {
             string url = $"{endpoint.API}/api/v1/Folder/GetItems/{RoleId}/inbound?view=0";
-            var result = await httpService.Get<IEnumerable<FolderModel>>(url, new AuthorizeHeader("bearer", token));
+            var result = await httpService.Get<IEnumerable<FolderModel>>(url, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
             if (result.Success)
             {
                 folderModels!.Clear();

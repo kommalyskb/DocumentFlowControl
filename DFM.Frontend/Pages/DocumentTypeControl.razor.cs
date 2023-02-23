@@ -42,7 +42,7 @@ namespace DFM.Frontend.Pages
                     }
 
                     string url = $"{endpoint.API}/api/v1/DocumentType/RemoveItem/{dataTypeModel!.id}";
-                    var result = await httpService.Get<CommonResponse>(url, new AuthorizeHeader("bearer", token));
+                    var result = await httpService.Get<CommonResponse>(url, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
 
                     if (result.Success)
                     {
@@ -102,7 +102,7 @@ namespace DFM.Frontend.Pages
                 dataTypeModel.OrganizationID = employee.OrganizationID;
                 // New folder
                 string url = $"{endpoint.API}/api/v1/DocumentType/NewItem";
-                var result = await httpService.Post<DataTypeModel, CommonResponseId>(url, dataTypeModel, new AuthorizeHeader("bearer", token));
+                var result = await httpService.Post<DataTypeModel, CommonResponseId>(url, dataTypeModel, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
 
                 if (result.Success)
                 {
@@ -117,7 +117,7 @@ namespace DFM.Frontend.Pages
             {
                 // Update folder
                 string url = $"{endpoint.API}/api/v1/DocumentType/UpdateItem";
-                var result = await httpService.Post<DataTypeModel, CommonResponseId>(url, dataTypeModel, new AuthorizeHeader("bearer", token));
+                var result = await httpService.Post<DataTypeModel, CommonResponseId>(url, dataTypeModel, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
 
                 if (result.Success)
                 {

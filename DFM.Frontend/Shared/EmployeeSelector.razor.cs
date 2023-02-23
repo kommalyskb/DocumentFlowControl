@@ -8,7 +8,7 @@ namespace DFM.Frontend.Shared
         private string searchString = "";
 
         //private EmployeeModel? employee;
-        string? token = "";
+        //string? token = "";
         private bool FilterFunc(EmployeeModel element)
         {
             if (string.IsNullOrWhiteSpace(searchString))

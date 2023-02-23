@@ -2,6 +2,7 @@
 @inject AccessTokenStorage accessToken
 @inject ServiceEndpoint endpoint
 @inject LocalStorageHelper storageHelper
+@implements IDisposable
 
 <MudContainer>
     <MudGrid>
@@ -17,4 +18,10 @@
 
 @code {
     [Parameter] public EventCallback<TreeItemData> OnItemChangeEvent { get; set; }
+    private CancellationTokenSource cts = new CancellationTokenSource();
+    public void Dispose()
+    {
+        cts.Cancel();
+        cts.Dispose();
+    }
 }

@@ -42,7 +42,7 @@ namespace DFM.Frontend.Pages
                     }
 
                     string url = $"{endpoint.API}/api/v1/SecurityLevel/RemoveItem/{documentSecurityModel!.id}";
-                    var result = await httpService.Get<CommonResponse>(url, new AuthorizeHeader("bearer", token));
+                    var result = await httpService.Get<CommonResponse>(url, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
 
                     if (result.Success)
                     {
@@ -102,7 +102,7 @@ namespace DFM.Frontend.Pages
                 documentSecurityModel.OrganizationID = employee.OrganizationID;
                 // New folder
                 string url = $"{endpoint.API}/api/v1/SecurityLevel/NewItem";
-                var result = await httpService.Post<DocumentSecurityModel, CommonResponseId>(url, documentSecurityModel, new AuthorizeHeader("bearer", token));
+                var result = await httpService.Post<DocumentSecurityModel, CommonResponseId>(url, documentSecurityModel, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
 
                 if (result.Success)
                 {
@@ -117,7 +117,7 @@ namespace DFM.Frontend.Pages
             {
                 // Update folder
                 string url = $"{endpoint.API}/api/v1/SecurityLevel/UpdateItem";
-                var result = await httpService.Post<DocumentSecurityModel, CommonResponseId>(url, documentSecurityModel, new AuthorizeHeader("bearer", token));
+                var result = await httpService.Post<DocumentSecurityModel, CommonResponseId>(url, documentSecurityModel, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
 
                 if (result.Success)
                 {

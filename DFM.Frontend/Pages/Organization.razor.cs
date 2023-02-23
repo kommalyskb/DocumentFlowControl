@@ -49,7 +49,7 @@ namespace DFM.Frontend.Pages
 
             // Send request for save document
             roleTreeModel!.RoleType = roleTreeModel.Role.RoleType;
-            var result = await httpService.Post<RoleTreeModel, CommonResponse>(url, roleTreeModel!, new AuthorizeHeader("bearer", token));
+            var result = await httpService.Post<RoleTreeModel, CommonResponse>(url, roleTreeModel!, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
 
             // Open dialog success message or make small progress bar on top-corner
 
@@ -89,7 +89,7 @@ namespace DFM.Frontend.Pages
                     {
                         token = await accessToken.GetTokenAsync();
                     }
-                    var result = await httpService.Get<CommonResponse>(url, new AuthorizeHeader("bearer", token));
+                    var result = await httpService.Get<CommonResponse>(url, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
                     onProcessing = false;
 
                     Console.WriteLine($"-------------------------------");

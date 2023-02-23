@@ -43,7 +43,7 @@ namespace DFM.Frontend.Pages
                     
 
                     string url = $"{endpoint.API}/api/v1/UrgentLevel/RemoveItem/{documentUrgentModel!.id}";
-                    var result = await httpService.Get<CommonResponse>(url, new AuthorizeHeader("bearer", token));
+                    var result = await httpService.Get<CommonResponse>(url, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
 
                     if (result.Success)
                     {
@@ -103,7 +103,7 @@ namespace DFM.Frontend.Pages
                 documentUrgentModel.OrganizationID = employee.OrganizationID;
                 // New folder
                 string url = $"{endpoint.API}/api/v1/UrgentLevel/NewItem";
-                var result = await httpService.Post<DocumentUrgentModel, CommonResponseId>(url, documentUrgentModel, new AuthorizeHeader("bearer", token));
+                var result = await httpService.Post<DocumentUrgentModel, CommonResponseId>(url, documentUrgentModel, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
 
                 if (result.Success)
                 {
@@ -118,7 +118,7 @@ namespace DFM.Frontend.Pages
             {
                 // Update folder
                 string url = $"{endpoint.API}/api/v1/UrgentLevel/UpdateItem";
-                var result = await httpService.Post<DocumentUrgentModel, CommonResponseId>(url, documentUrgentModel, new AuthorizeHeader("bearer", token));
+                var result = await httpService.Post<DocumentUrgentModel, CommonResponseId>(url, documentUrgentModel, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
 
                 if (result.Success)
                 {

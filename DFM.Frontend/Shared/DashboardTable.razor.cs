@@ -45,7 +45,7 @@ namespace DFM.Frontend.Shared
                 {
                     inboxType = InboxType,
                     roleID = RoleId
-                }, new AuthorizeHeader("bearer", token));
+                }, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
                 if (result.Success)
                 {
                     summary = result.Response;

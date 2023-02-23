@@ -4,7 +4,7 @@
 @inject LocalStorageHelper storageHelper
 @inject IMinioService minio
 @inject IDialogService DialogService
-
+@implements IDisposable
 
 <MudContainer>
     <MudGrid>
@@ -153,7 +153,7 @@
                                                     {
                                                         if (file!.Info.MimeType!.Contains("pdf"))
                                                         {
-                                                            <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.Preview" aria-label="preview" Disabled="previewButton" OnClick="@(() => previewPdf(file!.Info.Bucket, file!.Info.FileName, file!.Info.Display))"></MudIconButton>
+                                                            <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.Preview" aria-label="preview" Disabled="previewButton" OnClick="@(() => previewPdf(file!.Info.Bucket!, file!.Info.FileName!, file!.Info.Display!))"></MudIconButton>
                                                         }
                                                         <a class="mud-button-root mud-icon-button mud-warning-text hover:mud-warning-hover mud-ripple mud-ripple-icon" target="_blank" href="@endpoint.PublicAPI/api/v1/Document/@file.Info.Bucket/@file.Info.FileName/@file.Info.Display/Download">
                                                             <span class="mud-icon-button-label">
@@ -165,7 +165,7 @@
                                                     {
                                                         if (file!.Info.MimeType!.Contains("pdf"))
                                                         {
-                                                            <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.Preview" aria-label="preview" Disabled="previewButton" OnClick="@(() => previewPdf(file!.File))"></MudIconButton>
+                                                            <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.Preview" aria-label="preview" Disabled="previewButton" OnClick="@(() => previewPdf(file!.File!))"></MudIconButton>
                                                         }
                                                     }
                                                 </td>
@@ -414,4 +414,11 @@
     MudMessageBox? docnoBox { get; set; }
 
     DocumentModel? document;
+
+    private CancellationTokenSource cts = new CancellationTokenSource();
+    public void Dispose()
+    {
+        cts.Cancel();
+        cts.Dispose();
+    }
 }

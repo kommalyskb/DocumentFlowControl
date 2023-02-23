@@ -44,7 +44,7 @@ namespace DFM.Frontend.Pages.Common
         //    token = await accessToken.GetTokenAsync();
         //    string url = $"{endpoint.API}/api/v1/Organization/GetItem/{employee.OrganizationID!}";
         //    //string url = $"{endpoint.API}/api/v1/Organization/GetItem/{employee.OrganizationID!}/{RoleId}";
-        //    var result = await httpService.Get<IEnumerable<RoleTreeModel>>(url, new AuthorizeHeader("bearer", token));
+        //    var result = await httpService.Get<IEnumerable<RoleTreeModel>>(url, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
         //    if (result.Success)
         //    {
         //        recipients = result.Response;

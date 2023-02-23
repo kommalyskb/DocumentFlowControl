@@ -2,6 +2,7 @@
 @inject AccessTokenStorage accessToken
 @inject ServiceEndpoint endpoint
 @inject LocalStorageHelper storageHelper
+@implements IDisposable
 <MudContainer>
     <MudGrid>
         <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
@@ -76,4 +77,10 @@
 @code {
     [Parameter] public string? RoleId { get; set; }
     [Parameter] public FolderModel? FolderModel { get; set; }
+    private CancellationTokenSource cts = new CancellationTokenSource();
+    public void Dispose()
+    {
+        cts.Cancel();
+        cts.Dispose();
+    }
 }

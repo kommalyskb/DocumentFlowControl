@@ -65,7 +65,7 @@ namespace DFM.Frontend.Pages
                     start = -1,
                     inboxType = inboxType,
                     roleIDs = roleIds
-                }, new AuthorizeHeader("bearer", token));
+                }, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
                 if (result.Success)
                 {
                     reportSummary = result.Response;
@@ -105,7 +105,7 @@ namespace DFM.Frontend.Pages
                     start = -1,
                     inboxType = inboxType,
                     roleIDs = roleIds
-                }, new AuthorizeHeader("bearer", token));
+                }, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
                 if (result.Success)
                 {
                     reportSummary = result.Response;
@@ -121,7 +121,7 @@ namespace DFM.Frontend.Pages
             searchRequest = callback;
             onProcessing = true;
             string url = $"{endpoint.API}/api/v1/Document/GetPersonalReport";
-            var result = await httpService.Post<GetPersonalReportRequest, List<PersonalReportSummary>>(url, callback, new AuthorizeHeader("bearer", token));
+            var result = await httpService.Post<GetPersonalReportRequest, List<PersonalReportSummary>>(url, callback, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
 
             if (result.Success)
             {
@@ -148,7 +148,7 @@ namespace DFM.Frontend.Pages
             searchRequest!.roleIDs = new List<string> { item.RoleID! };
             onProcessing = true;
             string url = $"{endpoint.API}/api/v1/Document/DrillDownReport/{item.TraceStatus}";
-            var result = await httpService.Post<GetPersonalReportRequest, List<PersonalReportSummary>>(url, searchRequest, new AuthorizeHeader("bearer", token));
+            var result = await httpService.Post<GetPersonalReportRequest, List<PersonalReportSummary>>(url, searchRequest, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
             isDrillDown = ReportDrillDownEnum.List;
             roleId = item.RoleID;
             onProcessing = false;

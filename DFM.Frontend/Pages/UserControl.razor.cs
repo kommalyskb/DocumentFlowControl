@@ -11,7 +11,7 @@ namespace DFM.Frontend.Pages
     public partial class UserControl
     {
         long maxFileSize = 1024 * 1024 * 25; // 5 MB or whatever, don't just use max int
-        string? editBreadcrumbText = "";
+        //string? editBreadcrumbText = "";
         readonly int delayTime = 500;
         private EmployeeModel? employee;
         string? token = "";
@@ -57,7 +57,7 @@ namespace DFM.Frontend.Pages
                         token = await accessToken.GetTokenAsync();
                     }
                     // Send request for save document
-                    var result = await httpService.Get<CommonResponse, CommonResponse>(url, new AuthorizeHeader("bearer", token));
+                    var result = await httpService.Get<CommonResponse, CommonResponse>(url, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
                     onProcessing = false;
 
                     Console.WriteLine($"-------------------------------");
@@ -113,7 +113,7 @@ namespace DFM.Frontend.Pages
                         token = await accessToken.GetTokenAsync();
                     }
 
-                    var result = await httpService.Post<EmployeeModel, CommonResponseId>(url, employeeModel!, new AuthorizeHeader("bearer", token));
+                    var result = await httpService.Post<EmployeeModel, CommonResponseId>(url, employeeModel!, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
 
 
                     onProcessing = false;
@@ -181,7 +181,7 @@ namespace DFM.Frontend.Pages
             employeeModel!.OrganizationID = employee.OrganizationID;
             employeeModel!.ProfileImage = attachment!.Info;
             // Send request for save document
-            var result = await httpService.Post<EmployeeModel, CommonResponse>(url, employeeModel!, new AuthorizeHeader("bearer", token));
+            var result = await httpService.Post<EmployeeModel, CommonResponse>(url, employeeModel!, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
 
             // Open dialog success message or make small progress bar on top-corner
 

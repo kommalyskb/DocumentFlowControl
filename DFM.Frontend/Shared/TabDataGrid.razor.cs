@@ -106,14 +106,14 @@ namespace DFM.Frontend.Shared
                 oldStatus = TraceStatus;
                 // Load Urgent Level
                 string urgentUrl = $"{endpoint.API}/api/v1/UrgentLevel/GetItems/{employee!.OrganizationID}";
-                var urgentLevel = await httpService.Get<IEnumerable<DocumentUrgentModel>>(urgentUrl, new AuthorizeHeader("bearer", token));
+                var urgentLevel = await httpService.Get<IEnumerable<DocumentUrgentModel>>(urgentUrl, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
                 if (urgentLevel.Success)
                 {
                     urgentModels = urgentLevel.Response;
                 }
                 // Load Document Type
                 string docTypeUrl = $"{endpoint.API}/api/v1/DocumentType/GetItems/{employee!.OrganizationID}";
-                var docType = await httpService.Get<IEnumerable<DataTypeModel>>(docTypeUrl, new AuthorizeHeader("bearer", token));
+                var docType = await httpService.Get<IEnumerable<DataTypeModel>>(docTypeUrl, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
                 if (docType.Success)
                 {
                     docTypeModel = docType.Response;
@@ -122,7 +122,7 @@ namespace DFM.Frontend.Shared
                 // Load document
                 string url = $"{endpoint.API}/api/v1/Document/GetDocument/{TraceStatus}/{Link}/{RoleId}";
 
-                var result = await httpService.Get<ResponseQueryDocument>(url, new AuthorizeHeader("bearer", token));
+                var result = await httpService.Get<ResponseQueryDocument>(url, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
                 if (result.Success)
                 {
                     Elements.Clear();

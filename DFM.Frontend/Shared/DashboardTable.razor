@@ -37,7 +37,10 @@
     [Parameter] public string? RoleId { get; set; }
     [Parameter] public InboxType InboxType { get; set; }
     [Parameter] public bool OnProcessing { get; set; }
+    private CancellationTokenSource cts = new CancellationTokenSource();
     public void Dispose()
     {
+        cts.Cancel();
+        cts.Dispose();
     }
 }

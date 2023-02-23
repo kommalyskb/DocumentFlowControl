@@ -2,6 +2,7 @@
 @inject AccessTokenStorage accessToken
 @inject ServiceEndpoint endpoint
 @inject LocalStorageHelper storageHelper
+@implements IDisposable
 
 <MudGrid>
     <MudItem xs="12" md="12">
@@ -28,4 +29,11 @@
 
     [Parameter] public string? RoleId { get; set; }
     [Parameter] public EventCallback<EmployeeModel> OnRowClick { get; set; }
+
+    private CancellationTokenSource cts = new CancellationTokenSource();
+    public void Dispose()
+    {
+        cts.Cancel();
+        cts.Dispose();
+    }
 }

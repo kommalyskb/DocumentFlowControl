@@ -58,7 +58,7 @@ namespace DFM.Frontend.Pages.OrganizeComponent
             // Get Organization From ID
             var url = $"{endpoint.API}/api/v1/Organization/GetItem/{employee.OrganizationID}";
 
-            var result = await httpService.Get<IEnumerable<RoleTreeModel>>(url, new AuthorizeHeader("bearer", token));
+            var result = await httpService.Get<IEnumerable<RoleTreeModel>>(url, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
             if (result.Success)
             {
                 charts = result.Response;
@@ -66,7 +66,7 @@ namespace DFM.Frontend.Pages.OrganizeComponent
 
             // Get Employee
             var employeeUrl = $"{endpoint.API}/api/v1/Employee/GetItems/{employee.OrganizationID}";
-            var employeeResult = await httpService.Get<IEnumerable<EmployeeModel>>(employeeUrl, new AuthorizeHeader("bearer", token));
+            var employeeResult = await httpService.Get<IEnumerable<EmployeeModel>>(employeeUrl, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
             if (employeeResult.Success)
             {
                 employees = employeeResult.Response;
@@ -77,7 +77,7 @@ namespace DFM.Frontend.Pages.OrganizeComponent
             {
                 fullname = $"{RoleTreeModel!.Employee.Name.Local} {RoleTreeModel!.Employee.FamilyName.Local}";
                 url = $"{endpoint.API}/api/v1/Organization/GetRole/{RoleTreeModel!.Employee.UserID}";
-                var roleResult = await httpService.Get<IEnumerable<TabItemDto>>(url, new AuthorizeHeader("bearer", token));
+                var roleResult = await httpService.Get<IEnumerable<TabItemDto>>(url, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
                 tabItems = roleResult.Response;
             }
             
@@ -108,7 +108,7 @@ namespace DFM.Frontend.Pages.OrganizeComponent
                         token = await accessToken.GetTokenAsync();
                     }
 
-                    var roleResult = await httpService.Get<IEnumerable<TabItemDto>>(url, new AuthorizeHeader("bearer", token));
+                    var roleResult = await httpService.Get<IEnumerable<TabItemDto>>(url, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
                     tabItems = roleResult.Response;
                     await InvokeAsync(StateHasChanged);
                 }

@@ -66,7 +66,7 @@
         <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
             <h2>ຜູ້ໃຫ້ທິດຊີ້ນຳ</h2>
         </MudItem>
-        @if (!groupList.IsNullOrEmpty())
+        @if (!groupList!.IsNullOrEmpty())
         {
             <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
 
@@ -79,7 +79,7 @@
                 </MudSelect>
             </MudItem>
         }
-        @if (!leaderList.IsNullOrEmpty())
+        @if (!leaderList!.IsNullOrEmpty())
         {
             <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
 
@@ -110,9 +110,9 @@
                 <MudListSubheader>
                     ລາຍການ ຕຳແໜ່ງທີ່ຖືກແຕ່ງຕັ້ງ
                 </MudListSubheader>
-                @if (!tabItems.IsNullOrEmpty())
+                @if (!tabItems!.IsNullOrEmpty())
                 {
-                    foreach(var item in tabItems)
+                    foreach(var item in tabItems!)
                     {
                         <MudListItem Icon="@Icons.Material.Filled.SupervisedUserCircle">
                             @item.Role.Display.Local
@@ -142,8 +142,10 @@
     [Parameter] public EventCallback<string> Notice { get; set; }
     MudMessageBox? mbox { get; set; }
    
-
+    private CancellationTokenSource cts = new CancellationTokenSource();
     public void Dispose()
     {
+        cts.Cancel();
+        cts.Dispose();
     }
 }

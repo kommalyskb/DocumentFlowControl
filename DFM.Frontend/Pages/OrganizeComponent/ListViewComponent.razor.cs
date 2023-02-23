@@ -27,7 +27,7 @@ namespace DFM.Frontend.Pages.OrganizeComponent
             }
 
             string url = $"{endpoint.API}/api/v1/Organization/GetItem/{employee.OrganizationID!}";
-            var result = await httpService.Get<IEnumerable<RoleTreeModel>>(url, new AuthorizeHeader("bearer", token));
+            var result = await httpService.Get<IEnumerable<RoleTreeModel>>(url, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
             if (result.Success)
             {
                 // Construct tree view

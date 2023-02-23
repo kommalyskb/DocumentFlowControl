@@ -22,7 +22,7 @@ namespace DFM.Frontend.Pages
         PartialRole? selectedRole;
         CommonResponseId? publisher;
         readonly int delayTime = 500;
-        IEnumerable<TabItemDto>? myRoles;
+        //IEnumerable<TabItemDto>? myRoles;
         string oldDocID = "none";
         //protected override void OnParametersSet()
         //{
@@ -167,7 +167,7 @@ namespace DFM.Frontend.Pages
                         documentRequest.DocumentModel = documentModel;
 
                         // Send request for save document
-                        var result = await httpService.Post<DocumentRequest, CommonResponse>(url, documentRequest, new AuthorizeHeader("bearer", token));
+                        var result = await httpService.Post<DocumentRequest, CommonResponse>(url, documentRequest, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
 
                         onProcessing = false;
 
@@ -257,7 +257,7 @@ namespace DFM.Frontend.Pages
                         documentRequest.DocumentModel = documentModel;
 
                         // Send request for save document
-                        var result = await httpService.Post<DocumentRequest, CommonResponse>(url, documentRequest, new AuthorizeHeader("bearer", token));
+                        var result = await httpService.Post<DocumentRequest, CommonResponse>(url, documentRequest, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
 
                         onProcessing = false;
 
@@ -332,7 +332,7 @@ namespace DFM.Frontend.Pages
                         documentRequest.DocumentModel = documentModel;
 
                         // Send request for save document
-                        var result = await httpService.Post<DocumentRequest, CommonResponse>(url, documentRequest, new AuthorizeHeader("bearer", token));
+                        var result = await httpService.Post<DocumentRequest, CommonResponse>(url, documentRequest, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
 
                         onProcessing = false;
 
@@ -474,7 +474,7 @@ namespace DFM.Frontend.Pages
                         documentRequest.CoProcesses = recipients!.Where(x => x.CoProcess && x.Role.RoleID != mainReciver!.Id).ToList();
 
                         // Send request for save document
-                        var result = await httpService.Post<DocumentRequest, CommonResponseId>(url, documentRequest, new AuthorizeHeader("bearer", token));
+                        var result = await httpService.Post<DocumentRequest, CommonResponseId>(url, documentRequest, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
 
 
 
@@ -504,7 +504,7 @@ namespace DFM.Frontend.Pages
                                 Title = documentRequest.RawDocument.Title,
                                 SendFrom = $"{employee.Name.Local} {employee.FamilyName.Local}"
                             };
-                            await httpService.Post<NotificationModel, CommonResponse>($"{endpoint.API}/api/v1/Notification/Create", noticeRequest, new AuthorizeHeader("bearer", token));
+                            await httpService.Post<NotificationModel, CommonResponse>($"{endpoint.API}/api/v1/Notification/Create", noticeRequest, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
 
                             AlertMessage("ທຸລະກຳຂອງທ່ານ ສຳເລັດ", Defaults.Classes.Position.BottomRight, Severity.Success);
                             // Send EventNotify
@@ -582,7 +582,7 @@ namespace DFM.Frontend.Pages
                     }
                 };
                 // Send request for save document
-                var result = await httpService.Post<DocumentRequest, CommonResponse>(url, documentRequest, new AuthorizeHeader("bearer", token));
+                var result = await httpService.Post<DocumentRequest, CommonResponse>(url, documentRequest, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
                 await Task.Delay(delayTime);
             }
             catch (Exception)
@@ -605,7 +605,7 @@ namespace DFM.Frontend.Pages
                 }
 
                 roleId = MessageRole;
-                var doc = await httpService.Get<DocumentModel, CommonResponse>(url, new AuthorizeHeader("bearer", token));
+                var doc = await httpService.Get<DocumentModel, CommonResponse>(url, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
 
                 if (!doc.Success)
                 {
@@ -641,7 +641,7 @@ namespace DFM.Frontend.Pages
                     token = await accessToken.GetTokenAsync();
                 }
 
-                var result = await httpService.Get<CommonResponse>(url, new AuthorizeHeader("bearer", token));
+                var result = await httpService.Get<CommonResponse>(url, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
 
                 // Send notification when read 
                 Console.WriteLine($"[{DateTime.Now}] Send message to Notify Owner when read from notification: {employee.id}");
@@ -785,7 +785,7 @@ namespace DFM.Frontend.Pages
                 documentRequest.RawDocument = rawDocument;
                 documentRequest.DocumentModel = documentModel;
                 // Send request for save document
-                var result = await httpService.Post<DocumentRequest, CommonResponse>(url, documentRequest, new AuthorizeHeader("bearer", token));
+                var result = await httpService.Post<DocumentRequest, CommonResponse>(url, documentRequest, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
 
                 // Open dialog success message or make small progress bar on top-corner
 
@@ -949,7 +949,7 @@ namespace DFM.Frontend.Pages
                 }
 
                 string urlGetOrgItem = $"{endpoint.API}/api/v1/Organization/GetItem/{employee.OrganizationID!}/{roleId}/{Link}";
-                var result = await httpService.Get<IEnumerable<RoleTreeModel>>(urlGetOrgItem, new AuthorizeHeader("bearer", token));
+                var result = await httpService.Get<IEnumerable<RoleTreeModel>>(urlGetOrgItem, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
                 if (result.Success)
                 {
                     var expected = result.Response.ToList();
@@ -961,7 +961,7 @@ namespace DFM.Frontend.Pages
 
                 // Get Publisher
                 string urlGetPublisher = $"{endpoint.API}/api/v1/Organization/GetPublisher/{employee.OrganizationID!}/{roleId}";
-                var publisherResult = await httpService.Get<CommonResponseId>(urlGetPublisher, new AuthorizeHeader("bearer", token));
+                var publisherResult = await httpService.Get<CommonResponseId>(urlGetPublisher, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
 
                 if (publisherResult.Success)
                 {

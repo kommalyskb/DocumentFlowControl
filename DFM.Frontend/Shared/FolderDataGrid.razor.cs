@@ -50,7 +50,7 @@ namespace DFM.Frontend.Shared
                     token = await accessToken.GetTokenAsync();
                 }
 
-                var result = await httpService.Get<IEnumerable<FolderModel>>(url, new AuthorizeHeader("bearer", token));
+                var result = await httpService.Get<IEnumerable<FolderModel>>(url, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
                 if (result.Success)
                 {
                     Elements = result.Response.OrderBy(x => x.Seq).ToList();
@@ -77,7 +77,7 @@ namespace DFM.Frontend.Shared
                         token = await accessToken.GetTokenAsync();
                     }
 
-                    var result = await httpService.Get<IEnumerable<FolderModel>>(url, new AuthorizeHeader("bearer", token));
+                    var result = await httpService.Get<IEnumerable<FolderModel>>(url, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
                     if (result.Success)
                     {
                         Elements = result.Response.OrderBy(x => x.Seq).ToList();

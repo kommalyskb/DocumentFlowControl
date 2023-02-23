@@ -47,7 +47,7 @@ namespace DFM.Frontend.Pages
                 token = await accessToken.GetTokenAsync();
             }
 
-            var result = await httpService.Get<IEnumerable<RoleTreeModel>>(url, new AuthorizeHeader("bearer", token));
+            var result = await httpService.Get<IEnumerable<RoleTreeModel>>(url, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
             if (result.Success)
             {
                 //tabItems = result.Response.ToList();
@@ -59,7 +59,7 @@ namespace DFM.Frontend.Pages
                     start = -1,
                     inboxType = inboxType,
                     roleIDs = roleIds
-                }, new AuthorizeHeader("bearer", token));
+                }, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
                 if (reportResult.Success)
                 {
                     reportSummary = reportResult.Response;
@@ -101,7 +101,7 @@ namespace DFM.Frontend.Pages
                     start = -1,
                     inboxType = inboxType,
                     roleIDs = roleIds
-                }, new AuthorizeHeader("bearer", token));
+                }, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
                 if (reportResult.Success)
                 {
                     reportSummary = reportResult.Response;
@@ -117,7 +117,7 @@ namespace DFM.Frontend.Pages
             searchRequest = callback;
             onProcessing = true;
             string url = $"{endpoint.API}/api/v1/Document/GetPersonalReport";
-            var result = await httpService.Post<GetPersonalReportRequest, List<PersonalReportSummary>>(url, callback, new AuthorizeHeader("bearer", token));
+            var result = await httpService.Post<GetPersonalReportRequest, List<PersonalReportSummary>>(url, callback, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
 
             reportSummary = result.Response;
             onProcessing = false;
@@ -140,7 +140,7 @@ namespace DFM.Frontend.Pages
             searchRequest!.roleIDs = new List<string> { item.RoleID! };
             onProcessing = true;
             string url = $"{endpoint.API}/api/v1/Document/DrillDownReport/{item.TraceStatus}";
-            var result = await httpService.Post<GetPersonalReportRequest, List<PersonalReportSummary>>(url, searchRequest, new AuthorizeHeader("bearer", token));
+            var result = await httpService.Post<GetPersonalReportRequest, List<PersonalReportSummary>>(url, searchRequest, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
             isDrillDown = ReportDrillDownEnum.List;
             roleId = item.RoleID;
             onProcessing = false;

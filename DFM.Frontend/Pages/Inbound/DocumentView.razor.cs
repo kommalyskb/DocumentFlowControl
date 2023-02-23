@@ -122,7 +122,7 @@ namespace DFM.Frontend.Pages.Inbound
             if (component == 1)
             {
                 // Load Urgent Level
-                var result = await httpService.Get<IEnumerable<DocumentUrgentModel>>(url, new AuthorizeHeader("bearer", token));
+                var result = await httpService.Get<IEnumerable<DocumentUrgentModel>>(url, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
                 if (result.Success)
                 {
                     var jsonDoc = JsonSerializer.Serialize(result.Response);
@@ -137,7 +137,7 @@ namespace DFM.Frontend.Pages.Inbound
             if (component == 2)
             {
                 // Load Security Level
-                var result = await httpService.Get<IEnumerable<DocumentSecurityModel>>(url, new AuthorizeHeader("bearer", token));
+                var result = await httpService.Get<IEnumerable<DocumentSecurityModel>>(url, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
                 if (result.Success)
                 {
                     var jsonDoc = JsonSerializer.Serialize(result.Response);
@@ -152,7 +152,7 @@ namespace DFM.Frontend.Pages.Inbound
             if (component == 3)
             {
                 // Load Document Type
-                var result = await httpService.Get<IEnumerable<DataTypeModel>>(url, new AuthorizeHeader("bearer", token));
+                var result = await httpService.Get<IEnumerable<DataTypeModel>>(url, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
                 if (result.Success)
                 {
                     var jsonDoc = JsonSerializer.Serialize(result.Response);
@@ -167,7 +167,7 @@ namespace DFM.Frontend.Pages.Inbound
             if (component == 4)
             {
                 // Load Folder
-                var result = await httpService.Get<IEnumerable<FolderModel>>(url, new AuthorizeHeader("bearer", token));
+                var result = await httpService.Get<IEnumerable<FolderModel>>(url, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
                 if (result.Success)
                 {
                     var jsonDoc = JsonSerializer.Serialize(result.Response);
@@ -182,7 +182,7 @@ namespace DFM.Frontend.Pages.Inbound
             if (component == 5)
             {
                 // Load Document
-                var result = await httpService.Get<DocumentModel>(url, new AuthorizeHeader("bearer", token));
+                var result = await httpService.Get<DocumentModel>(url, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
                 if (result.Success)
                 {
                     var jsonDoc = JsonSerializer.Serialize(result.Response);
