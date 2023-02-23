@@ -1,5 +1,6 @@
 ﻿using DFM.Shared.DTOs;
 using DFM.Shared.Entities;
+using DFM.Shared.Extensions;
 using HttpClientService;
 using MudBlazor;
 
@@ -27,7 +28,7 @@ namespace DFM.Frontend.Pages.FolderComponent
                 employee = await storageHelper.GetEmployeeProfileAsync();
             }
 
-            if (allTabs == null)
+            if (!allTabs!.IsNullOrEmpty())
             {
                 allTabs = await storageHelper.GetRolesAsync();
                 
@@ -35,17 +36,25 @@ namespace DFM.Frontend.Pages.FolderComponent
 
             if (Link == "outbound")
             {
-                tabItems = allTabs.Where(x => x.Role.RoleType != RoleTypeModel.InboundPrime && x.Role.RoleType != RoleTypeModel.InboundOfficePrime && x.Role.RoleType != RoleTypeModel.InboundGeneral).ToList();
+                if (!allTabs!.IsNullOrEmpty())
+                {
+                    tabItems = allTabs!.Where(x => x.Role.RoleType != RoleTypeModel.InboundPrime && x.Role.RoleType != RoleTypeModel.InboundOfficePrime && x.Role.RoleType != RoleTypeModel.InboundGeneral).ToList();
+
+                }
 
             }
             else
             {
-                tabItems = allTabs.Where(x => x.Role.RoleType != RoleTypeModel.OutboundPrime && x.Role.RoleType != RoleTypeModel.OutboundOfficePrime && x.Role.RoleType != RoleTypeModel.OutboundGeneral).ToList();
+                if (!allTabs!.IsNullOrEmpty())
+                {
+                    tabItems = allTabs!.Where(x => x.Role.RoleType != RoleTypeModel.OutboundPrime && x.Role.RoleType != RoleTypeModel.OutboundOfficePrime && x.Role.RoleType != RoleTypeModel.OutboundGeneral).ToList();
+
+                }
             }
-            if (tabItems.Count > 0)
+            if (!tabItems!.IsNullOrEmpty())
             {
                 // Callback event 
-                await OnTabChangeEvent.InvokeAsync(tabItems[_panelIndex].Role.RoleID);
+                await OnTabChangeEvent.InvokeAsync(tabItems![_panelIndex].Role.RoleID);
 
             }
 
@@ -57,17 +66,25 @@ namespace DFM.Frontend.Pages.FolderComponent
                 oldLink = Link;
                 if (Link == "outbound")
                 {
-                    tabItems = allTabs!.Where(x => x.Role.RoleType != RoleTypeModel.InboundPrime && x.Role.RoleType != RoleTypeModel.InboundOfficePrime && x.Role.RoleType != RoleTypeModel.InboundGeneral).ToList();
+                    if (!allTabs!.IsNullOrEmpty())
+                    {
+                        tabItems = allTabs!.Where(x => x.Role.RoleType != RoleTypeModel.InboundPrime && x.Role.RoleType != RoleTypeModel.InboundOfficePrime && x.Role.RoleType != RoleTypeModel.InboundGeneral).ToList();
+
+                    }
 
                 }
                 else
                 {
-                    tabItems = allTabs!.Where(x => x.Role.RoleType != RoleTypeModel.OutboundPrime && x.Role.RoleType != RoleTypeModel.OutboundOfficePrime && x.Role.RoleType != RoleTypeModel.OutboundGeneral).ToList();
+                    if (!allTabs!.IsNullOrEmpty())
+                    {
+                        tabItems = allTabs!.Where(x => x.Role.RoleType != RoleTypeModel.OutboundPrime && x.Role.RoleType != RoleTypeModel.OutboundOfficePrime && x.Role.RoleType != RoleTypeModel.OutboundGeneral).ToList();
+
+                    }
                 }
-                if (tabItems.Count > 0)
+                if (!tabItems!.IsNullOrEmpty())
                 {
                     // Callback event 
-                    await OnTabChangeEvent.InvokeAsync(tabItems[_panelIndex].Role.RoleID);
+                    await OnTabChangeEvent.InvokeAsync(tabItems![_panelIndex].Role.RoleID);
 
                 }
             }

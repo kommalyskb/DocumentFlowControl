@@ -1,6 +1,7 @@
 ﻿using DFM.Shared.Common;
 using DFM.Shared.DTOs;
 using DFM.Shared.Entities;
+using DFM.Shared.Extensions;
 using HttpClientService;
 using MudBlazor;
 
@@ -20,17 +21,21 @@ namespace DFM.Frontend.Pages.Outbound
             {
                 employee = await storageHelper.GetEmployeeProfileAsync();
             }
-            if (myRoles == null)
+            if (myRoles!.IsNullOrEmpty())
             {
                 myRoles = await storageHelper.GetRolesAsync();
 
             }
-            tabItems = myRoles.ToList().Where(x => x.Role.RoleType != RoleTypeModel.InboundPrime && x.Role.RoleType != RoleTypeModel.InboundOfficePrime && x.Role.RoleType != RoleTypeModel.InboundGeneral).ToList();
-            if (tabItems.Count > 0)
+            if (!myRoles!.IsNullOrEmpty())
             {
-                // Callback event 
-                await OnTabChangeEvent.InvokeAsync(tabItems[_panelIndex].Role);
+                tabItems = myRoles!.Where(x => x.Role.RoleType != RoleTypeModel.InboundPrime && x.Role.RoleType != RoleTypeModel.InboundOfficePrime && x.Role.RoleType != RoleTypeModel.InboundGeneral).ToList();
+                if (!tabItems!.IsNullOrEmpty())
+                {
+                    // Callback event 
+                    await OnTabChangeEvent.InvokeAsync(tabItems![_panelIndex].Role);
+                }
             }
+         
 
         }
 

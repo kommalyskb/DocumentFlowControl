@@ -1,5 +1,6 @@
 ﻿using DFM.Shared.DTOs;
 using DFM.Shared.Entities;
+using DFM.Shared.Extensions;
 using HttpClientService;
 
 namespace DFM.Frontend.Pages.UrgentLevelComponent
@@ -22,17 +23,22 @@ namespace DFM.Frontend.Pages.UrgentLevelComponent
             {
                 employee = await storageHelper.GetEmployeeProfileAsync();
             }
-            if (myRoles == null)
+            if (myRoles!.IsNullOrEmpty())
             {
                 myRoles = await storageHelper.GetRolesAsync();
 
-                tabItems = myRoles.ToList();
+
+            }
+            if (!myRoles!.IsNullOrEmpty())
+            {
+                tabItems = myRoles!.ToList();
 
                 // Callback event 
-                await OnTabChangeEvent.InvokeAsync(tabItems[_panelIndex].Role.RoleID);
+                await OnTabChangeEvent.InvokeAsync(tabItems![_panelIndex].Role.RoleID);
             }
 
-            
+
+
         }
     }
 }

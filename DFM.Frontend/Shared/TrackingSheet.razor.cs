@@ -28,7 +28,7 @@ namespace DFM.Frontend.Shared
             {
                 return readDate!;
             }
-            return "ຍັງບໍ່ທັນເປີດອ່ານ";
+            return "---";//"ຍັງບໍ່ທັນເປີດອ່ານ";
         }
     }
 }

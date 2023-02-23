@@ -30,16 +30,16 @@
         {
             color = "";
         }
-        <MudTd Style="@color">@context.RecipientInfo.Position.Local</MudTd>
-        <MudTd Style="@color">@context.ReceiveDate</MudTd>
+        <MudTd>@context.RecipientInfo.Position.Local</MudTd>
+        <MudTd>@context.ReceiveDate</MudTd>
         <MudTd Style="@color">
             @isRead(context.IsRead, context.ReadDate)
         </MudTd>
-        <MudTd Style="@color">@context.RecipientInfo.Fullname.Name.Local</MudTd>
-        <MudTd Style="@color">@DecodeEnumStatus.decodeOperationType(context.ReceiveRoleType)</MudTd>
-        <MudTd Style="@color">@DecodeEnumStatus.decodeOperationType(context.SendRoleType)</MudTd>
+        <MudTd>@context.RecipientInfo.Fullname.Name.Local</MudTd>
+        <MudTd>@DecodeEnumStatus.decodeOperationType(context.ReceiveRoleType)</MudTd>
+        <MudTd>@DecodeEnumStatus.decodeOperationType(context.SendRoleType)</MudTd>
         <MudTd Style="@color">@DecodeEnumStatus.decodeTraceStatus(context.DocStatus)</MudTd>
-        <MudTd Style="@color">@context.SendDate</MudTd>
+        <MudTd>@context.SendDate</MudTd>
         <MudTd>
             <CommentComponent Message="@context.Comment.Comment"></CommentComponent>
         </MudTd>

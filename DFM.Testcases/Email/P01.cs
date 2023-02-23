@@ -15,9 +15,9 @@ namespace DFM.Testcases.Email
         {
             emailHelper = new EmailHelper(new Shared.Configurations.SMTPConf
             {
-                Email = "docunent.cse2023@gmail.com",
+                Email = "doc.cse@csenergy.la",
                 Password = "bcniqluyumopgbrb",
-                Server = "smtp.gmail.com",
+                Server = "smtp.office365.com",
                 Port = 587
             }, new Shared.Configurations.SendGridConf(), new Shared.Configurations.EnvConf());
         }
@@ -30,7 +30,7 @@ namespace DFM.Testcases.Email
                 Body = emailHelper.NotificationMailBody("https://codecamplao.com", "ຂາເຂົ້າຫ້ອງການ", "ແຈ້ງເຕືອນເອກະສານ"),
                 To = new List<string> { "kommalyskb@gmail.com" },
                 Subject = "ແຈ້ງເຕືອນເອກະສານ",
-                From = "docunent.cse2023@gmail.com"
+                From = "doc.cse@csenergy.la"
             });
         }
     }

@@ -133,7 +133,7 @@ namespace DFM.Frontend.Shared
                         var rawDocumentData = item.RawDatas!.LastOrDefault(x => x.DataID == myDoc!.DataID);
                         var urgentLabel = urgentModels!.FirstOrDefault(x => x.id == rawDocumentData!.Urgent.id)!;
                         var docTypeLabel = docTypeModel!.FirstOrDefault(x => x.id == rawDocumentData!.DocType)!;
-
+                        
                         Elements.Add(new DocumentDto
                         {
                             Id = item.id,
@@ -145,6 +145,7 @@ namespace DFM.Frontend.Shared
                             IsRead = myDoc!.IsRead,
                             Uid = myDoc!.UId,
                             CreateDate = myDoc!.CreateDate,
+                            CompletedDate = myDoc!.CompletedDate,
                             FontColor = urgentLabel != null ? urgentLabel.FontColor! : "",
 
                         });
@@ -152,7 +153,15 @@ namespace DFM.Frontend.Shared
                     //unread = Elements.Count(x => !x.IsRead);
 
                     // Order Element
-                    Elements = Elements.OrderByDescending(x => x.CreateDate).ToList();
+                    if (TraceStatus == TraceStatus.Completed || TraceStatus == TraceStatus.Terminated)
+                    {
+                        Elements = Elements.OrderByDescending(x => x.CompletedDate).ToList();
+                    }
+                    else
+                    {
+                        Elements = Elements.OrderByDescending(x => x.CreateDate).ToList();
+                    }
+                   
                 }
             }
             catch (Exception)

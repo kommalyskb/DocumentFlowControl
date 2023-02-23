@@ -1,6 +1,7 @@
 ﻿using DFM.Shared.Common;
 using DFM.Shared.DTOs;
 using DFM.Shared.Entities;
+using DFM.Shared.Extensions;
 using Elasticsearch.Net;
 using HttpClientService;
 using Minio.DataModel;
@@ -43,32 +44,35 @@ namespace DFM.Frontend.Pages
                 employee = await storageHelper.GetEmployeeProfileAsync();
             }
             // Load tab
-            if (myRoles == null)
+            if (myRoles!.IsNullOrEmpty())
             {
                 myRoles = await storageHelper.GetRolesAsync();
 
-                tabItems = myRoles.ToList();
-
             }
-            token = await accessToken.GetTokenAsync();
-
-            roleIds = tabItems.Select(x => x.Role.RoleID).ToList()!;
-
-            onProcessing = true;
-            string url = $"{endpoint.API}/api/v1/Document/GetPersonalReport";
-            var result = await httpService.Post<GetPersonalReportRequest, List<PersonalReportSummary>>(url, new GetPersonalReportRequest
+            if (!myRoles!.IsNullOrEmpty())
             {
-                end = -1,
-                start = -1,
-                inboxType = inboxType,
-                roleIDs = roleIds
-            }, new AuthorizeHeader("bearer", token));
-            if (result.Success)
-            {
-                reportSummary = result.Response;
+                tabItems = myRoles!.ToList();
+                roleIds = tabItems.Select(x => x.Role.RoleID).ToList()!;
 
+                token = await accessToken.GetTokenAsync();
+
+
+                onProcessing = true;
+                string url = $"{endpoint.API}/api/v1/Document/GetPersonalReport";
+                var result = await httpService.Post<GetPersonalReportRequest, List<PersonalReportSummary>>(url, new GetPersonalReportRequest
+                {
+                    end = -1,
+                    start = -1,
+                    inboxType = inboxType,
+                    roleIDs = roleIds
+                }, new AuthorizeHeader("bearer", token));
+                if (result.Success)
+                {
+                    reportSummary = result.Response;
+
+                }
+                onProcessing = false;
             }
-            onProcessing = false;
 
             await InvokeAsync(StateHasChanged);
         }

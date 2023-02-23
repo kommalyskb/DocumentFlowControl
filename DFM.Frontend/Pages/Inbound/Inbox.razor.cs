@@ -1,5 +1,6 @@
 ﻿using DFM.Shared.DTOs;
 using DFM.Shared.Entities;
+using DFM.Shared.Extensions;
 using HttpClientService;
 
 namespace DFM.Frontend.Pages.Inbound
@@ -19,18 +20,21 @@ namespace DFM.Frontend.Pages.Inbound
                 employee = await storageHelper.GetEmployeeProfileAsync();
             }
             // Load tab
-            if (myRoles == null)
+            if (myRoles!.IsNullOrEmpty())
             {
                 myRoles = await storageHelper.GetRolesAsync();
 
             }
-
-            tabItems = myRoles.ToList().Where(x => x.Role.RoleType != RoleTypeModel.OutboundPrime && x.Role.RoleType != RoleTypeModel.OutboundOfficePrime && x.Role.RoleType != RoleTypeModel.OutboundGeneral).ToList();
-            if (tabItems.Count > 0)
+            if (!myRoles!.IsNullOrEmpty())
             {
-                // Callback event 
-                await OnTabChangeEvent.InvokeAsync(tabItems[_panelIndex].Role);
+                tabItems = myRoles!.Where(x => x.Role.RoleType != RoleTypeModel.OutboundPrime && x.Role.RoleType != RoleTypeModel.OutboundOfficePrime && x.Role.RoleType != RoleTypeModel.OutboundGeneral).ToList();
+                if (tabItems.Count > 0)
+                {
+                    // Callback event 
+                    await OnTabChangeEvent.InvokeAsync(tabItems![_panelIndex].Role);
+                }
             }
+            
 
         }
         async Task onRowClick(DocumentModel item)

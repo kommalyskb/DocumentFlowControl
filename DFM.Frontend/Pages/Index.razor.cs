@@ -23,8 +23,12 @@ namespace DFM.Frontend.Pages
                 roles = await storageHelper.GetRolesAsync();
                
             }
-            roleID = roles!.FirstOrDefault()!.Role!.RoleID!;
-            selectValues = new List<string>() { roleID };
+            if (roles != null)
+            {
+                roleID = roles!.FirstOrDefault()!.Role!.RoleID!;
+                selectValues = new List<string>() { roleID };
+            }
+          
 
             await InvokeAsync(StateHasChanged);
 

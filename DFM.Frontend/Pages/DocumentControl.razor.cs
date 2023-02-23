@@ -423,6 +423,7 @@ namespace DFM.Frontend.Pages
                                 documentModel!.Recipients![index].Behavior = BehaviorStatus.ReadOnly;
                                 documentModel!.Recipients![index].SendRoleType = myRole!.ReceiveRoleType;
                                 documentModel!.Recipients![index].SendDate = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
+                                documentModel!.Recipients![index].CompletedDate = Convert.ToDecimal(DateTime.Now.ToString("yyyyMMddHHmmss"));
                                 documentModel!.Recipients![index].Comment = new CommentModel
                                 {
                                     Comment = mainReciver!.Comment!.Comment,
@@ -464,8 +465,8 @@ namespace DFM.Frontend.Pages
                             documentModel!.InboxType = InboxType.Outbound;
                         }
 
-                        
 
+                        
                         documentRequest.RawDocument = rawDocument;
                         documentRequest.DocumentModel = documentModel;
                         // Bind Receiver

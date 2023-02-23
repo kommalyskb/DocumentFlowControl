@@ -40,6 +40,8 @@ namespace DFM.Shared.Entities
         public RoleTraceModel RecipientInfo { get; set; } = new();
         [Indexed(Sortable = true)]
         public decimal CreateDate { get; set; } = Convert.ToDecimal(DateTime.Now.ToString("yyyyMMddHHmmss"));
+        [Indexed(Sortable = true)]
+        public decimal CompletedDate { get; set; } = Convert.ToDecimal(DateTime.Now.ToString("yyyyMMddHHmmss"));
         [Indexed]
         public BehaviorStatus Behavior { get; set; }
         [Indexed]
