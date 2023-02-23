@@ -36,43 +36,43 @@
                 @if (ShowEditButton)
                 {
                     <MudTooltip Text="ແກ້ໄຂເອກະສານ">
-                        <MudIconButton Color="Color.Tertiary" Icon="@Icons.Material.Filled.Edit" Disabled="editBtn" OnClick="(async () => await EditButtonEvent.InvokeAsync())"></MudIconButton>
+                        <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Disabled="editBtn" OnClick="(async () => await EditButtonEvent.InvokeAsync())"></MudIconButton>
                     </MudTooltip>
                 }
 
                 @if (ShowDeleteButton)
                 {
                     <MudTooltip Text="ລຶບເອກະສານ">
-                        <MudIconButton Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Disabled="deleteBtn" OnClick="(async () => await DeleteButtonEvent.InvokeAsync())"></MudIconButton>
+                        <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.Delete" Disabled="deleteBtn" OnClick="(async () => await DeleteButtonEvent.InvokeAsync())"></MudIconButton>
                     </MudTooltip>
                 }
                 @if (ShowRestoreButton)
                 {
                     <MudTooltip Text="ກູ້ຄືນເອກະສານ">
-                        <MudIconButton Color="Color.Secondary" Icon="@Icons.Material.Filled.Restore" Disabled="restoreBtn" OnClick="(async () => await RestoreButtonEvent.InvokeAsync())"></MudIconButton>
+                        <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.Restore" Disabled="restoreBtn" OnClick="(async () => await RestoreButtonEvent.InvokeAsync())"></MudIconButton>
                     </MudTooltip>
                 }
 
                 @if (ShowSaveButton)
                 {
                     <MudTooltip Text="ບັນທຶກເອກະສານ">
-                        <MudIconButton Color="Color.Success" Icon="@Icons.Material.Filled.Save" Disabled="saveBtn" OnClick="(async () => await SaveButtonEvent.InvokeAsync())"></MudIconButton>
+                        <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.Save" Disabled="saveBtn" OnClick="(async () => await SaveButtonEvent.InvokeAsync())"></MudIconButton>
                     </MudTooltip>
                 }
 
                 @if (ShowSendButton)
                 {
                     <MudTooltip Text="ສົ່ງຕໍ່ເອກະສານ">
-                        <MudIconButton Color="Color.Info" Icon="@Icons.Material.Filled.Send" Disabled="sendBtn" OnClick="(async () => await SendButtonEvent.InvokeAsync())"></MudIconButton>
+                        <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.Send" Disabled="sendBtn" OnClick="(async () => await SendButtonEvent.InvokeAsync())"></MudIconButton>
                     </MudTooltip>
                 }
 
             </MudButtonGroup>
             @if (ShowTerminateButton)
             {
-                <MudButtonGroup Color="Color.Warning" Variant="Variant.Outlined">
+                <MudButtonGroup Color="Color.Success" Variant="Variant.Outlined">
                     <MudTooltip Text="ຈົບການຈໍລະຈອນເອກະສານ">
-                        <MudIconButton Color="Color.Warning" Icon="@Icons.Material.Filled.CheckCircle" Disabled="terminateBtn" OnClick="(async () => await TerminateButtonEvent.InvokeAsync())"></MudIconButton>
+                        <MudIconButton Color="Color.Success" Icon="@Icons.Material.Filled.CheckCircle" Disabled="terminateBtn" OnClick="(async () => await TerminateButtonEvent.InvokeAsync())"></MudIconButton>
                     </MudTooltip>
                 </MudButtonGroup>
             }

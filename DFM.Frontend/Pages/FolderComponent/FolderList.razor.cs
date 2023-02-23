@@ -28,7 +28,7 @@ namespace DFM.Frontend.Pages.FolderComponent
                 employee = await storageHelper.GetEmployeeProfileAsync();
             }
 
-            if (!allTabs!.IsNullOrEmpty())
+            if (allTabs!.IsNullOrEmpty())
             {
                 allTabs = await storageHelper.GetRolesAsync();
                 
