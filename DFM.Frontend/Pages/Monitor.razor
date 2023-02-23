@@ -101,7 +101,10 @@
     string? roleId;
     DocumentModel? documentModel = new();
     RawDocumentData? rawDocument = new();
+    private CancellationTokenSource cts = new CancellationTokenSource();
     public void Dispose()
     {
+        cts.Cancel();
+        cts.Dispose();
     }
 }

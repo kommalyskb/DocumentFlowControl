@@ -133,7 +133,10 @@
     bool onProcessing = false;
     OrganizationModel model = new();
     EmployeeModel employee = new();
+    private CancellationTokenSource cts = new CancellationTokenSource();
     public void Dispose()
     {
+        cts.Cancel();
+        cts.Dispose();
     }
 }

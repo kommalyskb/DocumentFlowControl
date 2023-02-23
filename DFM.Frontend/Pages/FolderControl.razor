@@ -72,7 +72,10 @@
     FolderModel? folderModel = new();
 
     bool onProcessing = false;
+    private CancellationTokenSource cts = new CancellationTokenSource();
     public void Dispose()
     {
+        cts.Cancel();
+        cts.Dispose();
     }
 }

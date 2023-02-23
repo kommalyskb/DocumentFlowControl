@@ -67,7 +67,10 @@
     string? roleId = "";
     MudMessageBox? delBox { get; set; }
     bool onProcessing = false;
+    private CancellationTokenSource cts = new CancellationTokenSource();
     public void Dispose()
     {
+        cts.Cancel();
+        cts.Dispose();
     }
 }

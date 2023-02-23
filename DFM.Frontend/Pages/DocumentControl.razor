@@ -142,7 +142,7 @@
     [Parameter] public string? DocId { get; set; }
     [Parameter] public string? MessageRole { get; set; }
     [Parameter] public string? MessageID { get; set; }
-    
+   
     private FormMode formMode;
     private TraceStatus traceStatus;
     string? roleId = "";
@@ -162,7 +162,10 @@
     Reciepient? myRole = new();
     bool noNeedFolder = true;
 
+    private CancellationTokenSource cts = new CancellationTokenSource();
     public void Dispose()
     {
+        cts.Cancel();
+        cts.Dispose();
     }
 }

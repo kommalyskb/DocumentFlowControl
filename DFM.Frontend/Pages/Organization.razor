@@ -4,6 +4,7 @@
 @inject ServiceEndpoint endpoint
 @inject LocalStorageHelper storageHelper
 @inject EnvConf envConf
+@implements IDisposable
 @inject ISnackbar Snackbar
 
 <PageTitle>Organization - @envConf.PageTitle</PageTitle>
@@ -55,4 +56,10 @@
     RoleTreeModel? roleTreeModel = new();
     string? orgId = "";
     MudMessageBox? delBox { get; set; }
+    private CancellationTokenSource cts = new CancellationTokenSource();
+    public void Dispose()
+    {
+        cts.Cancel();
+        cts.Dispose();
+    }
 }

@@ -7,6 +7,7 @@
 @inject ICascadingService cascading
 @inject LocalStorageHelper storageHelper
 @inject EnvConf envConf
+@implements IDisposable
 
 <PageTitle>Welcome - @envConf.PageTitle</PageTitle>
 <MudContainer>
@@ -65,4 +66,10 @@
     string? roleID;
     string? roleName;
     bool onProcessing;
+    private CancellationTokenSource cts = new CancellationTokenSource();
+    public void Dispose()
+    {
+        cts.Cancel();
+        cts.Dispose();
+    }
 }

@@ -49,8 +49,11 @@
 @code {
     bool onProcessing = false;
     LoginForm model = new();
+    private CancellationTokenSource cts = new CancellationTokenSource();
     public void Dispose()
     {
+        cts.Cancel();
+        cts.Dispose();
     }
     public class LoginForm
     {

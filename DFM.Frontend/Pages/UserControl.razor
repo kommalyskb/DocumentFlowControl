@@ -6,7 +6,7 @@
 @inject ISnackbar Snackbar
 @inject IMinioService minio
 @inject EnvConf envConf
-
+@implements IDisposable
 
 <PageTitle>User Management - @envConf.PageTitle</PageTitle>
 
@@ -70,5 +70,10 @@
     bool notify = false;
     private AttachmentDto? attachment = new();
     MudMessageBox? mbox { get; set; }
-
+    private CancellationTokenSource cts = new CancellationTokenSource();
+    public void Dispose()
+    {
+        cts.Cancel();
+        cts.Dispose();
+    }
 }
