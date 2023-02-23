@@ -137,8 +137,8 @@
         <MudItem xs="12" md="6">
             <InputFile id="relateFile" OnChange="uploadReladteFiles" hidden multiple />
             <MudButton Disabled="OnProcessing" HtmlTag="label"
-                       Variant="Variant.Filled"
-                       Color="Color.Secondary"
+                       Variant="Variant.Outlined"
+                       Color="Color.Primary"
                        StartIcon="@Icons.Filled.CloudUpload"
                        for="relateFile">
                 ເອກະສານກ່ຽວຂ້ອງ
@@ -304,7 +304,7 @@
 
             </MudItem>
             <MudItem xs="12" md="2" Class="d-flex flex-grow-1 gap-4">
-                <MudFab Disabled="OnProcessing" Color="Color.Success" Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="refreshFolder" />
+                <MudFab Disabled="OnProcessing" Color="Color.Primary" Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="refreshFolder" />
                 <MudFab Disabled="OnProcessing" Color="Color.Primary" Icon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="displayFolderDialogAsync" />
             </MudItem>
             <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4" ondblclick="@onDocNoClick">
