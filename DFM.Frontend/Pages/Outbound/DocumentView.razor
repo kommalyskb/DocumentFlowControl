@@ -85,10 +85,17 @@
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
             @if (RawDocument!.Attachments != null)
             {
-                <MudText Typo="@Typo.h6">@RawDocument!.Attachments.Count() File@(RawDocument!.Attachments.Count() == 1 ? "" : "s"):</MudText>
+                
                 <div class="mud-table mud-data-grid mud-xs-table mud-elevation-1 mud-width-full">
                     <div class="mud-table-container">
                         <table class="mud-table-root">
+                            <thead class="mud-table-head">
+                                <tr class="mud-table-row">
+                                    <th scope="col" class="mud-table-cell" colspan="3">
+                                        <MudText Typo="@Typo.h6">@RawDocument!.Attachments.Count() File@(RawDocument!.Attachments.Count() == 1 ? "" : "s"):</MudText>
+                                    </th>
+                                </tr>
+                            </thead>
                             <tbody class="mud-table-body">
                                 @foreach (var file in RawDocument!.Attachments)
                                 {
@@ -134,10 +141,17 @@
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
             @if (RawDocument!.RelateFles != null)
             {
-                <MudText Typo="@Typo.h6">@RawDocument!.RelateFles.Count() File@(RawDocument!.RelateFles.Count() == 1 ? "" : "s"):</MudText>
+                
                 <div class="mud-table mud-data-grid mud-xs-table mud-elevation-1 mud-width-full">
                     <div class="mud-table-container">
                         <table class="mud-table-root">
+                            <thead class="mud-table-head">
+                                <tr class="mud-table-row">
+                                    <th scope="col" class="mud-table-cell" colspan="3">
+                                        <MudText Typo="@Typo.h6">@RawDocument!.RelateFles.Count() File@(RawDocument!.RelateFles.Count() == 1 ? "" : "s"):</MudText>
+                                    </th>
+                                </tr>
+                            </thead>
                             <tbody class="mud-table-body">
                                 @foreach (var file in RawDocument!.RelateFles)
                                 {

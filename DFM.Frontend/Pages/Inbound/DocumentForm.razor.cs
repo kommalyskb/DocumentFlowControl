@@ -323,7 +323,16 @@ namespace DFM.Frontend.Pages.Inbound
             if (!string.IsNullOrEmpty(ch) && 500 < ch?.Length)
                 yield return "ອັກສອນສູງສຸດ 500 ອັກສອນ";
         }
-
+        private bool isAttachFileHasThreeColumn()
+        {
+            var isTrue = Attachments!.Any(x => !x.Info!.IsRemove && !x.Info!.IsNewFile && x.Info!.MimeType!.Contains("pdf"));
+            return isTrue;
+        }
+        private bool isRelateFileHasThreeColumn()
+        {
+            var isTrue = RelateFiles!.Any(x => !x.Info!.IsRemove && !x.Info!.IsNewFile && x.Info!.MimeType!.Contains("pdf"));
+            return isTrue;
+        }
         private async Task uploadFiles(InputFileChangeEventArgs e)
         {
             if (e.FileCount > 10)

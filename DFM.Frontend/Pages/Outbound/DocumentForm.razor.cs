@@ -106,7 +106,16 @@ namespace DFM.Frontend.Pages.Outbound
 
 
         }
-
+        private bool isAttachFileHasThreeColumn()
+        {
+            var isTrue = Attachments!.Any(x => !x.Info!.IsRemove && !x.Info!.IsNewFile && x.Info!.MimeType!.Contains("pdf"));
+            return isTrue;
+        }
+        private bool isRelateFileHasThreeColumn()
+        {
+            var isTrue = RelateFiles!.Any(x => !x.Info!.IsRemove && !x.Info!.IsNewFile && x.Info!.MimeType!.Contains("pdf"));
+            return isTrue;
+        }
         private async Task bindDataToVariables(ChannelReader<(bool success, int component, string response)> reader)
         {
             await foreach (var item in reader.ReadAllAsync())
