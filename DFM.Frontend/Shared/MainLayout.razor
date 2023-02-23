@@ -52,7 +52,7 @@
                             if (notices != null)
                             {
                                 <MudList Clickable="true">
-                                    @foreach (var item in notices)
+                                    @foreach (var item in notices.ToList().Take(10))
                                     {
                                         string link = item.ModuleType == ModuleType.DocumentInbound ? "inbound" : "outbound";
                                         string urlPage = $"/pages/doc/{link}/inbox/{item.RefDocument}/{item.RoleID}/{item.id}";
@@ -144,7 +144,7 @@
             Palette = new Palette
             {
                 Primary = "#002f57",
-                //Secondary = "#3D9970",
+                //Secondary = "#E0F2F1",
                 //Info = "#001f3f",
                 //Success = "#2ECC40",
                 //Warning = "#FF851B",
@@ -199,39 +199,48 @@
     }
     async Task connectToNotifyHub()
     {
-        hubConnection = new HubConnectionBuilder()
+        try
+        {
+            hubConnection = new HubConnectionBuilder()
             .WithUrl(nav.ToAbsoluteUri("/notifyhub"))
             .Build();
 
-        hubConnection.On<string, string>("ReceiveMessage", async (topic, message) =>
+            hubConnection.On<string, string>("ReceiveMessage", async (topic, message) =>
+            {
+                Console.WriteLine($"[{DateTime.Now}] - ReceiveMessage : {JsonSerializer.Serialize(topic)}, Message: {message}");
+                Console.WriteLine($"[{DateTime.Now}] - MyUserID : {employee!.id}, Roles: {JsonSerializer.Serialize(myRoles)}");
+                var socketTopic = JsonSerializer.Deserialize<SocketTopic>(topic);
+                if (socketTopic!.SocketType == SocketType.READ_NOTIIFY) // ໃຊ້ໃນກໍລະນີທີ່ User ກົດອ່ານແຈ້ງເຕືອນ
+                {
+                    if (socketTopic.UserID == employee!.id)
+                    {
+                        await loadNotifications();
+
+                        await InvokeAsync(StateHasChanged);
+                    }
+
+                }
+                else if (socketTopic.SocketType == SocketType.PUSH_NOTIFY) // ກໍລະນີແຈ້ງເຕືອນແບບອື່ນ
+                {
+                    var validTopic = await isInRoles(socketTopic.RoleIDs!);
+                    if (validTopic)
+                    {
+                        await loadNotifications();
+
+                        await InvokeAsync(StateHasChanged);
+                    }
+                }
+
+            });
+
+            await hubConnection.StartAsync();
+        }
+        catch (Exception)
         {
-            Console.WriteLine($"[{DateTime.Now}] - ReceiveMessage : {JsonSerializer.Serialize(topic)}, Message: {message}");
-            Console.WriteLine($"[{DateTime.Now}] - MyUserID : {employee!.id}, Roles: {JsonSerializer.Serialize(myRoles)}");
-            var socketTopic = JsonSerializer.Deserialize<SocketTopic>(topic);
-            if (socketTopic!.SocketType == SocketType.READ_NOTIIFY) // ໃຊ້ໃນກໍລະນີທີ່ User ກົດອ່ານແຈ້ງເຕືອນ
-            {
-                if (socketTopic.UserID == employee!.id)
-                {
-                    await loadNotifications();
-
-                    await InvokeAsync(StateHasChanged);
-                }
-
-            }
-            else if (socketTopic.SocketType == SocketType.PUSH_NOTIFY) // ກໍລະນີແຈ້ງເຕືອນແບບອື່ນ
-            {
-                var validTopic = await isInRoles(socketTopic.RoleIDs!);
-                if (validTopic)
-                {
-                    await loadNotifications();
-
-                    await InvokeAsync(StateHasChanged);
-                }
-            }
-
-        });
-
-        await hubConnection.StartAsync();
+            
+            
+        }
+        
     }
     public bool IsConnected =>
         hubConnection?.State == HubConnectionState.Connected;

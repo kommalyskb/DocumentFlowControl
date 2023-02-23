@@ -98,35 +98,48 @@
             @if (RawDocument!.Attachments != null)
             {
                 <MudText Typo="@Typo.h6">@RawDocument!.Attachments.Count() File@(RawDocument!.Attachments.Count() == 1 ? "" : "s"):</MudText>
-                <MudList>
-                    @foreach (var file in RawDocument!.Attachments)
-                    {
-                        if (file != null)
-                        {
-                            if (!file.IsRemove)
-                            {
-                                <MudListItem Icon="@file.FileFormat" @key="@file">
-                                    <MudTooltip Text="@file!.Display">
-                                        <MudChip Color="Color.Primary">
-                                            @file!.DisplayOnPage <code><b>@file!.FileSize.ToString("0.##") MB</b></code>
-                                        </MudChip>
-
-                                    </MudTooltip>
-                                    @if (file!.MimeType!.Contains("pdf"))
+                <div class="mud-table mud-data-grid mud-xs-table mud-elevation-1 mud-width-full">
+                    <div class="mud-table-container">
+                        <table class="mud-table-root">
+                            <tbody class="mud-table-body">
+                                @foreach (var file in RawDocument!.Attachments)
+                                {
+                                    if (file != null)
                                     {
-                                        <MudIconButton Color="Color.Warning" Icon="@Icons.Material.Filled.Preview" aria-label="preview" Disabled="previewButton" OnClick="@(() => previewPdf(file!.Bucket, file!.FileName, file!.Display))"></MudIconButton>
-                                    }
-                                    <a class="mud-button-root mud-icon-button mud-warning-text hover:mud-warning-hover mud-ripple mud-ripple-icon" target="_blank" href="@endpoint.PublicAPI/api/v1/Document/@file.Bucket/@file.FileName/@file.Display/Download">
-                                        <span class="mud-icon-button-label">
-                                            <MudIcon Icon="@Icons.Material.Filled.Download" Color="Color.Primary" />
-                                        </span>
-                                    </a>
-                                </MudListItem>
-                            }
+                                        if (!file.IsRemove)
+                                        {
+                                            <tr class="mud-table-row">
+                                                <td class="mud-table-cell">
+                                                    <MudTooltip Text="@file!.Display">
+                                                        <MudChip Color="Color.Primary">
+                                                            @file!.DisplayOnPage <code><b>@file!.FileSize.ToString("0.##") MB</b></code>
+                                                        </MudChip>
 
-                        }
-                    }
-                </MudList>
+                                                    </MudTooltip>
+                                                </td>
+                                                <td class="mud-table-cell" style="width: 30px">
+                                                    @if (file!.MimeType!.Contains("pdf"))
+                                                    {
+                                                        <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.Preview" aria-label="preview" Disabled="previewButton" OnClick="@(() => previewPdf(file!.Bucket, file!.FileName, file!.Display))"></MudIconButton>
+                                                    }
+                                                </td>
+                                                <td class="mud-table-cell" style="width: 30px">
+                                                    <a class="mud-button-root mud-icon-button mud-warning-text hover:mud-warning-hover mud-ripple mud-ripple-icon" target="_blank" href="@endpoint.PublicAPI/api/v1/Document/@file.Bucket/@file.FileName/@file.Display/Download">
+                                                        <span class="mud-icon-button-label">
+                                                            <MudIcon Icon="@Icons.Material.Filled.Download" Color="Color.Primary" />
+                                                        </span>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
             }
 
         </MudItem>
@@ -134,37 +147,48 @@
             @if (RawDocument!.RelateFles != null)
             {
                 <MudText Typo="@Typo.h6">@RawDocument!.RelateFles.Count() File@(RawDocument!.RelateFles.Count() == 1 ? "" : "s"):</MudText>
-                <MudList>
-                    @foreach (var file in RawDocument!.RelateFles)
-                    {
-                        if (file != null)
-                        {
-                            if (!file.IsRemove)
-                            {
-                                <MudListItem Icon="@file.FileFormat" @key="@file">
-                                    <MudTooltip Text="@file!.Display">
-                                        <MudChip Color="Color.Secondary">
-                                            @file!.DisplayOnPage <code><b>@file!.FileSize.ToString("0.##") MB</b></code>
-                                        </MudChip>
-                                        
-                                    </MudTooltip>
-
-                                    @if (file!.MimeType!.Contains("pdf"))
+                <div class="mud-table mud-data-grid mud-xs-table mud-elevation-1 mud-width-full">
+                    <div class="mud-table-container">
+                        <table class="mud-table-root">
+                            <tbody class="mud-table-body">
+                                @foreach (var file in RawDocument!.RelateFles)
+                                {
+                                    if (file != null)
                                     {
-                                        <MudIconButton Color="Color.Warning" Icon="@Icons.Material.Filled.Preview" aria-label="preview" Disabled="previewButton" OnClick="@(() => previewPdf(file!.Bucket, file!.FileName, file!.Display))"></MudIconButton>
+                                        if (!file.IsRemove)
+                                        {
+                                            <tr class="mud-table-row">
+                                                <td class="mud-table-cell">
+                                                    <MudTooltip Text="@file!.Display">
+                                                        <MudChip Variant="Variant.Outlined" Color="Color.Primary">
+                                                            @file!.DisplayOnPage <code><b>@file!.FileSize.ToString("0.##") MB</b></code>
+                                                        </MudChip>
+
+                                                    </MudTooltip>
+                                                </td>
+                                                <td class="mud-table-cell" style="width: 30px">
+                                                    @if (file!.MimeType!.Contains("pdf"))
+                                                    {
+                                                        <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.Preview" aria-label="preview" Disabled="previewButton" OnClick="@(() => previewPdf(file!.Bucket, file!.FileName, file!.Display))"></MudIconButton>
+                                                    }
+                                                </td>
+                                                <td class="mud-table-cell" style="width: 30px">
+                                                    <a class="mud-button-root mud-icon-button mud-warning-text hover:mud-warning-hover mud-ripple mud-ripple-icon" target="_blank" href="@endpoint.PublicAPI/api/v1/Document/@file.Bucket/@file.FileName/@file.Display/Download">
+                                                        <span class="mud-icon-button-label">
+                                                            <MudIcon Icon="@Icons.Material.Filled.Download" Color="Color.Primary" />
+                                                        </span>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        }
                                     }
-                                    <a class="mud-button-root mud-icon-button mud-warning-text hover:mud-warning-hover mud-ripple mud-ripple-icon" target="_blank" href="@endpoint.PublicAPI/api/v1/Document/@file.Bucket/@file.FileName/@file.Display/Download">
-                                        <span class="mud-icon-button-label">
-                                            <MudIcon Icon="@Icons.Material.Filled.Download" Color="Color.Primary" />
-                                        </span>
-                                    </a>
 
-                                </MudListItem>
-                            }
-
-                        }
-                    }
-                </MudList>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+               
             }
         </MudItem>
         <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
