@@ -18,7 +18,7 @@
         <MudItem xs="12" md="6" Class="d-flex justify-end flex-grow-1 gap-4">
             @if (ShowHistoryButton)
             {
-                <MudButtonGroup Color="Color.Warning" Variant="Variant.Outlined">
+                <MudButtonGroup Color="Color.Primary" Variant="Variant.Outlined">
                     <MudTooltip Text="ປະຫວັດການສົ່ງເອກະສານ">
                         <MudIconButton Color="Color.Primary" Icon="@Icons.Material.Filled.HistoryEdu" Disabled="historyBtn" OnClick="(async () => await HistoryButtonEvent.InvokeAsync())"></MudIconButton>
                     </MudTooltip>

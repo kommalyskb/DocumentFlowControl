@@ -5,6 +5,7 @@ using DFM.Shared.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Cryptography;
 
 namespace DFM.API.Controllers
 {
@@ -44,6 +45,33 @@ namespace DFM.API.Controllers
 
             var result = await menuManager.GetRuleMenus(userId, myProfile.Content.OrganizationID!, cancellationToken);
 
+            return Ok(result);
+        }
+
+        [HttpGet("GetRules/{orgId}")]
+        [MapToApiVersion("1.0")]
+        [ProducesResponseType(typeof(IEnumerable<RuleMenu>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetRulesV1(string orgId, CancellationToken cancellationToken = default(CancellationToken))
+        {
+
+            var result = await menuManager.GetRuleMenus(orgId, cancellationToken);
+
+            return Ok(result);
+        }
+
+        [HttpGet("RemoveItem/{id}")]
+        [MapToApiVersion("1.0")]
+        [ProducesResponseType(typeof(CommonResponseId), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> RemoveItemV1(string id, CancellationToken cancellationToken = default(CancellationToken))
+        {
+
+            var result = await menuManager.RemoveRule(id, cancellationToken);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
             return Ok(result);
         }
 

@@ -2,17 +2,25 @@
 using DFM.Shared.Extensions;
 using DFM.Shared.Helper;
 
-namespace DFM.Frontend.Pages.SecurityLevelComponent
+namespace DFM.Frontend.Pages.Menu
 {
-    public partial class SecurityForm
+    public partial class MenuForm
     {
-        //private EmployeeModel? employee;
-        //string? token = "";
         IEnumerable<string>? authorizeOption;
         string? authorizeView = "ກະລຸນາເລືອກ ຢ່າງຫນ້ອຍ 1 ຢ່າງ";
         IDictionary<string, string>? authorizeTemplates;
         IDictionary<string, RoleTypeModel>? authorizeTemplatesValues;
         List<RoleTypeModel>? roleTypes;
+        private IEnumerable<string> MaxCharacters(string ch)
+        {
+            if (!string.IsNullOrEmpty(ch) && 1000 < ch?.Length)
+                yield return "ອັກສອນສູງສຸດ 1000 ອັກສອນ";
+        }
+        private IEnumerable<string> MediumCharacters(string ch)
+        {
+            if (!string.IsNullOrEmpty(ch) && 500 < ch?.Length)
+                yield return "ອັກສອນສູງສຸດ 500 ອັກສອນ";
+        }
         protected override void OnInitialized()
         {
             roleTypes = new List<RoleTypeModel>();
@@ -71,29 +79,19 @@ namespace DFM.Frontend.Pages.SecurityLevelComponent
             authorizeTemplatesValues.Add(RoleTypeModel.Contract.ToString(), RoleTypeModel.Contract);
             authorizeTemplatesValues.Add(RoleTypeModel.Volunteer.ToString(), RoleTypeModel.Volunteer);
 
-           
+
             // Binding Authorize
-            if (!DocumentSecurityModel!.Authorized!.IsNullOrEmpty())
+            if (!RuleMenu!.RoleTypes!.IsNullOrEmpty())
             {
                 authorizeOption = new List<string>();
                 List<string> existAuthorize = new();
-                foreach (var item in DocumentSecurityModel!.Authorized!)
+                foreach (var item in RuleMenu!.RoleTypes!)
                 {
                     existAuthorize.Add(item.ToString());
                 }
                 authorizeOption = authorizeOption!.Concat(existAuthorize);
             }
-            
-        }
-        private IEnumerable<string> MaxCharacters(string ch)
-        {
-            if (!string.IsNullOrEmpty(ch) && 1000 < ch?.Length)
-                yield return "ອັກສອນສູງສຸດ 1000 ອັກສອນ";
-        }
-        private IEnumerable<string> MediumCharacters(string ch)
-        {
-            if (!string.IsNullOrEmpty(ch) && 500 < ch?.Length)
-                yield return "ອັກສອນສູງສຸດ 500 ອັກສອນ";
+
         }
         private string getSelectionAuthorize(List<string> selectedValues)
         {
@@ -106,7 +104,7 @@ namespace DFM.Frontend.Pages.SecurityLevelComponent
             }
             if (selectedValues.Count > 0)
             {
-                DocumentSecurityModel!.Authorized = roleTypes;
+                RuleMenu!.RoleTypes = roleTypes;
 
             }
             return selectText;

@@ -5,6 +5,7 @@ using DFM.Shared.Entities;
 using DFM.Shared.Extensions;
 using DFM.Shared.Interfaces;
 using DFM.Shared.Resources;
+using MyCouch.Requests;
 using Redis.OM;
 using Redis.OM.Searching;
 using System;
@@ -53,9 +54,61 @@ namespace DFM.Shared.Repository
         {
             try
             {
-                var result = context.Where(x => x.UserID!.Contains(userId) && x.OrgID == orgId).ToList();
+                var result = context.Where(x => x.UserIDs!.Contains(userId) && x.OrgID == orgId).ToList();
 
                 return result; 
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<RuleMenu>> GetRuleMenus(string orgId, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            try
+            {
+                var result = context.Where(x => x.OrgID == orgId).ToList();
+
+                return result;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<CommonResponseId> RemoveRule(string id, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            try
+            {
+                var exist = await GetRuleMenu(id, cancellationToken);
+
+                var result = await couchContext.DeleteAsync(write_couchDbHelper, exist.id, exist.rev, cancellationToken);
+                if (!result.IsSuccess)
+                {
+                    return new CommonResponseId
+                    {
+                        Success = false,
+                        Code = nameof(ResultCode.REMOVED_FAILED),
+                        Message = ResultCode.REMOVED_FAILED,
+                        Detail = result.Reason,
+                        Id = id
+                    };
+                }
+
+                await context.DeleteAsync(exist);
+
+                return new CommonResponseId
+                {
+                    Success = false,
+                    Code = nameof(ResultCode.SUCCESS_OPERATION),
+                    Message = ResultCode.SUCCESS_OPERATION,
+                    Detail = ResultCode.SUCCESS_OPERATION,
+                    Id = id
+                };
             }
             catch (Exception)
             {
@@ -71,22 +124,39 @@ namespace DFM.Shared.Repository
                 if (string.IsNullOrWhiteSpace(request.id))
                 {
                     // Generate ID
-                    request.id = Guid.NewGuid().ToString("N");
+                    request.id = $"{request.OrgID}-{request.Menu}";
 
-                    var result = await couchContext.InsertAsync<RuleMenu>(write_couchDbHelper, request);
-                    if (!result.IsSuccess)
+                    // Find ID
+                    var exist = await GetRuleMenu(request.id, cancellationToken);
+                    if (exist == null)
                     {
+                        // Create new record
+                        var result = await couchContext.InsertAsync<RuleMenu>(write_couchDbHelper, request);
+                        if (!result.IsSuccess)
+                        {
+                            return new CommonResponseId
+                            {
+                                Code = nameof(ResultCode.COULD_NOT_CREATE_RECORD),
+                                Detail = result.Error,
+                                Message = ResultCode.COULD_NOT_CREATE_RECORD,
+                                Success = false
+                            };
+                        }
+
+                        request.rev = result.Rev;
+                        await context.InsertAsync(request);
                         return new CommonResponseId
                         {
-                            Code = nameof(ResultCode.COULD_NOT_CREATE_RECORD),
-                            Detail = result.Error,
-                            Message = ResultCode.COULD_NOT_CREATE_RECORD,
-                            Success = false
+                            Code = nameof(ResultCode.SUCCESS_OPERATION),
+                            Detail = ResultCode.SUCCESS_OPERATION,
+                            Message = ResultCode.SUCCESS_OPERATION,
+                            Success = true
                         };
                     }
 
-                    request.rev = result.Rev;
-                    await context.InsertAsync(request);
+                    // Update existing
+                    request.rev = exist.rev;
+                    await context.UpdateAsync(request);
                     return new CommonResponseId
                     {
                         Code = nameof(ResultCode.SUCCESS_OPERATION),

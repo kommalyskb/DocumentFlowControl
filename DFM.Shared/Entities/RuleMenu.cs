@@ -1,7 +1,9 @@
 ﻿using DFM.Shared.DTOs;
+using DFM.Shared.Helper;
 using Minio.DataModel;
 using Redis.OM.Modeling;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,11 +15,18 @@ namespace DFM.Shared.Entities
     public class RuleMenu : HeaderModel
     {
         [Indexed]
-        public string? Group { get; set; }
+        public IEnumerable<RoleTypeModel>? RoleTypes { get; set; }
         [Indexed]
         public MenuLink Menu { get; set; }
         [Indexed]
-        public IEnumerable<string>? UserID { get; set; }
+        public string? DecodeMenu { 
+            get
+            {
+                return DecodeEnumMenu.decodeMenuLink(this.Menu);
+            }
+        }
+        [Indexed]
+        public IEnumerable<string>? UserIDs { get; set; }
         [Indexed]
         public string? OrgID { get; set; }
     }
@@ -45,6 +54,8 @@ namespace DFM.Shared.Entities
         DOC_TYPE,
         SEC_LEVEL,
         URGENT_LEVEL,
+        RULE_MENU,
+        FREE_FLOW,
         REPORT_IB,
         REPORT_OB
     }

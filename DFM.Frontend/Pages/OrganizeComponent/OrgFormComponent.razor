@@ -19,42 +19,42 @@
         </MudItem>
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
             <MudSelect Margin="Margin.Dense" T="RoleTypeModel" HelperText="ລະດັບຕຳແຫນ່ງ" Label="ຕຳແຫນ່ງ" @bind-Value="RoleTreeModel!.Role.RoleType" SelectedValuesChanged="onSelectedRoleChanged" Variant="Variant.Outlined" Disabled="@disabled">
-                <MudSelectItem Value="RoleTypeModel.Prime">ປະທານບໍລິສັດ</MudSelectItem>
-                <MudSelectItem Value="RoleTypeModel.DeputyPrime">ຮອງປະທານບໍລິສັດ</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.Prime">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.Prime)</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.DeputyPrime">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.DeputyPrime)</MudSelectItem>
                 <MudDivider></MudDivider>
-                <MudSelectItem Value="RoleTypeModel.PrimeSecretary">ເລຂາປະທານບໍລິສັດ</MudSelectItem>
-                <MudSelectItem Value="RoleTypeModel.DeputyPrimeSecretary">ເລຂາຮອງປະທານບໍລິສັດ</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.PrimeSecretary">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.PrimeSecretary)</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.DeputyPrimeSecretary">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.DeputyPrimeSecretary)</MudSelectItem>
                 <MudDivider></MudDivider>
-                <MudSelectItem Value="RoleTypeModel.Director">ຜູ້ອຳນວຍການ</MudSelectItem>
-                <MudSelectItem Value="RoleTypeModel.DeputyDirector">ຮອງຜູ້ອຳນວຍການ</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.Director">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.Director)</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.DeputyDirector">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.DeputyDirector)</MudSelectItem>
                 <MudDivider></MudDivider>
-                <MudSelectItem Value="RoleTypeModel.InboundPrime">ຂາເຂົ້າບໍລິສັດ</MudSelectItem>
-                <MudSelectItem Value="RoleTypeModel.OutboundPrime">ຂາອອກບໍລິສັດ</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.InboundPrime">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.InboundPrime)</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.OutboundPrime">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.OutboundPrime)</MudSelectItem>
                 <MudDivider></MudDivider>
-                <MudSelectItem Value="RoleTypeModel.OfficePrime">ຫົວຫນ້າຫ້ອງການ</MudSelectItem>
-                <MudSelectItem Value="RoleTypeModel.DeputyOfficePrime">ຮອງຫົວຫນ້າຫ້ອງການ</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.OfficePrime">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.OfficePrime)</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.DeputyOfficePrime">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.DeputyOfficePrime)</MudSelectItem>
                 <MudDivider></MudDivider>
-                <MudSelectItem Value="RoleTypeModel.InboundOfficePrime">ຂາເຂົ້າຫ້ອງການ</MudSelectItem>
-                <MudSelectItem Value="RoleTypeModel.OutboundOfficePrime">ຂາອອກຫ້ອງການ</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.InboundOfficePrime">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.InboundOfficePrime)</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.OutboundOfficePrime">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.OutboundOfficePrime)</MudSelectItem>
                 <MudDivider></MudDivider>
-                <MudSelectItem Value="RoleTypeModel.General">ຫົວຫນ້າຝ່າຍ</MudSelectItem>
-                <MudSelectItem Value="RoleTypeModel.DeputyGeneral">ຮອງຫົວຫນ້າຝ່າຍ</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.General">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.General)</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.DeputyGeneral">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.DeputyGeneral)</MudSelectItem>
                 <MudDivider></MudDivider>
-                <MudSelectItem Value="RoleTypeModel.InboundGeneral">ຂາເຂົ້າຝ່າຍ</MudSelectItem>
-                <MudSelectItem Value="RoleTypeModel.OutboundGeneral">ຂາອອກຝ່າຍ </MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.InboundGeneral">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.InboundGeneral)</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.OutboundGeneral">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.OutboundGeneral)</MudSelectItem>
                 <MudDivider></MudDivider>
-                <MudSelectItem Value="RoleTypeModel.OfficeGeneral">ຫົວຫນ້າຫ້ອງການຝ່າຍ</MudSelectItem>
-                <MudSelectItem Value="RoleTypeModel.DeputyOfficeGeneral">ຮອງຫົວຫນ້າຫ້ອງການຝ່າຍ</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.OfficeGeneral">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.OfficeGeneral)</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.DeputyOfficeGeneral">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.DeputyOfficeGeneral)</MudSelectItem>
                 <MudDivider></MudDivider>
-                <MudSelectItem Value="RoleTypeModel.Division">ຫົວຫນ້າພະແນກ</MudSelectItem>
-                <MudSelectItem Value="RoleTypeModel.DeputyDivision">ຮອງພະແນກ</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.Division">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.Division)</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.DeputyDivision">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.DeputyDivision)</MudSelectItem>
                 <MudDivider></MudDivider>
-                <MudSelectItem Value="RoleTypeModel.Department">ຫົວຫນ້າພາກສ່ວນ</MudSelectItem>
-                <MudSelectItem Value="RoleTypeModel.DeputyDepartment">ຮອງພາກສ່ວນ</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.Department">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.Department)</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.DeputyDepartment">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.DeputyDepartment)</MudSelectItem>
                 <MudDivider></MudDivider>
-                <MudSelectItem Value="RoleTypeModel.Employee">ພະນັກງານວິຊາການ</MudSelectItem>
-                <MudSelectItem Value="RoleTypeModel.Contract">ສັນຍາຈ້າງ</MudSelectItem>
-                <MudSelectItem Value="RoleTypeModel.Volunteer">ອາສາສະຫມັກ</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.Employee">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.Employee)</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.Contract">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.Contract)</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.Volunteer">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.Volunteer)</MudSelectItem>
             </MudSelect>
         </MudItem>
         @if (FormMode == FormMode.Edit)

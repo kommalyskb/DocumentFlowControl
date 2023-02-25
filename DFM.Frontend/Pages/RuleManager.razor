@@ -1,0 +1,61 @@
+﻿@page "/pages/rulemanager"
+@inject IHttpService httpService
+@inject AccessTokenStorage accessToken
+@inject ServiceEndpoint endpoint
+@inject LocalStorageHelper storageHelper
+@inject IMinioService minio
+@inject StorageConfiguration storageConf
+@inject NavigationManager nav
+@inject ISnackbar Snackbar
+@inject EnvConf envConf
+@implements IDisposable
+
+<PageTitle>Rule Manager - @envConf.PageTitle</PageTitle>
+
+
+<DFM.Frontend.Pages.Common.ButtonPanel FormMode="formMode" ShowTerminateButton="false" ShowCreateButton="true" ShowDeleteButton="false"
+                                       ShowEditButton="true" ShowSaveButton="true" ShowSendButton="false" Behavior="BehaviorStatus.ReadWrite"
+                                       CreateButtonEvent="onCreateButtonClick" PreviousButtonEvent="onePreviousButtonClick"
+                                       DeleteButtonEvent="onDeleteButtonClick" RootBreadcrumb="ລາຍການສິດການເຂົ້າເຖິງຂໍ້ມູນ" ViewBreadcrumb="ເບີ່ງສິດການເຂົ້າເຖິງຂໍ້ມູນ"
+                                       EditBreadcrumb="ແກ້ໄຂສິດການເຂົ້າເຖິງຂໍ້ມູນ" CreateBreadcrumb="ສ້າງສິດການເຂົ້າເຖິງຂໍ້ມູນໃຫມ່" OnProcessing="onProcessing"
+                                       EditButtonEvent="onEditButtonClick" SaveButtonEvent="onSaveClickAsync"></DFM.Frontend.Pages.Common.ButtonPanel>
+
+<MudContainer Class="mt-2">
+    <MudGrid>
+        <MudItem xs="12" sm="12">
+            <MudPaper Elevation="3">
+                @if (formMode == FormMode.List)
+                {
+                    <DFM.Frontend.Pages.Menu.MenuList OnRowClick="onRowClick"></DFM.Frontend.Pages.Menu.MenuList>
+                }
+                else if (formMode == FormMode.Create)
+                {
+                    <DFM.Frontend.Pages.Menu.MenuForm Mode="formMode" OnProcessing="onProcessing" RuleMenu="ruleMenu"></DFM.Frontend.Pages.Menu.MenuForm>
+                }
+                else if (formMode == FormMode.Edit)
+                {
+                    <DFM.Frontend.Pages.Menu.MenuForm Mode="formMode" OnProcessing="onProcessing" RuleMenu="ruleMenu"></DFM.Frontend.Pages.Menu.MenuForm>
+
+                }
+                else if (formMode == FormMode.View)
+                {
+                    <DFM.Frontend.Pages.Menu.MenuView RuleMenu="ruleMenu"></DFM.Frontend.Pages.Menu.MenuView>
+                }
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+@code {
+    private FormMode formMode;
+    MudMessageBox? delBox { get; set; }
+    bool onProcessing = false;
+    RuleMenu ruleMenu = new();
+
+    private CancellationTokenSource cts = new CancellationTokenSource();
+    public void Dispose()
+    {
+        cts.Cancel();
+        cts.Dispose();
+    }
+}

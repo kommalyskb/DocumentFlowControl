@@ -186,6 +186,9 @@
   <data name="REG_USER_FAIL" xml:space="preserve">
     <value>Failed to register new user on Identity Server</value>
   </data>
+  <data name="REMOVED_FAILED" xml:space="preserve">
+    <value>Could not remove object</value>
+  </data>
   <data name="REQUEST_FAIL" xml:space="preserve">
     <value>Request failed</value>
   </data>

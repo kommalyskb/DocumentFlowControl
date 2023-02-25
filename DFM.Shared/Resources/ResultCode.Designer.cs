@@ -268,6 +268,15 @@ namespace DFM.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not remove object.
+        /// </summary>
+        public static string REMOVED_FAILED {
+            get {
+                return ResourceManager.GetString("REMOVED_FAILED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Request failed.
         /// </summary>
         public static string REQUEST_FAIL {

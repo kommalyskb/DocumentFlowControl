@@ -2,18 +2,46 @@
 @inject AccessTokenStorage accessToken
 @inject ServiceEndpoint endpoint
 @inject LocalStorageHelper storageHelper
+@inject EnvConf envConf
+@inject IDialogService DialogService
+
 
 <MudContainer>
+
     <MudGrid>
-        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <MudTextField Margin="Margin.Dense" Disabled="OnProcessing" @bind-Value="DocumentSecurityModel!.Level" Required="true" T="string" Counter="1000" MaxLength="1000" Immediate="true" Variant="Variant.Outlined" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ຊື່ຂອງລະດັບຄວາມປອດໄພ" Label="ລະດັບຄວາມປອດໄພ" />
-        </MudItem>
-        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <MudTextField Margin="Margin.Dense" Disabled="OnProcessing" @bind-Value="DocumentSecurityModel!.SortOrder" T="int" Immediate="true" Variant="Variant.Outlined" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" HelperText="ລຳດັບການສະແດງຜົນ" Label="ລຳດັບ" />
+        <MudItem xs="12" md="10" Class="d-flex flex-grow-1 gap-4">
+            <MudSelect Margin="Margin.Dense" Disabled="OnProcessing" @bind-Value="RuleMenu!.Menu" T="MenuLink" HelperText="ເມນູ" Label="ເມນູ" Variant="Variant.Outlined">
+                <MudSelectItem Value="MenuLink.MAIN_PAGE">@DecodeEnumMenu.decodeMenuLink(MenuLink.MAIN_PAGE)</MudSelectItem>
+                <MudSelectItem Value="MenuLink.USER_INFO">@DecodeEnumMenu.decodeMenuLink(MenuLink.USER_INFO)</MudSelectItem>
+                <MudSelectItem Value="MenuLink.IB_INBOX">@DecodeEnumMenu.decodeMenuLink(MenuLink.IB_INBOX)</MudSelectItem>
+                <MudSelectItem Value="MenuLink.IB_COPROCESS">@DecodeEnumMenu.decodeMenuLink(MenuLink.IB_COPROCESS)</MudSelectItem>
+                <MudSelectItem Value="MenuLink.IB_DRAFT">@DecodeEnumMenu.decodeMenuLink(MenuLink.IB_DRAFT)</MudSelectItem>
+                <MudSelectItem Value="MenuLink.IB_COMOMPLETED">@DecodeEnumMenu.decodeMenuLink(MenuLink.IB_COMOMPLETED)</MudSelectItem>
+                <MudSelectItem Value="MenuLink.IB_TRASH">@DecodeEnumMenu.decodeMenuLink(MenuLink.IB_TRASH)</MudSelectItem>
+                <MudSelectItem Value="MenuLink.OB_INBOX">@DecodeEnumMenu.decodeMenuLink(MenuLink.OB_INBOX)</MudSelectItem>
+                <MudSelectItem Value="MenuLink.OB_COPROCESS">@DecodeEnumMenu.decodeMenuLink(MenuLink.OB_COPROCESS)</MudSelectItem>
+                <MudSelectItem Value="MenuLink.OB_DRAFT">@DecodeEnumMenu.decodeMenuLink(MenuLink.OB_DRAFT)</MudSelectItem>
+                <MudSelectItem Value="MenuLink.OB_COMOMPLETED">@DecodeEnumMenu.decodeMenuLink(MenuLink.OB_COMOMPLETED)</MudSelectItem>
+                <MudSelectItem Value="MenuLink.OB_TRASH">@DecodeEnumMenu.decodeMenuLink(MenuLink.OB_TRASH)</MudSelectItem>
+                <MudSelectItem Value="MenuLink.MON_IB">@DecodeEnumMenu.decodeMenuLink(MenuLink.MON_IB)</MudSelectItem>
+                <MudSelectItem Value="MenuLink.MON_OB">@DecodeEnumMenu.decodeMenuLink(MenuLink.MON_OB)</MudSelectItem>
+                <MudSelectItem Value="MenuLink.IB_FOLDER">@DecodeEnumMenu.decodeMenuLink(MenuLink.IB_FOLDER)</MudSelectItem>
+                <MudSelectItem Value="MenuLink.OB_FOLDER">@DecodeEnumMenu.decodeMenuLink(MenuLink.OB_FOLDER)</MudSelectItem>
+                <MudSelectItem Value="MenuLink.ORG_CHART">@DecodeEnumMenu.decodeMenuLink(MenuLink.ORG_CHART)</MudSelectItem>
+                <MudSelectItem Value="MenuLink.USER_MGR">@DecodeEnumMenu.decodeMenuLink(MenuLink.USER_MGR)</MudSelectItem>
+                <MudSelectItem Value="MenuLink.DOC_TYPE">@DecodeEnumMenu.decodeMenuLink(MenuLink.DOC_TYPE)</MudSelectItem>
+                <MudSelectItem Value="MenuLink.SEC_LEVEL">@DecodeEnumMenu.decodeMenuLink(MenuLink.SEC_LEVEL)</MudSelectItem>
+                <MudSelectItem Value="MenuLink.URGENT_LEVEL">@DecodeEnumMenu.decodeMenuLink(MenuLink.URGENT_LEVEL)</MudSelectItem>
+                <MudSelectItem Value="MenuLink.RULE_MENU">@DecodeEnumMenu.decodeMenuLink(MenuLink.RULE_MENU)</MudSelectItem>
+                <MudSelectItem Value="MenuLink.FREE_FLOW">@DecodeEnumMenu.decodeMenuLink(MenuLink.FREE_FLOW)</MudSelectItem>
+                <MudSelectItem Value="MenuLink.REPORT_IB">@DecodeEnumMenu.decodeMenuLink(MenuLink.REPORT_IB)</MudSelectItem>
+                <MudSelectItem Value="MenuLink.REPORT_OB">@DecodeEnumMenu.decodeMenuLink(MenuLink.REPORT_OB)</MudSelectItem>
+            </MudSelect>
         </MudItem>
         <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
-
-            <MudSelect Margin="Margin.Dense" T="string" Immediate="true" Variant="Variant.Outlined" HelperText="ຕຳແໜ່ງທີ່ສາມາດເບີ່ງເອກະສານໄດ້" Label="ຜູ້ທີ່ສາມາດເຂົ້າເຖິງເອກະສານ" MultiSelection="true" SelectAll="true" SelectAllText="ເລືອກທັງຫມົດ" @bind-Value="authorizeView" @bind-SelectedValues="authorizeOption" MultiSelectionTextFunc="@(new Func<List<string>, string>(getSelectionAuthorize))">
+            <MudSelect Margin="Margin.Dense" T="string" Disabled="OnProcessing" Immediate="true" Variant="Variant.Outlined" HelperText="ຕຳແໜ່ງທີ່ສາມາດເຂົ້າເຖິງເມນູໄດ້" Label="ຜູ້ທີ່ສາມາດເຂົ້າເຖິງເມນູໄດ້"
+            MultiSelection="true" SelectAll="true" SelectAllText="ເລືອກທັງຫມົດ" @bind-Value="authorizeView" @bind-SelectedValues="authorizeOption" 
+            MultiSelectionTextFunc="@(new Func<List<string>, string>(getSelectionAuthorize))">
                 <MudSelectItem Value="RoleTypeModel.Prime.ToString()">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.Prime)</MudSelectItem>
                 <MudSelectItem Value="RoleTypeModel.DeputyPrime.ToString()">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.DeputyPrime)</MudSelectItem>
                 <MudDivider></MudDivider>
@@ -52,11 +80,12 @@
                 <MudSelectItem Value="RoleTypeModel.Volunteer.ToString()">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.Volunteer)</MudSelectItem>
             </MudSelect>
         </MudItem>
+        
     </MudGrid>
 </MudContainer>
 
 @code {
-    [Parameter] public string? RoleId { get; set; }
-    [Parameter] public DocumentSecurityModel? DocumentSecurityModel { get; set; }
+    [Parameter] public RuleMenu? RuleMenu { get; set; }
+    [Parameter] public FormMode Mode { get; set; }
     [Parameter] public bool OnProcessing { get; set; }
 }
