@@ -10,6 +10,7 @@ using HttpClientService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 using System.Diagnostics;
 using System.Text.Json;
 using System.Threading;
@@ -132,9 +133,10 @@ namespace DFM.API.Controllers
 
                     };
                     var reqUser = await httpService.Post<UserRegisterRequestResponse>($"{endpoint.IdentityAPI}/api/Users", r, new AuthorizeHeader("bearer", checkAdminToken.Token), cancellationToken);
+                    var reqUserContent = await reqUser.HttpResponseMessage.Content.ReadAsStringAsync();
+                    Log.Information($"Create User SSO: {reqUserContent}");
                     if (reqUser.Success)
                     {
-                        var reqUserContent = await reqUser.HttpResponseMessage.Content.ReadAsStringAsync();
                         var userResponse = JsonSerializer.Deserialize<UserRegisterRequestResponse>(reqUserContent);
                         request.id = userResponse?.id;
                         request.UserID = userResponse?.id;
