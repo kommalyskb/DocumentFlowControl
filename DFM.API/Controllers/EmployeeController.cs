@@ -123,8 +123,8 @@ namespace DFM.API.Controllers
                     {
                         userName = request.Username,
                         accessFailedCount = 0,
-                        //email = request.Contact.Email,
-                        //emailConfirmed = true,
+                        email = $"{request.Username}@dummy.csenergy.la",
+                        emailConfirmed = true,
                         lockoutEnabled = true,
                         lockoutEnd = DateTime.UtcNow,
                         //phoneNumber = request.Contact.Phone,

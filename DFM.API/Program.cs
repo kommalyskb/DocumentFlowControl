@@ -172,6 +172,7 @@ builder.Services.AddSingleton<IIdentityHelper, IdentityHelper>();
 builder.Services.AddSingleton<IEmailHelper,  EmailHelper>();
 builder.Services.AddSingleton<IAESHelper, AESHelper>();
 builder.Services.AddSingleton<INotificationManager, NotificationManager>();
+builder.Services.AddSingleton<IRuleMenuManager, RuleMenuManager>();
 
 #endregion
 builder.Services.AddControllers();

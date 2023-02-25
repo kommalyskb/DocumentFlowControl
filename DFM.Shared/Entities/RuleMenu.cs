@@ -18,6 +18,8 @@ namespace DFM.Shared.Entities
         public MenuLink Menu { get; set; }
         [Indexed]
         public IEnumerable<string>? UserID { get; set; }
+        [Indexed]
+        public string? OrgID { get; set; }
     }
 
     public enum MenuLink

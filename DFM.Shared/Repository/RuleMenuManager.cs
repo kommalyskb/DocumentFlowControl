@@ -49,6 +49,20 @@ namespace DFM.Shared.Repository
             context = provider.RedisCollection<RuleMenu>();
         }
 
+        public async Task<IEnumerable<RuleMenu>> GetRuleMenus(string userId, string orgId, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            try
+            {
+                var result = context.Where(x => x.UserID!.Contains(userId) && x.OrgID == orgId).ToList();
+
+                return result; 
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
 
         public async Task<CommonResponseId> UpdateRules(RuleMenu request, CancellationToken cancellationToken = default(CancellationToken))
         {
