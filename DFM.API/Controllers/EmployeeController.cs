@@ -122,8 +122,8 @@ namespace DFM.API.Controllers
                     {
                         userName = request.Username,
                         accessFailedCount = 0,
-                        email = request.Contact.Email,
-                        emailConfirmed = true,
+                        //email = request.Contact.Email,
+                        //emailConfirmed = true,
                         lockoutEnabled = false,
                         lockoutEnd = DateTime.UtcNow,
                         phoneNumber = request.Contact.Phone,
