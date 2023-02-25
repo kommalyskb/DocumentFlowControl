@@ -1,11 +1,17 @@
-﻿using DFM.Shared.Common;
+﻿using Confluent.Kafka;
+using DFM.Shared.Common;
 using DFM.Shared.DTOs;
 using DFM.Shared.Entities;
 using DFM.Shared.Resources;
+using EnsureThat;
 using HttpClientService;
+using IronPdf.Forms;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.SignalR.Client;
 using MudBlazor;
 using Newtonsoft.Json.Linq;
+using Serilog;
 using StackExchange.Redis;
 using System.Text.Json;
 
@@ -24,22 +30,13 @@ namespace DFM.Frontend.Pages
         readonly int delayTime = 500;
         //IEnumerable<TabItemDto>? myRoles;
         string oldDocID = "none";
-        //protected override void OnParametersSet()
-        //{
 
-
-        //    base.OnParametersSet();
-        //}
-
-
-        //protected override void OnInitialized()
-        //{
-
-
-        //    base.OnInitialized();
-        //}
         protected override async Task OnParametersSetAsync()
         {
+            Log.Information("Parameter Set fire");
+            Log.Information($"Parameter set: Page: {Page}, Link: {Link}, DocID: {DocId}, MsgID: {MessageID}, Trace: {traceStatus}, Form: {formMode}");
+
+            // Check Page
             if (Page == "inbox")
             {
                 traceStatus = TraceStatus.InProgress;
@@ -60,49 +57,82 @@ namespace DFM.Frontend.Pages
             {
                 traceStatus = TraceStatus.CoProccess;
             }
-            if (oldPage != Page)
-            {
-                if (!string.IsNullOrWhiteSpace(DocId) && !string.IsNullOrWhiteSpace(MessageID) && !string.IsNullOrWhiteSpace(MessageRole))
-                {
-                    await loadDocumentModel();
-                }
-                else
-                {
-                    formMode = FormMode.List;
-                }
-                oldPage = Page!;
-            }
-            if (oldLink != Link)
-            {
-                if (!string.IsNullOrWhiteSpace(DocId) && !string.IsNullOrWhiteSpace(MessageID) && !string.IsNullOrWhiteSpace(MessageRole))
-                {
-                    await loadDocumentModel();
-                }
-                else
-                {
-                    formMode = FormMode.List;
-                }
-                oldLink = Link!;
-            }
+            // Check navigate from navbar
             if (DocId == "none")
             {
+                oldDocID = "none";
                 formMode = FormMode.List;
-            }
+                //
 
-            if (oldDocID != DocId)
-            {
-                Console.WriteLine($"[{DateTime.Now}] - Old: {oldDocID}, Doc: {DocId}");
-                oldDocID = DocId!;
-                if (!string.IsNullOrWhiteSpace(DocId) && !string.IsNullOrWhiteSpace(MessageID) && !string.IsNullOrWhiteSpace(MessageRole))
+                // Check Change from old page to other  page
+                if (oldPage != Page)
                 {
-                    await loadDocumentModel();
+                    if (!string.IsNullOrWhiteSpace(DocId) && !string.IsNullOrWhiteSpace(MessageID) && !string.IsNullOrWhiteSpace(MessageRole))
+                    {
+                        await loadDocumentModel();
+                    }
+                    else
+                    {
+                        formMode = FormMode.List;
+                        //
+                    }
+                    oldPage = Page!;
+                }
+
+                // Check navigate from inbound to outbound or outbound to inbound
+                if (oldLink != Link)
+                {
+                    if (!string.IsNullOrWhiteSpace(DocId) && !string.IsNullOrWhiteSpace(MessageID) && !string.IsNullOrWhiteSpace(MessageRole))
+                    {
+                        await loadDocumentModel();
+                    }
+                    else
+                    {
+                        formMode = FormMode.List;
+                        //
+                    }
+                    oldLink = Link!;
+                }
+            }
+            else
+            {
+                // Click from notification
+                if (oldDocID != DocId)
+                {
+
+                    Log.Information($"Old: {oldDocID}, Doc: {DocId}");
+                    oldDocID = DocId!;
+                    if (!string.IsNullOrWhiteSpace(DocId) && !string.IsNullOrWhiteSpace(MessageID) && !string.IsNullOrWhiteSpace(MessageRole))
+                    {
+                        await loadDocumentModel();
+                    }
                 }
             }
 
-            
         }
         protected override async Task OnInitializedAsync()
         {
+            // Check Page
+            if (Page == "inbox")
+            {
+                traceStatus = TraceStatus.InProgress;
+            }
+            else if (Page == "draft")
+            {
+                traceStatus = TraceStatus.Draft;
+            }
+            else if (Page == "completed")
+            {
+                traceStatus = TraceStatus.Completed;
+            }
+            else if (Page == "bin")
+            {
+                traceStatus = TraceStatus.Trash;
+            }
+            else if (Page == "coprocess")
+            {
+                traceStatus = TraceStatus.CoProccess;
+            }
             if (!string.IsNullOrWhiteSpace(DocId) && !string.IsNullOrWhiteSpace(MessageID) && !string.IsNullOrWhiteSpace(MessageRole))
             {
                 await loadDocumentModel();
@@ -110,20 +140,25 @@ namespace DFM.Frontend.Pages
             else
             {
                 formMode = FormMode.List;
+
             }
 
             oldLink = Link!;
             oldPage = Page!;
         }
+        
+
 
         void onCreateButtonClick()
         {
             disposedObj();
             formMode = FormMode.Create;
+
         }
         void onePreviousButtonClick()
         {
             formMode = FormMode.List;
+
         }
 
         async Task onDeleteButtonClick()
@@ -184,6 +219,7 @@ namespace DFM.Frontend.Pages
 
                         disposedObj();
                         formMode = FormMode.List;
+
                     }
                 }
             }
@@ -191,7 +227,7 @@ namespace DFM.Frontend.Pages
             {
                 AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, (INTERNAL_SERVER_ERROR)", Defaults.Classes.Position.BottomRight, Severity.Error);
             }
-            
+
 
         }
         async Task onTerminateButtonClick()
@@ -274,6 +310,7 @@ namespace DFM.Frontend.Pages
 
                         disposedObj();
                         formMode = FormMode.List;
+
                     }
                 }
             }
@@ -281,7 +318,7 @@ namespace DFM.Frontend.Pages
             {
                 AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, (INTERNAL_SERVER_ERROR)", Defaults.Classes.Position.BottomRight, Severity.Error);
             }
-            
+
 
         }
         void onEditButtonClick()
@@ -291,6 +328,7 @@ namespace DFM.Frontend.Pages
                 rawDocument!.ResponseUnit = publisher!.Id;
             }
             formMode = FormMode.Edit;
+
         }
         async Task onRestoreButtonClick()
         {
@@ -349,6 +387,7 @@ namespace DFM.Frontend.Pages
 
                         disposedObj();
                         formMode = FormMode.List;
+
                     }
                 }
             }
@@ -356,12 +395,12 @@ namespace DFM.Frontend.Pages
             {
                 AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, (INTERNAL_SERVER_ERROR)", Defaults.Classes.Position.BottomRight, Severity.Error);
             }
-            
+
 
         }
         async void onRowClick(DocumentModel item)
         {
-           
+
             onProcessing = true;
             await bindDocumentModel(item);
             onProcessing = false;
@@ -466,7 +505,7 @@ namespace DFM.Frontend.Pages
                         }
 
 
-                        
+
                         documentRequest.RawDocument = rawDocument;
                         documentRequest.DocumentModel = documentModel;
                         // Bind Receiver
@@ -507,10 +546,9 @@ namespace DFM.Frontend.Pages
                             await httpService.Post<NotificationModel, CommonResponse>($"{endpoint.API}/api/v1/Notification/Create", noticeRequest, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
 
                             AlertMessage("ທຸລະກຳຂອງທ່ານ ສຳເລັດ", Defaults.Classes.Position.BottomRight, Severity.Success);
-                            // Send EventNotify
                             
                             Console.WriteLine($"[{DateTime.Now}] Send message to Notify Roles: {JsonSerializer.Serialize(notifyRole)}");
-                            await EventNotify.InvokeAsync(new SocketSendModel
+                            var message = new SocketSendModel
                             {
                                 Topic = new SocketTopic
                                 {
@@ -518,7 +556,9 @@ namespace DFM.Frontend.Pages
                                     RoleIDs = notifyRole
                                 },
                                 Message = "new document come over"
-                            });
+                            };
+                            await socketHelper.SendThroughSocket(message);
+                            //await EventNotify.InvokeAsync(message);
                         }
                         else
                         {
@@ -528,6 +568,7 @@ namespace DFM.Frontend.Pages
 
                         disposedObj();
                         formMode = FormMode.List;
+
                     }
                 }
             }
@@ -535,7 +576,7 @@ namespace DFM.Frontend.Pages
             {
                 AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, (INTERNAL_SERVER_ERROR)", Defaults.Classes.Position.BottomRight, Severity.Error);
             }
-            
+
         }
 
         async Task onUpdateWhenOpenDocument()
@@ -589,7 +630,7 @@ namespace DFM.Frontend.Pages
             {
                 AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, (INTERNAL_SERVER_ERROR)", Defaults.Classes.Position.BottomRight, Severity.Error);
             }
-            
+
 
         }
 
@@ -645,7 +686,8 @@ namespace DFM.Frontend.Pages
 
                 // Send notification when read 
                 Console.WriteLine($"[{DateTime.Now}] Send message to Notify Owner when read from notification: {employee.id}");
-                await EventNotify.InvokeAsync(new SocketSendModel
+               
+                var message = new SocketSendModel
                 {
                     Topic = new SocketTopic
                     {
@@ -653,13 +695,14 @@ namespace DFM.Frontend.Pages
                         UserID = employee.id
                     },
                     Message = $"read document: {DocId}"
-                });
-
+                };
+                await socketHelper.SendThroughSocket(message);
+                //await EventNotify.InvokeAsync(message);
             }
             catch (Exception)
             {
 
-                
+
             }
         }
 
@@ -707,10 +750,12 @@ namespace DFM.Frontend.Pages
                 else if (myRole.DocStatus == TraceStatus.Terminated)
                 {
                     formMode = FormMode.Terminated;
+
                 }
                 else
                 {
                     formMode = FormMode.View;
+
 
                 }
                 if (string.IsNullOrWhiteSpace(rawDocument.FolderId))
@@ -727,7 +772,7 @@ namespace DFM.Frontend.Pages
                 AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, (INTERNAL_SERVER_ERROR)", Defaults.Classes.Position.BottomRight, Severity.Error);
             }
 
-           
+
         }
         bool validateField()
         {
@@ -781,7 +826,7 @@ namespace DFM.Frontend.Pages
                 {
                     documentModel!.InboxType = InboxType.Outbound;
                 }
-                
+
                 documentRequest.RawDocument = rawDocument;
                 documentRequest.DocumentModel = documentModel;
                 // Send request for save document
@@ -816,12 +861,13 @@ namespace DFM.Frontend.Pages
                 await Task.Delay(delayTime);
                 disposedObj();
                 formMode = FormMode.List;
+
             }
             catch (Exception)
             {
                 AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, (INTERNAL_SERVER_ERROR)", Defaults.Classes.Position.BottomRight, Severity.Error);
             }
-           
+
 
         }
 
@@ -911,7 +957,7 @@ namespace DFM.Frontend.Pages
             {
                 AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, (INTERNAL_SERVER_ERROR)", Defaults.Classes.Position.BottomRight, Severity.Error);
             }
-            
+
 
         }
 
@@ -977,7 +1023,7 @@ namespace DFM.Frontend.Pages
             {
                 AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, (INTERNAL_SERVER_ERROR)", Defaults.Classes.Position.BottomRight, Severity.Error);
             }
-            
+
 
         }
         private IEnumerable<string> MaxCharacters(string ch)

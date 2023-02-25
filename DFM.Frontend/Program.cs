@@ -169,6 +169,8 @@ builder.Services.AddSession(options =>
 
 //register health check
 builder.Services.AddHealthChecks();
+//regsiter websocket send helper
+builder.Services.AddSingleton<ISendSocketHelper, SendSocketHelper>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

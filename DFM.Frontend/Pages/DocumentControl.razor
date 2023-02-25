@@ -10,6 +10,7 @@
 @inject NavigationManager nav
 @inject ISnackbar Snackbar
 @inject EnvConf envConf
+@inject ISendSocketHelper socketHelper
 @implements IDisposable
 
 <PageTitle>Document - @envConf.PageTitle</PageTitle>
@@ -135,7 +136,7 @@
 </MudMessageBox>
 
 @code {
-    [CascadingParameter] protected EventCallback<SocketSendModel> EventNotify { get; set; } // Event Callback ສຳລັບສົ່ງ Notification
+    //[CascadingParameter] protected EventCallback<SocketSendModel> EventNotify { get; set; } // Event Callback ສຳລັບສົ່ງ Notification
 
     [Parameter] public string? Link { get; set; }
     [Parameter] public string? Page { get; set; }
@@ -163,6 +164,7 @@
     bool noNeedFolder = true;
 
     private CancellationTokenSource cts = new CancellationTokenSource();
+
     public void Dispose()
     {
         cts.Cancel();

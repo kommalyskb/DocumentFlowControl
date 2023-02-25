@@ -47,18 +47,12 @@
     </MudGrid>
     <MudGrid>
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <h2>ຂໍ້ມູນເອກະສານ ຂາເຂົ້າ</h2>
+            <DashboardTable Title="ຂໍ້ມູນເອກະສານ ຂາເຂົ້າ" InboxType="InboxType.Inbound" RoleId="@roleID" OnProcessing="onProcessing" TextInProgress="ອິນບ໋ອກ"></DashboardTable>
         </MudItem>
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <h2>ຂໍ້ມູນເອກະສານ ຂາອອກ</h2>
+            <DashboardTable Title="ຂໍ້ມູນເອກະສານ ຂາອອກ" InboxType="InboxType.Outbound" RoleId="@roleID" OnProcessing="onProcessing" TextInProgress="ເອກະສານສົ່ງອອກ"></DashboardTable>
         </MudItem>
 
-        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <DashboardTable InboxType="InboxType.Inbound" RoleId="@roleID" OnProcessing="onProcessing"></DashboardTable>
-        </MudItem>
-        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <DashboardTable InboxType="InboxType.Outbound" RoleId="@roleID" OnProcessing="onProcessing"></DashboardTable>
-        </MudItem>
     </MudGrid>
 </MudContainer>
 

@@ -27,7 +27,7 @@
                 {
                     <MudBadge Content="@newMailMessage" Color="Color.Secondary" Overlap="true" Class="mx-6 my-4">
                         <MudButton Variant="Variant.Text" OnClick="@ToggleOpen" DisableElevation="true"
-                                   EndIcon="@Icons.Material.Filled.NotificationsActive"
+                                   EndIcon="@Icons.Material.Filled.NotificationsActive" ButtonType="ButtonType.Button"
                                    Style="text-transform:none; color:white; font-weight:bold">
                         </MudButton>
                     </MudBadge>
@@ -35,7 +35,7 @@
                 else
                 {
                     <MudButton Variant="Variant.Text" OnClick="@ToggleOpen" DisableElevation="true"
-                               EndIcon="@Icons.Material.Filled.NotificationsActive"
+                               EndIcon="@Icons.Material.Filled.NotificationsActive" ButtonType="ButtonType.Button"
                                Style="text-transform:none; color:white; font-weight:bold">
                     </MudButton>
                 }
@@ -56,12 +56,13 @@
                                     {
                                         string link = item.ModuleType == ModuleType.DocumentInbound ? "inbound" : "outbound";
                                         string urlPage = $"/pages/doc/{link}/inbox/{item.RefDocument}/{item.RoleID}/{item.id}";
-                                        
+
                                         if (!item.IsRead)
                                         {
                                             <MudListItem IconColor="Color.Secondary" AdornmentColor="Color.Secondary" Text="@item.Title" Href="@urlPage" Icon="@Icons.Material.Filled.MarkEmailUnread" OnClick="(() => _isOpen = false)" />
 
-                                        }else
+                                        }
+                                        else
                                         {
                                             <MudListItem Text="@item.Title" Href="@urlPage" Icon="@Icons.Material.Filled.MarkEmailRead" OnClick="(() => _isOpen = false)" />
 
@@ -89,11 +90,11 @@
             }
             <MudText Class="mr-2">@employee.Name.Local @employee.FamilyName.Local</MudText>
             @*<MudButton Href="/authorize"
-                       Variant="Variant.Text"
-                       EndIcon="@Icons.Material.Outlined.Logout"
-                       Style="text-transform:none; color:white; font-weight:bold">
-                ອອກຈາກລະບົບ
-            </MudButton>*@
+        Variant="Variant.Text"
+        EndIcon="@Icons.Material.Outlined.Logout"
+        Style="text-transform:none; color:white; font-weight:bold">
+        ອອກຈາກລະບົບ
+        </MudButton>*@
         }
     </MudAppBar>
 
@@ -104,9 +105,11 @@
     <MudMainContent Class="mt-4">
         <CustomAuthorizeView>
             <Authorized>
-                <CascadingValue Value=EventNotify>
+                @Body
+                @*<CascadingValue Value="EventNotify">
                     @Body
-                </CascadingValue>
+
+                </CascadingValue>*@
             </Authorized>
             <NotAuthorized>
                 @{
@@ -128,14 +131,12 @@
 
     string? imageUri = "images/user.png";
     private EmployeeModel? employee;
-    bool _drawerOpen = true;
-    bool isLoading = false;
+    private bool _drawerOpen = true;
+    private bool isLoading = false;
     string token = "";
-    public Origin TransformOrigin { get; set; } = Origin.TopLeft;
-    public Origin AnchorOrigin { get; set; } = Origin.BottomLeft;
-    IEnumerable<NotificationModel>? notices;
-    IEnumerable<TabItemDto>? myRoles;
-    int newMailMessage = 0;
+    private IEnumerable<NotificationModel>? notices;
+    private IEnumerable<TabItemDto>? myRoles;
+    private int newMailMessage = 0;
     private HubConnection? hubConnection;
     private CancellationTokenSource cts = new CancellationTokenSource();
 
@@ -197,7 +198,7 @@
         Console.WriteLine($"[{DateTime.Now}] Connect to Notify HUB: {IsConnected}");
         await loadNotifications();
     }
-    async Task connectToNotifyHub()
+    private async Task connectToNotifyHub()
     {
         try
         {
@@ -237,12 +238,12 @@
         }
         catch (Exception)
         {
-            
-            
+
+
         }
-        
+
     }
-    public bool IsConnected =>
+    private bool IsConnected =>
         hubConnection?.State == HubConnectionState.Connected;
 
 
@@ -261,7 +262,7 @@
                 return true;
             }
         }
-        
+
         return false;
 
 
@@ -310,9 +311,9 @@
         }
 
     }
-    public bool _isOpen;
+    private bool _isOpen;
 
-    public async Task ToggleOpen()
+    private async Task ToggleOpen()
     {
         if (_isOpen)
             _isOpen = false;
@@ -323,7 +324,6 @@
             _isOpen = true;
 
             await loadNotifications();
-            await Task.Delay(1000);
             isLoading = false;
         }
     }

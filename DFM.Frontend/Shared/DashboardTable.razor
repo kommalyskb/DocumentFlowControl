@@ -10,9 +10,16 @@
 <div class="mud-table mud-data-grid mud-xs-table mud-elevation-1 mud-width-full">
     <div class="mud-table-container">
         <table class="mud-table-root">
+            <thead class="mud-table-head">
+                <tr class="mud-table-row">
+                    <th scope="col" class="mud-table-cell" colspan="4">
+                        <MudText Typo="@Typo.h6">@Title</MudText>
+                    </th>
+                </tr>
+            </thead>
             <tbody class="mud-table-body">
                 <tr class="mud-table-row">
-                    <td class="mud-table-cell">ກຳລັງດຳເນີນການ</td>
+                    <td class="mud-table-cell">@TextInProgress</td>
                     <td class="mud-table-cell" style="text-align: end;"><b>@summary!.InProgress</b></td>
                 </tr>
                 <tr class="mud-table-row">
@@ -37,6 +44,8 @@
     [Parameter] public string? RoleId { get; set; }
     [Parameter] public InboxType InboxType { get; set; }
     [Parameter] public bool OnProcessing { get; set; }
+    [Parameter] public string? TextInProgress { get; set; }
+    [Parameter] public string? Title { get; set; }
     private CancellationTokenSource cts = new CancellationTokenSource();
     public void Dispose()
     {
