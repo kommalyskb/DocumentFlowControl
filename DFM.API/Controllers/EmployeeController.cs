@@ -124,10 +124,10 @@ namespace DFM.API.Controllers
                         accessFailedCount = 0,
                         //email = request.Contact.Email,
                         //emailConfirmed = true,
-                        lockoutEnabled = false,
+                        lockoutEnabled = true,
                         lockoutEnd = DateTime.UtcNow,
-                        phoneNumber = request.Contact.Phone,
-                        phoneNumberConfirmed = true,
+                        //phoneNumber = request.Contact.Phone,
+                        //phoneNumberConfirmed = true,
                         twoFactorEnabled = false
 
                     };

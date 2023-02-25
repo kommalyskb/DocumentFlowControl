@@ -124,6 +124,15 @@ namespace DFM.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not create record.
+        /// </summary>
+        public static string COULD_NOT_CREATE_RECORD {
+            get {
+                return ResourceManager.GetString("COULD_NOT_CREATE_RECORD", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Role could not dupplicate.
         /// </summary>
         public static string DUPPLICATE_ROLE {

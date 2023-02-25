@@ -59,7 +59,8 @@ namespace DFM.API.Controllers
                 provider.Connection.DropIndexAsync(typeof(DataTypeModel)),
                 provider.Connection.DropIndexAsync(typeof(MinioLinkCache)),
                 provider.Connection.DropIndexAsync(typeof(TokenEndPointResponse)),
-                provider.Connection.DropIndexAsync(typeof(NotificationModel))
+                provider.Connection.DropIndexAsync(typeof(NotificationModel)),
+                provider.Connection.DropIndexAsync(typeof(RuleMenu))
                 );
 
 
@@ -74,7 +75,8 @@ namespace DFM.API.Controllers
                     provider.Connection.CreateIndexAsync(typeof(DataTypeModel)),
                     provider.Connection.CreateIndexAsync(typeof(MinioLinkCache)),
                     provider.Connection.CreateIndexAsync(typeof(TokenEndPointResponse)),
-                    provider.Connection.CreateIndexAsync(typeof(NotificationModel))
+                    provider.Connection.CreateIndexAsync(typeof(NotificationModel)),
+                    provider.Connection.CreateIndexAsync(typeof(RuleMenu))
                     );
 
                 if (reindexOnly == 1)
@@ -102,6 +104,7 @@ namespace DFM.API.Controllers
                 allCreateTableTasks.Add(tryCreateDatabase("dfm_security_db"));
                 allCreateTableTasks.Add(tryCreateDatabase("dfm_urgent_db"));
                 allCreateTableTasks.Add(tryCreateDatabase("dfm_notice_db"));
+                allCreateTableTasks.Add(tryCreateDatabase("dfm_rulemenu_db"));
 
                 await Task.WhenAll(allCreateTableTasks);
 

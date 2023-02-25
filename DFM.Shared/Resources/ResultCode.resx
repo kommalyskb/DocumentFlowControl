@@ -138,6 +138,9 @@
   <data name="CONTENT_IS_EMPTY" xml:space="preserve">
     <value>Content is empty</value>
   </data>
+  <data name="COULD_NOT_CREATE_RECORD" xml:space="preserve">
+    <value>Could not create record</value>
+  </data>
   <data name="DUPPLICATE_ROLE" xml:space="preserve">
     <value>Role could not dupplicate</value>
   </data>
