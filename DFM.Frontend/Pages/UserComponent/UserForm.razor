@@ -46,10 +46,10 @@
         @if (string.IsNullOrWhiteSpace(Employee.id))
         {
             <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-                <MudTextField Margin="Margin.Dense" Disabled="OnProcessing" @bind-Value="Employee!.Username" Required="true" T="string" Counter="12" MaxLength="12" Immediate="true" Variant="Variant.Outlined" Validation="@(new Func<string, IEnumerable<string>>(UserCharacters))" HelperText="Username ທີ່ໃຊ້ລັອກອິນລະບົບ" Label="Username" />
+                <MudTextField Margin="Margin.Dense" Disabled="OnProcessing" @bind-Value="Employee!.Username" Required="true" T="string" Counter="36" MaxLength="36" Immediate="true" Variant="Variant.Outlined" Validation="@(new Func<string, IEnumerable<string>>(UserCharacters))" HelperText="Username ທີ່ໃຊ້ລັອກອິນລະບົບ" Label="Username" />
             </MudItem>
             <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-                <MudTextField Margin="Margin.Dense" Disabled="OnProcessing" @bind-Value="Employee!.Password" InputType="InputType.Password" Required="true" T="string" Counter="12" MaxLength="12" Immediate="true" Variant="Variant.Outlined" Validation="@(new Func<string, IEnumerable<string>>(PasswordCharacters))" HelperText="ລະຫັດຜ່ານ" Label="Password" />
+                <MudTextField Margin="Margin.Dense" Disabled="OnProcessing" @bind-Value="Employee!.Password" InputType="InputType.Password" Required="true" T="string" Counter="36" MaxLength="36" Immediate="true" Variant="Variant.Outlined" Validation="@(new Func<string, IEnumerable<string>>(PasswordCharacters))" HelperText="ລະຫັດຜ່ານ" Label="Password" />
             </MudItem>
             <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
                 <MudCheckBox Disabled="OnProcessing" @bind-Checked="Notify" Label="ແຈ້ງການປ່ຽນແປງຂໍ້ມູນຜູ້ໃຊ້ທາງອີເມວ" Color="Color.Primary"></MudCheckBox>
@@ -58,7 +58,7 @@
         else
         {
             <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-                <MudTextField Margin="Margin.Dense" Disabled="OnProcessing" @bind-Value="Employee!.Username" Required="true" T="string" Counter="12" MaxLength="12" Immediate="true" Variant="Variant.Outlined" Validation="@(new Func<string, IEnumerable<string>>(UserCharacters))" HelperText="Username ທີ່ໃຊ້ລັອກອິນລະບົບ" Label="Username" />
+                <MudTextField Margin="Margin.Dense" Disabled="OnProcessing" @bind-Value="Employee!.Username" Required="true" T="string" Counter="36" MaxLength="36" Immediate="true" Variant="Variant.Outlined" Validation="@(new Func<string, IEnumerable<string>>(UserCharacters))" HelperText="Username ທີ່ໃຊ້ລັອກອິນລະບົບ" Label="Username" />
             </MudItem>
             <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
                 <MudField Margin="Margin.Dense"  Label="Password" Variant="Variant.Outlined">******</MudField>
@@ -66,7 +66,7 @@
             <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
                 <MudButton Disabled="OnProcessing"
                            Variant="Variant.Filled"
-                           Color="Color.Secondary" OnClick="(() => OpenResetPasswordBox.InvokeAsync())"
+                           Color="Color.Primary" OnClick="(() => OpenResetPasswordBox.InvokeAsync())"
                            StartIcon="@Icons.Filled.Password">
                     ຕັ້ງລະຫັດໃຫມ່
                 </MudButton>

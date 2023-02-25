@@ -26,13 +26,13 @@ namespace DFM.Frontend.Pages.UserComponent
 
         private IEnumerable<string> UserCharacters(string ch)
         {
-            if (!string.IsNullOrEmpty(ch) && 12 < ch?.Length)
-                yield return "ອັກສອນສູງສຸດ 12 ອັກສອນ";
+            if (!string.IsNullOrEmpty(ch) && 36 < ch?.Length)
+                yield return "ອັກສອນສູງສຸດ 36 ອັກສອນ";
         }
         private IEnumerable<string> PasswordCharacters(string ch)
         {
-            if (!string.IsNullOrEmpty(ch) && 12 < ch?.Length)
-                yield return "ອັກສອນສູງສຸດ 12 ອັກສອນ";
+            if (!string.IsNullOrEmpty(ch) && 36 < ch?.Length)
+                yield return "ອັກສອນສູງສຸດ 36 ອັກສອນ";
         }
 
         private async Task uploadFiles(InputFileChangeEventArgs e)
