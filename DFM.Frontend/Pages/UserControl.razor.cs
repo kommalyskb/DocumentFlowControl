@@ -25,6 +25,7 @@ namespace DFM.Frontend.Pages
         void onCreateButtonClick()
         {
             formMode = FormMode.Create;
+            disposedObj();
         }
         void onePreviousButtonClick()
         {

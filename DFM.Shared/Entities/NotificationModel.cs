@@ -33,6 +33,8 @@ namespace DFM.Shared.Entities
         public string? UserIDRead { get; set; }
         [Indexed]
         public string? RefDocument { get; set; }
+        [Indexed]
+        public string? ChangeNote { get; set; }
 
     }
 }

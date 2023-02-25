@@ -49,27 +49,68 @@
                         }
                         else
                         {
-                            if (notices != null)
+                            if (!notices!.IsNullOrEmpty())
                             {
-                                <MudList Clickable="true">
-                                    @foreach (var item in notices.ToList().Take(10))
-                                    {
-                                        string link = item.ModuleType == ModuleType.DocumentInbound ? "inbound" : "outbound";
-                                        string urlPage = $"/pages/doc/{link}/inbox/{item.RefDocument}/{item.RoleID}/{item.id}";
+                                <div class="mud-table mud-data-grid mud-xs-table mud-elevation-1 mud-width-full">
+                                    <div class="mud-table-container">
+                                        <table class="mud-table-root">
+                                            <tbody class="mud-table-body">
 
-                                        if (!item.IsRead)
-                                        {
-                                            <MudListItem IconColor="Color.Secondary" AdornmentColor="Color.Secondary" Text="@item.Title" Href="@urlPage" Icon="@Icons.Material.Filled.MarkEmailUnread" OnClick="(() => _isOpen = false)" />
+                                                @foreach (var item in notices!.ToList().Take(10))
+                                                {
+                                                    string link = item.ModuleType == ModuleType.DocumentInbound ? "inbound" : "outbound";
+                                                    string urlPage = $"/pages/doc/{link}/inbox/{item.RefDocument}/{item.RoleID}/{item.id}";
 
-                                        }
-                                        else
-                                        {
-                                            <MudListItem Text="@item.Title" Href="@urlPage" Icon="@Icons.Material.Filled.MarkEmailRead" OnClick="(() => _isOpen = false)" />
+                                                    if (!item.IsRead)
+                                                    {
+                                                        <tr class="mud-table-row">
+                                                            <td class="mud-table-cell">
+                                                                <MudAvatar Color="Color.Error" Variant="Variant.Filled">
+                                                                    <MudIcon Icon="@Icons.Material.Filled.MarkEmailUnread" />
+                                                                </MudAvatar>
+                                                            </td>
+                                                            <td class="mud-table-cell">
+                                                                <MudButton Href="@urlPage"
+                                                                           Variant="Variant.Text"
+                                                                           Color="Color.Default"
+                                                                           Style="text-transform:none"
+                                                                           OnClick="(() => _isOpen = false)">
+                                                                    @item.Title
+                                                                </MudButton>
+                                                                @if (!string.IsNullOrWhiteSpace(item.ChangeNote))
+                                                                {
+                                                                    <br />
+                                                                    <i style="font-size:small">@item.ChangeNote</i>
+                                                                }
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                    else
+                                                    {
+                                                        <tr>
+                                                            <td class="mud-table-cell">
+                                                                <MudAvatar Color="Color.Default" Variant="Variant.Filled">
+                                                                    <MudIcon Icon="@Icons.Material.Filled.MarkEmailRead" />
+                                                                </MudAvatar>
+                                                            </td>
+                                                            <td class="mud-table-cell">
+                                                                <MudButton Href="@urlPage"
+                                                                           Variant="Variant.Text"
+                                                                           Color="Color.Default"
+                                                                           Style="text-transform:none"
+                                                                           OnClick="(() => _isOpen = false)">
+                                                                    @item.Title
+                                                                </MudButton>
+                                                            </td>
+                                                        </tr>
+                                                    }
 
-                                        }
-                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
 
-                                </MudList>
                             }
                             else
                             {
@@ -107,7 +148,7 @@
             <Authorized>
                 @Body
                 @*<CascadingValue Value="EventNotify">
-                    @Body
+                @Body
 
                 </CascadingValue>*@
             </Authorized>
@@ -127,7 +168,7 @@
 @code
 {
 
-    EventCallback<SocketSendModel> EventNotify => EventCallback.Factory.Create<SocketSendModel>(this, SendNotify); //
+    //EventCallback<SocketSendModel> EventNotify => EventCallback.Factory.Create<SocketSendModel>(this, SendNotify); //
 
     string? imageUri = "images/user.png";
     private EmployeeModel? employee;

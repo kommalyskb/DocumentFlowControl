@@ -58,18 +58,18 @@
         else
         {
             <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-                <MudTextField Margin="Margin.Dense" Disabled="OnProcessing" @bind-Value="Employee!.Username" Required="true" T="string" Counter="36" MaxLength="36" Immediate="true" Variant="Variant.Outlined" Validation="@(new Func<string, IEnumerable<string>>(UserCharacters))" HelperText="Username ທີ່ໃຊ້ລັອກອິນລະບົບ" Label="Username" />
+                <MudField Margin="Margin.Dense" Label="Username" Variant="Variant.Text">@Employee!.Username</MudField>
             </MudItem>
             <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-                <MudField Margin="Margin.Dense"  Label="Password" Variant="Variant.Outlined">******</MudField>
+                <MudField Margin="Margin.Dense" Label="Password" Variant="Variant.Text">******</MudField>
             </MudItem>
             <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-                <MudButton Disabled="OnProcessing"
+                <MudFab Disabled="OnProcessing" Margin="Margin.Dense"
                            Variant="Variant.Filled"
                            Color="Color.Primary" OnClick="(() => OpenResetPasswordBox.InvokeAsync())"
                            StartIcon="@Icons.Filled.Password">
                     ຕັ້ງລະຫັດໃຫມ່
-                </MudButton>
+                </MudFab>
             </MudItem>
         }
 
