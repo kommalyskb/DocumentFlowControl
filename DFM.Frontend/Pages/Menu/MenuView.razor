@@ -10,9 +10,14 @@
         </MudItem>
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
             <MudField Margin="Margin.Dense" Label="ຜູ້ທີ່ສາມາດເຂົ້າເຖິງເມນູໄດ້" Variant="Variant.Outlined">
-                @foreach (var item in RuleMenu!.RoleTypes!)
+                @if(RuleMenu != null)
                 {
-                    <MudChip Color="Color.Primary">@DecodeEnumRoleTypeModel.decodeRoleType(item)</MudChip>
+                    if(!RuleMenu.RoleTypes.IsNullOrEmpty()){
+                        foreach (var item in RuleMenu!.RoleTypes!)
+                        {
+                            <MudChip Color="Color.Primary">@DecodeEnumRoleTypeModel.decodeRoleType(item)</MudChip>
+                        }
+                    }
                 }
             </MudField>
         </MudItem>

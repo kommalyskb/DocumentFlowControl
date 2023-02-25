@@ -15,7 +15,7 @@ namespace DFM.Frontend.Pages
     {
         protected override async Task OnInitializedAsync()
         {
-            await accessToken.RemoveTokenAsync();
+            await Task.WhenAll(accessToken.RemoveTokenAsync(), storageHelper.RemoveCacheAsync());
         }
         private async Task OnValidSubmit()
         {
@@ -50,11 +50,14 @@ namespace DFM.Frontend.Pages
                 var employeeProfile = await cascading.GetEmployeeProfile(result.Response.AccessToken!);
                 // Get Roles to local storage
                 var roles = await cascading.GetRoles(result.Response.AccessToken!);
+                // Get Rules Menu to local storage
+                var rules = await cascading.GetRules(result.Response.AccessToken!);
 
                 await Task.WhenAll(accessToken.SetTokenAsync(result.Response.AccessToken),
                     accessToken.SetRefreshTokenAsync(result.Response.RefreshToken),
                     storageHelper.SetEmployeeProfileAsync(employeeProfile.Content),
-                    storageHelper.SetRolesAsync(roles.Contents));
+                    storageHelper.SetRolesAsync(roles.Contents),
+                    storageHelper.SetRuleMenuAsync(rules.Contents));
 
                 if (model.Username == "admin")
                 {

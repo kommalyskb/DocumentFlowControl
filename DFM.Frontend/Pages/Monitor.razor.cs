@@ -1,6 +1,7 @@
 ﻿using DFM.Shared.Common;
 using DFM.Shared.DTOs;
 using DFM.Shared.Entities;
+using DFM.Shared.Helper;
 using HttpClientService;
 using MudBlazor;
 using MyCouch;
@@ -22,6 +23,12 @@ namespace DFM.Frontend.Pages
         private ReportClickDTO? itemClick = new();
         protected override async Task OnInitializedAsync()
         {
+            var rules = await storageHelper.GetRuleMenuAsync();
+            if (!ValidateRule.isInRole(rules, $"/pages/monitor/{Link}"))
+            {
+                nav.NavigateTo("/pages/unauthorized");
+            }
+
             onProcessing = true;
 
             InboxType inboxType = InboxType.Inbound;

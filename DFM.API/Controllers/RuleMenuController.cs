@@ -49,6 +49,7 @@ namespace DFM.API.Controllers
         }
 
         [HttpGet("GetRules/{orgId}")]
+        [AllowAnonymous]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(IEnumerable<RuleMenu>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]

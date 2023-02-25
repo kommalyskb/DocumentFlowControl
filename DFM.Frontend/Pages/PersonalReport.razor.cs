@@ -2,6 +2,7 @@
 using DFM.Shared.DTOs;
 using DFM.Shared.Entities;
 using DFM.Shared.Extensions;
+using DFM.Shared.Helper;
 using Elasticsearch.Net;
 using HttpClientService;
 using Minio.DataModel;
@@ -27,6 +28,12 @@ namespace DFM.Frontend.Pages
         private ReportClickDTO? itemClick = new();
         protected override async Task OnInitializedAsync()
         {
+            var rules = await storageHelper.GetRuleMenuAsync();
+            if (!ValidateRule.isInRole(rules, $"/pages/report/{Link}"))
+            {
+                nav.NavigateTo("/pages/unauthorized");
+            }
+
             oldLink = Link!;
             InboxType inboxType = InboxType.Inbound;
             if (Link == "inbound")

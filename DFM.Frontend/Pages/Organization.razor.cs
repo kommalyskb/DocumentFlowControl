@@ -1,6 +1,7 @@
 ﻿using DFM.Shared.Common;
 using DFM.Shared.DTOs;
 using DFM.Shared.Entities;
+using DFM.Shared.Helper;
 using DFM.Shared.Resources;
 using HttpClientService;
 using MudBlazor;
@@ -16,12 +17,15 @@ namespace DFM.Frontend.Pages
         string? token = "";
         bool onProcessing = false;
 
-        protected override void OnInitialized()
+        protected override async Task OnInitializedAsync()
         {
+            var rules = await storageHelper.GetRuleMenuAsync();
+            if (!ValidateRule.isInRole(rules, "/pages/org/chart"))
+            {
+                nav.NavigateTo("/pages/unauthorized");
+            }
+
             formMode = FormMode.List;
-
-            base.OnInitialized();
-
         }
         void onePreviousButtonClick()
         {

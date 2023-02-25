@@ -1,6 +1,7 @@
 ﻿using DFM.Shared.Common;
 using DFM.Shared.DTOs;
 using DFM.Shared.Entities;
+using DFM.Shared.Helper;
 using Google.Protobuf.WellKnownTypes;
 using HttpClientService;
 using MudBlazor;
@@ -15,13 +16,18 @@ namespace DFM.Frontend.Pages
         readonly int delayTime = 500;
         private EmployeeModel? employee;
         string? token = "";
-        protected override void OnInitialized()
+        
+        protected override async Task OnInitializedAsync()
         {
+            var rules = await storageHelper.GetRuleMenuAsync();
+            if (!ValidateRule.isInRole(rules, "/pages/org/user"))
+            {
+                nav.NavigateTo("/pages/unauthorized");   
+            }
+
             formMode = FormMode.List;
-
-            base.OnInitialized();
-
         }
+
         void onCreateButtonClick()
         {
             formMode = FormMode.Create;

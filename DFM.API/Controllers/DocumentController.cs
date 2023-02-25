@@ -34,10 +34,11 @@ namespace DFM.API.Controllers
         private readonly ServiceEndpoint endpoint;
         private readonly SMTPConf smtp;
         private readonly EnvConf envConf;
+        private readonly IOrganizationChart organizationChart;
 
         public DocumentController(IDocumentTransaction documentTransaction, IRoleManager roleManager, IEmployeeManager employeeManager,
             IFolderManager folderManager, IMinioService minio, IOrganizationChart organization, IRedisConnector redisConnector,
-            IEmailHelper emailHelper, ServiceEndpoint endpoint, SMTPConf smtp, EnvConf envConf)
+            IEmailHelper emailHelper, ServiceEndpoint endpoint, SMTPConf smtp, EnvConf envConf, IOrganizationChart organizationChart)
         {
             this.documentTransaction = documentTransaction;
             this.roleManager = roleManager;
@@ -50,6 +51,7 @@ namespace DFM.API.Controllers
             this.endpoint = endpoint;
             this.smtp = smtp;
             this.envConf = envConf;
+            this.organizationChart = organizationChart;
         }
 
         /// <summary>
@@ -225,10 +227,58 @@ namespace DFM.API.Controllers
         {
             try
             {
+                // Get UserID
+                var userId = "";
+
+                if (User.Claims.FirstOrDefault(x => x.Type == "sub") != null)
+                {
+                    userId = User.Claims.FirstOrDefault(x => x.Type == "sub")!.Value;
+
+                }
+
+                // Get User Profile
+                var userProfile = await employeeManager.GetProfile(userId, cancellationToken);
+
+                if (!userProfile.Response.Success)
+                {
+                    return BadRequest(userProfile.Response);
+                }
+
+                // Get role on organization
+                var myRoles = await organizationChart.GetRoles(userProfile.Content.OrganizationID!, userProfile.Content.id!, cancellationToken);
+                if (myRoles.Response.Success)
+                {
+                    return BadRequest(myRoles.Response);
+
+                }
+                // Get Document
                 var result = await documentTransaction.GetDocument(id, cancellationToken);
+
                 if (result.Response.Success)
                 {
-                    return Ok(result.Content);
+                    bool isDocInRole = false;
+                    // Is this document is in my role?
+                    foreach (var role in myRoles.Content)
+                    {
+                        var isInRole = result.Content.Recipients!.Any(x => x.RecipientInfo.RoleID == role.Role.RoleID);
+                        if (isInRole)
+                        {
+                            isDocInRole = true;
+                            break;
+                        }
+                    }
+                    if (isDocInRole)
+                    {
+                        return Ok(result.Content);
+
+                    }
+                    return NotFound(new CommonResponse
+                    {
+                        Code = nameof(ResultCode.NOT_FOUND),
+                        Detail = "You don't have right to access to this document",
+                        Message = ResultCode.NOT_FOUND,
+                        Success = false
+                    });
                 }
                 return BadRequest(result.Response);
             }

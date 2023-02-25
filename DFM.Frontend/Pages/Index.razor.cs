@@ -1,5 +1,6 @@
 ﻿using DFM.Shared.DTOs;
 using DFM.Shared.Entities;
+using DFM.Shared.Helper;
 using HttpClientService;
 using System.Linq;
 
@@ -12,7 +13,11 @@ namespace DFM.Frontend.Pages
         IEnumerable<string>? selectValues;
         protected override async Task OnInitializedAsync()
         {
-
+            var rules = await storageHelper.GetRuleMenuAsync();
+            if (!ValidateRule.isInRole(rules, $"/pages/home"))
+            {
+                nav.NavigateTo("/pages/unauthorized");
+            }
             if (employee == null)
             {
                 employee = await storageHelper.GetEmployeeProfileAsync();

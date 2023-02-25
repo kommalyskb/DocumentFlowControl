@@ -1,5 +1,6 @@
 ﻿using DFM.Shared.Common;
 using DFM.Shared.Entities;
+using DFM.Shared.Helper;
 using HttpClientService;
 using MudBlazor;
 
@@ -10,11 +11,15 @@ namespace DFM.Frontend.Pages
         readonly int delayTime = 500;
         private EmployeeModel? employee;
         string? token;
-        protected override void OnInitialized()
+        protected override async Task OnInitializedAsync()
         {
-            formMode = FormMode.List;
+            var rules = await storageHelper.GetRuleMenuAsync();
+            if (!ValidateRule.isInRole(rules, "/pages/rulemanager"))
+            {
+                nav.NavigateTo("/pages/unauthorized");
+            }
 
-            base.OnInitialized();
+            formMode = FormMode.List;
         }
 
         void onCreateButtonClick()
@@ -86,7 +91,11 @@ namespace DFM.Frontend.Pages
             await InvokeAsync(StateHasChanged);
 
             httpService.MediaType = MediaType.JSON;
-
+            if (employee == null)
+            {
+                employee = await storageHelper.GetEmployeeProfileAsync();
+            }
+            ruleMenu.OrgID = employee.OrganizationID;
             string url = $"{endpoint.API}/api/v1/RuleMenu/UpdateRule";
             var result = await httpService.Post<RuleMenu, CommonResponseId>(url, ruleMenu, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
 

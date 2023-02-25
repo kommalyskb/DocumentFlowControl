@@ -15,6 +15,7 @@ namespace DFM.Shared.Helper
         Task<(bool Success, EmployeeModel Content)> GetEmployeeProfile(string token, string userId, CancellationToken cancellationToken = default);
         Task<(bool Success, EmployeeModel Content)> GetEmployeeProfile(string token, CancellationToken cancellationToken = default);
         Task<(bool Success, IEnumerable<TabItemDto> Contents)> GetRoles(string token, CancellationToken cancellationToken = default);
+        Task<(bool Success, IEnumerable<RuleMenu> Contents)> GetRules(string token, CancellationToken cancellationToken = default);
     }
     public class CascadingService : ICascadingService
     {
@@ -47,6 +48,14 @@ namespace DFM.Shared.Helper
             string url = $"{endpoint.API}/api/v1/Organization/GetRole";
 
             var result = await httpService.Get<IEnumerable<TabItemDto>>(url, new AuthorizeHeader("bearer", token));
+            return (result.Success, result.Response);
+        }
+
+        public async Task<(bool Success, IEnumerable<RuleMenu> Contents)> GetRules(string token, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            string url = $"{endpoint.API}/api/v1/RuleMenu/GetItem";
+
+            var result = await httpService.Get<IEnumerable<RuleMenu>>(url, new AuthorizeHeader("bearer", token));
             return (result.Success, result.Response);
         }
     }

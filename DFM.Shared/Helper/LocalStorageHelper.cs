@@ -59,6 +59,25 @@ namespace DFM.Shared.Helper
             }
 
         }
+        public async Task<IEnumerable<RuleMenu>> GetRuleMenuAsync()
+        {
+            try
+            {
+                var value = await jsRuntime.InvokeAsync<string>("localStorage.getItem", "rules");
+                if (value != null)
+                {
+                    var hexEncodedBytes = value.FromHEX();
+                    return JsonSerializer.Deserialize<IEnumerable<RuleMenu>>(hexEncodedBytes)!;
+                }
+                return null!;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
 
 
         public async Task SetEmployeeProfileAsync(EmployeeModel value)
@@ -98,6 +117,32 @@ namespace DFM.Shared.Helper
                 throw;
             }
 
+        }
+
+        public async Task SetRuleMenuAsync(IEnumerable<RuleMenu> value)
+        {
+            try
+            {
+                var jsonDoc = JsonSerializer.Serialize(value);
+                Console.WriteLine(jsonDoc);
+                var plainTextBytes = Encoding.UTF8.GetBytes(jsonDoc).ToHEX();
+                Console.WriteLine(plainTextBytes);
+                await jsRuntime.InvokeAsync<object>("localStorage.setItem",
+                                                       "rules", plainTextBytes);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+
+        public async Task RemoveCacheAsync()
+        {
+            await jsRuntime.InvokeVoidAsync("localStorage.removeItem", "rules");
+            await jsRuntime.InvokeVoidAsync("localStorage.removeItem", "roles");
+            await jsRuntime.InvokeVoidAsync("localStorage.removeItem", "employeeProfile");
         }
     }
 }

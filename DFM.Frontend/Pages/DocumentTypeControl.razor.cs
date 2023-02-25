@@ -1,5 +1,6 @@
 ﻿using DFM.Shared.Common;
 using DFM.Shared.Entities;
+using DFM.Shared.Helper;
 using HttpClientService;
 using MudBlazor;
 using Newtonsoft.Json.Linq;
@@ -11,11 +12,14 @@ namespace DFM.Frontend.Pages
         readonly int delayTime = 500;
         private EmployeeModel? employee;
         string? token;
-        protected override void OnInitialized()
+        protected override async Task OnInitializedAsync()
         {
+            var rules = await storageHelper.GetRuleMenuAsync();
+            if (!ValidateRule.isInRole(rules, $"/pages/doctype"))
+            {
+                nav.NavigateTo("/pages/unauthorized");
+            }
             formMode = FormMode.List;
-
-            base.OnInitialized();
         }
 
         void onCreateButtonClick()

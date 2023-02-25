@@ -2,6 +2,7 @@
 using DFM.Shared.Common;
 using DFM.Shared.DTOs;
 using DFM.Shared.Entities;
+using DFM.Shared.Helper;
 using DFM.Shared.Resources;
 using EnsureThat;
 using HttpClientService;
@@ -112,6 +113,17 @@ namespace DFM.Frontend.Pages
         }
         protected override async Task OnInitializedAsync()
         {
+            var rules = await storageHelper.GetRuleMenuAsync();
+            if (!ValidateRule.isInRole(rules, $"/pages/doc/{Link}/{Page}"))
+            {
+                nav.NavigateTo("/pages/unauthorized");
+            }
+            if (!ValidateRule.isInRole(rules, $"/pages/doc/{Link}/{Page}/{DocId}"))
+            {
+                nav.NavigateTo("/pages/unauthorized");
+            }
+
+
             // Check Page
             if (Page == "inbox")
             {

@@ -8,10 +8,10 @@ namespace DFM.Shared.Common
 {
     public enum FormMode
     {
+        List,
         View,
         Create,
         Edit,
-        List,
         Trash,
         Terminated
 
