@@ -831,11 +831,19 @@ namespace DFM.Shared.Repository
                             childCharts.Add(prime!); // ຖ້າ ເປົ້າຫມາຍເປັນ ປະທາານແມ່ນໃຫ້ເອົາຈາກ ຕົວປ່ຽນທາງເທິງ
                             break;
                         case RoleTypeModel.DeputyPrime:
-                            if (!deputyPrimes!.IsNullOrEmpty())
                             {
-                                childCharts.AddRange(deputyPrimes!);// ຖ້າ ເປົ້າຫມາຍເປັນ ຮອງປະທາານແມ່ນໃຫ້ເອົາຈາກ ຕົວປ່ຽນທາງເທິງ
+                                var targetModel = getParent(charts, roleItem, item); // ໃນກໍລະນີນີ້ແມ່ນຈະຕ້ອງໄດ້ Loop ຊອກໄປເລື້ອຍໆ ຈົນກວ່າຈະພົບ RoleType ທີ່ຕ້ອງການ
+                                if (targetModel != null)
+                                {
+                                    childCharts.Add(targetModel!);
 
+                                }
                             }
+                            //if (!deputyPrimes!.IsNullOrEmpty())
+                            //{
+                            //    childCharts.AddRange(deputyPrimes!);// ຖ້າ ເປົ້າຫມາຍເປັນ ຮອງປະທາານແມ່ນໃຫ້ເອົາຈາກ ຕົວປ່ຽນທາງເທິງ
+
+                            //}
                             break;
                         case RoleTypeModel.PrimeSecretary:
                             if (!secretPrimes!.IsNullOrEmpty())
