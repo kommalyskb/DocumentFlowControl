@@ -98,7 +98,9 @@ namespace DFM.API.Controllers
             }
             return BadRequest(result.Response);
         }
+
         [HttpGet("GetItem/{id}/{roleId}/{link}")]
+        //[AllowAnonymous]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(IEnumerable<RoleTreeModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]

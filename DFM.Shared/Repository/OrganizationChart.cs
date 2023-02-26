@@ -831,13 +831,25 @@ namespace DFM.Shared.Repository
                             childCharts.Add(prime!); // ຖ້າ ເປົ້າຫມາຍເປັນ ປະທາານແມ່ນໃຫ້ເອົາຈາກ ຕົວປ່ຽນທາງເທິງ
                             break;
                         case RoleTypeModel.DeputyPrime:
-                            childCharts.AddRange(deputyPrimes);// ຖ້າ ເປົ້າຫມາຍເປັນ ຮອງປະທາານແມ່ນໃຫ້ເອົາຈາກ ຕົວປ່ຽນທາງເທິງ
+                            if (!deputyPrimes!.IsNullOrEmpty())
+                            {
+                                childCharts.AddRange(deputyPrimes!);// ຖ້າ ເປົ້າຫມາຍເປັນ ຮອງປະທາານແມ່ນໃຫ້ເອົາຈາກ ຕົວປ່ຽນທາງເທິງ
+
+                            }
                             break;
                         case RoleTypeModel.PrimeSecretary:
-                            childCharts.AddRange(secretPrimes);// ຖ້າ ເປົ້າຫມາຍເປັນ ເລຂາປະທາານແມ່ນໃຫ້ເອົາຈາກ ຕົວປ່ຽນທາງເທິງ
+                            if (!secretPrimes!.IsNullOrEmpty())
+                            {
+                                childCharts.AddRange(secretPrimes!);// ຖ້າ ເປົ້າຫມາຍເປັນ ເລຂາປະທາານແມ່ນໃຫ້ເອົາຈາກ ຕົວປ່ຽນທາງເທິງ
+
+                            }
                             break;
                         case RoleTypeModel.DeputyPrimeSecretary:
-                            childCharts.AddRange(secretDeputyPrimes);// ຖ້າ ເປົ້າຫມາຍເປັນ ເລຂາຮອງປະທາານແມ່ນໃຫ້ເອົາຈາກ ຕົວປ່ຽນທາງເທິງ
+                            if (!secretDeputyPrimes!.IsNullOrEmpty())
+                            {
+                                childCharts.AddRange(secretDeputyPrimes!);// ຖ້າ ເປົ້າຫມາຍເປັນ ເລຂາຮອງປະທາານແມ່ນໃຫ້ເອົາຈາກ ຕົວປ່ຽນທາງເທິງ
+
+                            }
                             break;
                         case RoleTypeModel.Director:
                             {
@@ -855,7 +867,11 @@ namespace DFM.Shared.Repository
                                 // ໃນກໍລະນີນີ້ແມ່ນຈະຕ້ອງໄດ້ Loop ຊອກໄປເລື້ອຍໆ ຈົນກວ່າຈະພົບ RoleType ທີ່ຕ້ອງການ,ໃນກໍລະນີທີ່ ຕ້ອງການ ເອົາ Deputy ຂອງຕຳແຫນ່ງຕ່າງໆ ແມ່ນຈະຕ້ອງໄດ້ຊອກຫາ Parent ຂອງ Deputy ດັ່ງກ່າວກ່ອນ
                                 var parentModel = getParent(charts, roleItem, RoleTypeModel.Director);
                                 var childModels = charts.Where(x => x.ParentID == parentModel!.Role.RoleID);
-                                childCharts.AddRange(childModels!);
+                                if (!childModels!.IsNullOrEmpty())
+                                {
+                                    childCharts.AddRange(childModels!);// ຖ້າ ເປົ້າຫມາຍເປັນ ຮອງຫ້ອງແມ່ນໃຫ້ເອົາຈາກ ຕົວປ່ຽນທາງເທິງ
+
+                                }
                             }
                             else
                             {
@@ -871,7 +887,11 @@ namespace DFM.Shared.Repository
                             childCharts.Add(officePrime!);// ຖ້າ ເປົ້າຫມາຍເປັນ ຫ້ອງການແມ່ນໃຫ້ເອົາຈາກ ຕົວປ່ຽນທາງເທິງ
                             break;
                         case RoleTypeModel.DeputyOfficePrime:
-                            childCharts.AddRange(depOfficePrimes);// ຖ້າ ເປົ້າຫມາຍເປັນ ຮອງຫ້ອງແມ່ນໃຫ້ເອົາຈາກ ຕົວປ່ຽນທາງເທິງ
+                            if (!depOfficePrimes!.IsNullOrEmpty())
+                            {
+                                childCharts.AddRange(depOfficePrimes!);// ຖ້າ ເປົ້າຫມາຍເປັນ ຮອງຫ້ອງແມ່ນໃຫ້ເອົາຈາກ ຕົວປ່ຽນທາງເທິງ
+
+                            }
                             break;
                         case RoleTypeModel.General:
                             {
@@ -889,11 +909,12 @@ namespace DFM.Shared.Repository
                                 // ໃນກໍລະນີນີ້ແມ່ນຈະຕ້ອງໄດ້ Loop ຊອກໄປເລື້ອຍໆ ຈົນກວ່າຈະພົບ RoleType ທີ່ຕ້ອງການ,ໃນກໍລະນີທີ່ ຕ້ອງການ ເອົາ Deputy ຂອງຕຳແຫນ່ງຕ່າງໆ ແມ່ນຈະຕ້ອງໄດ້ຊອກຫາ Parent ຂອງ Deputy ດັ່ງກ່າວກ່ອນ
                                 var parentModel = getParent(charts, roleItem, RoleTypeModel.General);
                                 var childModels = charts.Where(x => x.ParentID == parentModel!.Role.RoleID);
-                                if (childModels.Count() > 0)
+                                if (!childModels!.IsNullOrEmpty())
                                 {
                                     childCharts.AddRange(childModels!);
+
                                 }
-                                
+
                             }
                             else
                             {
@@ -922,9 +943,10 @@ namespace DFM.Shared.Repository
                                 // ໃນກໍລະນີນີ້ແມ່ນຈະຕ້ອງໄດ້ Loop ຊອກໄປເລື້ອຍໆ ຈົນກວ່າຈະພົບ RoleType ທີ່ຕ້ອງການ,ໃນກໍລະນີທີ່ ຕ້ອງການ ເອົາ Deputy ຂອງຕຳແຫນ່ງຕ່າງໆ ແມ່ນຈະຕ້ອງໄດ້ຊອກຫາ Parent ຂອງ Deputy ດັ່ງກ່າວກ່ອນ
                                 var parentModel = getParent(charts, roleItem, RoleTypeModel.OfficeGeneral);
                                 var childModels = charts.Where(x => x.ParentID == parentModel!.Role.RoleID);
-                                if (childModels.Count() > 0)
+                                if (!childModels!.IsNullOrEmpty())
                                 {
                                     childCharts.AddRange(childModels!);
+
                                 }
                             }
                             else
@@ -953,9 +975,11 @@ namespace DFM.Shared.Repository
                                 // ໃນກໍລະນີນີ້ແມ່ນຈະຕ້ອງໄດ້ Loop ຊອກໄປເລື້ອຍໆ ຈົນກວ່າຈະພົບ RoleType ທີ່ຕ້ອງການ,ໃນກໍລະນີທີ່ ຕ້ອງການ ເອົາ Deputy ຂອງຕຳແຫນ່ງຕ່າງໆ ແມ່ນຈະຕ້ອງໄດ້ຊອກຫາ Parent ຂອງ Deputy ດັ່ງກ່າວກ່ອນ
                                 var parentModel = getParent(charts, roleItem, RoleTypeModel.OfficeGeneral);
                                 var childModels = charts.Where(x => x.ParentID == parentModel!.Role.RoleID);
-                                if (childModels.Count() > 0)
+                                
+                                if (!childModels!.IsNullOrEmpty())
                                 {
                                     childCharts.AddRange(childModels!);
+
                                 }
                             }
                             else
@@ -984,14 +1008,18 @@ namespace DFM.Shared.Repository
                                 // ໃນກໍລະນີນີ້ແມ່ນຈະຕ້ອງໄດ້ Loop ຊອກໄປເລື້ອຍໆ ຈົນກວ່າຈະພົບ RoleType ທີ່ຕ້ອງການ,ໃນກໍລະນີທີ່ ຕ້ອງການ ເອົາ Deputy ຂອງຕຳແຫນ່ງຕ່າງໆ ແມ່ນຈະຕ້ອງໄດ້ຊອກຫາ Parent ຂອງ Deputy ດັ່ງກ່າວກ່ອນ
                                 var parentModel = getParent(charts, roleItem, RoleTypeModel.OfficeGeneral);
                                 var childModels = charts.Where(x => x.ParentID == parentModel!.Role.RoleID);
-                                if (childModels.Count() > 0)
+                                
+                                if (!childModels!.IsNullOrEmpty())
                                 {
                                     childCharts.AddRange(childModels!);
+
                                 }
                             }
                             else
                             {
                                 var targetModel = getParent(charts, roleItem, item);// ໃນກໍລະນີນີ້ແມ່ນຈະຕ້ອງໄດ້ Loop ຊອກໄປເລື້ອຍໆ ຈົນກວ່າຈະພົບ RoleType ທີ່ຕ້ອງການ
+
+                                
                                 if (targetModel != null)
                                 {
                                     childCharts.Add(targetModel!);
@@ -1006,10 +1034,18 @@ namespace DFM.Shared.Repository
                         case RoleTypeModel.Volunteer:
                             break;
                         case RoleTypeModel.InboundPrime:
-                            childCharts.AddRange(inboundPrime!);
+                            if (!inboundPrime!.IsNullOrEmpty())
+                            {
+                                childCharts.AddRange(inboundPrime!);
+
+                            }
                             break;
                         case RoleTypeModel.InboundOfficePrime:
-                            childCharts.AddRange(inboundOffice!);
+                            if (!inboundOffice!.IsNullOrEmpty())
+                            {
+                                childCharts.AddRange(inboundOffice!);
+
+                            }
                             break;
                         case RoleTypeModel.InboundGeneral:
                             // If roleItem is Outbound (Any outbound type) should see all Inbound general
@@ -1017,7 +1053,11 @@ namespace DFM.Shared.Repository
                             // Else should see only inbound that same general
                             if (isInboundOrOutbound(roleItem.RoleType))
                             {
-                                childCharts.AddRange(allInboundGeneral);
+                                if (!allInboundGeneral!.IsNullOrEmpty())
+                                {
+                                    childCharts.AddRange(allInboundGeneral!);
+
+                                }
                             }
                             else
                             {
@@ -1037,7 +1077,27 @@ namespace DFM.Shared.Repository
                             childCharts.AddRange(outboundOffice!);
                             break;
                         case RoleTypeModel.OutboundGeneral:
-                            // Only same general
+                            // If roleItem is Outbound (Any outbound type) should see all Inbound general
+                            // Else If roleItem is Inbound (Any Inbound type) should see all inbound general also
+                            // Else should see only inbound that same general
+                            if (isInboundOrOutbound(roleItem.RoleType))
+                            {
+                                if (!allInboundGeneral!.IsNullOrEmpty())
+                                {
+                                    childCharts.AddRange(allInboundGeneral!);
+
+                                }
+                            }
+                            else
+                            {
+                                var parentGeneral = getParent(charts, roleItem, RoleTypeModel.General);
+
+                                var myInbound = allInboundGeneral.FirstOrDefault(x => x.ParentID == parentGeneral!.Role.RoleID);
+                                if (myInbound != null)
+                                {
+                                    childCharts.Add(myInbound);
+                                }
+                            }
                             break;
                         default:
                             break;

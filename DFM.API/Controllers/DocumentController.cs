@@ -220,6 +220,7 @@ namespace DFM.API.Controllers
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [HttpGet("GetDocument/{id}")]
+        //[AllowAnonymous]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(DocumentModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
@@ -246,7 +247,7 @@ namespace DFM.API.Controllers
 
                 // Get role on organization
                 var myRoles = await organizationChart.GetRoles(userProfile.Content.OrganizationID!, userProfile.Content.id!, cancellationToken);
-                if (myRoles.Response.Success)
+                if (!myRoles.Response.Success)
                 {
                     return BadRequest(myRoles.Response);
 
