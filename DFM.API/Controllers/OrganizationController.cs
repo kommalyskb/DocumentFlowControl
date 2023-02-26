@@ -26,6 +26,7 @@ namespace DFM.API.Controllers
         }
 
         [HttpGet("GetRole")]
+        //[AllowAnonymous]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(IEnumerable<TabItemDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
@@ -60,6 +61,7 @@ namespace DFM.API.Controllers
         }
 
         [HttpGet("GetRole/{userId}")]
+        //[AllowAnonymous]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(IEnumerable<TabItemDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]

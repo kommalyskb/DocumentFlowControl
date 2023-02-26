@@ -10,6 +10,7 @@ using HttpClientService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MyCouch.Requests;
 using Serilog;
 using System.Diagnostics;
 using System.Text.Json;
@@ -289,6 +290,57 @@ namespace DFM.API.Controllers
            
         }
 
+        [HttpPost("UpdateImageProfile/{id}")]
+        [MapToApiVersion("1.0")]
+        [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateImageProfileV1(string id, [FromBody] AttachmentModel image, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(id))
+                {
+                    return BadRequest(new CommonResponse
+                    {
+                        Code = nameof(ResultCode.EMPTY_ID),
+                        Success = false,
+                        Message = ResultCode.EMPTY_ID,
+                        Detail = ResultCode.EMPTY_ID
+                    });
+                }
+
+                var existingFromDB = await employeeManager.GetProfile(id, cancellationToken);
+                if (!existingFromDB.Response.Success)
+                {
+                    return BadRequest(new CommonResponse
+                    {
+                        Code = nameof(ResultCode.NOT_FOUND),
+                        Success = false,
+                        Message = ResultCode.NOT_FOUND,
+                        Detail = ResultCode.NOT_FOUND
+                    });
+                }
+
+                // Set profile image
+                existingFromDB.Content.ProfileImage = image;
+
+                var result = await employeeManager.EditEmployeeProfile(existingFromDB.Content, cancellationToken);
+
+                if (!result.Success)
+                {
+                    return BadRequest(result);
+                }
+
+                return Ok(result);
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         [HttpPost("ResetPassword")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(CommonResponseId), StatusCodes.Status200OK)]
@@ -388,6 +440,13 @@ namespace DFM.API.Controllers
                 {
                     return BadRequest(result);
                 }
+                // Remove user from SSO
+                //get admin token
+                var checkAdminToken = await identityHelper.GetAdminAccessToken();
+                var delUser = await httpService.Delete<object>($"{endpoint.IdentityAPI}/api/Users/{id}", new AuthorizeHeader("bearer", checkAdminToken.Token), cancellationToken);
+                var delUserContent = await delUser.HttpResponseMessage.Content.ReadAsStringAsync();
+                Log.Information(delUserContent);
+
                 return Ok(result);
             }
             catch (Exception)

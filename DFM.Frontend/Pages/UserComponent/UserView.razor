@@ -6,6 +6,8 @@
 @inject EnvConf envConf
 @inject IDialogService DialogService
 @inject IMinioService minio
+@inject ISnackbar Snackbar
+@implements IDisposable
 
 <MudContainer Class="mt-2">
     <MudGrid>
@@ -13,6 +15,12 @@
             <MudPaper Elevation="3">
                 <MudContainer>
                     <MudGrid>
+                        @if (onProcessing)
+                        {
+                            <MudItem xs="12" md="12">
+                                <MudProgressLinear Color="Color.Primary" Indeterminate="true" />
+                            </MudItem>
+                        }
                         <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
                             <h2>ຂໍ້ມູນພະນັກງານ</h2>
                         </MudItem>
@@ -21,10 +29,29 @@
                             <MudItem xs="12" md="12" Style="text-align: center">
                                 <MudImage Style="margin: auto" Src="@imageUri" Alt="photo" Height="120" Width="120" Class="mr-2 rounded-lg" ObjectFit="ObjectFit.Cover" Elevation="25" />
                             </MudItem>
+                            <MudItem xs="12" md="12" Style="text-align: center">
+                                <InputFile id="attachment" OnChange="uploadFiles" hidden accept="image/*" />
+                                <MudButton Disabled="onProcessing" HtmlTag="label"
+                                           Variant="Variant.Filled"
+                                           Color="Color.Primary"
+                                           StartIcon="@Icons.Filled.CloudUpload"
+                                           for="attachment">
+                                    ອັບໂຫຼດຮູບ
+                                </MudButton>
+                            </MudItem>
                         }
                         else
                         {
-                            
+                            <MudItem xs="12" md="12" Style="text-align: center">
+                                <InputFile id="attachment" OnChange="uploadFiles" hidden accept="image/*" />
+                                <MudButton Disabled="onProcessing" HtmlTag="label"
+                                           Variant="Variant.Filled"
+                                           Color="Color.Primary"
+                                           StartIcon="@Icons.Filled.CloudUpload"
+                                           for="attachment">
+                                    ອັບໂຫຼດຮູບ
+                                </MudButton>
+                            </MudItem>
                         }
                         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
                             <MudField Margin="Margin.Dense" Label="ຊື່" Variant="Variant.Outlined">@Employee!.Name.Local</MudField>
@@ -112,5 +139,13 @@
 
 
 @code {
+    bool onProcessing;
+    AttachmentDto? ProfileImage = new();
+    private CancellationTokenSource cts = new CancellationTokenSource();
 
+    public void Dispose()
+    {
+        cts.Cancel();
+        cts.Dispose();
+    }
 }

@@ -8,6 +8,7 @@ using DFM.Shared.Interfaces;
 using DFM.Shared.Resources;
 using MyCouch.Requests;
 using Redis.OM;
+using Redis.OM.Searching;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,8 @@ namespace DFM.Shared.Repository
         private readonly IOrganizationChart organizationChart;
         private readonly CouchDBHelper read_couchDbHelper;
         private readonly CouchDBHelper write_couchDbHelper;
+        private readonly IRedisCollection<EmployeeModel> context;
+
         public EmployeeManager(ICouchContext couchContext, DBConfig dbConfig, IRedisConnector redisConnector, IOrganizationChart organizationChart)
         {
             this.couchContext = couchContext;
@@ -47,6 +50,8 @@ namespace DFM.Shared.Repository
                 password: dbConfig.Writer.Password,
                 port: dbConfig.Writer.Port
             );
+            var provider = new RedisConnectionProvider(redisConnector.Connection);
+            context = provider.RedisCollection<EmployeeModel>();
         }
 
         public async Task<CommonResponse> NewEmployeeProfile(EmployeeModel request, CancellationToken cancellationToken = default(CancellationToken))
@@ -55,8 +60,6 @@ namespace DFM.Shared.Repository
             {
 
                 // Redis first
-                var provider = new RedisConnectionProvider(redisConnector.Connection);
-                var context = provider.RedisCollection<EmployeeModel>();
 
 
                 var result = await couchContext.InsertAsync<EmployeeModel>
@@ -126,8 +129,6 @@ namespace DFM.Shared.Repository
                 }
                 request.rev = existing.Content.rev;
 
-                var provider = new RedisConnectionProvider(redisConnector.Connection);
-                var context = provider.RedisCollection<EmployeeModel>();
 
                 var result = await couchContext.EditAsync<EmployeeModel>
                    (
@@ -206,8 +207,7 @@ namespace DFM.Shared.Repository
                     };
                 }
 
-                var provider = new RedisConnectionProvider(redisConnector.Connection);
-                var context = provider.RedisCollection<EmployeeModel>();
+                
 
                 // Remove
                 var result = await couchContext.DeleteAsync
@@ -264,8 +264,6 @@ namespace DFM.Shared.Repository
         {
             try
             {
-                var provider = new RedisConnectionProvider(redisConnector.Connection);
-                var context = provider.RedisCollection<EmployeeModel>();
 
                 // Query via redis
 
@@ -326,8 +324,6 @@ namespace DFM.Shared.Repository
                 //string recordKey = $"{RedisPrefix.Employee}{id}"; // Set key for cache
                 //var mem = redisConnector.Connection.GetDatabase(1);
                 //var cache = await mem.StringGetAsync(recordKey);
-                var provider = new RedisConnectionProvider(redisConnector.Connection);
-                var context = provider.RedisCollection<EmployeeModel>();
 
                 var cache = await context.FindByIdAsync(id);
                 if (cache == null)
