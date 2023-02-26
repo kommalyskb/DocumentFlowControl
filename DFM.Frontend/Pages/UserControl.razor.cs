@@ -95,6 +95,7 @@ namespace DFM.Frontend.Pages
         {
             // Set employee model
             employeeModel = item;
+            attachment!.Info = item.ProfileImage!;
             // Row click
             formMode = FormMode.Edit;
 

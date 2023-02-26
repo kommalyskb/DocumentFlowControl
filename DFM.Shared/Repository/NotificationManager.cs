@@ -96,7 +96,7 @@ namespace DFM.Shared.Repository
             try
             {
                 // Redis first
-                var exist = await GetNotice(id, cancellationToken);
+                var exist = await GetNotice(id!, cancellationToken);
 
                 if (!exist.Response.Success)
                 {

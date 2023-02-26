@@ -22,7 +22,12 @@
     {
         <MudNavLink Href="/pages/personal/account" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.Person">ຂໍ້ມູນຜູ້ໃຊ້</MudNavLink>
     }
-    <MudDivider Style="height:2px" />
+    @if (ValidateRule.isInRole(rules!, "/pages/home") || ValidateRule.isInRole(rules!, "/pages/personal/account"))
+    {
+        <MudDivider Style="height:2px" />
+
+    }
+
     @if (IsOpen)
     {
         if (ValidateRule.isInRole(rules!, "/pages/doc/inbound/inbox/none") || ValidateRule.isInRole(rules!, "/pages/doc/inbound/coprocess/none") ||
@@ -31,7 +36,7 @@
         {
             <MudText Typo="Typo.subtitle2" Color="Color.Primary" Style="font-weight: bold; font-size: 16px;" Class="ml-4 my-3">ເອກະສານຂາເຂົ້າ</MudText>
         }
-        
+
     }
 
     @if (ValidateRule.isInRole(rules!, "/pages/doc/inbound/inbox/none"))
@@ -59,7 +64,14 @@
         <MudNavLink Href="/pages/doc/inbound/bin/none" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.Delete" Match="NavLinkMatch.Prefix">ຖັງຂີ້ເຫຍື່ອ</MudNavLink>
 
     }
-    <MudDivider Style="height:2px" />
+    @if (ValidateRule.isInRole(rules!, "/pages/doc/inbound/inbox/none") || ValidateRule.isInRole(rules!, "/pages/doc/inbound/coprocess/none") ||
+    ValidateRule.isInRole(rules!, "/pages/doc/inbound/draft/none") || ValidateRule.isInRole(rules!, "/pages/doc/inbound/completed/none") ||
+    ValidateRule.isInRole(rules!, "/pages/doc/inbound/bin/none"))
+    {
+        <MudDivider Style="height:2px" />
+    }
+
+
     @if (IsOpen)
     {
         if (ValidateRule.isInRole(rules!, "/pages/doc/outbound/inbox/none") || ValidateRule.isInRole(rules!, "/pages/doc/outbound/coprocess/none") ||
@@ -68,7 +80,7 @@
         {
             <MudText Typo="Typo.subtitle2" Color="Color.Primary" Style="font-weight: bold; font-size: 16px;" Class="ml-4 my-3">ເອກະສານຂາອອກ</MudText>
         }
-        
+
     }
 
     @if (ValidateRule.isInRole(rules!, "/pages/doc/outbound/inbox/none"))
@@ -83,7 +95,7 @@
     }
     @if (ValidateRule.isInRole(rules!, "/pages/doc/outbound/draft/none"))
     {
-    <MudNavLink Href="/pages/doc/outbound/draft/none" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.Drafts" Match="NavLinkMatch.Prefix">ສະບັບຮ່າງ</MudNavLink>
+        <MudNavLink Href="/pages/doc/outbound/draft/none" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.Drafts" Match="NavLinkMatch.Prefix">ສະບັບຮ່າງ</MudNavLink>
 
     }
     @if (ValidateRule.isInRole(rules!, "/pages/doc/outbound/completed/none"))
@@ -96,7 +108,13 @@
         <MudNavLink Href="/pages/doc/outbound/bin/none" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.Delete" Match="NavLinkMatch.Prefix">ຖັງຂີ້ເຫຍື່ອ</MudNavLink>
 
     }
-    <MudDivider Style="height:2px" />
+    @if (ValidateRule.isInRole(rules!, "/pages/doc/outbound/inbox/none") || ValidateRule.isInRole(rules!, "/pages/doc/outbound/coprocess/none") ||
+    ValidateRule.isInRole(rules!, "/pages/doc/outbound/draft/none") || ValidateRule.isInRole(rules!, "/pages/doc/outbound/completed/none") ||
+    ValidateRule.isInRole(rules!, "/pages/doc/outbound/bin/none"))
+    {
+        <MudDivider Style="height:2px" />
+    }
+   
 
 
     @if (IsOpen)
@@ -105,7 +123,7 @@
         {
             <MudText Typo="Typo.subtitle2" Color="Color.Primary" Style="font-weight: bold; font-size: 16px;" Class="ml-4 my-3">ລາຍງານສຳລັບແອັດມິນ</MudText>
         }
-        
+
     }
 
     @if (ValidateRule.isInRole(rules!, "/pages/monitor/inbound"))
@@ -116,15 +134,19 @@
     {
         <MudNavLink Href="/pages/monitor/outbound" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.AdminPanelSettings">ເອກະສານຂາອອກ</MudNavLink>
     }
-    <MudDivider Style="height:2px" />
+    @if (ValidateRule.isInRole(rules!, "/pages/monitor/inbound") || ValidateRule.isInRole(rules!, "/pages/monitor/outbound"))
+    {
+        <MudDivider Style="height:2px" />
+    }
+   
 
     @if (IsOpen)
     {
         if (ValidateRule.isInRole(rules!, "/pages/monitor/inbound") || ValidateRule.isInRole(rules!, "/pages/monitor/outbound"))
         {
-             <MudText Typo="Typo.subtitle2" Color="Color.Primary" Style="font-weight: bold; font-size: 16px;" Class="ml-4 my-3">ແຟ້ມເອກະສານ</MudText>
+            <MudText Typo="Typo.subtitle2" Color="Color.Primary" Style="font-weight: bold; font-size: 16px;" Class="ml-4 my-3">ແຟ້ມເອກະສານ</MudText>
         }
-       
+
     }
 
     @if (ValidateRule.isInRole(rules!, "/pages/folder/inbound"))
@@ -135,9 +157,12 @@
     {
         <MudNavLink Href="/pages/folder/outbound" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.FolderShared">ແຟ້ມຂາອອກ</MudNavLink>
     }
+    @if (ValidateRule.isInRole(rules!, "/pages/monitor/inbound") || ValidateRule.isInRole(rules!, "/pages/monitor/outbound"))
+    {
+        <MudDivider Style="height:2px" />
+    }
+
     
-    
-    <MudDivider Style="height:2px" />
     @if (IsOpen)
     {
         if (ValidateRule.isInRole(rules!, "/pages/org/chart") || ValidateRule.isInRole(rules!, "/pages/org/user") ||
@@ -146,7 +171,7 @@
         {
             <MudText Typo="Typo.subtitle2" Color="Color.Primary" Style="font-weight: bold; font-size: 16px;" Class="ml-4 my-3">ຈັດການຂໍ້ມູນພື້ນຖານ</MudText>
         }
-        
+
     }
 
     @if (ValidateRule.isInRole(rules!, "/pages/org/chart"))
@@ -173,16 +198,21 @@
     {
         <MudNavLink Href="/pages/rulemanager" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.RuleFolder">ກຳໜົດສິດຂອງຜູ້ໃຊ້</MudNavLink>
     }
+    @if (ValidateRule.isInRole(rules!, "/pages/org/chart") || ValidateRule.isInRole(rules!, "/pages/org/user") ||
+    ValidateRule.isInRole(rules!, "/pages/doctype") || ValidateRule.isInRole(rules!, "/pages/security") ||
+    ValidateRule.isInRole(rules!, "/pages/urgent") || ValidateRule.isInRole(rules!, "/pages/rulemanager"))
+    {
+        <MudDivider Style="height:2px" />
+    }
+
     
-    
-    <MudDivider Style="height:2px" />
     @if (IsOpen)
     {
         if (ValidateRule.isInRole(rules!, "/pages/report/inbound") || ValidateRule.isInRole(rules!, "/pages/report/outbound"))
         {
             <MudText Typo="Typo.subtitle2" Color="Color.Primary" Style="font-weight: bold; font-size: 16px;" Class="ml-4 my-3">ລາຍງານ</MudText>
         }
-        
+
     }
 
     @if (ValidateRule.isInRole(rules!, "/pages/report/inbound"))
@@ -195,7 +225,11 @@
         <MudNavLink Href="/pages/report/outbound" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.Newspaper">ລາຍງານເອກະສານຂາອອກ</MudNavLink>
 
     }
-    <MudDivider Style="height:2px" />
+    @if (ValidateRule.isInRole(rules!, "/pages/report/inbound") || ValidateRule.isInRole(rules!, "/pages/report/outbound"))
+    {
+        <MudDivider Style="height:2px" />
+    }
+    
     @if (IsOpen)
     {
         <MudText Typo="Typo.subtitle2" Color="Color.Primary" Style="font-weight: bold; font-size: 16px;" Class="ml-4 my-3">ລະບົບ</MudText>

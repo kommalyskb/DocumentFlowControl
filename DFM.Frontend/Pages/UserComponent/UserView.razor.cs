@@ -45,8 +45,7 @@ namespace DFM.Frontend.Pages.UserComponent
             {
                 var ext = Path.GetExtension(file.Name);
                 var name = file.Name.Replace(ext, "");
-                ProfileImage!.File = file;
-                decimal fileSize = ProfileImage.File.Size / 1048576M;
+                decimal fileSize = file.Size / 1048576M;
                 string? fileFormat = Icons.Custom.FileFormats.FileDocument;
                 if (file.ContentType.Contains("word"))
                 {
@@ -68,7 +67,7 @@ namespace DFM.Frontend.Pages.UserComponent
                 {
                     fileFormat = Icons.Custom.FileFormats.FileMusic;
                 }
-                ProfileImage.Info = new()
+                var imageInfo = new AttachmentModel
                 {
                     Bucket = prefix,
                     Display = file.Name,
@@ -95,8 +94,8 @@ namespace DFM.Frontend.Pages.UserComponent
 
                 imageUri = $"data:image/png;base64,{Convert.ToBase64String(ms.ToArray())}";
 
-                await minio.PutObject(ProfileImage.Info.Bucket!, ProfileImage.Info.FileName!, buffer);
-
+                await minio.PutObject(imageInfo.Bucket!, imageInfo.FileName!, buffer);
+                
                 // Update Profile
                 string url = $"{endpoint.API}/api/v1/Employee/UpdateImageProfile/{Employee!.id}";
                 if (string.IsNullOrWhiteSpace(token))
@@ -104,7 +103,7 @@ namespace DFM.Frontend.Pages.UserComponent
                     token = await accessToken.GetTokenAsync();
                 }
 
-                var result = await httpService.Post<AttachmentModel, CommonResponse>(url, ProfileImage.Info!, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
+                var result = await httpService.Post<AttachmentModel, CommonResponse>(url, imageInfo, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
                 if (result.Success)
                 {
                     AlertMessage("ອັບໂຫຼດຮູບຂອງທ່ານສຳເລັດ", Defaults.Classes.Position.BottomRight, Severity.Success);

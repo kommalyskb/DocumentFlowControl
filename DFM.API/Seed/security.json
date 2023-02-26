@@ -1,9 +1,9 @@
 {
   "_id": "_design/query",
   "views": {
-    "byOrgId": {
+    "byRoleID": {
       "reduce": "_count",
-      "map": "function (doc) {\n  emit(doc.organizationID, doc);\n}"
+      "map": "function (doc) {\n  emit(doc.roleID, doc);\n}"
     }
   },
   "language": "javascript"
