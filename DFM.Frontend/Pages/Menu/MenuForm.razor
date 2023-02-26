@@ -9,7 +9,10 @@
 <MudContainer>
 
     <MudGrid>
-        <MudItem xs="12" md="10" Class="d-flex flex-grow-1 gap-4">
+        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+            <h2>ຂໍ້ມູນທົ່ວໄປ</h2>
+        </MudItem>
+        <MudItem xs="12" md="9" Class="d-flex flex-grow-1 gap-4">
             <MudSelect Margin="Margin.Dense" Disabled="OnProcessing" @bind-Value="RuleMenu!.Menu" T="MenuLink" HelperText="ເມນູ" Label="ເມນູ" Variant="Variant.Outlined">
                 <MudSelectItem Value="MenuLink.MAIN_PAGE">@DecodeEnumMenu.decodeMenuLink(MenuLink.MAIN_PAGE)</MudSelectItem>
                 <MudSelectItem Value="MenuLink.USER_INFO">@DecodeEnumMenu.decodeMenuLink(MenuLink.USER_INFO)</MudSelectItem>
@@ -38,6 +41,7 @@
                 <MudSelectItem Value="MenuLink.REPORT_OB">@DecodeEnumMenu.decodeMenuLink(MenuLink.REPORT_OB)</MudSelectItem>
             </MudSelect>
         </MudItem>
+       
         <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
             <MudSelect Margin="Margin.Dense" T="string" Disabled="OnProcessing" Immediate="true" Variant="Variant.Outlined" HelperText="ຕຳແໜ່ງທີ່ສາມາດເຂົ້າເຖິງເມນູໄດ້" Label="ຜູ້ທີ່ສາມາດເຂົ້າເຖິງເມນູໄດ້"
             MultiSelection="true" SelectAll="true" SelectAllText="ເລືອກທັງຫມົດ" @bind-Value="authorizeView" @bind-SelectedValues="authorizeOption" 

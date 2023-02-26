@@ -2035,7 +2035,7 @@ namespace DFM.Shared.Repository
                     //await mem.StringSetAsync(recordKey, JsonSerializer.Serialize(existing.Content));
                     await context.InsertAsync(existing.Content);
 
-                    var response = existing.Content.RoleTypeItems.Where(x => x.ModuleType == moduleType);
+                    var response = existing.Content.RoleTypeItems!.Where(x => x.ModuleType == moduleType);
 
                     return (new CommonResponseId()
                     {
@@ -2064,6 +2064,67 @@ namespace DFM.Shared.Repository
                 throw;
             }
         }
+        public async Task<(CommonResponse Response, DynamicFlowModel FlowModel)> GetDynamicFlowByID(string id, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            try
+            {
+                var provider = new RedisConnectionProvider(redisConnector.Connection);
+                var context = provider.RedisCollection<DynamicFlowModel>();
+
+                var cache = await context.FindByIdAsync(id);
+                if (cache == null)
+                {
+                    // Find the existing record
+                    var existing = await couchContext.GetAsync<DynamicFlowModel>
+                        (
+                            couchDBHelper: read_dynamic_couchDbHelper,
+                            id: id,
+                            cancellationToken: cancellationToken
+                        );
+
+                    if (!existing.IsSuccess)
+                    {
+                        return (new CommonResponseId()
+                        {
+                            Id = id,
+                            Code = nameof(ResultCode.NOT_FOUND),
+                            Success = false,
+                            Detail = ValidateString.IsNullOrWhiteSpace(existing.Reason),
+                            Message = ResultCode.NOT_FOUND
+                        }, default!);
+                    }
+
+                    existing.Content.revision = existing.Rev;
+                    existing.Content.id = existing.Id;
+                    //await mem.StringSetAsync(recordKey, JsonSerializer.Serialize(existing.Content));
+                    await context.InsertAsync(existing.Content);
+
+                    return (new CommonResponseId()
+                    {
+                        Id = id,
+                        Code = nameof(ResultCode.SUCCESS_OPERATION),
+                        Success = true,
+                        Detail = ValidateString.IsNullOrWhiteSpace(ResultCode.SUCCESS_OPERATION),
+                        Message = ResultCode.SUCCESS_OPERATION
+                    }, existing.Content!);
+                }
+
+                return (new CommonResponseId()
+                {
+                    Id = id,
+                    Code = nameof(ResultCode.SUCCESS_OPERATION),
+                    Success = true,
+                    Detail = ValidateString.IsNullOrWhiteSpace(ResultCode.SUCCESS_OPERATION),
+                    Message = ResultCode.SUCCESS_OPERATION
+                }, cache!);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
 
         public async Task<(decimal RowCount, IEnumerable<RoleTreeModel> Contents, CommonResponse Response)> GetSupervisorRolesPosition(string id, CancellationToken cancellationToken = default)
         {

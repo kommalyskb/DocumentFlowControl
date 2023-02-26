@@ -5,6 +5,8 @@ using DFM.Shared.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using OpenTelemetry.Resources;
+using System.Security.Cryptography;
 
 namespace DFM.API.Controllers
 {
@@ -242,6 +244,56 @@ namespace DFM.API.Controllers
                 return BadRequest(result);
             }
             return Ok(result);
+        }
+
+        [HttpGet("GetDynamicFlow/{moduleType}/{orgId}")]
+        [MapToApiVersion("1.0")]
+        [ProducesResponseType(typeof(IEnumerable<DynamicItem>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetDynamicFlowV1(ModuleType moduleType, string orgId, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            try
+            {
+                var result = await organizationChart.GetDynamicFlowByID(orgId, moduleType, cancellationToken);
+
+                
+                if (!result.Response.Success)
+                {
+                    return BadRequest(result.Response);
+                }
+
+                return Ok(result.Roles);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        [HttpPost("SaveDynamicFlow/{orgId}")]
+        [MapToApiVersion("1.0")]
+        [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> SaveDynamicFlowV1(string orgId, [FromBody] DynamicItem request, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            try
+            {
+                var result = await organizationChart.SaveDynamicFlow(orgId, request.RoleSource, request.RoleTargets!, request.ModuleType, cancellationToken: cancellationToken);
+
+
+                if (!result.Success)
+                {
+                    return BadRequest(result);
+                }
+
+                return Ok(result);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
     }
 }

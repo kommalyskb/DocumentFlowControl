@@ -28,5 +28,6 @@ namespace DFM.Shared.Interfaces
         Task<CommonResponseId> GetPublisher(string id, string roleId, CancellationToken cancellationToken = default);
         Task<(decimal RowCount, IEnumerable<RoleTreeModel> Contents, CommonResponse Response)> GetSupervisorRolesPosition(string id, CancellationToken cancellationToken = default);
         Task<(CommonResponse Response, RoleTreeModel Content)> GetEmployee(string orgId, string roleId, CancellationToken cancellationToken = default);
+        Task<(CommonResponse Response, DynamicFlowModel FlowModel)> GetDynamicFlowByID(string id, CancellationToken cancellationToken = default);
     }
 }

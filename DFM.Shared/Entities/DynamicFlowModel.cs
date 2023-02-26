@@ -1,4 +1,5 @@
 ﻿using DFM.Shared.DTOs;
+using DFM.Shared.Helper;
 using Minio.DataModel;
 using Redis.OM.Modeling;
 using System;
@@ -21,13 +22,30 @@ namespace DFM.Shared.Entities
         [Indexed]
         public RoleTypeModel RoleSource { get; set; }
         [Indexed]
-        public List<RoleTypeModel>? RoleTargets { get; set; }
+        public List<RoleTypeModel>? RoleTargets { get; set; } = new();
         [Indexed]
         public ModuleType ModuleType { get; set; }
         [Indexed]
         public bool CrossInternal { get; set; }
         [Indexed]
         public bool CrossExternal { get; set; } = false;
+        [Indexed]
+        public string? DecodeSource
+        {
+            get
+            {
+                return DecodeEnumRoleTypeModel.decodeRoleType(this.RoleSource);
+            }
+        }
+        [Indexed]
+        public int TargetCount
+        {
+            get
+            {
+                return RoleTargets!.Count;
+            }
+        }
+
     }
     public enum ModuleType
     {

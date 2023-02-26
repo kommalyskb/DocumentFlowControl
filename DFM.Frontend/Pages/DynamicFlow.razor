@@ -1,0 +1,71 @@
+﻿@page "/pages/freeflow"
+@inject IHttpService httpService
+@inject AccessTokenStorage accessToken
+@inject ServiceEndpoint endpoint
+@inject LocalStorageHelper storageHelper
+@inject IMinioService minio
+@inject StorageConfiguration storageConf
+@inject NavigationManager nav
+@inject ISnackbar Snackbar
+@inject EnvConf envConf
+@implements IDisposable
+
+<PageTitle>Document Flow Manager - @envConf.PageTitle</PageTitle>
+
+
+<DFM.Frontend.Pages.Common.ButtonPanel FormMode="formMode" ShowTerminateButton="false" ShowCreateButton="true" ShowDeleteButton="false"
+                                       ShowEditButton="true" ShowSaveButton="true" ShowSendButton="false" Behavior="BehaviorStatus.ReadWrite"
+                                       CreateButtonEvent="onCreateButtonClick" PreviousButtonEvent="onePreviousButtonClick"
+                                       DeleteButtonEvent="onDeleteButtonClick" RootBreadcrumb="ລາຍການການສົ່ງເອກະສານ" ViewBreadcrumb="ເບີ່ງການສົ່ງເອກະສານ"
+                                       EditBreadcrumb="ແກ້ໄຂການສົ່ງເອກະສານ" CreateBreadcrumb="ສ້າງການສົ່ງເອກະສານໃຫມ່" OnProcessing="onProcessing"
+                                       EditButtonEvent="onEditButtonClick" SaveButtonEvent="onSaveClickAsync"></DFM.Frontend.Pages.Common.ButtonPanel>
+
+<MudContainer Class="mt-2">
+    <MudGrid>
+        <MudItem xs="12" sm="12">
+            
+            <MudPaper Elevation="3">
+                @if (formMode == FormMode.List)
+                {
+                    <MudTabs Elevation="2" Rounded="true" Centered="false">
+                        <MudTabPanel Text="@DecodeEnumModuleType.decodeModule(ModuleType.DocumentInbound)" Icon="@Icons.Material.Filled.People" BadgeColor="Color.Error">
+                            <DFM.Frontend.Pages.FreeFlow.FreeFlowList OnRowClick="onRowClick" ModuleType="ModuleType.DocumentInbound"></DFM.Frontend.Pages.FreeFlow.FreeFlowList>
+                        </MudTabPanel>
+                        <MudTabPanel Text="@DecodeEnumModuleType.decodeModule(ModuleType.DocumentOutbound)" Icon="@Icons.Material.Filled.People" BadgeColor="Color.Error">
+                            <DFM.Frontend.Pages.FreeFlow.FreeFlowList OnRowClick="onRowClick" ModuleType="ModuleType.DocumentOutbound"></DFM.Frontend.Pages.FreeFlow.FreeFlowList>
+                        </MudTabPanel>
+                    </MudTabs>
+                    
+                }
+                else if (formMode == FormMode.Create)
+                {
+                    <DFM.Frontend.Pages.FreeFlow.FreeFlowForm Mode="formMode" OnProcessing="onProcessing" Item="dynamicItem"></DFM.Frontend.Pages.FreeFlow.FreeFlowForm>
+                }
+                else if (formMode == FormMode.Edit)
+                {
+                    <DFM.Frontend.Pages.FreeFlow.FreeFlowForm Mode="formMode" OnProcessing="onProcessing" Item="dynamicItem"></DFM.Frontend.Pages.FreeFlow.FreeFlowForm>
+
+                }
+                else if (formMode == FormMode.View)
+                {
+                    <DFM.Frontend.Pages.FreeFlow.FreeFlowView Item="dynamicItem"></DFM.Frontend.Pages.FreeFlow.FreeFlowView>
+                }
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+@code {
+    private FormMode formMode;
+    MudMessageBox? delBox { get; set; }
+    bool onProcessing = false;
+    DynamicItem dynamicItem = new();
+
+    private CancellationTokenSource cts = new CancellationTokenSource();
+    public void Dispose()
+    {
+        cts.Cancel();
+        cts.Dispose();
+    }
+}
+

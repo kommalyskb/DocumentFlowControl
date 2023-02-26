@@ -1,0 +1,34 @@
+﻿@inject IHttpService httpService
+@inject AccessTokenStorage accessToken
+@inject ServiceEndpoint endpoint
+@inject LocalStorageHelper storageHelper
+@implements IDisposable
+
+
+<MudGrid>
+    <MudItem xs="12" md="12">
+        <MudDataGrid T="DynamicItem" MultiSelection="true" Items="@Elements" SortMode="SortMode.Multiple" Filterable="true"
+                     FilterMode="@DataGridFilterMode.ColumnFilterRow" Hideable="true" Hover="true" Class="cursor-pointer"
+                     RowClick="@RowClicked" SelectedItemsChanged="@SelectedItemsChanged" Bordered="true" ColumnResizeMode="ResizeMode.Column">
+            <Columns>
+                <Column T="DynamicItem" Field="DecodeSource" Title="ຜູ້ສົ່ງ" CellStyleFunc="@_cellStyleFunc" />
+                <Column T="DynamicItem" Field="TargetCount" Title="ຈຳນວນຜູ້ຮັບ" CellStyleFunc="@_cellStyleFunc" />
+            </Columns>
+            <PagerContent>
+                <MudDataGridPager T="DynamicItem" />
+            </PagerContent>
+        </MudDataGrid>
+    </MudItem>
+</MudGrid>
+
+@code {
+    [Parameter] public EventCallback<DynamicItem> OnRowClick { get; set; }
+    [Parameter] public ModuleType ModuleType { get; set; }
+
+    private CancellationTokenSource cts = new CancellationTokenSource();
+    public void Dispose()
+    {
+        cts.Cancel();
+        cts.Dispose();
+    }
+}

@@ -1,0 +1,35 @@
+﻿@inject IHttpService httpService
+@inject AccessTokenStorage accessToken
+@inject ServiceEndpoint endpoint
+@inject LocalStorageHelper storageHelper
+
+<MudContainer>
+    <MudGrid>
+        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+            <h2>ຂໍ້ມູນທົ່ວໄປ</h2>
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <MudField Margin="Margin.Dense" Label="ຜູ້ສົ່ງ">@Item!.DecodeSource</MudField>
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <MudField Margin="Margin.Dense" Label="ປະເພດການໄຫຼຂອງລະບົບ">@DecodeEnumModuleType.decodeModule(Item.ModuleType)</MudField>
+        </MudItem>
+        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+            <MudField Margin="Margin.Dense" Label="ຜູ້ທີ່ສາມາດເຂົ້າເຖິງເມນູໄດ້" Variant="Variant.Outlined">
+                @if (Item != null)
+                {
+                    if (!Item.RoleTargets!.IsNullOrEmpty())
+                    {
+                        foreach (var item in Item.RoleTargets!)
+                        {
+                            <MudChip Color="Color.Primary">@DecodeEnumRoleTypeModel.decodeRoleType(item)</MudChip>
+                        }
+                    }
+                }
+            </MudField>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+@code {
+    [Parameter] public DynamicItem? Item { get; set; }
+}

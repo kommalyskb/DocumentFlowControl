@@ -1,0 +1,114 @@
+﻿@inject IHttpService httpService
+@inject AccessTokenStorage accessToken
+@inject ServiceEndpoint endpoint
+@inject LocalStorageHelper storageHelper
+@inject EnvConf envConf
+@inject IDialogService DialogService
+
+
+<MudContainer>
+
+    <MudGrid>
+        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+            <h2>ຂໍ້ມູນທົ່ວໄປ</h2>
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <MudSelect Margin="Margin.Dense" Disabled="OnProcessing" @bind-Value="Item!.RoleSource" T="RoleTypeModel" HelperText="ຜູ້ສົ່ງ" Label="ຜູ້ສົ່ງ" Variant="Variant.Outlined">
+                <MudSelectItem Value="RoleTypeModel.Prime">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.Prime)</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.DeputyPrime">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.DeputyPrime)</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.PrimeSecretary">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.PrimeSecretary)</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.DeputyPrimeSecretary">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.DeputyPrimeSecretary)</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.Director">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.Director)</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.DeputyDirector">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.DeputyDirector)</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.InboundPrime">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.InboundPrime)</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.OutboundPrime">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.OutboundPrime)</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.OfficePrime">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.OfficePrime)</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.DeputyOfficePrime">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.DeputyOfficePrime)</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.InboundOfficePrime">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.InboundOfficePrime)</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.OutboundOfficePrime">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.OutboundOfficePrime)</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.General">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.General)</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.DeputyGeneral">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.DeputyGeneral)</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.InboundGeneral">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.InboundGeneral)</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.OutboundGeneral">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.OutboundGeneral)</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.OfficeGeneral">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.OfficeGeneral)</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.DeputyOfficeGeneral">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.DeputyOfficeGeneral)</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.Division">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.Division)</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.DeputyDivision">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.DeputyDivision)</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.Department">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.Department)</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.DeputyDepartment">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.DeputyDepartment)</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.Employee">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.Employee)</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.Contract">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.Contract)</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.Volunteer">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.Volunteer)</MudSelectItem>
+            </MudSelect>
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+            <MudSelect Margin="Margin.Dense" Disabled="OnProcessing" @bind-Value="Item!.ModuleType" T="ModuleType" HelperText="ປະເພດການໄຫຼຂອງລະບົບ" Label="ປະເພດການໄຫຼຂອງລະບົບ" Variant="Variant.Outlined">
+                <MudSelectItem Value="ModuleType.DocumentInbound">@DecodeEnumModuleType.decodeModule(ModuleType.DocumentInbound)</MudSelectItem>
+                <MudSelectItem Value="ModuleType.DocumentOutbound">@DecodeEnumModuleType.decodeModule(ModuleType.DocumentOutbound)</MudSelectItem>
+                <MudSelectItem Value="ModuleType.TaskManagement">@DecodeEnumModuleType.decodeModule(ModuleType.TaskManagement)</MudSelectItem>
+                <MudSelectItem Value="ModuleType.Leave">@DecodeEnumModuleType.decodeModule(ModuleType.Leave)</MudSelectItem>
+                
+            </MudSelect>
+        </MudItem>
+        <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
+            <MudSelect Margin="Margin.Dense" T="string" Disabled="OnProcessing" Immediate="true" Variant="Variant.Outlined" HelperText="ຕຳແໜ່ງທີ່ສາມາດຮັບໄດ້" Label="ຜູ້ທີ່ສາມາດຮັບໄດ້"
+                       MultiSelection="true" SelectAll="true" SelectAllText="ເລືອກທັງຫມົດ" @bind-Value="authorizeView" @bind-SelectedValues="authorizeOption"
+                       MultiSelectionTextFunc="@(new Func<List<string>, string>(getSelectionAuthorize))">
+                <MudSelectItem Value="RoleTypeModel.Prime.ToString()">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.Prime)</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.DeputyPrime.ToString()">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.DeputyPrime)</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.PrimeSecretary.ToString()">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.PrimeSecretary)</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.DeputyPrimeSecretary.ToString()">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.DeputyPrimeSecretary)</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.Director.ToString()">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.Director)</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.DeputyDirector.ToString()">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.DeputyDirector)</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.InboundPrime.ToString()">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.InboundPrime)</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.OutboundPrime.ToString()">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.OutboundPrime)</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.OfficePrime.ToString()">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.OfficePrime)</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.DeputyOfficePrime.ToString()">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.DeputyOfficePrime)</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.InboundOfficePrime.ToString()">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.InboundOfficePrime)</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.OutboundOfficePrime.ToString()">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.OutboundOfficePrime)</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.General.ToString()">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.General)</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.DeputyGeneral.ToString()">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.DeputyGeneral)</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.InboundGeneral.ToString()">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.InboundGeneral)</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.OutboundGeneral.ToString()">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.OutboundGeneral)</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.OfficeGeneral.ToString()">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.OfficeGeneral)</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.DeputyOfficeGeneral.ToString()">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.DeputyOfficeGeneral)</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.Division.ToString()">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.Division)</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.DeputyDivision.ToString()">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.DeputyDivision)</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.Department.ToString()">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.Department)</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.DeputyDepartment.ToString()">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.DeputyDepartment)</MudSelectItem>
+                <MudDivider></MudDivider>
+                <MudSelectItem Value="RoleTypeModel.Employee.ToString()">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.Employee)</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.Contract.ToString()">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.Contract)</MudSelectItem>
+                <MudSelectItem Value="RoleTypeModel.Volunteer.ToString()">@DecodeEnumRoleTypeModel.decodeRoleType(RoleTypeModel.Volunteer)</MudSelectItem>
+            </MudSelect>
+        </MudItem>
+
+    </MudGrid>
+</MudContainer>
+
+@code {
+    [Parameter] public DynamicItem? Item { get; set; }
+    [Parameter] public FormMode Mode { get; set; }
+    [Parameter] public bool OnProcessing { get; set; }
+}
