@@ -832,18 +832,28 @@ namespace DFM.Shared.Repository
                             break;
                         case RoleTypeModel.DeputyPrime:
                             {
-                                var targetModel = getParent(charts, roleItem, item); // ໃນກໍລະນີນີ້ແມ່ນຈະຕ້ອງໄດ້ Loop ຊອກໄປເລື້ອຍໆ ຈົນກວ່າຈະພົບ RoleType ທີ່ຕ້ອງການ
-                                if (targetModel != null)
+                                if (roleItem.RoleType == RoleTypeModel.DeputyPrimeSecretary || roleItem.RoleType == RoleTypeModel.PrimeSecretary ||
+                                    roleItem.RoleType == RoleTypeModel.Prime || roleItem.RoleType == RoleTypeModel.DeputyPrime)
                                 {
-                                    childCharts.Add(targetModel!);
+                                    // ໃນກໍລະນີເປັນ ເລຂາ ກັບເປັນ ປະທານ ແມ່ນສາມາດສົ່ງຫາຮອງປະທານໄດ້ທຸກຄົນ
+                                    if (!deputyPrimes!.IsNullOrEmpty())
+                                    {
+                                        childCharts.AddRange(deputyPrimes!);// ຖ້າ ເປົ້າຫມາຍເປັນ ຮອງປະທາານແມ່ນໃຫ້ເອົາຈາກ ຕົວປ່ຽນທາງເທິງ
 
+                                    }
                                 }
-                            }
-                            //if (!deputyPrimes!.IsNullOrEmpty())
-                            //{
-                            //    childCharts.AddRange(deputyPrimes!);// ຖ້າ ເປົ້າຫມາຍເປັນ ຮອງປະທາານແມ່ນໃຫ້ເອົາຈາກ ຕົວປ່ຽນທາງເທິງ
+                                else
+                                {
+                                    var targetModel = getParent(charts, roleItem, item); // ໃນກໍລະນີນີ້ແມ່ນຈະຕ້ອງໄດ້ Loop ຊອກໄປເລື້ອຍໆ ຈົນກວ່າຈະພົບ RoleType ທີ່ຕ້ອງການ
+                                    if (targetModel != null)
+                                    {
+                                        childCharts.Add(targetModel!);
 
-                            //}
+                                    }
+                                }
+                                
+                            }
+                            
                             break;
                         case RoleTypeModel.PrimeSecretary:
                             if (!secretPrimes!.IsNullOrEmpty())
