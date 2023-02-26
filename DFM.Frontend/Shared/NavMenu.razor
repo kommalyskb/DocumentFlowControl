@@ -142,7 +142,7 @@
 
     @if (IsOpen)
     {
-        if (ValidateRule.isInRole(rules!, "/pages/monitor/inbound") || ValidateRule.isInRole(rules!, "/pages/monitor/outbound"))
+        if (ValidateRule.isInRole(rules!, "/pages/folder/inbound") || ValidateRule.isInRole(rules!, "/pages/folder/outbound"))
         {
             <MudText Typo="Typo.subtitle2" Color="Color.Primary" Style="font-weight: bold; font-size: 16px;" Class="ml-4 my-3">ແຟ້ມເອກະສານ</MudText>
         }
@@ -157,7 +157,7 @@
     {
         <MudNavLink Href="/pages/folder/outbound" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.FolderShared">ແຟ້ມຂາອອກ</MudNavLink>
     }
-    @if (ValidateRule.isInRole(rules!, "/pages/monitor/inbound") || ValidateRule.isInRole(rules!, "/pages/monitor/outbound"))
+    @if (ValidateRule.isInRole(rules!, "/pages/folder/inbound") || ValidateRule.isInRole(rules!, "/pages/folder/outbound"))
     {
         <MudDivider Style="height:2px" />
     }
