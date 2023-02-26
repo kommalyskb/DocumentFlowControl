@@ -41,7 +41,7 @@
                 </RowTemplate>
                 <FooterContent>
                     <MudTd colspan="3">
-                        <MudTextField Lines="5" Margin="Margin.Dense" @bind-Value="MainReceiver!.Comment!.Comment" T="string" Counter="1000" MaxLength="1000" Immediate="true" Variant="Variant.Outlined" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" Label="ຄຳເຫັນ" />
+                        <MudTextField Lines="3" Margin="Margin.Dense" @bind-Value="MainReceiver!.Comment!.Comment" T="string" Counter="1000" MaxLength="1000" Immediate="true" Variant="Variant.Outlined" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" Label="ຄຳເຫັນ" />
                     </MudTd>
                 </FooterContent>
                 <PagerContent>
@@ -49,6 +49,7 @@
                 </PagerContent>
             </MudTable>
         </MudItem>
+
     </MudGrid>
 
 </MudContainer>

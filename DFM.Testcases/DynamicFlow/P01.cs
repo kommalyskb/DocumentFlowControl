@@ -55,8 +55,8 @@ namespace DFM.Testcases.DynamicFlow
         {
             string? orgID = "22c9feb088284830ad169bf04e90d747";
             RoleTypeModel source = RoleTypeModel.InboundGeneral;
-            List<RoleTypeModel> target = new List<RoleTypeModel> {  RoleTypeModel.General, RoleTypeModel.PrimeSecretary, RoleTypeModel.DeputyPrimeSecretary, 
-                RoleTypeModel.DeputyDirector, RoleTypeModel.Director, RoleTypeModel.DeputyPrime, RoleTypeModel.DeputyGeneral };
+            List<RoleTypeModel> target = new List<RoleTypeModel> {  RoleTypeModel.General, RoleTypeModel.PrimeSecretary, RoleTypeModel.DeputyPrimeSecretary,  RoleTypeModel.InboundPrime,
+                RoleTypeModel.DeputyDirector, RoleTypeModel.Director, RoleTypeModel.DeputyPrime, RoleTypeModel.DeputyGeneral, RoleTypeModel.InboundGeneral, RoleTypeModel.InboundOfficePrime };
             var result = await organizationChart.SaveDynamicFlow(orgID, source, target, ModuleType.DocumentInbound);
         }
 
