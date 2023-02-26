@@ -54,9 +54,9 @@ namespace DFM.Testcases.DynamicFlow
         public async Task NC1()
         {
             string? orgID = "22c9feb088284830ad169bf04e90d747";
-            RoleTypeModel source = RoleTypeModel.InboundGeneral;
-            List<RoleTypeModel> target = new List<RoleTypeModel> {  RoleTypeModel.General, RoleTypeModel.PrimeSecretary, RoleTypeModel.DeputyPrimeSecretary,  RoleTypeModel.InboundPrime,
-                RoleTypeModel.DeputyDirector, RoleTypeModel.Director, RoleTypeModel.DeputyPrime, RoleTypeModel.DeputyGeneral, RoleTypeModel.InboundGeneral, RoleTypeModel.InboundOfficePrime };
+            RoleTypeModel source = RoleTypeModel.General;
+            List<RoleTypeModel> target = new List<RoleTypeModel> {  RoleTypeModel.Director, RoleTypeModel.PrimeSecretary, RoleTypeModel.DeputyPrimeSecretary,  RoleTypeModel.DeputyDirector,
+                RoleTypeModel.DeputyPrime, RoleTypeModel.DeputyGeneral, RoleTypeModel.InboundGeneral };
             var result = await organizationChart.SaveDynamicFlow(orgID, source, target, ModuleType.DocumentInbound);
         }
 

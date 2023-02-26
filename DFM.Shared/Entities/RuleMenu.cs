@@ -14,7 +14,7 @@ namespace DFM.Shared.Entities
     [Document(StorageType = StorageType.Json, Prefixes = new[] { "RuleMenu" })]
     public class RuleMenu : HeaderModel
     {
-        [Indexed]
+        [Searchable(Aggregatable = true)]
         public IEnumerable<RoleTypeModel>? RoleTypes { get; set; }
         [Indexed]
         public MenuLink Menu { get; set; }
@@ -25,7 +25,7 @@ namespace DFM.Shared.Entities
                 return DecodeEnumMenu.decodeMenuLink(this.Menu);
             }
         }
-        [Indexed]
+        [Searchable(Aggregatable = true)]
         public IEnumerable<string>? UserIDs { get; set; }
         [Indexed]
         public string? OrgID { get; set; }

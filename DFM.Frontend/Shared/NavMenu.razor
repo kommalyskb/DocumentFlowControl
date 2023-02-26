@@ -211,6 +211,8 @@
     protected override async Task OnInitializedAsync()
     {
         rules = await storageHelper.GetRuleMenuAsync();
-        
+
+        await InvokeAsync(StateHasChanged);
+
     }
 }

@@ -78,7 +78,7 @@ namespace DFM.Shared.Repository
                     //await mem.StringSetAsync(recordKey, JsonSerializer.Serialize(request));
 
                     // Insert new redis cache
-                    request.rev = result.Rev;
+                    request.revision = result.Rev;
                     await context.InsertAsync(request);
 
                     return new CommonResponseId()
@@ -135,7 +135,7 @@ namespace DFM.Shared.Repository
                 var provider = new RedisConnectionProvider(redisConnector.Connection);
                 var context = provider.RedisCollection<DocumentModel>();
 
-                request.rev = existing.Content.rev;
+                request.revision = existing.Content.revision;
 
                 var result = await couchContext.EditAsync<DocumentModel>
                    (
@@ -150,7 +150,7 @@ namespace DFM.Shared.Repository
                     //string recordKey = $"{RedisPrefix.Document}{result.Id}"; // Set key for cache
                     //var mem = redisConnector.Connection.GetDatabase(1);
                     //await mem.StringSetAsync(recordKey, JsonSerializer.Serialize(request));
-                    request.rev = result.Rev;
+                    request.revision = result.Rev;
                     await context.UpdateAsync(request);
 
 
@@ -218,7 +218,7 @@ namespace DFM.Shared.Repository
                             Message = ResultCode.NOT_FOUND
                         }, default!);
                     }
-                    existing.Content.rev = existing.Rev;
+                    existing.Content.revision = existing.Rev;
                     existing.Content.id = existing.Id;
                     //await mem.StringSetAsync(recordKey, JsonSerializer.Serialize(existing.Content));
 
@@ -296,7 +296,7 @@ namespace DFM.Shared.Repository
                     //string recordKey = $"{RedisPrefix.Document}{result.Id}"; // Set key for cache
                     //var mem = redisConnector.Connection.GetDatabase(1);
                     //await mem.StringSetAsync(recordKey, JsonSerializer.Serialize(request));
-                    request.rev = result.Rev;
+                    request.revision = result.Rev;
                     await context.UpdateAsync(request);
 
                     return new CommonResponseId()

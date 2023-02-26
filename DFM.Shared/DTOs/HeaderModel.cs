@@ -17,7 +17,7 @@ namespace DFM.Shared.DTOs
         public string? id { get; set; }
         [JsonProperty("_rev")]
         [Indexed]
-        public string? rev { get; set; }
+        public string? revision { get; set; }
 
         [JsonProperty("recordDate")]
         [Indexed]

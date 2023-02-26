@@ -17,19 +17,23 @@ namespace DFM.API.Controllers
     {
         private readonly IRuleMenuManager menuManager;
         private readonly IEmployeeManager employeeManager;
+        private readonly IOrganizationChart organizationChart;
 
-        public RuleMenuController(IRuleMenuManager menuManager, IEmployeeManager employeeManager)
+        public RuleMenuController(IRuleMenuManager menuManager, IEmployeeManager employeeManager, IOrganizationChart organizationChart)
         {
             this.menuManager = menuManager;
             this.employeeManager = employeeManager;
+            this.organizationChart = organizationChart;
         }
 
         [HttpGet("GetItem")]
+        //[AllowAnonymous]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(IEnumerable<RuleMenu>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetItemV1(CancellationToken cancellationToken = default(CancellationToken))
         {
+            
             // Get Owner
             string userId = "";// GeneratorHelper.NotAvailable;
             if (User.Claims.FirstOrDefault(x => x.Type == "sub") != null)
@@ -42,8 +46,9 @@ namespace DFM.API.Controllers
             {
                 return BadRequest(myProfile.Response);
             }
+            var myRoles = await organizationChart.GetRoles(myProfile.Content.OrganizationID!, myProfile.Content.id!, cancellationToken);
 
-            var result = await menuManager.GetRuleMenus(userId, myProfile.Content.OrganizationID!, cancellationToken);
+            var result = await menuManager.GetRuleMenus(myRoles.Content.Select(x => x.Role.RoleType), myProfile.Content.OrganizationID!, cancellationToken);
 
             return Ok(result);
         }

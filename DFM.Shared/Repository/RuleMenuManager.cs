@@ -5,9 +5,12 @@ using DFM.Shared.Entities;
 using DFM.Shared.Extensions;
 using DFM.Shared.Interfaces;
 using DFM.Shared.Resources;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Rewrite;
 using MyCouch.Requests;
 using Redis.OM;
 using Redis.OM.Searching;
+using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,9 +57,105 @@ namespace DFM.Shared.Repository
         {
             try
             {
-                var result = context.Where(x => x.UserIDs!.Contains(userId) && x.OrgID == orgId).ToList();
+                List<RuleMenu> ruleResult = new();
+                var cache = context.Where(x => x.OrgID == orgId).ToList();
+                foreach (var c in cache)
+                {
+                    if (!c.UserIDs!.IsNullOrEmpty())
+                    {
+                        if (c.UserIDs!.Any(x => x == userId))
+                        {
+                            ruleResult.Add(c);
 
-                return result; 
+                        }
+                    }
+                }
+                if (ruleResult.Count() == 0)
+                {
+                    List<Task> tasks = new List<Task>();
+                    // Get from database
+                    var fromDb = await couchContext.ViewQueryAsync<RuleMenu>(read_couchDbHelper, "query", "byOrgID", orgId, -1, 0, false, false, cancellationToken);
+                    foreach (var item in fromDb.Rows)
+                    {
+                        tasks.Add(context.InsertAsync(item.Value));
+                    }
+                    await Task.WhenAll(tasks);
+
+                    // Query from Redis again
+                    cache = context.Where(x => x.OrgID == orgId).ToList();
+                    foreach (var c in cache)
+                    {
+                        if (!c.UserIDs!.IsNullOrEmpty())
+                        {
+                            if (c.UserIDs!.Any(x => x == userId))
+                            {
+                                ruleResult.Add(c);
+
+                            }
+                        }
+                    }
+                }
+
+                return ruleResult; 
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public async Task<IEnumerable<RuleMenu>> GetRuleMenus(IEnumerable<RoleTypeModel> roles, string orgId, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            try
+            {
+                List<RuleMenu> ruleResult = new();
+                var cache = context.Where(x => x.OrgID == orgId).ToList();
+                foreach (RoleTypeModel role in roles)
+                {
+                    foreach (var c in cache)
+                    {
+                        if (!c.RoleTypes!.IsNullOrEmpty())
+                        {
+                            if (c.RoleTypes!.Any(x => x == role))
+                            {
+                                ruleResult.Add(c);
+                            }
+                        }
+                        
+                    }
+                    
+                }
+
+                if (ruleResult.Count == 0)
+                {
+                    List<Task> tasks = new List<Task>();
+                    // Get from database
+                    var fromDb = await couchContext.ViewQueryAsync<RuleMenu>(read_couchDbHelper, "query", "byOrgID", orgId, -1, 0, false, false, cancellationToken);
+                    foreach (var item in fromDb.Rows)
+                    {
+                        tasks.Add(context.InsertAsync(item.Value));
+                    }
+                    await Task.WhenAll(tasks);
+
+                    // Query from Redis again
+                    cache = context.Where(x => x.OrgID == orgId).ToList();
+                    foreach (RoleTypeModel role in roles)
+                    {
+                        foreach (var c in cache)
+                        {
+                            if (!c.RoleTypes!.IsNullOrEmpty())
+                            {
+                                if (c.RoleTypes!.Any(x => x == role))
+                                {
+                                    ruleResult.Add(c);
+                                }
+                            }
+                        }
+
+                    }
+                }
+
+                return ruleResult;
             }
             catch (Exception)
             {
@@ -70,7 +169,20 @@ namespace DFM.Shared.Repository
             try
             {
                 var result = context.Where(x => x.OrgID == orgId).ToList();
+                if (result.Count() == 0)
+                {
+                    List<Task> tasks = new List<Task>();
+                    // Get from database
+                    var fromDb = await couchContext.ViewQueryAsync<RuleMenu>(read_couchDbHelper, "query", "byOrgID", orgId, -1, 0, false, false, cancellationToken);
+                    foreach (var item in fromDb.Rows)
+                    {
+                        tasks.Add(context.InsertAsync(item.Value));
+                    }
+                    await Task.WhenAll(tasks);
 
+                    // Query from Redis again
+                    result = context.Where(x => x.OrgID == orgId).ToList();
+                }
                 return result;
             }
             catch (Exception)
@@ -86,7 +198,7 @@ namespace DFM.Shared.Repository
             {
                 var exist = await GetRuleMenu(id, cancellationToken);
 
-                var result = await couchContext.DeleteAsync(write_couchDbHelper, exist.id, exist.rev, cancellationToken);
+                var result = await couchContext.DeleteAsync(write_couchDbHelper, exist.id, exist.revision, cancellationToken);
                 if (!result.IsSuccess)
                 {
                     return new CommonResponseId
@@ -143,7 +255,7 @@ namespace DFM.Shared.Repository
                             };
                         }
 
-                        request.rev = result.Rev;
+                        request.revision = result.Rev;
                         await context.InsertAsync(request);
                         return new CommonResponseId
                         {
@@ -155,7 +267,21 @@ namespace DFM.Shared.Repository
                     }
 
                     // Update existing
-                    request.rev = exist.rev;
+                    request.revision = exist.revision;
+                    var updateResult = await couchContext.EditAsync(write_couchDbHelper, exist, cancellationToken);
+                    if (!updateResult.IsSuccess)
+                    {
+                        return new CommonResponseId
+                        {
+                            Code = nameof(ResultCode.COULD_NOT_UPDATE_RECORD),
+                            Detail = updateResult.Error,
+                            Message = ResultCode.COULD_NOT_UPDATE_RECORD,
+                            Success = false
+                        };
+                    }
+
+                    // Set new revivision
+                    request.revision = updateResult.Rev;
                     await context.UpdateAsync(request);
                     return new CommonResponseId
                     {
@@ -179,8 +305,22 @@ namespace DFM.Shared.Repository
                             Success = false
                         };
                     }
+                    
+                    request.revision = exist.revision;
+                    var updateResult = await couchContext.EditAsync(write_couchDbHelper, exist, cancellationToken);
+                    if (!updateResult.IsSuccess)
+                    {
+                        return new CommonResponseId
+                        {
+                            Code = nameof(ResultCode.COULD_NOT_UPDATE_RECORD),
+                            Detail = updateResult.Error,
+                            Message = ResultCode.COULD_NOT_UPDATE_RECORD,
+                            Success = false
+                        };
+                    }
 
-                    request.rev = exist.rev;
+                    // Set new revivision
+                    request.revision = updateResult.Rev;
                     await context.UpdateAsync(request);
                     return new CommonResponseId
                     {
@@ -213,7 +353,7 @@ namespace DFM.Shared.Repository
                     if (result.IsSuccess)
                     {
                         result.Content.id = result.Id;
-                        result.Content.rev = result.Rev;
+                        result.Content.revision = result.Rev;
                         await context.InsertAsync(result.Content);
 
                         return result.Content;

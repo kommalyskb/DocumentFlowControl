@@ -115,7 +115,7 @@ namespace DFM.Shared.Repository
                     //string recordKey = $"{RedisPrefix.Organization}{result.Id}"; // Set key for cache
                     //var mem = redisConnector.Connection.GetDatabase(1);
                     //await mem.StringSetAsync(recordKey, JsonSerializer.Serialize(existing.Content));
-                    existing.Content.rev = result.Rev;
+                    existing.Content.revision = result.Rev;
                     existing.Content.id = result.Id;
                     await context.UpdateAsync(existing.Content);
 
@@ -193,7 +193,7 @@ namespace DFM.Shared.Repository
                     //string recordKey = $"{RedisPrefix.Organization}{result.Id}"; // Set key for cache
                     //var mem = redisConnector.Connection.GetDatabase(1);
                     //await mem.StringSetAsync(recordKey, JsonSerializer.Serialize(existing.Content));
-                    existing.Content.rev = result.Rev;
+                    existing.Content.revision = result.Rev;
                     existing.Content.id = result.Id;
                     await context.UpdateAsync(existing.Content);
 
@@ -265,7 +265,7 @@ namespace DFM.Shared.Repository
                     //var mem = redisConnector.Connection.GetDatabase(1);
                     //await mem.StringSetAsync(recordKey, JsonSerializer.Serialize(existing.Content));
                     existing.Content.id = result.Id;
-                    existing.Content.rev = result.Rev;
+                    existing.Content.revision = result.Rev;
                     await context.UpdateAsync(existing.Content);
 
 
@@ -339,7 +339,7 @@ namespace DFM.Shared.Repository
                     //string recordKey = $"{RedisPrefix.Organization}{result.Id}"; // Set key for cache
                     //var mem = redisConnector.Connection.GetDatabase(1);
                     //await mem.StringSetAsync(recordKey, JsonSerializer.Serialize(existing.Content));
-                    existing.Content.rev = result.Rev;
+                    existing.Content.revision = result.Rev;
                     existing.Content.id = result.Id;
 
                     await context.UpdateAsync(existing.Content);
@@ -435,7 +435,7 @@ namespace DFM.Shared.Repository
                     //string recordKey = $"{RedisPrefix.Organization}{result.Id}"; // Set key for cache
                     //var mem = redisConnector.Connection.GetDatabase(1);
                     //await mem.StringSetAsync(recordKey, JsonSerializer.Serialize(existing.Content));
-                    existing.Content.rev = result.Rev;
+                    existing.Content.revision = result.Rev;
                     existing.Content.id = result.Id;
                     await context.UpdateAsync(existing.Content);
 
@@ -528,7 +528,7 @@ namespace DFM.Shared.Repository
                     //string recordKey = $"{RedisPrefix.Organization}{result.Id}"; // Set key for cache
                     //var mem = redisConnector.Connection.GetDatabase(1);
                     //await mem.StringSetAsync(recordKey, JsonSerializer.Serialize(existing.Content));
-                    existing.Content.rev = result.Rev;
+                    existing.Content.revision = result.Rev;
                     existing.Content.id = result.Id;
                     await context.UpdateAsync(existing.Content);
 
@@ -598,7 +598,7 @@ namespace DFM.Shared.Repository
                         }, default!);
                     }
 
-                    existing.Content.rev = existing.Rev;
+                    existing.Content.revision = existing.Rev;
                     existing.Content.id = existing.Id;
                     //await mem.StringSetAsync(recordKey, JsonSerializer.Serialize(existing.Content));
                     await context.InsertAsync(existing.Content);
@@ -716,7 +716,7 @@ namespace DFM.Shared.Repository
                     //string recordKey = $"{RedisPrefix.Organization}{result.Id}"; // Set key for cache
                     //var mem = redisConnector.Connection.GetDatabase(1);
                     //await mem.StringSetAsync(recordKey, JsonSerializer.Serialize(request));
-                    request.rev = result.Rev;
+                    request.revision = result.Rev;
                     await context.InsertAsync(request);
 
 
@@ -1901,7 +1901,7 @@ namespace DFM.Shared.Repository
                         //string recordKey = $"{RedisPrefix.Organization}{result.Id}"; // Set key for cache
                         //var mem = redisConnector.Connection.GetDatabase(1);
                         //await mem.StringSetAsync(recordKey, JsonSerializer.Serialize(request));
-                        request.rev = result.Rev;
+                        request.revision = result.Rev;
                         await context.InsertAsync(request);
 
 
@@ -1964,7 +1964,7 @@ namespace DFM.Shared.Repository
                         //string recordKey = $"{RedisPrefix.Folder}{result.Id}"; // Set key for cache
                         //var mem = redisConnector.Connection.GetDatabase(1);
                         //await mem.StringSetAsync(recordKey, JsonSerializer.Serialize(request));
-                        request.rev = result.Rev;
+                        request.revision = result.Rev;
                         await context.UpdateAsync(request);
 
 
@@ -2030,7 +2030,7 @@ namespace DFM.Shared.Repository
                         }, default!, default!);
                     }
 
-                    existing.Content.rev = existing.Rev;
+                    existing.Content.revision = existing.Rev;
                     existing.Content.id = existing.Id;
                     //await mem.StringSetAsync(recordKey, JsonSerializer.Serialize(existing.Content));
                     await context.InsertAsync(existing.Content);

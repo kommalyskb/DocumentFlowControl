@@ -71,7 +71,7 @@ namespace DFM.Shared.Repository
                     //string recordKey = $"{RedisPrefix.Folder}{result.Id}"; // Set key for cache
                     //var mem = redisConnector.Connection.GetDatabase(1);
                     //await mem.StringSetAsync(recordKey, JsonSerializer.Serialize(request));
-                    request.rev = result.Rev;
+                    request.revision = result.Rev;
                     await context.InsertAsync(request);
 
 
@@ -125,7 +125,7 @@ namespace DFM.Shared.Repository
                         Message = ResultCode.NOT_FOUND
                     };
                 }
-                request.rev = existing.Content.rev;
+                request.revision = existing.Content.revision;
                 // Redis first
                 var provider = new RedisConnectionProvider(redisConnector.Connection);
                 var context = provider.RedisCollection<FolderModel>();
@@ -143,7 +143,7 @@ namespace DFM.Shared.Repository
                     //string recordKey = $"{RedisPrefix.Folder}{result.Id}"; // Set key for cache
                     //var mem = redisConnector.Connection.GetDatabase(1);
                     //await mem.StringSetAsync(recordKey, JsonSerializer.Serialize(request));
-                    request.rev = result.Rev;
+                    request.revision = result.Rev;
                     await context.UpdateAsync(request);
 
 
@@ -206,7 +206,7 @@ namespace DFM.Shared.Repository
                    (
                        couchDBHelper: write_couchDbHelper,
                        id: id,
-                       rev: existing.Content.rev,
+                       rev: existing.Content.revision,
                        cancellationToken: cancellationToken
                    );
 
@@ -397,7 +397,7 @@ namespace DFM.Shared.Repository
                             Message = ResultCode.NOT_FOUND
                         }, default!);
                     }
-                    existing.Content.rev = existing.Rev;
+                    existing.Content.revision = existing.Rev;
                     existing.Content.id = existing.Id;
                     //await mem.StringSetAsync(recordKey, JsonSerializer.Serialize(existing.Content));
                     await context.InsertAsync(existing.Content);

@@ -133,6 +133,15 @@ namespace DFM.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not update record.
+        /// </summary>
+        public static string COULD_NOT_UPDATE_RECORD {
+            get {
+                return ResourceManager.GetString("COULD_NOT_UPDATE_RECORD", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Role could not dupplicate.
         /// </summary>
         public static string DUPPLICATE_ROLE {
