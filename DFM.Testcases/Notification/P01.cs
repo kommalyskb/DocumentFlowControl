@@ -73,5 +73,11 @@ namespace DFM.Testcases.Notification
             var result = await notificationManager.ListNotices(default!);
             Assert.True(result.Response.Success);
         }
+
+        [Fact(DisplayName = "ບັນທຶກລາຍການແຈ້ງເຕືອນເຂົ້າ memory")]
+        public async Task PumpNotification()
+        {
+            
+        }
     }
 }

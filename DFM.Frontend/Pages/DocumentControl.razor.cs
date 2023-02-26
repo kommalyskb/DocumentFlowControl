@@ -2,6 +2,7 @@
 using DFM.Shared.Common;
 using DFM.Shared.DTOs;
 using DFM.Shared.Entities;
+using DFM.Shared.Extensions;
 using DFM.Shared.Helper;
 using DFM.Shared.Resources;
 using EnsureThat;
@@ -545,6 +546,7 @@ namespace DFM.Frontend.Pages
                             List<string>? notifyRole = new List<string>() { documentRequest.Main.Id };
                             notifyRole.AddRange(documentRequest.CoProcesses.Select(x => x.Role.RoleID)!);
                             // Save notification
+                            List<Task> noticeTasks = new();
                             NotificationModel noticeRequest = new NotificationModel
                             {
                                 RefDocument = result.Response.Id,
@@ -553,9 +555,33 @@ namespace DFM.Frontend.Pages
                                 ModuleType = moduleType,
                                 RoleID = documentRequest.Main.Id,
                                 Title = documentRequest.RawDocument.Title,
-                                SendFrom = $"{employee.Name.Local} {employee.FamilyName.Local}"
+                                SendFrom = $"{employee.Name.Local} {employee.FamilyName.Local}",
+                                ChangeNote = "ເອກະສານສົ່ງໃຫ້ທ່ານເປັນຜູ້ແກ້ໄຂຫຼັກ"
                             };
-                            await httpService.Post<NotificationModel, CommonResponse>($"{endpoint.API}/api/v1/Notification/Create", noticeRequest, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
+                            noticeTasks.Add(httpService.Post<NotificationModel, CommonResponse>($"{endpoint.API}/api/v1/Notification/Create", noticeRequest, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token));
+
+                            // Save Notification for CC User
+                            if (!documentRequest.CoProcesses.IsNullOrEmpty())
+                            {
+                                
+                                foreach (var r in documentRequest.CoProcesses)
+                                {
+                                    NotificationModel ccNoticeRequest = new NotificationModel
+                                    {
+                                        RefDocument = result.Response.Id,
+                                        id = Guid.NewGuid().ToString("N"),
+                                        IsRead = false,
+                                        ModuleType = moduleType,
+                                        RoleID = r.Role.RoleID,
+                                        Title = documentRequest.RawDocument.Title,
+                                        SendFrom = $"{employee.Name.Local} {employee.FamilyName.Local}",
+                                        ChangeNote = "ເອກະສານສົ່ງໃຫ້ທ່ານແບບຕິດຕາມ"
+                                    };
+                                    noticeTasks.Add(httpService.Post<NotificationModel, CommonResponse>($"{endpoint.API}/api/v1/Notification/Create", ccNoticeRequest, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token));
+                                }
+                            }
+
+                            await Task.WhenAll(noticeTasks);
 
                             AlertMessage("ທຸລະກຳຂອງທ່ານ ສຳເລັດ", Defaults.Classes.Position.BottomRight, Severity.Success);
                             

@@ -34,6 +34,7 @@ namespace DFM.API.Controllers
 
         [HttpGet("GetMyNotice")]
         [MapToApiVersion("1.0")]
+        //[AllowAnonymous]
         [ProducesResponseType(typeof(IEnumerable<NotificationModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetMyNoticesV1(CancellationToken cancellationToken = default(CancellationToken))

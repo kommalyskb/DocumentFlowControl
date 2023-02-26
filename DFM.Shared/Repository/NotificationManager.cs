@@ -224,6 +224,7 @@ namespace DFM.Shared.Repository
 
                 if (contents.Count == 0)
                 {
+                    
                     return (new CommonResponse()
                     {
                         Code = nameof(ResultCode.NOT_FOUND),
