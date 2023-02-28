@@ -26,102 +26,94 @@
                 @if (newMailMessage > 0)
                 {
                     <MudBadge Content="@newMailMessage" Color="Color.Secondary" Overlap="true" Class="mx-6 my-4">
-                        <MudButton Variant="Variant.Text" OnClick="@ToggleOpen" DisableElevation="true"
-                                   EndIcon="@Icons.Material.Filled.NotificationsActive" ButtonType="ButtonType.Button"
-                                   Style="text-transform:none; color:white; font-weight:bold">
-                        </MudButton>
+                        <MudMenu Class="" Variant="Variant.Text" Color="Color.Tertiary" StartIcon="@Icons.Material.Filled.NotificationsActive">
+                            <MudPaper Width="300px" Style="text-align: center">
+                                @if (isLoading)
+                                {
+                                    <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
+                                    <h3 style="margin: auto"><i>ກຳລັງຮັບການແຈ້ງເຕືອນໃຫມ່</i></h3>
+                                }
+                                else
+                                {
+                                    if (!notices!.IsNullOrEmpty())
+                                    {
+                                        <NotificationComponent Notices="notices"></NotificationComponent>
+
+                                    }
+                                    else
+                                    {
+                                        <h3 style="margin: auto"><i>ບໍ່ມີຂໍ້ມູນການແຈ້ງເຕືອນ</i></h3>
+                                        
+                                    }
+                                }
+                            </MudPaper>
+
+                        </MudMenu>
                     </MudBadge>
+                    @*<MudBadge Content="@newMailMessage" Color="Color.Secondary" Overlap="true" Class="mx-6 my-4">
+            <MudButton Variant="Variant.Text" OnClick="@ToggleOpen" DisableElevation="true"
+            EndIcon="@Icons.Material.Filled.NotificationsActive" ButtonType="ButtonType.Button"
+            Style="text-transform:none; color:white; font-weight:bold">
+            </MudButton>
+            </MudBadge>*@
                 }
                 else
                 {
-                    <MudButton Variant="Variant.Text" OnClick="@ToggleOpen" DisableElevation="true"
-                               EndIcon="@Icons.Material.Filled.NotificationsActive" ButtonType="ButtonType.Button"
-                               Style="text-transform:none; color:white; font-weight:bold">
-                    </MudButton>
-                }
-                <MudPopover Style="text-align: center" Open="_isOpen" OverflowBehavior="OverflowBehavior.FlipAlways" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.BottomCenter" Paper="false">
-                    <MudPaper Width="300px">
-                        <br />
-                        @if (isLoading)
-                        {
-                            <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
-                            <h3 style="margin: auto"><i>ກຳລັງຮັບການແຈ້ງເຕືອນໃຫມ່</i></h3>
-                        }
-                        else
-                        {
-                            if (!notices!.IsNullOrEmpty())
+                    <MudMenu Class="" Variant="Variant.Text" Color="Color.Tertiary" StartIcon="@Icons.Material.Filled.NotificationsActive" 
+                    AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
+                        <MudPaper Width="300px" Style="text-align: center">
+                            @if (isLoading)
                             {
-                                <div class="mud-table mud-data-grid mud-xs-table mud-elevation-1 mud-width-full">
-                                    <div class="mud-table-container">
-                                        <table class="mud-table-root">
-                                            <tbody class="mud-table-body">
-
-                                                @foreach (var item in notices!.ToList().Take(10))
-                                                {
-                                                    string link = item.ModuleType == ModuleType.DocumentInbound ? "inbound" : "outbound";
-                                                    string urlPage = $"/pages/doc/{link}/inbox/{item.RefDocument}/{item.RoleID}/{item.id}/{item.IsRead}";
-
-                                                    if (!item.IsRead)
-                                                    {
-                                                        <tr class="mud-table-row">
-                                                            <td class="mud-table-cell">
-                                                                <MudAvatar Color="Color.Error" Variant="Variant.Filled">
-                                                                    <MudIcon Icon="@Icons.Material.Filled.MarkEmailUnread" />
-                                                                </MudAvatar>
-                                                            </td>
-                                                            <td class="mud-table-cell">
-                                                                <MudButton Href="@urlPage"
-                                                                           Variant="Variant.Text"
-                                                                           Color="Color.Default"
-                                                                           Style="text-transform:none"
-                                                                           OnClick="(() => _isOpen = false)">
-                                                                    @item.Title
-                                                                </MudButton>
-                                                                @if (!string.IsNullOrWhiteSpace(item.ChangeNote))
-                                                                {
-                                                                    <br />
-                                                                    <i style="font-size:small">@item.ChangeNote</i>
-                                                                }
-                                                            </td>
-                                                        </tr>
-                                                    }
-                                                    else
-                                                    {
-                                                        <tr>
-                                                            <td class="mud-table-cell">
-                                                                <MudAvatar Color="Color.Default" Variant="Variant.Filled">
-                                                                    <MudIcon Icon="@Icons.Material.Filled.MarkEmailRead" />
-                                                                </MudAvatar>
-                                                            </td>
-                                                            <td class="mud-table-cell">
-                                                                <MudButton Href="@urlPage"
-                                                                           Variant="Variant.Text"
-                                                                           Color="Color.Default"
-                                                                           Style="text-transform:none"
-                                                                           OnClick="(() => _isOpen = false)">
-                                                                    @item.Title
-                                                                </MudButton>
-                                                            </td>
-                                                        </tr>
-                                                    }
-
-                                                }
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-
+                                <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
+                                <h3 style="margin: auto"><i>ກຳລັງຮັບການແຈ້ງເຕືອນໃຫມ່</i></h3>
                             }
                             else
                             {
-                                <h3 style="margin: auto"><i>ບໍ່ມີຂໍ້ມູນການແຈ້ງເຕືອນ</i></h3>
-                                <MudDivider />
-                                <MudButton Style="margin: auto" OnClick="@ToggleOpen" Class="ml-auto mr-n3 mb-1" Color="Color.Error">ປິດ</MudButton>
-                            }
-                        }
-                    </MudPaper>
+                                if (!notices!.IsNullOrEmpty())
+                                {
+                                    <NotificationComponent Notices="notices"></NotificationComponent>
 
-                </MudPopover>
+                                }
+                                else
+                                {
+                                    <h3 style="margin: auto"><i>ບໍ່ມີຂໍ້ມູນການແຈ້ງເຕືອນ</i></h3>
+                                   
+                                }
+                            }
+                        </MudPaper>
+
+                    </MudMenu>
+                   
+                    @*<MudButton Variant="Variant.Text" OnClick="@ToggleOpen" DisableElevation="true"
+            EndIcon="@Icons.Material.Filled.NotificationsActive" ButtonType="ButtonType.Button"
+            Style="text-transform:none; color:white; font-weight:bold">
+            </MudButton>*@
+                }
+                @*<MudPopover Style="text-align: center" Open="_isOpen" OverflowBehavior="OverflowBehavior.FlipAlways" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.BottomCenter" Paper="false">
+            <MudPaper Width="300px">
+            <br />
+            @if (isLoading)
+            {
+            <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
+            <h3 style="margin: auto"><i>ກຳລັງຮັບການແຈ້ງເຕືອນໃຫມ່</i></h3>
+            }
+            else
+            {
+            if (!notices!.IsNullOrEmpty())
+            {
+            <NotificationComponent Notices="notices"></NotificationComponent>
+
+            }
+            else
+            {
+            <h3 style="margin: auto"><i>ບໍ່ມີຂໍ້ມູນການແຈ້ງເຕືອນ</i></h3>
+            <MudDivider />
+            <MudButton Style="margin: auto" OnClick="@ToggleOpen" Class="ml-auto mr-n3 mb-1" Color="Color.Error">ປິດ</MudButton>
+            }
+            }
+            </MudPaper>
+
+            </MudPopover>*@
             </div>
 
             if (employee.ProfileImage != null)
@@ -191,6 +183,7 @@
                 //Success = "#2ECC40",
                 //Warning = "#FF851B",
                 //Error = "#F012BE",
+                Tertiary = "#FFFFFF",
                 AppbarBackground = "#20629b"
                 // more color properties
             }

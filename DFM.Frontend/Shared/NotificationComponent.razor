@@ -1,0 +1,62 @@
+﻿<div class="mud-table mud-data-grid mud-xs-table mud-elevation-1 mud-width-full">
+    <div class="mud-table-container">
+        <table class="mud-table-root">
+            <tbody class="mud-table-body">
+
+                @foreach (var item in Notices!.ToList().Take(10))
+                {
+                    string page = item.ChangeNote == "ເອກະສານສົ່ງໃຫ້ທ່ານແບບຕິດຕາມ" ? "coprocess" : "inbox";
+                    string link = item.ModuleType == ModuleType.DocumentInbound ? "inbound" : "outbound";
+                    string urlPage = $"/pages/doc/{link}/{page}/{item.RefDocument}/{item.RoleID}/{item.id}/{item.IsRead}";
+
+                    if (!item.IsRead)
+                    {
+                        <tr class="mud-table-row">
+                            <td class="mud-table-cell">
+                                <MudAvatar Color="Color.Error" Variant="Variant.Filled">
+                                    <MudIcon Icon="@Icons.Material.Filled.MarkEmailUnread" />
+                                </MudAvatar>
+                            </td>
+                            <td class="mud-table-cell">
+                                <MudButton Href="@urlPage"
+                                           Variant="Variant.Text"
+                                           Color="Color.Default"
+                                           Style="text-transform:none">
+                                    @item.Title
+                                </MudButton>
+                                @if (!string.IsNullOrWhiteSpace(item.ChangeNote))
+                                {
+                                    <br />
+                                    <i style="font-size:small">@item.ChangeNote</i>
+                                }
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr>
+                            <td class="mud-table-cell">
+                                <MudAvatar Color="Color.Default" Variant="Variant.Filled">
+                                    <MudIcon Icon="@Icons.Material.Filled.MarkEmailRead" />
+                                </MudAvatar>
+                            </td>
+                            <td class="mud-table-cell">
+                                <MudButton Href="@urlPage"
+                                           Variant="Variant.Text"
+                                           Color="Color.Default"
+                                           Style="text-transform:none">
+                                    @item.Title
+                                </MudButton>
+                            </td>
+                        </tr>
+                    }
+
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@code {
+    [Parameter] public IEnumerable<NotificationModel>? Notices { get; set; }
+}

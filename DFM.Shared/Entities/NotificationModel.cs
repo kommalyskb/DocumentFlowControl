@@ -1,4 +1,5 @@
-﻿using DFM.Shared.DTOs;
+﻿using DFM.Shared.Common;
+using DFM.Shared.DTOs;
 using DFM.Shared.Helper;
 using Minio.DataModel;
 using Redis.OM.Modeling;
@@ -35,6 +36,7 @@ namespace DFM.Shared.Entities
         public string? RefDocument { get; set; }
         [Indexed]
         public string? ChangeNote { get; set; }
+        
 
     }
 }
