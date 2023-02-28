@@ -21,7 +21,8 @@
                                 <MudButton Href="@urlPage"
                                            Variant="Variant.Text"
                                            Color="Color.Default"
-                                           Style="text-transform:none">
+                                           Style="text-transform:none"
+                                           OnClick="(async () => await CloseNotice.InvokeAsync())">
                                     @item.Title
                                 </MudButton>
                                 @if (!string.IsNullOrWhiteSpace(item.ChangeNote))
@@ -44,7 +45,8 @@
                                 <MudButton Href="@urlPage"
                                            Variant="Variant.Text"
                                            Color="Color.Default"
-                                           Style="text-transform:none">
+                                           Style="text-transform:none"
+                                           OnClick="(async () => await CloseNotice.InvokeAsync())">
                                     @item.Title
                                 </MudButton>
                             </td>
@@ -59,4 +61,5 @@
 
 @code {
     [Parameter] public IEnumerable<NotificationModel>? Notices { get; set; }
+    [Parameter] public EventCallback CloseNotice { get; set; }
 }
