@@ -65,7 +65,7 @@ namespace DFM.Testcases.DocumentOperation
                         DocDate = DateTime.Now.ToString("yyyy-MM-dd")
                     }
                 },
-                InboxType = InboxType.Outbound,
+                
                 
                 Recipients = new List<Reciepient>
                 {
@@ -98,7 +98,8 @@ namespace DFM.Testcases.DocumentOperation
                                     Local = "ພອນທິບ ສາຍຄຳໃບ"
                                 }
                             }
-                        }
+                        },
+                        InboxType = InboxType.Outbound
                     }
                 }
             });
@@ -122,7 +123,6 @@ namespace DFM.Testcases.DocumentOperation
                         DocDate = DateTime.Now.ToString("yyyy-MM-dd")
                     }
                 },
-                InboxType = InboxType.Outbound,
                 Recipients = new List<Reciepient>
                 {
                     new Reciepient
@@ -154,7 +154,8 @@ namespace DFM.Testcases.DocumentOperation
                                     Local = "ພອນທິບ ສາຍຄຳໃບ"
                                 }
                             }
-                        }
+                        },
+                        InboxType = InboxType.Outbound,
                     }
                 }
 
