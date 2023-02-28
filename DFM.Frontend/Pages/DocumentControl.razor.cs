@@ -810,13 +810,13 @@ namespace DFM.Frontend.Pages
             {
                 // Row click
                 documentModel = doc;
-                if (string.IsNullOrWhiteSpace(MessageID))
+                if (string.IsNullOrWhiteSpace(MessageRole))
                 {
                     myRole = documentModel!.Recipients!.LastOrDefault(x => x.RecipientInfo.RoleID == roleId);
                 }
                 else
                 {
-                    myRole = documentModel!.Recipients!.LastOrDefault(x => x.RecipientInfo.RoleID == MessageID);
+                    myRole = documentModel!.Recipients!.LastOrDefault(x => x.RecipientInfo.RoleID == MessageRole);
                 }
                 
                 if (myRole != null)
