@@ -18,8 +18,8 @@ namespace DFM.Shared.Entities
     {
         [Indexed]
         public string? OrganizationID { get; set; }
-        [Indexed]
-        public InboxType InboxType { get; set; }
+        //[Indexed]
+        //public InboxType InboxType { get; set; }
         [Indexed(CascadeDepth = 1)]
         public List<Reciepient>? Recipients { get; set; } = new();
         [Indexed(CascadeDepth = 1)]

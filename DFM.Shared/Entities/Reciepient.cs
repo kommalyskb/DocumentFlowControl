@@ -48,6 +48,9 @@ namespace DFM.Shared.Entities
         public InitialStatus InitialStatus { get; set; }
         [Indexed]
         public bool IsDisplay { get; set; } = true; // ແມ່ນ ໃຊ້ໃນກໍລະນີ ທີ່ບໍ່ຢາກສະແດງໃຫ້ Role ທີ່ຕິດພັນກັບເອກະສານ, ເຊີ່ງໂດຍມາດຕະຖານຈະເປັນຄ່າ True, ແຕ່ເມື່ອທີ່ມີການສົ່ງ ຈາກ Outbound ອອກມາ Inbound ຈະເປັນຄ່າ False ທັນທີ່ ເພື່ອປ້ອງກັນບໍ່ໃຫ້ Inbound ເບີ່ງເຫັນເອກະສານ
+
+        [Indexed]
+        public InboxType InboxType { get; set; } // ຍ້າຍຈາກທາງນອກຂອງ root model ມາໃສ່ໃນນີ້ ຍ້ອນມັນມີກໍລະນີທີ່ສົ່ງຂ້າມຈາກ ຂາອອກມາຂາເຂົ້າ ແລ້ວເຮັດໃຫ້ Track ບໍ່ໄດ້
     }
     
 }

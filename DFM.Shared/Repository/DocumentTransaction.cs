@@ -396,7 +396,7 @@ namespace DFM.Shared.Repository
                         var doc = new DocumentModel
                         {
                             id = item.Id,
-                            InboxType = item.Value.InboxType,
+                            //InboxType = item.Value.InboxType,
                             RawDatas = item.Value.RawDatas,
                             OrganizationID = item.Value.OrganizationID
                         };
@@ -465,7 +465,7 @@ namespace DFM.Shared.Repository
                         var doc = new DocumentModel
                         {
                             id = item.Id,
-                            InboxType = item.Value.InboxType,
+                            //InboxType = item.Value.InboxType,
                             RawDatas = item.Value.RawDatas,
                             OrganizationID = item.Value.OrganizationID
                         };

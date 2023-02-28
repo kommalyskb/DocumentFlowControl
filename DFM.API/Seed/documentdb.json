@@ -3,22 +3,22 @@
   "views": {
     "byRoleId": {
       "reduce": "_count",
-      "map": "function (doc) {\n   for(var i = 0, len = doc.recipients.length; i < len; i++){\n     var key = { roleId: doc.recipients[i].recipientInfo.roleID, docStatus: doc.recipients[i].docStatus, inboxType: doc.inboxType };\n    \n     emit(key, doc);\n   }\n  \n}"
+      "map": "function (doc) {\n   for(var i = 0, len = doc.recipients.length; i < len; i++){\n     var key = { roleId: doc.recipients[i].recipientInfo.roleID, \n     docStatus: doc.recipients[i].docStatus, \n     inboxType: doc.recipients[i].inboxType };\n    \n     emit(key, doc);\n   }\n  \n}"
     },
     "report_all_no_dup": {
-      "map": "function (doc) {\n   var arr = [];\n   for(var i = 0, len = doc.recipients.length; i < len; i++){\n     arr.push(doc.recipients[i].recipientInfo.roleID);\n   }\n   var uniqueRoleIds = [...new Set(arr)];\n   \n   for(var j = 0, jLen = uniqueRoleIds.length; j < jLen; j++){\n     var key = { inboxType: doc.inboxType, roleID: uniqueRoleIds[j] };\n      emit(key, doc);\n   }\n}",
+      "map": "function (doc) {\n   var arr = [];\n   for(var i = 0, len = doc.recipients.length; i < len; i++){\n     arr.push(doc.recipients[i].recipientInfo.roleID);\n   }\n   var uniqueRoleIds = [...new Set(arr)];\n   \n   for(var j = 0, jLen = uniqueRoleIds.length; j < jLen; j++){\n     var key = { inboxType: doc.recipients[j].inboxType, roleID: uniqueRoleIds[j] };\n      emit(key, doc);\n   }\n}",
       "reduce": "_count"
     },
     "report_inprogress": {
       "reduce": "_count",
-      "map": "function (doc) {\n  for(var i = 0, len = doc.recipients.length; i < len; i++){\n    \n    if(doc.recipients[i].docStatus === 'InProgress'){\n      var key = { inboxType: doc.inboxType, roleID: doc.recipients[i].recipientInfo.roleID };\n      var value = { id: doc._id, \n      roleName: doc.recipients[i].recipientInfo.position.local, \n      fullName: doc.recipients[i].recipientInfo.fullname.name.local,\n      roleId: doc.recipients[i].recipientInfo.roleID,\n      createDate: doc.recipients[i].createDate, \n      content: doc };\n      emit(key, value);\n    }\n   }\n}"
+      "map": "function (doc) {\n  for(var i = 0, len = doc.recipients.length; i < len; i++){\n    \n    if(doc.recipients[i].docStatus === 'InProgress'){\n      var key = { inboxType: doc.recipients[i].inboxType, roleID: doc.recipients[i].recipientInfo.roleID };\n      var value = { id: doc._id, \n      roleName: doc.recipients[i].recipientInfo.position.local, \n      fullName: doc.recipients[i].recipientInfo.fullname.name.local,\n      roleId: doc.recipients[i].recipientInfo.roleID,\n      createDate: doc.recipients[i].createDate, \n      content: doc };\n      emit(key, value);\n    }\n   }\n}"
     },
     "report_draft": {
       "reduce": "_count",
-      "map": "function (doc) {\n  for(var i = 0, len = doc.recipients.length; i < len; i++){\n    \n    if(doc.recipients[i].docStatus === 'Draft'){\n      var key = { inboxType: doc.inboxType, roleID: doc.recipients[i].recipientInfo.roleID };\n      var value = { id: doc._id, \n      roleName: doc.recipients[i].recipientInfo.position.local, \n      fullName: doc.recipients[i].recipientInfo.fullname.name.local,\n      roleId: doc.recipients[i].recipientInfo.roleID,\n      createDate: doc.recipients[i].createDate, \n      content: doc };\n      emit(key, value);\n    }\n   }\n}"
+      "map": "function (doc) {\n  for(var i = 0, len = doc.recipients.length; i < len; i++){\n    \n    if(doc.recipients[i].docStatus === 'Draft'){\n      var key = { inboxType: doc.recipients[i].inboxType, roleID: doc.recipients[i].recipientInfo.roleID };\n      var value = { id: doc._id, \n      roleName: doc.recipients[i].recipientInfo.position.local, \n      fullName: doc.recipients[i].recipientInfo.fullname.name.local,\n      roleId: doc.recipients[i].recipientInfo.roleID,\n      createDate: doc.recipients[i].createDate, \n      content: doc };\n      emit(key, value);\n    }\n   }\n}"
     },
     "report_finished": {
-      "map": "function (doc) {\n  for(var i = 0, len = doc.recipients.length; i < len; i++){\n    \n    if(doc.recipients[i].docStatus === 'Completed' || doc.recipients[i].docStatus === 'Terminated'){\n      var key = { inboxType: doc.inboxType, roleID: doc.recipients[i].recipientInfo.roleID };\n      var value = { id: doc._id, \n      roleName: doc.recipients[i].recipientInfo.position.local, \n      fullName: doc.recipients[i].recipientInfo.fullname.name.local,\n      roleId: doc.recipients[i].recipientInfo.roleID,\n      createDate: doc.recipients[i].createDate, \n      content: doc };\n      emit(key, value);\n    }\n   }\n}",
+      "map": "function (doc) {\n  for(var i = 0, len = doc.recipients.length; i < len; i++){\n    \n    if(doc.recipients[i].docStatus === 'Completed' || doc.recipients[i].docStatus === 'Terminated'){\n      var key = { inboxType: doc.recipients[i].inboxType, roleID: doc.recipients[i].recipientInfo.roleID };\n      var value = { id: doc._id, \n      roleName: doc.recipients[i].recipientInfo.position.local, \n      fullName: doc.recipients[i].recipientInfo.fullname.name.local,\n      roleId: doc.recipients[i].recipientInfo.roleID,\n      createDate: doc.recipients[i].createDate, \n      content: doc };\n      emit(key, value);\n    }\n   }\n}",
       "reduce": "_count"
     }
   },

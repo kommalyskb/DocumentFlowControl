@@ -220,12 +220,14 @@ namespace DFM.Frontend.Pages
                         DocumentRequest documentRequest = new DocumentRequest();
                         if (Link == "inbound")
                         {
-                            documentModel!.InboxType = InboxType.Inbound;
+                            //documentModel!.InboxType = InboxType.Inbound;
+                            documentModel!.Recipients![index].InboxType = InboxType.Inbound;
 
                         }
                         else
                         {
-                            documentModel!.InboxType = InboxType.Outbound;
+                            //documentModel!.InboxType = InboxType.Outbound;
+                            documentModel!.Recipients![index].InboxType = InboxType.Outbound;
                         }
                         documentRequest.RawDocument = rawDocument;
                         documentRequest.DocumentModel = documentModel;
@@ -311,12 +313,14 @@ namespace DFM.Frontend.Pages
                         DocumentRequest documentRequest = new DocumentRequest();
                         if (Link == "inbound")
                         {
-                            documentModel!.InboxType = InboxType.Inbound;
+                            documentModel!.Recipients![index].InboxType = InboxType.Inbound;
+                            //documentModel!.InboxType = InboxType.Inbound;
 
                         }
                         else
                         {
-                            documentModel!.InboxType = InboxType.Outbound;
+                            documentModel!.Recipients![index].InboxType = InboxType.Outbound;
+                            //documentModel!.InboxType = InboxType.Outbound;
                         }
                         documentRequest.RawDocument = rawDocument;
                         documentRequest.DocumentModel = documentModel;
@@ -388,12 +392,14 @@ namespace DFM.Frontend.Pages
                         DocumentRequest documentRequest = new DocumentRequest();
                         if (Link == "inbound")
                         {
-                            documentModel!.InboxType = InboxType.Inbound;
+                            documentModel!.Recipients![index].InboxType = InboxType.Inbound;
+                            //documentModel!.InboxType = InboxType.Inbound;
 
                         }
                         else
                         {
-                            documentModel!.InboxType = InboxType.Outbound;
+                            documentModel!.Recipients![index].InboxType = InboxType.Outbound;
+                            //documentModel!.InboxType = InboxType.Outbound;
                         }
                         documentRequest.RawDocument = rawDocument;
                         documentRequest.DocumentModel = documentModel;
@@ -479,7 +485,9 @@ namespace DFM.Frontend.Pages
                         rawDocument!.Attachments = files.Select(x => x.Info).ToList();
                         rawDocument!.RelateFles = relateFiles.Select(x => x.Info).ToList();
 
+                        ModuleType moduleType = ModuleType.DocumentInbound;
                         DocumentRequest documentRequest = new DocumentRequest();
+
                         if (myRole != null)
                         {
                             documentRequest.Uid = myRole!.UId;
@@ -513,6 +521,19 @@ namespace DFM.Frontend.Pages
 
                                     }
                                 };
+
+                                if (Link == "inbound")
+                                {
+                                    documentModel!.Recipients![index].InboxType = InboxType.Inbound;
+                                    //documentModel!.InboxType = InboxType.Inbound;
+                                    moduleType = ModuleType.DocumentInbound;
+                                }
+                                else
+                                {
+                                    documentModel!.Recipients![index].InboxType = InboxType.Outbound;
+                                    moduleType = ModuleType.DocumentOutbound;
+                                    //documentModel!.InboxType = InboxType.Outbound;
+                                }
                             }
 
                         }
@@ -521,20 +542,7 @@ namespace DFM.Frontend.Pages
                             rawDocument.SendDate = DateTime.Now.ToString("dd/MM/yyyy");
                         }
 
-                        ModuleType moduleType = ModuleType.DocumentInbound;
-                        if (Link == "inbound")
-                        {
-                            documentModel!.InboxType = InboxType.Inbound;
-                            moduleType = ModuleType.DocumentInbound;
-                        }
-                        else
-                        {
-                            moduleType = ModuleType.DocumentOutbound;
-                            documentModel!.InboxType = InboxType.Outbound;
-                        }
-
-
-
+                        
                         documentRequest.RawDocument = rawDocument;
                         documentRequest.DocumentModel = documentModel;
                         // Bind Receiver
@@ -653,15 +661,7 @@ namespace DFM.Frontend.Pages
                 rawDocument!.RelateFles = relateFiles.Select(x => x.Info).ToList();
 
                 DocumentRequest documentRequest = new DocumentRequest();
-                if (Link == "inbound")
-                {
-                    documentModel!.InboxType = InboxType.Inbound;
-
-                }
-                else
-                {
-                    documentModel!.InboxType = InboxType.Outbound;
-                }
+                
                 documentRequest.RawDocument = rawDocument;
                 documentRequest.DocumentModel = documentModel;
                 int index = documentRequest.DocumentModel.Recipients!.IndexOf(myRole!);
@@ -676,6 +676,18 @@ namespace DFM.Frontend.Pages
                         Local = $"{employee.Name.Local} {employee.FamilyName.Local}"
                     }
                 };
+
+                if (Link == "inbound")
+                {
+                    documentRequest.DocumentModel.Recipients[index].InboxType = InboxType.Inbound;
+                    //documentModel!.InboxType = InboxType.Inbound;
+
+                }
+                else
+                {
+                    documentRequest.DocumentModel.Recipients[index].InboxType = InboxType.Outbound;
+                    //documentModel!.InboxType = InboxType.Outbound;
+                }
                 // Send request for save document
                 var result = await httpService.Post<DocumentRequest, CommonResponse>(url, documentRequest, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
                 await Task.Delay(delayTime);
@@ -772,58 +784,68 @@ namespace DFM.Frontend.Pages
                 documentModel = doc;
 
                 myRole = documentModel!.Recipients!.LastOrDefault(x => x.RecipientInfo.RoleID == roleId);
-                rawDocument = documentModel!.RawDatas!.LastOrDefault(x => x.DataID == myRole!.DataID);
-                files = rawDocument!.Attachments.Select(x => new AttachmentDto
+                if (myRole != null)
                 {
-                    Info = x,
-                }).ToList();
-                relateFiles = rawDocument.RelateFles.Select(x => new AttachmentDto
-                {
-                    Info = x,
-                }).ToList();
+                    rawDocument = documentModel!.RawDatas!.LastOrDefault(x => x.DataID == myRole!.DataID);
+                    files = rawDocument!.Attachments.Select(x => new AttachmentDto
+                    {
+                        Info = x,
+                    }).ToList();
+                    relateFiles = rawDocument.RelateFles.Select(x => new AttachmentDto
+                    {
+                        Info = x,
+                    }).ToList();
 
-                if (Link == "inbound" && string.IsNullOrWhiteSpace(rawDocument.DocNo)) // ຖ້າເປັນຂາເຂົ້າ ແລ້ວເອກະສານບໍ່ມີເລກທີຈະສົ່ງຕໍ່ບໍ່ໄດ້
-                {
-                    showSendButton = false;
+                    if (Link == "inbound" && string.IsNullOrWhiteSpace(rawDocument.DocNo)) // ຖ້າເປັນຂາເຂົ້າ ແລ້ວເອກະສານບໍ່ມີເລກທີຈະສົ່ງຕໍ່ບໍ່ໄດ້
+                    {
+                        showSendButton = false;
+                    }
+                    else
+                    {
+                        showSendButton = true;
+                    }
+
+                    // Update when document first open
+                    if (!myRole!.IsRead)
+                    {
+                        await onUpdateWhenOpenDocument(); // Update document
+
+                    }
+
+                    // Check this is from Trash or View
+                    if (myRole!.DocStatus == TraceStatus.Trash)
+                    {
+                        formMode = FormMode.Trash;
+
+
+                    }
+                    else if (myRole.DocStatus == TraceStatus.Terminated)
+                    {
+                        formMode = FormMode.Terminated;
+
+                    }
+                    else
+                    {
+                        formMode = FormMode.View;
+
+
+                    }
+                    if (string.IsNullOrWhiteSpace(rawDocument.FolderId))
+                    {
+                        noNeedFolder = true;
+                    }
+                    else
+                    {
+                        noNeedFolder = false;
+                    }
                 }
                 else
                 {
-                    showSendButton = true;
+                    disposedObj();
+                    formMode = FormMode.List;
+                    AlertMessage("ເອກະສານດັ່ງກ່າວອາດຖືກຍ້າຍໄປກ່ອງ ສຳເລັດແລ້ວ", Defaults.Classes.Position.BottomRight, Severity.Warning);
                 }
-
-                // Update when document first open
-                if (!myRole!.IsRead)
-                {
-                    await onUpdateWhenOpenDocument(); // Update document
-
-                }
-
-                // Check this is from Trash or View
-                if (myRole!.DocStatus == TraceStatus.Trash)
-                {
-                    formMode = FormMode.Trash;
-
-
-                }
-                else if (myRole.DocStatus == TraceStatus.Terminated)
-                {
-                    formMode = FormMode.Terminated;
-
-                }
-                else
-                {
-                    formMode = FormMode.View;
-
-
-                }
-                if (string.IsNullOrWhiteSpace(rawDocument.FolderId))
-                {
-                    noNeedFolder = true;
-                }
-                else
-                {
-                    noNeedFolder = false;
-                }
+                
             }
             catch (Exception)
             {
@@ -877,12 +899,12 @@ namespace DFM.Frontend.Pages
 
                 if (Link == "inbound")
                 {
-                    documentModel!.InboxType = InboxType.Inbound;
+                    documentRequest.InboxType = InboxType.Inbound;
 
                 }
                 else
                 {
-                    documentModel!.InboxType = InboxType.Outbound;
+                    documentRequest.InboxType = InboxType.Outbound;
                 }
 
                 documentRequest.RawDocument = rawDocument;

@@ -406,7 +406,8 @@ namespace DFM.API.Controllers
                             CommentDate = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
                             RoleTrace = ownRoleTrace,
                             Attachments = request.Main.Comment.Attachments
-                        }
+                        },
+                        InboxType = request.InboxType
                     };
 
                     // Set Reciepient
@@ -611,7 +612,8 @@ namespace DFM.API.Controllers
                                 //}
                             },
                             Behavior = mainBehavior,
-                            IsDisplay = isMainDisplay
+                            IsDisplay = isMainDisplay,
+                            InboxType = request.InboxType
                         };
                         // Set Reciepient
                         request.DocumentModel.Recipients!.Add(main);
@@ -665,7 +667,8 @@ namespace DFM.API.Controllers
                                     //    }
                                     //}
                                 },
-                                Behavior = BehaviorStatus.ProcessOnly
+                                Behavior = BehaviorStatus.ProcessOnly,
+                                InboxType = request.InboxType
                             };
                             // Set Reciepient
                             request.DocumentModel.Recipients!.Add(coUser);
@@ -1056,7 +1059,8 @@ namespace DFM.API.Controllers
                                 //}
                             },
                             Behavior = mainBehavior,
-                            IsDisplay = isMainDisplay
+                            IsDisplay = isMainDisplay,
+                            InboxType = request.InboxType
                         };
                         // Set Reciepient
                         doc!.Content.Recipients!.Add(main);
@@ -1107,7 +1111,8 @@ namespace DFM.API.Controllers
                                     //    }
                                     //}
                                 },
-                                Behavior = BehaviorStatus.ProcessOnly
+                                Behavior = BehaviorStatus.ProcessOnly,
+                                InboxType = request.InboxType
                             };
                             // Set Reciepient
                             doc!.Content.Recipients!.Add(coUser);

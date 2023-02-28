@@ -15,5 +15,6 @@ namespace DFM.Shared.DTOs
         public List<RoleTreeModel>? CoProcesses { get; set; } = new();
         public MainReceiver? Main { get; set; } = new();
         public string? Uid { get; set; }
+        public InboxType InboxType { get; set; }
     }
 }
