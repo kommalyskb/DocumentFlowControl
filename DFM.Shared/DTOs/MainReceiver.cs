@@ -1,4 +1,5 @@
-﻿using DFM.Shared.Entities;
+﻿using DFM.Shared.Common;
+using DFM.Shared.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,6 @@ namespace DFM.Shared.DTOs
     {
         public string? Id { get; set; }
         public CommentModel? Comment { get; set; } = new();
+        public InboxType InboxType { get; set; }
     }
 }

@@ -15,6 +15,7 @@ using MudBlazor;
 using Newtonsoft.Json.Linq;
 using Serilog;
 using StackExchange.Redis;
+using System.Collections.Generic;
 using System.Text.Json;
 
 namespace DFM.Frontend.Pages
@@ -485,7 +486,6 @@ namespace DFM.Frontend.Pages
                         rawDocument!.Attachments = files.Select(x => x.Info).ToList();
                         rawDocument!.RelateFles = relateFiles.Select(x => x.Info).ToList();
 
-                        ModuleType moduleType = ModuleType.DocumentInbound;
                         DocumentRequest documentRequest = new DocumentRequest();
 
                         if (myRole != null)
@@ -526,12 +526,10 @@ namespace DFM.Frontend.Pages
                                 {
                                     documentModel!.Recipients![index].InboxType = InboxType.Inbound;
                                     //documentModel!.InboxType = InboxType.Inbound;
-                                    moduleType = ModuleType.DocumentInbound;
                                 }
                                 else
                                 {
                                     documentModel!.Recipients![index].InboxType = InboxType.Outbound;
-                                    moduleType = ModuleType.DocumentOutbound;
                                     //documentModel!.InboxType = InboxType.Outbound;
                                 }
                             }
@@ -546,8 +544,8 @@ namespace DFM.Frontend.Pages
                         documentRequest.RawDocument = rawDocument;
                         documentRequest.DocumentModel = documentModel;
                         // Bind Receiver
-                        documentRequest.Main = mainReciver;
-                        documentRequest.CoProcesses = recipients!.Where(x => x.CoProcess && x.Role.RoleID != mainReciver!.Id).ToList();
+                        documentRequest.Main = generateMain(mainReciver, recipients!);
+                        documentRequest.CoProcesses = generateCoprocess(recipients!.Where(x => x.CoProcess && x.Role.RoleID != mainReciver!.Id));
 
                         // Send request for save document
                         var result = await httpService.Post<DocumentRequest, CommonResponseId>(url, documentRequest, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
@@ -567,8 +565,8 @@ namespace DFM.Frontend.Pages
                                 nav.NavigateTo($"/pages/doc/{Link}/{Page}/none", true);
 
                             }
-                            List<string>? notifyRole = new List<string>() { documentRequest.Main.Id };
-                            notifyRole.AddRange(documentRequest.CoProcesses.Select(x => x.Role.RoleID)!);
+                            List<string>? notifyRole = new List<string>() { documentRequest.Main.Id! };
+                            notifyRole.AddRange(documentRequest.CoProcesses.Select(x => x.TreeModel.Role.RoleID)!);
                             // Save notification
                             List<Task> noticeTasks = new();
                             NotificationModel noticeRequest = new NotificationModel
@@ -576,7 +574,7 @@ namespace DFM.Frontend.Pages
                                 RefDocument = result.Response.Id,
                                 id = Guid.NewGuid().ToString("N"),
                                 IsRead = false,
-                                ModuleType = moduleType,
+                                ModuleType = documentRequest.Main.InboxType == InboxType.Inbound ? ModuleType.DocumentInbound : ModuleType.DocumentOutbound,
                                 RoleID = documentRequest.Main.Id,
                                 Title = documentRequest.RawDocument.Title,
                                 SendFrom = $"{employee.Name.Local} {employee.FamilyName.Local}",
@@ -595,8 +593,8 @@ namespace DFM.Frontend.Pages
                                         RefDocument = result.Response.Id,
                                         id = Guid.NewGuid().ToString("N"),
                                         IsRead = false,
-                                        ModuleType = moduleType,
-                                        RoleID = r.Role.RoleID,
+                                        ModuleType = r.InboxType == InboxType.Inbound ? ModuleType.DocumentInbound : ModuleType.DocumentOutbound,
+                                        RoleID = r.TreeModel.Role.RoleID,
                                         Title = documentRequest.RawDocument.Title,
                                         SendFrom = $"{employee.Name.Local} {employee.FamilyName.Local}",
                                         ChangeNote = "ເອກະສານສົ່ງໃຫ້ທ່ານແບບຕິດຕາມ"
@@ -639,6 +637,36 @@ namespace DFM.Frontend.Pages
                 AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, (INTERNAL_SERVER_ERROR)", Defaults.Classes.Position.BottomRight, Severity.Error);
             }
 
+        }
+
+        private MainReceiver generateMain(MainReceiver mainReciver, IEnumerable<RoleTreeModel> roleTrees)
+        {
+            var item = roleTrees.FirstOrDefault(x => x.Role.RoleID == mainReciver.Id);
+            if (item == null)
+            {
+                return null;
+            }
+            if (item.RoleType == RoleTypeModel.InboundGeneral || item.RoleType == RoleTypeModel.InboundOfficePrime || item.RoleType == RoleTypeModel.InboundPrime)
+            {
+                mainReciver.InboxType = InboxType.Inbound;
+
+            }
+            else if (item.RoleType == RoleTypeModel.OutboundGeneral || item.RoleType == RoleTypeModel.OutboundOfficePrime || item.RoleType == RoleTypeModel.OutboundPrime)
+            {
+                mainReciver.InboxType = InboxType.Outbound;
+            }
+            else
+            {
+                if (Link == "inbound")
+                {
+                    mainReciver.InboxType = InboxType.Inbound;
+                }
+                else
+                {
+                    mainReciver.InboxType = InboxType.Outbound;
+                }
+            }
+            return mainReciver;
         }
 
         async Task onUpdateWhenOpenDocument()
@@ -711,7 +739,7 @@ namespace DFM.Frontend.Pages
                     token = await accessToken.GetTokenAsync();
                 }
 
-                roleId = MessageRole;
+                //roleId = MessageRole;
                 var doc = await httpService.Get<DocumentModel, CommonResponse>(url, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
 
                 if (!doc.Success)
@@ -782,8 +810,15 @@ namespace DFM.Frontend.Pages
             {
                 // Row click
                 documentModel = doc;
-
-                myRole = documentModel!.Recipients!.LastOrDefault(x => x.RecipientInfo.RoleID == roleId);
+                if (string.IsNullOrWhiteSpace(MessageID))
+                {
+                    myRole = documentModel!.Recipients!.LastOrDefault(x => x.RecipientInfo.RoleID == roleId);
+                }
+                else
+                {
+                    myRole = documentModel!.Recipients!.LastOrDefault(x => x.RecipientInfo.RoleID == MessageID);
+                }
+                
                 if (myRole != null)
                 {
                     rawDocument = documentModel!.RawDatas!.LastOrDefault(x => x.DataID == myRole!.DataID);
@@ -853,6 +888,36 @@ namespace DFM.Frontend.Pages
             }
 
 
+        }
+
+        private List<(RoleTreeModel TreeModel, InboxType InboxType)> generateCoprocess(IEnumerable<RoleTreeModel> roleTrees) 
+        {
+            List<(RoleTreeModel TreeModel, InboxType InboxType)>? result = new();
+            foreach (var item in roleTrees)
+            {
+                if (item.RoleType == RoleTypeModel.InboundGeneral || item.RoleType == RoleTypeModel.InboundOfficePrime || item.RoleType == RoleTypeModel.InboundPrime)
+                {
+                    result.Add((item, InboxType.Inbound));
+
+                }
+                else if (item.RoleType == RoleTypeModel.OutboundGeneral || item.RoleType == RoleTypeModel.OutboundOfficePrime || item.RoleType == RoleTypeModel.OutboundPrime)
+                {
+                    result.Add((item, InboxType.Outbound));
+                }
+                else
+                {
+                    if (Link == "inbound")
+                    {
+                        result.Add((item, InboxType.Inbound));
+                    }
+                    else
+                    {
+                        result.Add((item, InboxType.Outbound));
+                    }
+                }
+            }
+
+            return result;
         }
         bool validateField()
         {
@@ -951,13 +1016,17 @@ namespace DFM.Frontend.Pages
 
         }
 
-        void disposedObj()
+        async void disposedObj()
         {
             documentModel = new();
             rawDocument = new();
             files = new List<AttachmentDto>();
             relateFiles = new List<AttachmentDto>();
             mainReciver = new();
+            if (publisher == null)
+            {
+                await getPublisher();
+            }
             rawDocument!.ResponseUnit = publisher!.Id;
             noNeedFolder = true;
         }
@@ -1090,13 +1159,7 @@ namespace DFM.Frontend.Pages
                 }
 
                 // Get Publisher
-                string urlGetPublisher = $"{endpoint.API}/api/v1/Organization/GetPublisher/{employee.OrganizationID!}/{roleId}";
-                var publisherResult = await httpService.Get<CommonResponseId>(urlGetPublisher, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
-
-                if (publisherResult.Success)
-                {
-                    publisher = publisherResult.Response;
-                }
+                await getPublisher();
 
 
                 onProcessing = false;
@@ -1109,6 +1172,16 @@ namespace DFM.Frontend.Pages
             }
 
 
+        }
+        private async Task getPublisher()
+        {
+            string urlGetPublisher = $"{endpoint.API}/api/v1/Organization/GetPublisher/{employee.OrganizationID!}/{roleId}";
+            var publisherResult = await httpService.Get<CommonResponseId>(urlGetPublisher, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
+
+            if (publisherResult.Success)
+            {
+                publisher = publisherResult.Response;
+            }
         }
         private IEnumerable<string> MaxCharacters(string ch)
         {

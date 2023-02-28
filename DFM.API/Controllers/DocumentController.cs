@@ -613,7 +613,7 @@ namespace DFM.API.Controllers
                             },
                             Behavior = mainBehavior,
                             IsDisplay = isMainDisplay,
-                            InboxType = request.InboxType
+                            InboxType = request.Main.InboxType
                         };
                         // Set Reciepient
                         request.DocumentModel.Recipients!.Add(main);
@@ -631,7 +631,7 @@ namespace DFM.API.Controllers
                             //
                             if (envConf.EmailNotify)
                             {
-                                var itemRole = await organization.GetEmployee(request.DocumentModel!.OrganizationID!, item.Role.RoleID!);
+                                var itemRole = await organization.GetEmployee(request.DocumentModel!.OrganizationID!, item.TreeModel.Role.RoleID!);
                                 var itemProfile = await employeeManager.GetProfile(itemRole.Content.Employee.UserID!);
 
                                 emails.Add(itemProfile.Content.Contact.Email!);
@@ -654,9 +654,9 @@ namespace DFM.API.Controllers
                                 SendRoleType = OperationType.NoProcess,
                                 RecipientInfo = new RoleTraceModel
                                 {
-                                    Position = item.Role.Display,
-                                    RoleID = item.Role.RoleID,
-                                    RoleType = item.Role.RoleType,
+                                    Position = item.TreeModel.Role.Display,
+                                    RoleID = item.TreeModel.Role.RoleID,
+                                    RoleType = item.TreeModel.Role.RoleType,
                                     //Fullname = new ShortEmpInfo
                                     //{
                                     //    EmployeeID = myProfile.Content.EmployeeID,
@@ -668,7 +668,7 @@ namespace DFM.API.Controllers
                                     //}
                                 },
                                 Behavior = BehaviorStatus.ProcessOnly,
-                                InboxType = request.InboxType
+                                InboxType = item.InboxType
                             };
                             // Set Reciepient
                             request.DocumentModel.Recipients!.Add(coUser);
@@ -1060,7 +1060,7 @@ namespace DFM.API.Controllers
                             },
                             Behavior = mainBehavior,
                             IsDisplay = isMainDisplay,
-                            InboxType = request.InboxType
+                            InboxType = request.Main.InboxType
                         };
                         // Set Reciepient
                         doc!.Content.Recipients!.Add(main);
@@ -1076,7 +1076,7 @@ namespace DFM.API.Controllers
                             //
                             if (envConf.EmailNotify)
                             {
-                                var itemRole = await organization.GetEmployee(request.DocumentModel!.OrganizationID!, item.Role.RoleID!);
+                                var itemRole = await organization.GetEmployee(request.DocumentModel!.OrganizationID!, item.TreeModel.Role.RoleID!);
                                 var itemProfile = await employeeManager.GetProfile(itemRole.Content.Employee.UserID! );
                                 emails.Add(itemProfile.Content.Contact.Email!);
                             }
@@ -1098,9 +1098,9 @@ namespace DFM.API.Controllers
                                 SendRoleType = OperationType.NoProcess,
                                 RecipientInfo = new RoleTraceModel
                                 {
-                                    Position = item.Role.Display,
-                                    RoleID = item.Role.RoleID,
-                                    RoleType = item.Role.RoleType,
+                                    Position = item.TreeModel.Role.Display,
+                                    RoleID = item.TreeModel.Role.RoleID,
+                                    RoleType = item.TreeModel.Role.RoleType,
                                     //Fullname = new ShortEmpInfo
                                     //{
                                     //    EmployeeID = myProfile.Content.EmployeeID,
@@ -1112,7 +1112,7 @@ namespace DFM.API.Controllers
                                     //}
                                 },
                                 Behavior = BehaviorStatus.ProcessOnly,
-                                InboxType = request.InboxType
+                                InboxType = item.InboxType
                             };
                             // Set Reciepient
                             doc!.Content.Recipients!.Add(coUser);

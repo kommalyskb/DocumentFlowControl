@@ -12,7 +12,7 @@ namespace DFM.Shared.DTOs
     {
         public DocumentModel? DocumentModel { get; set; } = new();
         public RawDocumentData? RawDocument { get; set; } = new();
-        public List<RoleTreeModel>? CoProcesses { get; set; } = new();
+        public List<(RoleTreeModel TreeModel, InboxType InboxType)>? CoProcesses { get; set; } = new();
         public MainReceiver? Main { get; set; } = new();
         public string? Uid { get; set; }
         public InboxType InboxType { get; set; }
