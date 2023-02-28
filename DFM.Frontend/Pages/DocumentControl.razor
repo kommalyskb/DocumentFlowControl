@@ -1,6 +1,6 @@
 ﻿@page "/pages/doc/{Link}/{Page}"
 @page "/pages/doc/{Link}/{Page}/{DocId}"
-@page "/pages/doc/{Link}/{Page}/{DocId}/{MessageRole}/{MessageID}"
+@page "/pages/doc/{Link}/{Page}/{DocId}/{MessageRole}/{MessageID}/{IsReadMessage}"
 @inject IHttpService httpService
 @inject AccessTokenStorage accessToken
 @inject ServiceEndpoint endpoint
@@ -144,7 +144,8 @@
     [Parameter] public string? DocId { get; set; }
     [Parameter] public string? MessageRole { get; set; }
     [Parameter] public string? MessageID { get; set; }
-   
+    [Parameter] public string? IsReadMessage { get; set; }
+
     private FormMode formMode;
     private TraceStatus traceStatus;
     string? roleId = "";

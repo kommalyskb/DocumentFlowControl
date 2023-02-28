@@ -59,7 +59,7 @@
                                                 @foreach (var item in notices!.ToList().Take(10))
                                                 {
                                                     string link = item.ModuleType == ModuleType.DocumentInbound ? "inbound" : "outbound";
-                                                    string urlPage = $"/pages/doc/{link}/inbox/{item.RefDocument}/{item.RoleID}/{item.id}";
+                                                    string urlPage = $"/pages/doc/{link}/inbox/{item.RefDocument}/{item.RoleID}/{item.id}/{item.IsRead}";
 
                                                     if (!item.IsRead)
                                                     {

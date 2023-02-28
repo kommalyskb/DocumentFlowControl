@@ -384,6 +384,17 @@ namespace DFM.Shared.Repository
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(id))
+                {
+                    return (new CommonResponseId()
+                    {
+                        Id = id,
+                        Code = nameof(ResultCode.NOT_FOUND),
+                        Success = false,
+                        Detail = ResultCode.NOT_FOUND,
+                        Message = ResultCode.NOT_FOUND
+                    }, default!);
+                }
                 // Find from cache
                 //string recordKey = $"{RedisPrefix.Role}{id}"; // Set key for cache
                 //var mem = redisConnector.Connection.GetDatabase(1);

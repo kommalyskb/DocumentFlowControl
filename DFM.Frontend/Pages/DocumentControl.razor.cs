@@ -710,7 +710,11 @@ namespace DFM.Frontend.Pages
                 }
 
                 await bindDocumentModel(doc.Response); // Bind document model
-                await onUpdateNotification(); // Update notification
+                if (IsReadMessage!.ToLower() != "true")
+                {
+                    await onUpdateNotification(); // Update notification
+
+                }
                 onProcessing = false;
                 await InvokeAsync(StateHasChanged);
             }
