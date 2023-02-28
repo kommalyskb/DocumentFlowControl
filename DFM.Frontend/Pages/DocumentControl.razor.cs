@@ -94,6 +94,22 @@ namespace DFM.Frontend.Pages
                         //
                     }
                     oldLink = Link!;
+
+                    // Load recipient
+                    string urlGetOrgItem = $"{endpoint.API}/api/v1/Organization/GetItem/{employee.OrganizationID!}/{roleId}/{Link}";
+                    var result = await httpService.Get<IEnumerable<RoleTreeModel>>(urlGetOrgItem, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
+                    if (result.Success)
+                    {
+                        var expected = result.Response.ToList();
+                        expected.RemoveAll(x => x.Role.RoleID == roleId);
+                        recipients = expected;
+
+
+                    }
+                    else
+                    {
+                        recipients = null;
+                    }
                 }
             }
             else
@@ -1041,6 +1057,10 @@ namespace DFM.Frontend.Pages
                     recipients = expected;
 
 
+                }
+                else
+                {
+                    recipients = null;
                 }
 
                 // Get Publisher
