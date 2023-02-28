@@ -215,6 +215,7 @@ namespace DFM.Frontend.Pages
         void disposedObj()
         {
             employeeModel = new();
+            attachment = new();
         }
         private IEnumerable<string> MaxCharacters(string ch)
         {

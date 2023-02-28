@@ -104,14 +104,22 @@ namespace DFM.Frontend.Pages.UserComponent
                 }
 
                 var result = await httpService.Post<AttachmentModel, CommonResponse>(url, imageInfo, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
+
+                Console.WriteLine($"-------------------------------");
+                Console.WriteLine($"Result: {await result.HttpResponseMessage.Content.ReadAsStringAsync()}");
+                Console.WriteLine($"-------------------------------");
+
                 if (result.Success)
                 {
                     AlertMessage("ອັບໂຫຼດຮູບຂອງທ່ານສຳເລັດ", Defaults.Classes.Position.BottomRight, Severity.Success);
-
+                    // Update cache employee
+                    // Get Profile to local storage
+                    var employeeProfile = await cascading.GetEmployeeProfile(token!, cancellationToken: cts.Token);
+                    await storageHelper.SetEmployeeProfileAsync(employeeProfile.Content);
                 }
                 else
                 {
-                    AlertMessage("ບໍ່ສາມາດອັບໂຫຼດຮູບໄດ້", Defaults.Classes.Position.BottomRight, Severity.Error);
+                    AlertMessage($"ບໍ່ສາມາດອັບໂຫຼດຮູບໄດ້", Defaults.Classes.Position.BottomRight, Severity.Error);
                 }
             }
             onProcessing = false;
