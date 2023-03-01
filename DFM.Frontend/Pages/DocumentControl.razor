@@ -95,11 +95,22 @@
 
 <MudMessageBox @ref="mbox" Title="ສົ່ງເອກະສານ">
     <MessageContent>
-        <DFM.Frontend.Pages.Common.Recipient Recipients="recipients" RoleId="@roleId" MainReceiver="@mainReciver"></DFM.Frontend.Pages.Common.Recipient>
+        @if (recipients.IsNullOrEmpty())
+        {
+            <MudText Typo="Typo.subtitle1" Align="Align.Center">ບໍ່ມີຜູ້ຮັບເອກະສານ ສຳລັບຕຳແໜ່ງຂອງທ່ານ, ທ່ານສາມາດກົດ ສິ້ນການຈໍລະຈອນເອກະສານແທນໄດ້</MudText>
+        }
+        else
+        {
+            <DFM.Frontend.Pages.Common.Recipient Recipients="recipients" RoleId="@roleId" MainReceiver="@mainReciver"></DFM.Frontend.Pages.Common.Recipient>
+
+        }
 
     </MessageContent>
     <YesButton>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save">ສົ່ງຕໍ່</MudButton>
+        @if (!recipients.IsNullOrEmpty())
+        {
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save">ສົ່ງຕໍ່</MudButton>
+        }
     </YesButton>
 </MudMessageBox>
 
