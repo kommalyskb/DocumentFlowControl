@@ -49,6 +49,11 @@
                                            OnClick="(async () => await CloseNotice.InvokeAsync())">
                                     @item.Title
                                 </MudButton>
+                                 @if (!string.IsNullOrWhiteSpace(item.ChangeNote))
+                                {
+                                    <br />
+                                    <i style="font-size:small">@item.ChangeNote</i>
+                                }
                             </td>
                         </tr>
                     }
