@@ -838,7 +838,7 @@ namespace DFM.Shared.Repository
                         case RoleTypeModel.DeputyPrime:
                             {
                                 if (roleItem.RoleType == RoleTypeModel.DeputyPrimeSecretary || roleItem.RoleType == RoleTypeModel.PrimeSecretary ||
-                                    roleItem.RoleType == RoleTypeModel.Prime || roleItem.RoleType == RoleTypeModel.DeputyPrime || roleItem.RoleType == RoleTypeModel.InboundPrime)
+                                    roleItem.RoleType == RoleTypeModel.Prime || roleItem.RoleType == RoleTypeModel.DeputyPrime)
                                 {
                                     // ໃນກໍລະນີເປັນ ເລຂາ ກັບເປັນ ປະທານ ແມ່ນສາມາດສົ່ງຫາຮອງປະທານໄດ້ທຸກຄົນ
                                     if (!deputyPrimes!.IsNullOrEmpty())
