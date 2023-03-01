@@ -47,7 +47,7 @@ namespace DFM.Testcases.Role
                 User = "default",
                 Password = "1qaz2wsx"
             });
-            IOrganizationChart organizationChart = new OrganizationChart(couchContext, dBConfig, redisConnector);
+            IOrganizationChart organizationChart = new OrganizationChart(couchContext, dBConfig, redisConnector, new EnvConf());
             roleManager = new RoleManager(couchContext, dBConfig, redisConnector, organizationChart);
         }
 
