@@ -48,7 +48,7 @@ namespace DFM.Testcases.DynamicFlow
                 Port = 12000,
                 Password = "1qaz2wsx"
             });
-            organizationChart = new OrganizationChart(couchContext, dBConfig, redisConnector);
+            organizationChart = new OrganizationChart(couchContext, dBConfig, redisConnector, new EnvConf());
         }
         [Fact(DisplayName = "ເພີ່ມ ຫຼື ແກ້ໄຂ Dynamic Flow ")]
         public async Task NC1()
