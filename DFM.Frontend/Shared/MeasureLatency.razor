@@ -1,0 +1,33 @@
+﻿@inject IJSRuntime JS
+
+@if (latency is null)
+{
+    <i>Calculating...</i>
+}
+else
+{
+    <i> Latency: @(latency.Value.TotalMilliseconds) ms</i>
+}
+
+@code {
+    private DateTime startTime;
+    private TimeSpan? latency;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await runTestLatency();
+        }
+    }
+    private async Task runTestLatency()
+    {
+        latency = null;
+        startTime = DateTime.UtcNow;
+        var _ = await JS.InvokeAsync<string>("toString");
+        latency = DateTime.UtcNow - startTime;
+        StateHasChanged();
+        await Task.Delay(TimeSpan.FromSeconds(15));
+        await runTestLatency();
+    }
+}

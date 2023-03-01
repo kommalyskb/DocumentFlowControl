@@ -27,15 +27,17 @@ namespace DFM.Shared.Repository
     {
         private readonly ICouchContext couchContext;
         private readonly IRedisConnector redisConnector;
+        private readonly EnvConf env;
         private readonly CouchDBHelper read_couchDbHelper;
         private readonly CouchDBHelper write_couchDbHelper;
         private readonly CouchDBHelper read_dynamic_couchDbHelper;
         private readonly CouchDBHelper write_dynamic_couchDbHelper;
 
-        public OrganizationChart(ICouchContext couchContext, DBConfig dbConfig, IRedisConnector redisConnector)
+        public OrganizationChart(ICouchContext couchContext, DBConfig dbConfig, IRedisConnector redisConnector, EnvConf env)
         {
             this.couchContext = couchContext;
             this.redisConnector = redisConnector;
+            this.env = env;
             this.read_couchDbHelper = new CouchDBHelper
            (
                scheme: dbConfig.Reader.Scheme,
@@ -823,22 +825,27 @@ namespace DFM.Shared.Repository
                 var allInboundGeneral = charts.Where(x => x.RoleType == RoleTypeModel.InboundGeneral).ToList(); // ດຶງເອົາຂາເຂົ້າທຸກຝ່າຍໃນ ບໍລິສັດ
                 var allOutboundGeneral = charts.Where(x => x.RoleType == RoleTypeModel.OutboundGeneral).ToList(); // ດຶງເອົາຂາອກທຸກຝ່າຍໃນ ບໍລິສັດ
                 List<RoleTreeModel> childCharts = new();
+                List<(RoleTreeModel Content, int Priority) > rawCharts = new();
+
                 foreach (var item in flowItem!.RoleTargets!)
                 {
                     switch (item)
                     {
                         case RoleTypeModel.Prime:
-                            childCharts.Add(prime!); // ຖ້າ ເປົ້າຫມາຍເປັນ ປະທາານແມ່ນໃຫ້ເອົາຈາກ ຕົວປ່ຽນທາງເທິງ
+                            rawCharts.Add((prime!, 1));
+                            //childCharts.Add(prime!); // ຖ້າ ເປົ້າຫມາຍເປັນ ປະທາານແມ່ນໃຫ້ເອົາຈາກ ຕົວປ່ຽນທາງເທິງ
                             break;
                         case RoleTypeModel.DeputyPrime:
                             {
                                 if (roleItem.RoleType == RoleTypeModel.DeputyPrimeSecretary || roleItem.RoleType == RoleTypeModel.PrimeSecretary ||
-                                    roleItem.RoleType == RoleTypeModel.Prime || roleItem.RoleType == RoleTypeModel.DeputyPrime)
+                                    roleItem.RoleType == RoleTypeModel.Prime || roleItem.RoleType == RoleTypeModel.DeputyPrime || roleItem.RoleType == RoleTypeModel.InboundPrime)
                                 {
                                     // ໃນກໍລະນີເປັນ ເລຂາ ກັບເປັນ ປະທານ ແມ່ນສາມາດສົ່ງຫາຮອງປະທານໄດ້ທຸກຄົນ
                                     if (!deputyPrimes!.IsNullOrEmpty())
                                     {
-                                        childCharts.AddRange(deputyPrimes!);// ຖ້າ ເປົ້າຫມາຍເປັນ ຮອງປະທາານແມ່ນໃຫ້ເອົາຈາກ ຕົວປ່ຽນທາງເທິງ
+                                        deputyPrimes!.ForEach(x => rawCharts.Add((x!, 2)));
+
+                                        //childCharts.AddRange(deputyPrimes!);// ຖ້າ ເປົ້າຫມາຍເປັນ ຮອງປະທາານແມ່ນໃຫ້ເອົາຈາກ ຕົວປ່ຽນທາງເທິງ
 
                                     }
                                 }
@@ -847,7 +854,8 @@ namespace DFM.Shared.Repository
                                     var targetModel = getParent(charts, roleItem, item); // ໃນກໍລະນີນີ້ແມ່ນຈະຕ້ອງໄດ້ Loop ຊອກໄປເລື້ອຍໆ ຈົນກວ່າຈະພົບ RoleType ທີ່ຕ້ອງການ
                                     if (targetModel != null)
                                     {
-                                        childCharts.Add(targetModel!);
+                                        rawCharts.Add((targetModel!, 2));
+                                        //childCharts.Add(targetModel!);
 
                                     }
                                 }
@@ -858,14 +866,16 @@ namespace DFM.Shared.Repository
                         case RoleTypeModel.PrimeSecretary:
                             if (!secretPrimes!.IsNullOrEmpty())
                             {
-                                childCharts.AddRange(secretPrimes!);// ຖ້າ ເປົ້າຫມາຍເປັນ ເລຂາປະທາານແມ່ນໃຫ້ເອົາຈາກ ຕົວປ່ຽນທາງເທິງ
+                                secretPrimes!.ForEach(x => rawCharts.Add((x!, 3)));
+                                //childCharts.AddRange(secretPrimes!);// ຖ້າ ເປົ້າຫມາຍເປັນ ເລຂາປະທາານແມ່ນໃຫ້ເອົາຈາກ ຕົວປ່ຽນທາງເທິງ
 
                             }
                             break;
                         case RoleTypeModel.DeputyPrimeSecretary:
                             if (!secretDeputyPrimes!.IsNullOrEmpty())
                             {
-                                childCharts.AddRange(secretDeputyPrimes!);// ຖ້າ ເປົ້າຫມາຍເປັນ ເລຂາຮອງປະທາານແມ່ນໃຫ້ເອົາຈາກ ຕົວປ່ຽນທາງເທິງ
+                                secretDeputyPrimes!.ForEach(x => rawCharts.Add((x!, 3)));
+                                //childCharts.AddRange(secretDeputyPrimes!);// ຖ້າ ເປົ້າຫມາຍເປັນ ເລຂາຮອງປະທາານແມ່ນໃຫ້ເອົາຈາກ ຕົວປ່ຽນທາງເທິງ
 
                             }
                             break;
@@ -874,7 +884,8 @@ namespace DFM.Shared.Repository
                                 var targetModel = getParent(charts, roleItem, item); // ໃນກໍລະນີນີ້ແມ່ນຈະຕ້ອງໄດ້ Loop ຊອກໄປເລື້ອຍໆ ຈົນກວ່າຈະພົບ RoleType ທີ່ຕ້ອງການ
                                 if (targetModel != null)
                                 {
-                                    childCharts.Add(targetModel!);
+                                    rawCharts.Add((targetModel!, 4));
+                                    //childCharts.Add(targetModel!);
 
                                 }
                             }
@@ -884,10 +895,11 @@ namespace DFM.Shared.Repository
                             {
                                 // ໃນກໍລະນີນີ້ແມ່ນຈະຕ້ອງໄດ້ Loop ຊອກໄປເລື້ອຍໆ ຈົນກວ່າຈະພົບ RoleType ທີ່ຕ້ອງການ,ໃນກໍລະນີທີ່ ຕ້ອງການ ເອົາ Deputy ຂອງຕຳແຫນ່ງຕ່າງໆ ແມ່ນຈະຕ້ອງໄດ້ຊອກຫາ Parent ຂອງ Deputy ດັ່ງກ່າວກ່ອນ
                                 var parentModel = getParent(charts, roleItem, RoleTypeModel.Director);
-                                var childModels = charts.Where(x => x.ParentID == parentModel!.Role.RoleID);
+                                var childModels = charts.Where(x => x.ParentID == parentModel!.Role.RoleID).ToList();
                                 if (!childModels!.IsNullOrEmpty())
                                 {
-                                    childCharts.AddRange(childModels!);// ຖ້າ ເປົ້າຫມາຍເປັນ ຮອງຫ້ອງແມ່ນໃຫ້ເອົາຈາກ ຕົວປ່ຽນທາງເທິງ
+                                    childModels!.ForEach(x => rawCharts.Add((x!, 5)));
+                                    //childCharts.AddRange(childModels!);// ຖ້າ ເປົ້າຫມາຍເປັນ ຮອງຫ້ອງແມ່ນໃຫ້ເອົາຈາກ ຕົວປ່ຽນທາງເທິງ
 
                                 }
                             }
@@ -896,18 +908,21 @@ namespace DFM.Shared.Repository
                                 var targetModel = getParent(charts, roleItem, item);// ໃນກໍລະນີນີ້ແມ່ນຈະຕ້ອງໄດ້ Loop ຊອກໄປເລື້ອຍໆ ຈົນກວ່າຈະພົບ RoleType ທີ່ຕ້ອງການ
                                 if (targetModel != null)
                                 {
-                                    childCharts.Add(targetModel!);
+                                    rawCharts.Add((targetModel!, 5));
+                                    //childCharts.Add(targetModel!);
 
                                 }
                             }
                             break;
                         case RoleTypeModel.OfficePrime:
-                            childCharts.Add(officePrime!);// ຖ້າ ເປົ້າຫມາຍເປັນ ຫ້ອງການແມ່ນໃຫ້ເອົາຈາກ ຕົວປ່ຽນທາງເທິງ
+                            rawCharts.Add((officePrime!, 6));
+                            //childCharts.Add(officePrime!);// ຖ້າ ເປົ້າຫມາຍເປັນ ຫ້ອງການແມ່ນໃຫ້ເອົາຈາກ ຕົວປ່ຽນທາງເທິງ
                             break;
                         case RoleTypeModel.DeputyOfficePrime:
                             if (!depOfficePrimes!.IsNullOrEmpty())
                             {
-                                childCharts.AddRange(depOfficePrimes!);// ຖ້າ ເປົ້າຫມາຍເປັນ ຮອງຫ້ອງແມ່ນໃຫ້ເອົາຈາກ ຕົວປ່ຽນທາງເທິງ
+                                depOfficePrimes!.ForEach(x => rawCharts.Add((x!, 7)));
+                                //childCharts.AddRange(depOfficePrimes!);// ຖ້າ ເປົ້າຫມາຍເປັນ ຮອງຫ້ອງແມ່ນໃຫ້ເອົາຈາກ ຕົວປ່ຽນທາງເທິງ
 
                             }
                             break;
@@ -916,7 +931,8 @@ namespace DFM.Shared.Repository
                                 var targetModel = getParent(charts, roleItem, item);// ໃນກໍລະນີນີ້ແມ່ນຈະຕ້ອງໄດ້ Loop ຊອກໄປເລື້ອຍໆ ຈົນກວ່າຈະພົບ RoleType ທີ່ຕ້ອງການ
                                 if (targetModel != null)
                                 {
-                                    childCharts.Add(targetModel!);
+                                    rawCharts.Add((targetModel!, 6));
+                                    //childCharts.Add(targetModel!);
 
                                 }
                             }
@@ -926,10 +942,11 @@ namespace DFM.Shared.Repository
                             {
                                 // ໃນກໍລະນີນີ້ແມ່ນຈະຕ້ອງໄດ້ Loop ຊອກໄປເລື້ອຍໆ ຈົນກວ່າຈະພົບ RoleType ທີ່ຕ້ອງການ,ໃນກໍລະນີທີ່ ຕ້ອງການ ເອົາ Deputy ຂອງຕຳແຫນ່ງຕ່າງໆ ແມ່ນຈະຕ້ອງໄດ້ຊອກຫາ Parent ຂອງ Deputy ດັ່ງກ່າວກ່ອນ
                                 var parentModel = getParent(charts, roleItem, RoleTypeModel.General);
-                                var childModels = charts.Where(x => x.ParentID == parentModel!.Role.RoleID);
+                                var childModels = charts.Where(x => x.ParentID == parentModel!.Role.RoleID).ToList();
                                 if (!childModels!.IsNullOrEmpty())
                                 {
-                                    childCharts.AddRange(childModels!);
+                                    childModels!.ForEach(x => rawCharts.Add((x!, 7)));
+                                    //childCharts.AddRange(childModels!);
 
                                 }
 
@@ -939,7 +956,8 @@ namespace DFM.Shared.Repository
                                 var targetModel = getParent(charts, roleItem, item);// ໃນກໍລະນີນີ້ແມ່ນຈະຕ້ອງໄດ້ Loop ຊອກໄປເລື້ອຍໆ ຈົນກວ່າຈະພົບ RoleType ທີ່ຕ້ອງການ
                                 if (targetModel != null)
                                 {
-                                    childCharts.Add(targetModel!);
+                                    rawCharts.Add((targetModel!, 7));
+                                    //childCharts.Add(targetModel!);
 
                                 }
                             }
@@ -950,7 +968,8 @@ namespace DFM.Shared.Repository
                                 childCharts.Add(targetModel!);
                                 if (targetModel != null)
                                 {
-                                    childCharts.Add(targetModel!);
+                                    rawCharts.Add((targetModel!, 8));
+                                    //childCharts.Add(targetModel!);
 
                                 }
                             }
@@ -960,10 +979,11 @@ namespace DFM.Shared.Repository
                             {
                                 // ໃນກໍລະນີນີ້ແມ່ນຈະຕ້ອງໄດ້ Loop ຊອກໄປເລື້ອຍໆ ຈົນກວ່າຈະພົບ RoleType ທີ່ຕ້ອງການ,ໃນກໍລະນີທີ່ ຕ້ອງການ ເອົາ Deputy ຂອງຕຳແຫນ່ງຕ່າງໆ ແມ່ນຈະຕ້ອງໄດ້ຊອກຫາ Parent ຂອງ Deputy ດັ່ງກ່າວກ່ອນ
                                 var parentModel = getParent(charts, roleItem, RoleTypeModel.OfficeGeneral);
-                                var childModels = charts.Where(x => x.ParentID == parentModel!.Role.RoleID);
+                                var childModels = charts.Where(x => x.ParentID == parentModel!.Role.RoleID).ToList();
                                 if (!childModels!.IsNullOrEmpty())
                                 {
-                                    childCharts.AddRange(childModels!);
+                                    childModels!.ForEach(x => rawCharts.Add((x!, 9)));
+                                    //childCharts.AddRange(childModels!);
 
                                 }
                             }
@@ -972,7 +992,8 @@ namespace DFM.Shared.Repository
                                 var targetModel = getParent(charts, roleItem, item);// ໃນກໍລະນີນີ້ແມ່ນຈະຕ້ອງໄດ້ Loop ຊອກໄປເລື້ອຍໆ ຈົນກວ່າຈະພົບ RoleType ທີ່ຕ້ອງການ
                                 if (targetModel != null)
                                 {
-                                    childCharts.Add(targetModel!);
+                                    rawCharts.Add((targetModel!, 9));
+                                    //childCharts.Add(targetModel!);
 
                                 }
                             }
@@ -982,7 +1003,8 @@ namespace DFM.Shared.Repository
                                 var targetModel = getParent(charts, roleItem, item);
                                 if (targetModel != null)
                                 {
-                                    childCharts.Add(targetModel!);
+                                    rawCharts.Add((targetModel!, 10));
+                                    //childCharts.Add(targetModel!);
 
                                 }
                             }
@@ -992,11 +1014,11 @@ namespace DFM.Shared.Repository
                             {
                                 // ໃນກໍລະນີນີ້ແມ່ນຈະຕ້ອງໄດ້ Loop ຊອກໄປເລື້ອຍໆ ຈົນກວ່າຈະພົບ RoleType ທີ່ຕ້ອງການ,ໃນກໍລະນີທີ່ ຕ້ອງການ ເອົາ Deputy ຂອງຕຳແຫນ່ງຕ່າງໆ ແມ່ນຈະຕ້ອງໄດ້ຊອກຫາ Parent ຂອງ Deputy ດັ່ງກ່າວກ່ອນ
                                 var parentModel = getParent(charts, roleItem, RoleTypeModel.OfficeGeneral);
-                                var childModels = charts.Where(x => x.ParentID == parentModel!.Role.RoleID);
-                                
+                                var childModels = charts.Where(x => x.ParentID == parentModel!.Role.RoleID).ToList();
                                 if (!childModels!.IsNullOrEmpty())
                                 {
-                                    childCharts.AddRange(childModels!);
+                                    childModels!.ForEach(x => rawCharts.Add((x!, 11)));
+                                    //childCharts.AddRange(childModels!);
 
                                 }
                             }
@@ -1005,17 +1027,19 @@ namespace DFM.Shared.Repository
                                 var targetModel = getParent(charts, roleItem, item);// ໃນກໍລະນີນີ້ແມ່ນຈະຕ້ອງໄດ້ Loop ຊອກໄປເລື້ອຍໆ ຈົນກວ່າຈະພົບ RoleType ທີ່ຕ້ອງການ
                                 if (targetModel != null)
                                 {
-                                    childCharts.Add(targetModel!);
+                                    rawCharts.Add((targetModel!, 11));
+                                    //childCharts.Add(targetModel!);
 
                                 }
                             }
                             break;
                         case RoleTypeModel.Department:
                             {
-                                var targetModel = getParent(charts, roleItem, item);// ໃນກໍລະນີນີ້ແມ່ນຈະຕ້ອງໄດ້ Loop ຊອກໄປເລື້ອຍໆ ຈົນກວ່າຈະພົບ RoleType ທີ່ຕ້ອງການ
+                                var targetModel = getParent(charts, roleItem, item);
                                 if (targetModel != null)
                                 {
-                                    childCharts.Add(targetModel!);
+                                    rawCharts.Add((targetModel!, 12));
+                                    //childCharts.Add(targetModel!);
 
                                 }
                             }
@@ -1025,22 +1049,21 @@ namespace DFM.Shared.Repository
                             {
                                 // ໃນກໍລະນີນີ້ແມ່ນຈະຕ້ອງໄດ້ Loop ຊອກໄປເລື້ອຍໆ ຈົນກວ່າຈະພົບ RoleType ທີ່ຕ້ອງການ,ໃນກໍລະນີທີ່ ຕ້ອງການ ເອົາ Deputy ຂອງຕຳແຫນ່ງຕ່າງໆ ແມ່ນຈະຕ້ອງໄດ້ຊອກຫາ Parent ຂອງ Deputy ດັ່ງກ່າວກ່ອນ
                                 var parentModel = getParent(charts, roleItem, RoleTypeModel.OfficeGeneral);
-                                var childModels = charts.Where(x => x.ParentID == parentModel!.Role.RoleID);
-                                
+                                var childModels = charts.Where(x => x.ParentID == parentModel!.Role.RoleID).ToList();
                                 if (!childModels!.IsNullOrEmpty())
                                 {
-                                    childCharts.AddRange(childModels!);
+                                    childModels!.ForEach(x => rawCharts.Add((x!, 13)));
+                                    //childCharts.AddRange(childModels!);
 
                                 }
                             }
                             else
                             {
                                 var targetModel = getParent(charts, roleItem, item);// ໃນກໍລະນີນີ້ແມ່ນຈະຕ້ອງໄດ້ Loop ຊອກໄປເລື້ອຍໆ ຈົນກວ່າຈະພົບ RoleType ທີ່ຕ້ອງການ
-
-                                
                                 if (targetModel != null)
                                 {
-                                    childCharts.Add(targetModel!);
+                                    rawCharts.Add((targetModel!, 13));
+                                    //childCharts.Add(targetModel!);
 
                                 }
                             }
@@ -1054,14 +1077,16 @@ namespace DFM.Shared.Repository
                         case RoleTypeModel.InboundPrime:
                             if (!inboundPrime!.IsNullOrEmpty())
                             {
-                                childCharts.AddRange(inboundPrime!);
+                                inboundPrime!.ForEach(x => rawCharts.Add((x!, 3)));
+                                //childCharts.AddRange(inboundPrime!);
 
                             }
                             break;
                         case RoleTypeModel.InboundOfficePrime:
                             if (!inboundOffice!.IsNullOrEmpty())
                             {
-                                childCharts.AddRange(inboundOffice!);
+                                inboundOffice!.ForEach(x => rawCharts.Add((x!, 3)));
+                                //childCharts.AddRange(inboundOffice!);
 
                             }
                             break;
@@ -1073,7 +1098,8 @@ namespace DFM.Shared.Repository
                             {
                                 if (!allInboundGeneral!.IsNullOrEmpty())
                                 {
-                                    childCharts.AddRange(allInboundGeneral!);
+                                    allInboundGeneral!.ForEach(x => rawCharts.Add((x!, 3)));
+                                    //childCharts.AddRange(allInboundGeneral!);
 
                                 }
                             }
@@ -1084,15 +1110,18 @@ namespace DFM.Shared.Repository
                                 var myInbound = allInboundGeneral.FirstOrDefault(x => x.ParentID == parentGeneral.Role.RoleID);
                                 if (myInbound != null)
                                 {
-                                    childCharts.Add(myInbound);
+                                    rawCharts.Add((myInbound!, 3));
+                                    //childCharts.Add(myInbound);
                                 }
                             }
                             break;
                         case RoleTypeModel.OutboundPrime:
-                            childCharts.AddRange(outboundPrime!);
+                            outboundPrime!.ForEach(x => rawCharts.Add((x!, 3)));
+                            //childCharts.AddRange(outboundPrime!);
                             break;
                         case RoleTypeModel.OutboundOfficePrime:
-                            childCharts.AddRange(outboundOffice!);
+                            outboundOffice!.ForEach(x => rawCharts.Add((x!, 3)));
+                            //childCharts.AddRange(outboundOffice!);
                             break;
                         case RoleTypeModel.OutboundGeneral:
                             // If roleItem is Outbound (Any outbound type) should see all Inbound general
@@ -1102,7 +1131,8 @@ namespace DFM.Shared.Repository
                             {
                                 if (!allInboundGeneral!.IsNullOrEmpty())
                                 {
-                                    childCharts.AddRange(allInboundGeneral!);
+                                    allInboundGeneral!.ForEach(x => rawCharts.Add((x!, 3)));
+                                    //childCharts.AddRange(allInboundGeneral!);
 
                                 }
                             }
@@ -1113,7 +1143,8 @@ namespace DFM.Shared.Repository
                                 var myInbound = allInboundGeneral.FirstOrDefault(x => x.ParentID == parentGeneral!.Role.RoleID);
                                 if (myInbound != null)
                                 {
-                                    childCharts.Add(myInbound);
+                                    rawCharts.Add((myInbound!, 3));
+                                    //childCharts.Add(myInbound);
                                 }
                             }
                             break;
@@ -1122,6 +1153,28 @@ namespace DFM.Shared.Repository
                     }
                 }
 
+                // Additional 
+                if (roleItem.RoleType == RoleTypeModel.InboundPrime)
+                {
+                    if (env.EnableSendThroughParentOfficePrime)
+                    {
+                        var roleAdditional = charts.FirstOrDefault(x => x.Role.RoleID == officePrime!.ParentID);
+                        if (roleAdditional != null)
+                        {
+                            rawCharts.Add((roleAdditional!, 5));
+                            //childCharts.Add(roleAdditional);
+                        }
+                    }
+                }
+
+
+                // ລຽງລຳດັບຕາມ Priority ແລ້ວປະກອບເຂົ້າໃນ ChildChart
+                foreach (var chart in rawCharts.OrderBy(x => x.Priority))
+                {
+                    childCharts.Add(chart.Content);
+                }
+
+                // ກວດຄືນຄວາມຖືກຕ້ອງ
                 if (childCharts.Count == 0)
                 {
                     return (0, default!, new CommonResponse
