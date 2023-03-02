@@ -48,11 +48,13 @@ namespace DFM.API.Controllers
         }
 
         [HttpGet("GetItem")]
+        //[AllowAnonymous]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(EmployeeModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetItemV1(CancellationToken cancellationToken = default(CancellationToken))
         {
+
             // Get UserID
             var userId = "";
 

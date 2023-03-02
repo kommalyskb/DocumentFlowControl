@@ -84,13 +84,17 @@ namespace DFM.Shared.Helper
         {
             try
             {
-                value.Password = "";
-                var jsonDoc = JsonSerializer.Serialize(value);
-                Console.WriteLine(jsonDoc);
-                var plainTextBytes = Encoding.UTF8.GetBytes(jsonDoc).ToHEX();
-                Console.WriteLine(plainTextBytes);
-                await jsRuntime.InvokeAsync<object>("localStorage.setItem",
-                                                       "employeeProfile", plainTextBytes);
+                if (value != null)
+                {
+                    value.Password = "";
+                    var jsonDoc = JsonSerializer.Serialize(value);
+                    Console.WriteLine(jsonDoc);
+                    var plainTextBytes = Encoding.UTF8.GetBytes(jsonDoc).ToHEX();
+                    Console.WriteLine(plainTextBytes);
+                    await jsRuntime.InvokeAsync<object>("localStorage.setItem",
+                                                           "employeeProfile", plainTextBytes);
+                }
+               
             }
             catch (Exception)
             {
@@ -104,12 +108,16 @@ namespace DFM.Shared.Helper
         {
             try
             {
-                var jsonDoc = JsonSerializer.Serialize(value);
-                Console.WriteLine(jsonDoc);
-                var plainTextBytes = Encoding.UTF8.GetBytes(jsonDoc).ToHEX();
-                Console.WriteLine(plainTextBytes);
-                await jsRuntime.InvokeAsync<object>("localStorage.setItem",
-                                                       "roles", plainTextBytes);
+                if (!value.IsNullOrEmpty())
+                {
+                    var jsonDoc = JsonSerializer.Serialize(value);
+                    Console.WriteLine(jsonDoc);
+                    var plainTextBytes = Encoding.UTF8.GetBytes(jsonDoc).ToHEX();
+                    Console.WriteLine(plainTextBytes);
+                    await jsRuntime.InvokeAsync<object>("localStorage.setItem",
+                                                           "roles", plainTextBytes);
+                }
+                
             }
             catch (Exception)
             {
@@ -123,12 +131,16 @@ namespace DFM.Shared.Helper
         {
             try
             {
-                var jsonDoc = JsonSerializer.Serialize(value);
-                Console.WriteLine(jsonDoc);
-                var plainTextBytes = Encoding.UTF8.GetBytes(jsonDoc).ToHEX();
-                Console.WriteLine(plainTextBytes);
-                await jsRuntime.InvokeAsync<object>("localStorage.setItem",
-                                                       "rules", plainTextBytes);
+                if (!value.IsNullOrEmpty())
+                {
+                    var jsonDoc = JsonSerializer.Serialize(value);
+                    Console.WriteLine(jsonDoc);
+                    var plainTextBytes = Encoding.UTF8.GetBytes(jsonDoc).ToHEX();
+                    Console.WriteLine(plainTextBytes);
+                    await jsRuntime.InvokeAsync<object>("localStorage.setItem",
+                                                           "rules", plainTextBytes);
+                }
+               
             }
             catch (Exception)
             {
