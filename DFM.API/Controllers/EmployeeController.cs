@@ -111,16 +111,69 @@ namespace DFM.API.Controllers
                 var validateResult = await identityHelper.ValidateUser(request.Username, checkAdminToken.Token);
 
                 bool isNewUser = false;
-
+                if (string.IsNullOrWhiteSpace(request.id))
+                {
+                    // New User
+                    isNewUser = true;
+                }
                 if (validateResult.SearchState == 2)
                 {
                     // Found user
                     request.id = validateResult.UserID;
-                    isNewUser = false;
+
+                    // Reset password
+                    if (isNewUser)
+                    {
+                        string password = $"{request.Password}@Dfm.codecamp";
+
+                        var reqUserContent = new UserResetRequest
+                        {
+                            userId = request.id,
+                            password = password,
+                            confirmPassword = password
+
+                        };
+                        Log.Information($"Reset User(New) SSO: {reqUserContent}");
+                        // Set password
+                        await httpService.Post<UserResetRequest>($"{endpoint.IdentityAPI}/api/Users/ChangePassword", reqUserContent, new AuthorizeHeader("bearer", checkAdminToken.Token), cancellationToken);
+
+                        // Send email
+                        if (!string.IsNullOrWhiteSpace(notify))
+                        {
+                            if (notify == "yes")
+                            {
+                                try
+                                {
+                                    string emailBody = emailHelper.RegisterMailBody($"{request.Name.Local} {request.FamilyName.Local}", request.Username, request.Password!);
+                                    await emailHelper.Send(new EmailProperty
+                                    {
+                                        Body = emailBody,
+                                        From = smtp.Email,
+                                        To = new List<string> { request.Contact.Email! },
+                                        Subject = $"ລົງທະບຽນນຳໃຊ້ລະບົບຈໍລະຈອນເອກະສານ"
+                                    });
+                                }
+                                catch (Exception)
+                                {
+
+                                }
+
+                            }
+                        }
+
+                        // Encrypt password before save to database
+                        if (aesConf.Base == BaseConfig.HEX)
+                        {
+                            request.Password = aes.Encrypt(password, aesConf.Key!.FromHEX(), aesConf.IV!.FromHEX()).ToHEX();
+                        }
+                        else
+                        {
+                            request.Password = aes.Encrypt(password, aesConf.Key!.FromBase64(), aesConf.IV!.FromBase64()).ToBase64();
+                        }
+                    }
                 }
                 else
                 {
-                    isNewUser = true;
                     // Register new User
                     var r = new UserRegisterRequestResponse
                     {
@@ -429,6 +482,7 @@ namespace DFM.API.Controllers
 
 
         [HttpGet("RemoveItem/{id}")]
+        [AllowAnonymous]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
@@ -447,7 +501,7 @@ namespace DFM.API.Controllers
                 var checkAdminToken = await identityHelper.GetAdminAccessToken();
                 var delUser = await httpService.Delete<object>($"{endpoint.IdentityAPI}/api/Users/{id}", new AuthorizeHeader("bearer", checkAdminToken.Token), cancellationToken);
                 var delUserContent = await delUser.HttpResponseMessage.Content.ReadAsStringAsync();
-                Log.Information(delUserContent);
+                Log.Information($"Delete_User: {id}");
 
                 return Ok(result);
             }
