@@ -1306,7 +1306,7 @@ namespace DFM.Shared.Repository
                     case RoleTypeModel.Prime:
                         return new CommonResponseId()
                         {
-                            Id = prime.Publisher,
+                            Id = prime!.Publisher,
                             Code = nameof(ResultCode.SUCCESS_OPERATION),
                             Success = true,
                             Detail = ResultCode.SUCCESS_OPERATION,
@@ -1315,7 +1315,7 @@ namespace DFM.Shared.Repository
                     case RoleTypeModel.DeputyPrime:
                         return new CommonResponseId()
                         {
-                            Id = prime.Publisher,
+                            Id = prime!.Publisher,
                             Code = nameof(ResultCode.SUCCESS_OPERATION),
                             Success = true,
                             Detail = ResultCode.SUCCESS_OPERATION,
@@ -1324,7 +1324,7 @@ namespace DFM.Shared.Repository
                     case RoleTypeModel.PrimeSecretary:
                         return new CommonResponseId()
                         {
-                            Id = prime.Publisher,
+                            Id = prime!.Publisher,
                             Code = nameof(ResultCode.SUCCESS_OPERATION),
                             Success = true,
                             Detail = ResultCode.SUCCESS_OPERATION,
@@ -1333,7 +1333,7 @@ namespace DFM.Shared.Repository
                     case RoleTypeModel.DeputyPrimeSecretary:
                         return new CommonResponseId()
                         {
-                            Id = prime.Publisher,
+                            Id = prime!.Publisher,
                             Code = nameof(ResultCode.SUCCESS_OPERATION),
                             Success = true,
                             Detail = ResultCode.SUCCESS_OPERATION,
@@ -1341,10 +1341,10 @@ namespace DFM.Shared.Repository
                         };
                     case RoleTypeModel.Director:
                         {
-                            var targetModel = getParent(charts, roleItem, RoleTypeModel.Director); // ໃນກໍລະນີນີ້ແມ່ນຈະຕ້ອງໄດ້ Loop ຊອກໄປເລື້ອຍໆ ຈົນກວ່າຈະພົບ RoleType ທີ່ຕ້ອງການ
+                            //var targetModel = getParent(charts, roleItem, RoleTypeModel.Director); // ໃນກໍລະນີນີ້ແມ່ນຈະຕ້ອງໄດ້ Loop ຊອກໄປເລື້ອຍໆ ຈົນກວ່າຈະພົບ RoleType ທີ່ຕ້ອງການ
                             return new CommonResponseId()
                             {
-                                Id = targetModel.Publisher,
+                                Id = roleItem!.Publisher,
                                 Code = nameof(ResultCode.SUCCESS_OPERATION),
                                 Success = true,
                                 Detail = ResultCode.SUCCESS_OPERATION,
@@ -1356,7 +1356,7 @@ namespace DFM.Shared.Repository
                             var targetModel = getParent(charts, roleItem, RoleTypeModel.Director); // ໃນກໍລະນີນີ້ແມ່ນຈະຕ້ອງໄດ້ Loop ຊອກໄປເລື້ອຍໆ ຈົນກວ່າຈະພົບ RoleType ທີ່ຕ້ອງການ
                             return new CommonResponseId()
                             {
-                                Id = targetModel.Publisher,
+                                Id = targetModel!.Publisher,
                                 Code = nameof(ResultCode.SUCCESS_OPERATION),
                                 Success = true,
                                 Detail = ResultCode.SUCCESS_OPERATION,
@@ -1366,7 +1366,7 @@ namespace DFM.Shared.Repository
                     case RoleTypeModel.OfficePrime:
                         return new CommonResponseId()
                         {
-                            Id = officePrime.Publisher,
+                            Id = officePrime!.Publisher,
                             Code = nameof(ResultCode.SUCCESS_OPERATION),
                             Success = true,
                             Detail = ResultCode.SUCCESS_OPERATION,
@@ -1375,7 +1375,7 @@ namespace DFM.Shared.Repository
                     case RoleTypeModel.DeputyOfficePrime:
                         return new CommonResponseId()
                         {
-                            Id = officePrime.Publisher,
+                            Id = officePrime!.Publisher,
                             Code = nameof(ResultCode.SUCCESS_OPERATION),
                             Success = true,
                             Detail = ResultCode.SUCCESS_OPERATION,
@@ -1383,10 +1383,10 @@ namespace DFM.Shared.Repository
                         };
                     case RoleTypeModel.General:
                         {
-                            var targetModel = getParent(charts, roleItem, RoleTypeModel.General); // ໃນກໍລະນີນີ້ແມ່ນຈະຕ້ອງໄດ້ Loop ຊອກໄປເລື້ອຍໆ ຈົນກວ່າຈະພົບ RoleType ທີ່ຕ້ອງການ
+                            //var targetModel = getParent(charts, roleItem, RoleTypeModel.General); // ໃນກໍລະນີນີ້ແມ່ນຈະຕ້ອງໄດ້ Loop ຊອກໄປເລື້ອຍໆ ຈົນກວ່າຈະພົບ RoleType ທີ່ຕ້ອງການ
                             return new CommonResponseId()
                             {
-                                Id = targetModel.Publisher,
+                                Id = roleItem!.Publisher,
                                 Code = nameof(ResultCode.SUCCESS_OPERATION),
                                 Success = true,
                                 Detail = ResultCode.SUCCESS_OPERATION,
@@ -1398,7 +1398,7 @@ namespace DFM.Shared.Repository
                             var targetModel = getParent(charts, roleItem, RoleTypeModel.General); // ໃນກໍລະນີນີ້ແມ່ນຈະຕ້ອງໄດ້ Loop ຊອກໄປເລື້ອຍໆ ຈົນກວ່າຈະພົບ RoleType ທີ່ຕ້ອງການ
                             return new CommonResponseId()
                             {
-                                Id = targetModel.Publisher,
+                                Id = targetModel!.Publisher,
                                 Code = nameof(ResultCode.SUCCESS_OPERATION),
                                 Success = true,
                                 Detail = ResultCode.SUCCESS_OPERATION,
@@ -1410,7 +1410,7 @@ namespace DFM.Shared.Repository
                             var targetModel = getParent(charts, roleItem, RoleTypeModel.General); // ໃນກໍລະນີນີ້ແມ່ນຈະຕ້ອງໄດ້ Loop ຊອກໄປເລື້ອຍໆ ຈົນກວ່າຈະພົບ RoleType ທີ່ຕ້ອງການ
                             return new CommonResponseId()
                             {
-                                Id = targetModel.Publisher,
+                                Id = targetModel!.Publisher,
                                 Code = nameof(ResultCode.SUCCESS_OPERATION),
                                 Success = true,
                                 Detail = ResultCode.SUCCESS_OPERATION,
@@ -1422,7 +1422,7 @@ namespace DFM.Shared.Repository
                             var targetModel = getParent(charts, roleItem, RoleTypeModel.General); // ໃນກໍລະນີນີ້ແມ່ນຈະຕ້ອງໄດ້ Loop ຊອກໄປເລື້ອຍໆ ຈົນກວ່າຈະພົບ RoleType ທີ່ຕ້ອງການ
                             return new CommonResponseId()
                             {
-                                Id = targetModel.Publisher,
+                                Id = targetModel!.Publisher,
                                 Code = nameof(ResultCode.SUCCESS_OPERATION),
                                 Success = true,
                                 Detail = ResultCode.SUCCESS_OPERATION,
@@ -1436,7 +1436,7 @@ namespace DFM.Shared.Repository
                             {
                                 return new CommonResponseId()
                                 {
-                                    Id = officePrime.Publisher,
+                                    Id = officePrime!.Publisher,
                                     Code = nameof(ResultCode.SUCCESS_OPERATION),
                                     Success = true,
                                     Detail = ResultCode.SUCCESS_OPERATION,
@@ -1445,7 +1445,7 @@ namespace DFM.Shared.Repository
                             }
                             return new CommonResponseId()
                             {
-                                Id = targetModel.Publisher,
+                                Id = targetModel!.Publisher,
                                 Code = nameof(ResultCode.SUCCESS_OPERATION),
                                 Success = true,
                                 Detail = ResultCode.SUCCESS_OPERATION,
@@ -1459,7 +1459,7 @@ namespace DFM.Shared.Repository
                             {
                                 return new CommonResponseId()
                                 {
-                                    Id = officePrime.Publisher,
+                                    Id = officePrime!.Publisher,
                                     Code = nameof(ResultCode.SUCCESS_OPERATION),
                                     Success = true,
                                     Detail = ResultCode.SUCCESS_OPERATION,
@@ -1468,7 +1468,7 @@ namespace DFM.Shared.Repository
                             }
                             return new CommonResponseId()
                             {
-                                Id = targetModel.Publisher,
+                                Id = targetModel!.Publisher,
                                 Code = nameof(ResultCode.SUCCESS_OPERATION),
                                 Success = true,
                                 Detail = ResultCode.SUCCESS_OPERATION,
@@ -1482,7 +1482,7 @@ namespace DFM.Shared.Repository
                             {
                                 return new CommonResponseId()
                                 {
-                                    Id = officePrime.Publisher,
+                                    Id = officePrime!.Publisher,
                                     Code = nameof(ResultCode.SUCCESS_OPERATION),
                                     Success = true,
                                     Detail = ResultCode.SUCCESS_OPERATION,
@@ -1491,7 +1491,7 @@ namespace DFM.Shared.Repository
                             }
                             return new CommonResponseId()
                             {
-                                Id = targetModel.Publisher,
+                                Id = targetModel!.Publisher,
                                 Code = nameof(ResultCode.SUCCESS_OPERATION),
                                 Success = true,
                                 Detail = ResultCode.SUCCESS_OPERATION,
@@ -1505,7 +1505,7 @@ namespace DFM.Shared.Repository
                             {
                                 return new CommonResponseId()
                                 {
-                                    Id = officePrime.Publisher,
+                                    Id = officePrime!.Publisher,
                                     Code = nameof(ResultCode.SUCCESS_OPERATION),
                                     Success = true,
                                     Detail = ResultCode.SUCCESS_OPERATION,
@@ -1514,7 +1514,7 @@ namespace DFM.Shared.Repository
                             }
                             return new CommonResponseId()
                             {
-                                Id = targetModel.Publisher,
+                                Id = targetModel!.Publisher,
                                 Code = nameof(ResultCode.SUCCESS_OPERATION),
                                 Success = true,
                                 Detail = ResultCode.SUCCESS_OPERATION,
@@ -1528,7 +1528,7 @@ namespace DFM.Shared.Repository
                             {
                                 return new CommonResponseId()
                                 {
-                                    Id = officePrime.Publisher,
+                                    Id = officePrime!.Publisher,
                                     Code = nameof(ResultCode.SUCCESS_OPERATION),
                                     Success = true,
                                     Detail = ResultCode.SUCCESS_OPERATION,
@@ -1537,7 +1537,7 @@ namespace DFM.Shared.Repository
                             }
                             return new CommonResponseId()
                             {
-                                Id = targetModel.Publisher,
+                                Id = targetModel!.Publisher,
                                 Code = nameof(ResultCode.SUCCESS_OPERATION),
                                 Success = true,
                                 Detail = ResultCode.SUCCESS_OPERATION,
@@ -1551,7 +1551,7 @@ namespace DFM.Shared.Repository
                             {
                                 return new CommonResponseId()
                                 {
-                                    Id = officePrime.Publisher,
+                                    Id = officePrime!.Publisher,
                                     Code = nameof(ResultCode.SUCCESS_OPERATION),
                                     Success = true,
                                     Detail = ResultCode.SUCCESS_OPERATION,
@@ -1560,7 +1560,7 @@ namespace DFM.Shared.Repository
                             }
                             return new CommonResponseId()
                             {
-                                Id = targetModel.Publisher,
+                                Id = targetModel!.Publisher,
                                 Code = nameof(ResultCode.SUCCESS_OPERATION),
                                 Success = true,
                                 Detail = ResultCode.SUCCESS_OPERATION,
@@ -1574,7 +1574,7 @@ namespace DFM.Shared.Repository
                             {
                                 return new CommonResponseId()
                                 {
-                                    Id = officePrime.Publisher,
+                                    Id = officePrime!.Publisher,
                                     Code = nameof(ResultCode.SUCCESS_OPERATION),
                                     Success = true,
                                     Detail = ResultCode.SUCCESS_OPERATION,
@@ -1583,7 +1583,7 @@ namespace DFM.Shared.Repository
                             }
                             return new CommonResponseId()
                             {
-                                Id = targetModel.Publisher,
+                                Id = targetModel!.Publisher,
                                 Code = nameof(ResultCode.SUCCESS_OPERATION),
                                 Success = true,
                                 Detail = ResultCode.SUCCESS_OPERATION,
@@ -1602,7 +1602,7 @@ namespace DFM.Shared.Repository
                     case RoleTypeModel.InboundOfficePrime:
                         return new CommonResponseId()
                         {
-                            Id = officePrime.Publisher,
+                            Id = officePrime!.Publisher,
                             Code = nameof(ResultCode.SUCCESS_OPERATION),
                             Success = true,
                             Detail = ResultCode.SUCCESS_OPERATION,
@@ -1615,7 +1615,7 @@ namespace DFM.Shared.Repository
                             {
                                 return new CommonResponseId()
                                 {
-                                    Id = officePrime.Publisher,
+                                    Id = officePrime!.Publisher,
                                     Code = nameof(ResultCode.SUCCESS_OPERATION),
                                     Success = true,
                                     Detail = ResultCode.SUCCESS_OPERATION,
@@ -1624,7 +1624,7 @@ namespace DFM.Shared.Repository
                             }
                             return new CommonResponseId()
                             {
-                                Id = targetModel.Publisher,
+                                Id = targetModel!.Publisher,
                                 Code = nameof(ResultCode.SUCCESS_OPERATION),
                                 Success = true,
                                 Detail = ResultCode.SUCCESS_OPERATION,
@@ -1643,7 +1643,7 @@ namespace DFM.Shared.Repository
                     case RoleTypeModel.OutboundOfficePrime:
                         return new CommonResponseId()
                         {
-                            Id = officePrime.Publisher,
+                            Id = officePrime!.Publisher,
                             Code = nameof(ResultCode.SUCCESS_OPERATION),
                             Success = true,
                             Detail = ResultCode.SUCCESS_OPERATION,
@@ -1656,7 +1656,7 @@ namespace DFM.Shared.Repository
                             {
                                 return new CommonResponseId()
                                 {
-                                    Id = officePrime.Publisher,
+                                    Id = officePrime!.Publisher,
                                     Code = nameof(ResultCode.SUCCESS_OPERATION),
                                     Success = true,
                                     Detail = ResultCode.SUCCESS_OPERATION,
@@ -1665,7 +1665,7 @@ namespace DFM.Shared.Repository
                             }
                             return new CommonResponseId()
                             {
-                                Id = targetModel.Publisher,
+                                Id = targetModel!.Publisher,
                                 Code = nameof(ResultCode.SUCCESS_OPERATION),
                                 Success = true,
                                 Detail = ResultCode.SUCCESS_OPERATION,

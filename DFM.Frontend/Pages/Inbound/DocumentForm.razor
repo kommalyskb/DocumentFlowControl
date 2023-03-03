@@ -312,9 +312,9 @@
             <h2>ຂໍ້ມູນການເກັບຮັກສາສຳເນົາ</h2>
         </MudItem>
         <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
-            <MudCheckBox Disabled="OnProcessing" @bind-Checked="NoNeedFolder" Label="ບໍ່ຕ້ອງການໃຫ້ໃສ່ເລກທີ່" Color="Color.Primary"></MudCheckBox>
+            <MudCheckBox Disabled="OnProcessing" @bind-Checked="NeedFolder" Label="ຕ້ອງການໃຫ້ໃສ່ເລກທີ່" Color="Color.Primary"></MudCheckBox>
         </MudItem>
-        @if (!NoNeedFolder)
+        @if (NeedFolder)
         {
             <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
 
@@ -443,7 +443,7 @@
     [Parameter] public EventCallback<string> Notice { get; set; }
     [Parameter] public RawDocumentData? RawDocument { get; set; }
     [Parameter] public PartialRole? MyRole { get; set; }
-    [Parameter] public bool NoNeedFolder { get; set; }
+    [Parameter] public bool NeedFolder { get; set; }
 
     bool previewButton = false;
     string? token = "";

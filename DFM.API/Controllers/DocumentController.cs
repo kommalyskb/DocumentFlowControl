@@ -308,6 +308,7 @@ namespace DFM.API.Controllers
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [HttpPost("SaveDocument/{roleId}")]
+        //[AllowAnonymous]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(CommonResponseId), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
@@ -631,7 +632,7 @@ namespace DFM.API.Controllers
                             //
                             if (envConf.EmailNotify)
                             {
-                                var itemRole = await organization.GetEmployee(request.DocumentModel!.OrganizationID!, item.TreeModel.Role.RoleID!);
+                                var itemRole = await organization.GetEmployee(request.DocumentModel!.OrganizationID!, item.Model!.Role.RoleID!);
                                 var itemProfile = await employeeManager.GetProfile(itemRole.Content.Employee.UserID!);
 
                                 emails.Add(itemProfile.Content.Contact.Email!);
@@ -654,9 +655,9 @@ namespace DFM.API.Controllers
                                 SendRoleType = OperationType.NoProcess,
                                 RecipientInfo = new RoleTraceModel
                                 {
-                                    Position = item.TreeModel.Role.Display,
-                                    RoleID = item.TreeModel.Role.RoleID,
-                                    RoleType = item.TreeModel.Role.RoleType,
+                                    Position = item.Model!.Role.Display,
+                                    RoleID = item.Model!.Role.RoleID,
+                                    RoleType = item.Model!.Role.RoleType,
                                     //Fullname = new ShortEmpInfo
                                     //{
                                     //    EmployeeID = myProfile.Content.EmployeeID,
@@ -1076,7 +1077,7 @@ namespace DFM.API.Controllers
                             //
                             if (envConf.EmailNotify)
                             {
-                                var itemRole = await organization.GetEmployee(request.DocumentModel!.OrganizationID!, item.TreeModel.Role.RoleID!);
+                                var itemRole = await organization.GetEmployee(request.DocumentModel!.OrganizationID!, item.Model!.Role.RoleID!);
                                 var itemProfile = await employeeManager.GetProfile(itemRole.Content.Employee.UserID! );
                                 emails.Add(itemProfile.Content.Contact.Email!);
                             }
@@ -1098,9 +1099,9 @@ namespace DFM.API.Controllers
                                 SendRoleType = OperationType.NoProcess,
                                 RecipientInfo = new RoleTraceModel
                                 {
-                                    Position = item.TreeModel.Role.Display,
-                                    RoleID = item.TreeModel.Role.RoleID,
-                                    RoleType = item.TreeModel.Role.RoleType,
+                                    Position = item.Model!.Role.Display,
+                                    RoleID = item.Model!.Role.RoleID,
+                                    RoleType = item.Model!.Role.RoleType,
                                     //Fullname = new ShortEmpInfo
                                     //{
                                     //    EmployeeID = myProfile.Content.EmployeeID,

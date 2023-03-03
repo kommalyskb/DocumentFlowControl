@@ -104,12 +104,16 @@ namespace DFM.Frontend.Pages
                         var expected = result.Response.ToList();
                         expected.RemoveAll(x => x.Role.RoleID == roleId);
                         recipients = expected;
-
+                        if (recipients.IsNullOrEmpty())
+                        {
+                            showSendButton = false;
+                        }
 
                     }
                     else
                     {
                         recipients = null;
+                        showSendButton = false;
                     }
                 }
             }
@@ -546,11 +550,11 @@ namespace DFM.Frontend.Pages
                         // Bind Receiver
                         documentRequest.Main = generateMain(mainReciver, recipients!);
                         documentRequest.CoProcesses = generateCoprocess(recipients!.Where(x => x.CoProcess && x.Role.RoleID != mainReciver!.Id));
+                        
+                        var contentStr = JsonSerializer.Serialize(documentRequest);
 
                         // Send request for save document
                         var result = await httpService.Post<DocumentRequest, CommonResponseId>(url, documentRequest, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
-
-
 
                         onProcessing = false;
 
@@ -566,7 +570,7 @@ namespace DFM.Frontend.Pages
 
                             }
                             List<string>? notifyRole = new List<string>() { documentRequest.Main.Id! };
-                            notifyRole.AddRange(documentRequest.CoProcesses.Select(x => x.TreeModel.Role.RoleID)!);
+                            notifyRole.AddRange(documentRequest.CoProcesses.Select(x => x.Model!.Role.RoleID)!);
                             // Save notification
                             List<Task> noticeTasks = new();
                             NotificationModel noticeRequest = new NotificationModel
@@ -578,7 +582,8 @@ namespace DFM.Frontend.Pages
                                 RoleID = documentRequest.Main.Id,
                                 Title = documentRequest.RawDocument.Title,
                                 SendFrom = $"{employee.Name.Local} {employee.FamilyName.Local}",
-                                ChangeNote = "ເອກະສານສົ່ງໃຫ້ທ່ານເປັນຜູ້ແກ້ໄຂຫຼັກ"
+                                ChangeNote = "ເອກະສານສົ່ງໃຫ້ທ່ານເປັນຜູ້ແກ້ໄຂຫຼັກ",
+                                SendFromRole = myRole!.RecipientInfo.Position.Local
                             };
                             noticeTasks.Add(httpService.Post<NotificationModel, CommonResponse>($"{endpoint.API}/api/v1/Notification/Create", noticeRequest, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token));
 
@@ -594,10 +599,11 @@ namespace DFM.Frontend.Pages
                                         id = Guid.NewGuid().ToString("N"),
                                         IsRead = false,
                                         ModuleType = r.InboxType == InboxType.Inbound ? ModuleType.DocumentInbound : ModuleType.DocumentOutbound,
-                                        RoleID = r.TreeModel.Role.RoleID,
+                                        RoleID = r.Model!.Role.RoleID,
                                         Title = documentRequest.RawDocument.Title,
                                         SendFrom = $"{employee.Name.Local} {employee.FamilyName.Local}",
-                                        ChangeNote = "ເອກະສານສົ່ງໃຫ້ທ່ານແບບຕິດຕາມ"
+                                        ChangeNote = "ເອກະສານສົ່ງໃຫ້ທ່ານແບບຕິດຕາມ",
+                                        SendFromRole = myRole.RecipientInfo.Position.Local
                                     };
                                     noticeTasks.Add(httpService.Post<NotificationModel, CommonResponse>($"{endpoint.API}/api/v1/Notification/Create", ccNoticeRequest, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token));
                                 }
@@ -867,11 +873,11 @@ namespace DFM.Frontend.Pages
                     }
                     if (string.IsNullOrWhiteSpace(rawDocument.FolderId))
                     {
-                        noNeedFolder = true;
+                        needFolder = false;
                     }
                     else
                     {
-                        noNeedFolder = false;
+                        needFolder = true;
                     }
                 }
                 else
@@ -890,29 +896,29 @@ namespace DFM.Frontend.Pages
 
         }
 
-        private List<(RoleTreeModel TreeModel, InboxType InboxType)> generateCoprocess(IEnumerable<RoleTreeModel> roleTrees) 
+        private List<CoProcessRequest> generateCoprocess(IEnumerable<RoleTreeModel> roleTrees) 
         {
-            List<(RoleTreeModel TreeModel, InboxType InboxType)>? result = new();
+            List<CoProcessRequest>? result = new();
             foreach (var item in roleTrees)
             {
                 if (item.RoleType == RoleTypeModel.InboundGeneral || item.RoleType == RoleTypeModel.InboundOfficePrime || item.RoleType == RoleTypeModel.InboundPrime)
                 {
-                    result.Add((item, InboxType.Inbound));
+                    result.Add(new CoProcessRequest(item, InboxType.Inbound));
 
                 }
                 else if (item.RoleType == RoleTypeModel.OutboundGeneral || item.RoleType == RoleTypeModel.OutboundOfficePrime || item.RoleType == RoleTypeModel.OutboundPrime)
                 {
-                    result.Add((item, InboxType.Outbound));
+                    result.Add(new CoProcessRequest(item, InboxType.Outbound));
                 }
                 else
                 {
                     if (Link == "inbound")
                     {
-                        result.Add((item, InboxType.Inbound));
+                        result.Add(new CoProcessRequest(item, InboxType.Inbound));
                     }
                     else
                     {
-                        result.Add((item, InboxType.Outbound));
+                        result.Add(new CoProcessRequest(item, InboxType.Outbound));
                     }
                 }
             }
@@ -1028,7 +1034,7 @@ namespace DFM.Frontend.Pages
                 await getPublisher();
             }
             rawDocument!.ResponseUnit = publisher!.Id;
-            noNeedFolder = true;
+            needFolder = false;
         }
         void onMessageAlert(string message)
         {
@@ -1150,12 +1156,17 @@ namespace DFM.Frontend.Pages
                     var expected = result.Response.ToList();
                     expected.RemoveAll(x => x.Role.RoleID == roleId);
                     recipients = expected;
+                    if (recipients.IsNullOrEmpty())
+                    {
+                        showSendButton = false;
+                    }
 
 
                 }
                 else
                 {
                     recipients = null;
+                    showSendButton = false;
                 }
 
                 // Get Publisher
@@ -1175,7 +1186,7 @@ namespace DFM.Frontend.Pages
         }
         private async Task getPublisher()
         {
-            string urlGetPublisher = $"{endpoint.API}/api/v1/Organization/GetPublisher/{employee.OrganizationID!}/{roleId}";
+            string urlGetPublisher = $"{endpoint.API}/api/v1/Organization/GetPublisher/{employee!.OrganizationID!}/{roleId}";
             var publisherResult = await httpService.Get<CommonResponseId>(urlGetPublisher, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
 
             if (publisherResult.Success)

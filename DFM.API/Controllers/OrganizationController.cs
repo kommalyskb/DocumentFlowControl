@@ -146,6 +146,7 @@ namespace DFM.API.Controllers
         }
 
         [HttpGet("GetPublisher/{id}/{roleId}")]
+        //[AllowAnonymous]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(CommonResponseId), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]

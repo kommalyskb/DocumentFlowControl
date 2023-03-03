@@ -38,13 +38,13 @@
                     else if (formMode == FormMode.Create)
                     {
 
-                        <DFM.Frontend.Pages.Inbound.DocumentForm RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument" NoNeedFolder="noNeedFolder"
+                        <DFM.Frontend.Pages.Inbound.DocumentForm RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument" NeedFolder="needFolder"
                                                                  DocumentModel="documentModel" Attachments="files" Notice="onMessageAlert" MyRole="selectedRole"
                                                                  RelateFiles="relateFiles" Mode="formMode"></DFM.Frontend.Pages.Inbound.DocumentForm>
                     }
                     else if (formMode == FormMode.Edit)
                     {
-                        <DFM.Frontend.Pages.Inbound.DocumentForm RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument" NoNeedFolder="noNeedFolder"
+                        <DFM.Frontend.Pages.Inbound.DocumentForm RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument" NeedFolder="needFolder"
                                                                  DocumentModel="documentModel" Attachments="files" Notice="onMessageAlert" MyRole="selectedRole"
                                                                  RelateFiles="relateFiles" Mode="formMode"></DFM.Frontend.Pages.Inbound.DocumentForm>
                     }
@@ -65,13 +65,13 @@
                     }
                     else if (formMode == FormMode.Create)
                     {
-                        <DFM.Frontend.Pages.Outbound.DocumentForm RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument" NoNeedFolder="noNeedFolder"
+                        <DFM.Frontend.Pages.Outbound.DocumentForm RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument" NeedFolder="needFolder"
                                                                   DocumentModel="documentModel" Attachments="files" Notice="onMessageAlert" MyRole="selectedRole"
                                                                   RelateFiles="relateFiles" Mode="formMode"></DFM.Frontend.Pages.Outbound.DocumentForm>
                     }
                     else if (formMode == FormMode.Edit)
                     {
-                        <DFM.Frontend.Pages.Outbound.DocumentForm RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument" NoNeedFolder="noNeedFolder"
+                        <DFM.Frontend.Pages.Outbound.DocumentForm RoleId="@roleId" OnProcessing="onProcessing" RawDocument="rawDocument" NeedFolder="needFolder"
                                                                   DocumentModel="documentModel" Attachments="files" Notice="onMessageAlert" MyRole="selectedRole"
                                                                   RelateFiles="relateFiles" Mode="formMode"></DFM.Frontend.Pages.Outbound.DocumentForm>
                     }
@@ -95,7 +95,7 @@
 
 <MudMessageBox @ref="mbox" Title="ສົ່ງເອກະສານ">
     <MessageContent>
-        @if (recipients.IsNullOrEmpty())
+        @if (recipients!.IsNullOrEmpty())
         {
             <MudText Typo="Typo.subtitle1" Align="Align.Center">ບໍ່ມີຜູ້ຮັບເອກະສານ ສຳລັບຕຳແໜ່ງຂອງທ່ານ, ທ່ານສາມາດກົດ ສິ້ນການຈໍລະຈອນເອກະສານແທນໄດ້</MudText>
         }
@@ -107,7 +107,7 @@
 
     </MessageContent>
     <YesButton>
-        @if (!recipients.IsNullOrEmpty())
+        @if (!recipients!.IsNullOrEmpty())
         {
             <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save">ສົ່ງຕໍ່</MudButton>
         }
@@ -174,7 +174,7 @@
     IList<AttachmentDto> files = new List<AttachmentDto>();
     IList<AttachmentDto> relateFiles = new List<AttachmentDto>();
     Reciepient? myRole = new();
-    bool noNeedFolder = true;
+    bool needFolder = false;
 
     private CancellationTokenSource cts = new CancellationTokenSource();
 
