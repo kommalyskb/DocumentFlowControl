@@ -62,6 +62,7 @@ namespace DFM.Shared.Repository
                 if (result.IsSuccess)
                 {
                     request.revision = result.Rev;
+                    request.id = result.Id;
                     await context.InsertAsync(request);
 
                     return new CommonResponseId()

@@ -3,6 +3,7 @@ using DFM.Shared.DTOs;
 using DFM.Shared.Helper;
 using Minio.DataModel;
 using Redis.OM.Modeling;
+using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,5 +40,22 @@ namespace DFM.Shared.Entities
 
         [Indexed]
         public string? SendFromRole { get; set; }
+        [Indexed]
+        public string? Firstname
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(this.SendFrom))
+                {
+                    return "";
+                }
+                else
+                {
+                    var arr = this.SendFrom.Split(' ');
+                    return arr[0];
+                }
+            }
+        }
+
     }
 }

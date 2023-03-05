@@ -686,7 +686,7 @@ namespace DFM.Shared.Repository
                 }, default!);
             }
 
-           
+
             return (org.Response, rolesDto);
 
         }
@@ -825,7 +825,7 @@ namespace DFM.Shared.Repository
                 var allInboundGeneral = charts.Where(x => x.RoleType == RoleTypeModel.InboundGeneral).ToList(); // ດຶງເອົາຂາເຂົ້າທຸກຝ່າຍໃນ ບໍລິສັດ
                 var allOutboundGeneral = charts.Where(x => x.RoleType == RoleTypeModel.OutboundGeneral).ToList(); // ດຶງເອົາຂາອກທຸກຝ່າຍໃນ ບໍລິສັດ
                 List<RoleTreeModel> childCharts = new();
-                List<(RoleTreeModel Content, int Priority) > rawCharts = new();
+                List<(RoleTreeModel Content, int Priority)> rawCharts = new();
 
                 foreach (var item in flowItem!.RoleTargets!)
                 {
@@ -859,9 +859,9 @@ namespace DFM.Shared.Repository
 
                                     }
                                 }
-                                
+
                             }
-                            
+
                             break;
                         case RoleTypeModel.PrimeSecretary:
                             if (!secretPrimes!.IsNullOrEmpty())
@@ -1297,7 +1297,7 @@ namespace DFM.Shared.Repository
                     };
                 }
 
-                
+
                 var charts = existing.Content.Chart;
                 var prime = charts.FirstOrDefault(x => x.RoleType == RoleTypeModel.Prime); // ດຶງເອົາຂໍ້ມູນຂອງປະທານ ເພາະມີແຕ່ຄົນດຽວ
                 var officePrime = charts.FirstOrDefault(x => x.RoleType == RoleTypeModel.OfficePrime);// ດຶງເອົາຂໍ້ມູນຂອງ ຫົວຫນ້າຫ້ອງການ ບໍລິສັດ ເພາະມີແຕ່ຄົນດຽວ
@@ -1730,7 +1730,7 @@ namespace DFM.Shared.Repository
         public async Task<bool> IsInSameParent(string? orgId, string? child1, string? child2, CancellationToken cancellationToken = default)
         {
             // Find the existing record
-            var existing = await GetOrganization(orgId, cancellationToken);
+            var existing = await GetOrganization(orgId!, cancellationToken);
             if (!existing.Response.Success)
             {
                 return false;
@@ -1777,14 +1777,18 @@ namespace DFM.Shared.Repository
             //    return false;
             //}
 
-            
+
         }
         private bool isInSameParent(IEnumerable<RoleTreeModel> charts, RoleTreeModel parent1, RoleTreeModel parent2)
         {
-            if (parent1.RoleType == RoleTypeModel.General || parent1.RoleType == RoleTypeModel.OfficePrime || parent1.RoleType == RoleTypeModel.Prime || parent1.ParentID == "0")
+            if (parent1.RoleType == RoleTypeModel.General || parent1.RoleType == RoleTypeModel.OfficePrime ||
+                parent1.RoleType == RoleTypeModel.Prime || parent1.ParentID == "0" ||
+                parent1.RoleType == RoleTypeModel.Director)
             {
                 // Child 1 stop at top of root
-                if (parent2.RoleType == RoleTypeModel.General || parent2.RoleType == RoleTypeModel.OfficePrime || parent2.RoleType == RoleTypeModel.Prime || parent2.ParentID == "0")
+                if (parent2.RoleType == RoleTypeModel.General || parent2.RoleType == RoleTypeModel.OfficePrime ||
+                    parent2.RoleType == RoleTypeModel.Prime || parent2.ParentID == "0" ||
+                    parent2.RoleType == RoleTypeModel.Director)
                 {
                     // Child 2 also come to top of root
 
@@ -1820,10 +1824,14 @@ namespace DFM.Shared.Repository
                     }
                 }
             }
-            if (parent2.RoleType == RoleTypeModel.General || parent2.RoleType == RoleTypeModel.OfficePrime || parent2.RoleType == RoleTypeModel.Prime || parent2.ParentID == "0")
+            if (parent2.RoleType == RoleTypeModel.General || parent2.RoleType == RoleTypeModel.OfficePrime || 
+                parent2.RoleType == RoleTypeModel.Prime || parent2.ParentID == "0" ||
+                parent2.RoleType == RoleTypeModel.Director)
             {
                 // Child 2 stop at top of root
-                if (parent1.RoleType == RoleTypeModel.General || parent1.RoleType == RoleTypeModel.OfficePrime || parent1.RoleType == RoleTypeModel.Prime || parent1.ParentID == "0")
+                if (parent1.RoleType == RoleTypeModel.General || parent1.RoleType == RoleTypeModel.OfficePrime || 
+                    parent1.RoleType == RoleTypeModel.Prime || parent1.ParentID == "0" ||
+                    parent1.RoleType == RoleTypeModel.Director)
                 {
                     // Child 1 also come to top of root
 

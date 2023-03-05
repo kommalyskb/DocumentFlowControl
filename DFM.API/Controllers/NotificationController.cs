@@ -120,7 +120,7 @@ namespace DFM.API.Controllers
 
                 request.UserIDRead = "";
                 request.IsRead = false;
-                Log.Information(JsonSerializer.Serialize(request));
+                //Log.Information(JsonSerializer.Serialize(request));
                 var result = await notificationManager.CreateNotice(request, cancellationToken);
 
                 if (!result.Success)

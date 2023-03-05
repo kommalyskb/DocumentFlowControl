@@ -576,7 +576,7 @@ namespace DFM.Frontend.Pages
                             NotificationModel noticeRequest = new NotificationModel
                             {
                                 RefDocument = result.Response.Id,
-                                id = Guid.NewGuid().ToString("N"),
+                                //id = Guid.NewGuid().ToString("N"),
                                 IsRead = false,
                                 ModuleType = documentRequest.Main.InboxType == InboxType.Inbound ? ModuleType.DocumentInbound : ModuleType.DocumentOutbound,
                                 RoleID = documentRequest.Main.Id,
@@ -596,7 +596,7 @@ namespace DFM.Frontend.Pages
                                     NotificationModel ccNoticeRequest = new NotificationModel
                                     {
                                         RefDocument = result.Response.Id,
-                                        id = Guid.NewGuid().ToString("N"),
+                                        //id = Guid.NewGuid().ToString("N"),
                                         IsRead = false,
                                         ModuleType = r.InboxType == InboxType.Inbound ? ModuleType.DocumentInbound : ModuleType.DocumentOutbound,
                                         RoleID = r.Model!.Role.RoleID,
