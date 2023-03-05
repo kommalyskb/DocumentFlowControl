@@ -14,6 +14,7 @@ using Redis.OM;
 using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -824,6 +825,7 @@ namespace DFM.Shared.Repository
                 var outboundOffice = charts.Where(x => x.RoleType == RoleTypeModel.OutboundOfficePrime).ToList(); // ດຶງເອົາຂາອອກ ບໍລິສັດ
                 var allInboundGeneral = charts.Where(x => x.RoleType == RoleTypeModel.InboundGeneral).ToList(); // ດຶງເອົາຂາເຂົ້າທຸກຝ່າຍໃນ ບໍລິສັດ
                 var allOutboundGeneral = charts.Where(x => x.RoleType == RoleTypeModel.OutboundGeneral).ToList(); // ດຶງເອົາຂາອກທຸກຝ່າຍໃນ ບໍລິສັດ
+                //var allGeneral = charts.Where(x => x.RoleType == RoleTypeModel.General).ToList(); // ດຶງເອົາຫົວຫນ້າຝ່າຍໃນ ບໍລິສັດ
                 List<RoleTreeModel> childCharts = new();
                 List<(RoleTreeModel Content, int Priority)> rawCharts = new();
 
@@ -1105,14 +1107,22 @@ namespace DFM.Shared.Repository
                             }
                             else
                             {
-                                var parentGeneral = getParent(charts, roleItem, RoleTypeModel.General);
-
-                                var myInbound = allInboundGeneral.FirstOrDefault(x => x.ParentID == parentGeneral.Role.RoleID);
-                                if (myInbound != null)
+                                //var parentGeneral = getParent(charts, roleItem, RoleTypeModel.General);
+                                var parentGeneral = findGeneral(charts, roleItem);
+                                if (parentGeneral != null)
                                 {
-                                    rawCharts.Add((myInbound!, 3));
-                                    //childCharts.Add(myInbound);
+                                    foreach (var general in parentGeneral)
+                                    {
+                                        var myInbound = allInboundGeneral.FirstOrDefault(x => x.ParentID == general.Role.RoleID);
+                                        if (myInbound != null)
+                                        {
+                                            rawCharts.Add((myInbound!, 3));
+                                            //childCharts.Add(myInbound);
+                                        }
+                                    }
+
                                 }
+
                             }
                             break;
                         case RoleTypeModel.OutboundPrime:
@@ -1129,22 +1139,28 @@ namespace DFM.Shared.Repository
                             // Else should see only inbound that same general
                             if (isInboundOrOutbound(roleItem.RoleType))
                             {
-                                if (!allInboundGeneral!.IsNullOrEmpty())
+                                if (!allOutboundGeneral!.IsNullOrEmpty())
                                 {
-                                    allInboundGeneral!.ForEach(x => rawCharts.Add((x!, 3)));
+                                    allOutboundGeneral!.ForEach(x => rawCharts.Add((x!, 3)));
                                     //childCharts.AddRange(allInboundGeneral!);
 
                                 }
                             }
                             else
                             {
-                                var parentGeneral = getParent(charts, roleItem, RoleTypeModel.General);
-
-                                var myInbound = allInboundGeneral.FirstOrDefault(x => x.ParentID == parentGeneral!.Role.RoleID);
-                                if (myInbound != null)
+                                var parentGeneral = findGeneral(charts, roleItem);
+                                if (parentGeneral != null)
                                 {
-                                    rawCharts.Add((myInbound!, 3));
-                                    //childCharts.Add(myInbound);
+                                    foreach (var general in parentGeneral)
+                                    {
+                                        var myInbound = allOutboundGeneral.FirstOrDefault(x => x.ParentID == general.Role.RoleID);
+                                        if (myInbound != null)
+                                        {
+                                            rawCharts.Add((myInbound!, 3));
+                                            //childCharts.Add(myInbound);
+                                        }
+                                    }
+                                   
                                 }
                             }
                             break;
@@ -1203,6 +1219,41 @@ namespace DFM.Shared.Repository
             }
 
 
+        }
+
+        private List<RoleTreeModel> findGeneral(List<RoleTreeModel> charts, RoleTreeModel roleItem)
+        {
+            try
+            {
+                if (roleItem.RoleType == RoleTypeModel.Director)
+                {
+                    var general = charts.Where(x => x.ParentID == roleItem.Role.RoleID && x.RoleType == RoleTypeModel.General)!;
+                    if (general != null)
+                    {
+                        return general.ToList();
+                    }
+                    return null!;
+                }
+                else if (roleItem.RoleType == RoleTypeModel.DeputyDirector)
+                {
+                    var director = charts.FirstOrDefault(x => x.Role.RoleID == roleItem.ParentID);
+                    if (director != null)
+                    {
+                        var general = charts.Where(x => x.ParentID == director!.Role.RoleID && x.RoleType == RoleTypeModel.General)!;
+                        return general.ToList();
+                    }
+                    return null!;
+                }
+                else
+                {
+                    return null!;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         private bool isInboundOrOutbound(RoleTypeModel roleType)
@@ -1884,6 +1935,7 @@ namespace DFM.Shared.Repository
         }
         private RoleTreeModel? getParent(IEnumerable<RoleTreeModel> charts, RoleTreeModel roleItem, RoleTypeModel roleTarget)
         {
+            
             var parentItem = charts.FirstOrDefault(x => x.Role.RoleID == roleItem.ParentID);
 
             if (parentItem == null)
