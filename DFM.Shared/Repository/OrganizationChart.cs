@@ -1108,20 +1108,33 @@ namespace DFM.Shared.Repository
                             else
                             {
                                 //var parentGeneral = getParent(charts, roleItem, RoleTypeModel.General);
-                                var parentGeneral = findGeneral(charts, roleItem);
-                                if (parentGeneral != null)
+                                if (roleItem.RoleType == RoleTypeModel.General)
                                 {
-                                    foreach (var general in parentGeneral)
+                                    var myInbound = allInboundGeneral.FirstOrDefault(x => x.ParentID == roleItem.Role.RoleID);
+                                    if (myInbound != null)
                                     {
-                                        var myInbound = allInboundGeneral.FirstOrDefault(x => x.ParentID == general.Role.RoleID);
-                                        if (myInbound != null)
-                                        {
-                                            rawCharts.Add((myInbound!, 3));
-                                            //childCharts.Add(myInbound);
-                                        }
+                                        rawCharts.Add((myInbound!, 3));
+                                        //childCharts.Add(myInbound);
                                     }
-
                                 }
+                                else
+                                {
+                                    var parentGeneral = findGeneral(charts, roleItem);
+                                    if (parentGeneral != null)
+                                    {
+                                        foreach (var general in parentGeneral)
+                                        {
+                                            var myInbound = allInboundGeneral.FirstOrDefault(x => x.ParentID == general.Role.RoleID);
+                                            if (myInbound != null)
+                                            {
+                                                rawCharts.Add((myInbound!, 3));
+                                                //childCharts.Add(myInbound);
+                                            }
+                                        }
+
+                                    }
+                                }
+                               
 
                             }
                             break;
@@ -1148,6 +1161,15 @@ namespace DFM.Shared.Repository
                             }
                             else
                             {
+                                if (roleItem.RoleType == RoleTypeModel.General)
+                                {
+                                    var myOutbound = allOutboundGeneral.FirstOrDefault(x => x.ParentID == roleItem.Role.RoleID);
+                                    if (myOutbound != null)
+                                    {
+                                        rawCharts.Add((myOutbound!, 3));
+                                        //childCharts.Add(myInbound);
+                                    }
+                                }
                                 var parentGeneral = findGeneral(charts, roleItem);
                                 if (parentGeneral != null)
                                 {
