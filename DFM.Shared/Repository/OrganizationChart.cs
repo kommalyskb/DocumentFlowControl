@@ -893,11 +893,32 @@ namespace DFM.Shared.Repository
                             }
                             break;
                         case RoleTypeModel.DeputyDirector:
-                            if (flowItem.CrossInternal)
+                            //if (flowItem.CrossInternal)
+                            //{
+                            //    // ໃນກໍລະນີນີ້ແມ່ນຈະຕ້ອງໄດ້ Loop ຊອກໄປເລື້ອຍໆ ຈົນກວ່າຈະພົບ RoleType ທີ່ຕ້ອງການ,ໃນກໍລະນີທີ່ ຕ້ອງການ ເອົາ Deputy ຂອງຕຳແຫນ່ງຕ່າງໆ ແມ່ນຈະຕ້ອງໄດ້ຊອກຫາ Parent ຂອງ Deputy ດັ່ງກ່າວກ່ອນ
+                            //    var parentModel = getParent(charts, roleItem, RoleTypeModel.Director);
+                            //    var childModels = charts.Where(x => x.ParentID == parentModel!.Role.RoleID && x.RoleType == RoleTypeModel.DeputyDirector).ToList();
+                            //    if (!childModels!.IsNullOrEmpty())
+                            //    {
+                            //        childModels!.ForEach(x => rawCharts.Add((x!, 5)));
+                            //        //childCharts.AddRange(childModels!);// ຖ້າ ເປົ້າຫມາຍເປັນ ຮອງຫ້ອງແມ່ນໃຫ້ເອົາຈາກ ຕົວປ່ຽນທາງເທິງ
+
+                            //    }
+                            //}
+                            //else
+                            //{
+                            //    var targetModel = getParent(charts, roleItem, item);// ໃນກໍລະນີນີ້ແມ່ນຈະຕ້ອງໄດ້ Loop ຊອກໄປເລື້ອຍໆ ຈົນກວ່າຈະພົບ RoleType ທີ່ຕ້ອງການ
+                            //    if (targetModel != null)
+                            //    {
+                            //        rawCharts.Add((targetModel!, 5));
+                            //        //childCharts.Add(targetModel!);
+
+                            //    }
+
+                            //}
                             {
-                                // ໃນກໍລະນີນີ້ແມ່ນຈະຕ້ອງໄດ້ Loop ຊອກໄປເລື້ອຍໆ ຈົນກວ່າຈະພົບ RoleType ທີ່ຕ້ອງການ,ໃນກໍລະນີທີ່ ຕ້ອງການ ເອົາ Deputy ຂອງຕຳແຫນ່ງຕ່າງໆ ແມ່ນຈະຕ້ອງໄດ້ຊອກຫາ Parent ຂອງ Deputy ດັ່ງກ່າວກ່ອນ
                                 var parentModel = getParent(charts, roleItem, RoleTypeModel.Director);
-                                var childModels = charts.Where(x => x.ParentID == parentModel!.Role.RoleID).ToList();
+                                var childModels = charts.Where(x => x.ParentID == parentModel!.Role.RoleID && x.RoleType == RoleTypeModel.DeputyDirector).ToList();
                                 if (!childModels!.IsNullOrEmpty())
                                 {
                                     childModels!.ForEach(x => rawCharts.Add((x!, 5)));
@@ -905,16 +926,7 @@ namespace DFM.Shared.Repository
 
                                 }
                             }
-                            else
-                            {
-                                var targetModel = getParent(charts, roleItem, item);// ໃນກໍລະນີນີ້ແມ່ນຈະຕ້ອງໄດ້ Loop ຊອກໄປເລື້ອຍໆ ຈົນກວ່າຈະພົບ RoleType ທີ່ຕ້ອງການ
-                                if (targetModel != null)
-                                {
-                                    rawCharts.Add((targetModel!, 5));
-                                    //childCharts.Add(targetModel!);
-
-                                }
-                            }
+                            
                             break;
                         case RoleTypeModel.OfficePrime:
                             rawCharts.Add((officePrime!, 6));

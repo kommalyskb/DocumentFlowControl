@@ -104,7 +104,7 @@ namespace DFM.API.Controllers
         }
 
         [HttpGet("GetItem/{id}/{roleId}/{link}")]
-        //[AllowAnonymous]
+        [AllowAnonymous]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(IEnumerable<RoleTreeModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
