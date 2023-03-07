@@ -464,7 +464,8 @@ namespace DFM.API.Controllers
                                 mainBehavior = BehaviorStatus.ReadWrite;
                             }
                         }
-                        else if(receiverRole.Content.RoleType == RoleTypeModel.PrimeSecretary || receiverRole.Content.RoleType == RoleTypeModel.DeputyPrimeSecretary)
+                        else if(receiverRole.Content.RoleType == RoleTypeModel.PrimeSecretary || receiverRole.Content.RoleType == RoleTypeModel.DeputyPrimeSecretary ||
+                            receiverRole.Content.RoleType == RoleTypeModel.Director || receiverRole.Content.RoleType == RoleTypeModel.DeputyDirector)
                         {
                             // No need dupplicate
                             rawDataId = request.RawDocument!.DataID;
@@ -914,7 +915,8 @@ namespace DFM.API.Controllers
                                 mainBehavior = BehaviorStatus.ReadWrite;
                             }
                         }
-                        else if (receiverRole.Content.RoleType == RoleTypeModel.PrimeSecretary || receiverRole.Content.RoleType == RoleTypeModel.DeputyPrimeSecretary)
+                        else if (receiverRole.Content.RoleType == RoleTypeModel.PrimeSecretary || receiverRole.Content.RoleType == RoleTypeModel.DeputyPrimeSecretary ||
+                            receiverRole.Content.RoleType == RoleTypeModel.Director || receiverRole.Content.RoleType == RoleTypeModel.DeputyDirector)
                         {
                             // No need dupplicate
                             rawDataId = request.RawDocument!.DataID;
