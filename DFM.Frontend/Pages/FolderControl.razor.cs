@@ -44,6 +44,11 @@ namespace DFM.Frontend.Pages
             {
                 if (isDelete.Value)
                 {
+                    #region Validate Token
+                    var getTokenState = await tokenState.ValidateToken();
+                    if (!getTokenState)
+                        nav.NavigateTo("/authorize");
+                    #endregion
                     onProcessing = true;
                     if (string.IsNullOrWhiteSpace(token))
                     {
@@ -87,82 +92,97 @@ namespace DFM.Frontend.Pages
         
         async Task onSaveClickAsync()
         {
-            onProcessing = true;
-            if (string.IsNullOrWhiteSpace(token))
+            try
             {
-                token = await accessToken.GetTokenAsync();
-            }
-            if (string.IsNullOrWhiteSpace(folderModel!.Title))
-            {
-                AlertMessage("ກະລຸນາ ປ້ອນ ຊື່ແຟ້ມເອກະສານ", Defaults.Classes.Position.BottomRight, Severity.Error);
-                onProcessing = false;
-                return;
-            }
-            if (string.IsNullOrWhiteSpace(folderModel!.StartDate) || string.IsNullOrWhiteSpace(folderModel!.ExpiredDate))
-            {
-                AlertMessage("ກະລຸນາ ປ້ອນ ວັນທີນຳໃຊ້ ແລະ ໝົດອາຍຸ ແຟ້ມ", Defaults.Classes.Position.BottomRight, Severity.Error);
-                onProcessing = false;
-                return;
-            }
-            if (string.IsNullOrWhiteSpace(folderModel!.ShortName))
-            {
-                AlertMessage("ກະລຸນາ ປ້ອນ ຕົວຫຍໍ້ອົງກອນ", Defaults.Classes.Position.BottomRight, Severity.Error);
-                onProcessing = false;
-                return;
-            }
-            await InvokeAsync(StateHasChanged);
-            if (Link == "inbound")
-            {
-                folderModel!.InboxType = InboxType.Inbound;
+                #region Validate Token
+                var getTokenState = await tokenState.ValidateToken();
+                if (!getTokenState)
+                    nav.NavigateTo("/authorize");
+                #endregion
 
-            }
-            else
-            {
-                folderModel!.InboxType = InboxType.Outbound;
-            }
-            httpService.MediaType = MediaType.JSON;
-            if (string.IsNullOrWhiteSpace(folderModel.id))
-            {
-                if (employee == null)
+                onProcessing = true;
+                if (string.IsNullOrWhiteSpace(token))
                 {
-                    employee = await storageHelper.GetEmployeeProfileAsync();
-                };
-                folderModel.OrganizationID = employee.OrganizationID;
-                // New folder
-                string url = $"{endpoint.API}/api/v1/Folder/NewItem";
-                var result = await httpService.Post<FolderModel, CommonResponseId>(url, folderModel, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
+                    token = await accessToken.GetTokenAsync();
+                }
+                if (string.IsNullOrWhiteSpace(folderModel!.Title))
+                {
+                    AlertMessage("ກະລຸນາ ປ້ອນ ຊື່ແຟ້ມເອກະສານ", Defaults.Classes.Position.BottomRight, Severity.Error);
+                    onProcessing = false;
+                    return;
+                }
+                if (string.IsNullOrWhiteSpace(folderModel!.StartDate) || string.IsNullOrWhiteSpace(folderModel!.ExpiredDate))
+                {
+                    AlertMessage("ກະລຸນາ ປ້ອນ ວັນທີນຳໃຊ້ ແລະ ໝົດອາຍຸ ແຟ້ມ", Defaults.Classes.Position.BottomRight, Severity.Error);
+                    onProcessing = false;
+                    return;
+                }
+                if (string.IsNullOrWhiteSpace(folderModel!.ShortName))
+                {
+                    AlertMessage("ກະລຸນາ ປ້ອນ ຕົວຫຍໍ້ອົງກອນ", Defaults.Classes.Position.BottomRight, Severity.Error);
+                    onProcessing = false;
+                    return;
+                }
+                await InvokeAsync(StateHasChanged);
+                if (Link == "inbound")
+                {
+                    folderModel!.InboxType = InboxType.Inbound;
 
-                if (result.Success)
-                {
-                    AlertMessage("ທຸລະກຳຂອງທ່ານ ສຳເລັດ", Defaults.Classes.Position.BottomRight, Severity.Success);
                 }
                 else
                 {
-                    AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ", Defaults.Classes.Position.BottomRight, Severity.Error);
+                    folderModel!.InboxType = InboxType.Outbound;
                 }
-            }
-            else
-            {
-                // Update folder
-                string url = $"{endpoint.API}/api/v1/Folder/UpdateItem";
-                var result = await httpService.Post<FolderModel, CommonResponseId>(url, folderModel, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
-
-                if (result.Success)
+                httpService.MediaType = MediaType.JSON;
+                if (string.IsNullOrWhiteSpace(folderModel.id))
                 {
-                    AlertMessage("ທຸລະກຳຂອງທ່ານ ສຳເລັດ", Defaults.Classes.Position.BottomRight, Severity.Success);
+                    if (employee == null)
+                    {
+                        employee = await storageHelper.GetEmployeeProfileAsync();
+                    };
+                    folderModel.OrganizationID = employee.OrganizationID;
+                    // New folder
+                    string url = $"{endpoint.API}/api/v1/Folder/NewItem";
+                    var result = await httpService.Post<FolderModel, CommonResponseId>(url, folderModel, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
+
+                    if (result.Success)
+                    {
+                        AlertMessage("ທຸລະກຳຂອງທ່ານ ສຳເລັດ", Defaults.Classes.Position.BottomRight, Severity.Success);
+                    }
+                    else
+                    {
+                        AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ", Defaults.Classes.Position.BottomRight, Severity.Error);
+                    }
                 }
                 else
                 {
-                    AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ", Defaults.Classes.Position.BottomRight, Severity.Error);
+                    // Update folder
+                    string url = $"{endpoint.API}/api/v1/Folder/UpdateItem";
+                    var result = await httpService.Post<FolderModel, CommonResponseId>(url, folderModel, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
+
+                    if (result.Success)
+                    {
+                        AlertMessage("ທຸລະກຳຂອງທ່ານ ສຳເລັດ", Defaults.Classes.Position.BottomRight, Severity.Success);
+                    }
+                    else
+                    {
+                        AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ", Defaults.Classes.Position.BottomRight, Severity.Error);
+                    }
                 }
+
+                onProcessing = false;
+
+                await Task.Delay(delayTime);
+                disposedObj();
+                formMode = FormMode.List;
             }
+            catch (Exception)
+            {
+                AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, (INTERNAL_SERVER_ERROR)", Defaults.Classes.Position.BottomRight, Severity.Error);
+            }
+            
 
-            onProcessing = false;
-
-            await Task.Delay(delayTime);
-
-            disposedObj();
-            formMode = FormMode.List;
+           
         }
         void disposedObj()
         {

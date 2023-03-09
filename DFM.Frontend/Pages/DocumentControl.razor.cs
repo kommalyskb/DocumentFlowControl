@@ -36,149 +36,173 @@ namespace DFM.Frontend.Pages
 
         protected override async Task OnParametersSetAsync()
         {
-            Log.Information("Parameter Set fire");
-            Log.Information($"Parameter set: Page: {Page}, Link: {Link}, DocID: {DocId}, MsgID: {MessageID}, Trace: {traceStatus}, Form: {formMode}");
+            try
+            {
+                Log.Information("Parameter Set fire");
+                Log.Information($"Parameter set: Page: {Page}, Link: {Link}, DocID: {DocId}, MsgID: {MessageID}, Trace: {traceStatus}, Form: {formMode}");
 
-            // Check Page
-            if (Page == "inbox")
-            {
-                traceStatus = TraceStatus.InProgress;
-            }
-            else if (Page == "draft")
-            {
-                traceStatus = TraceStatus.Draft;
-            }
-            else if (Page == "completed")
-            {
-                traceStatus = TraceStatus.Completed;
-            }
-            else if (Page == "bin")
-            {
-                traceStatus = TraceStatus.Trash;
-            }
-            else if (Page == "coprocess")
-            {
-                traceStatus = TraceStatus.CoProccess;
-            }
-            // Check navigate from navbar
-            if (DocId == "none")
-            {
-                oldDocID = "none";
-                formMode = FormMode.List;
-                //
-
-                // Check Change from old page to other  page
-                if (oldPage != Page)
+                // Check Page
+                if (Page == "inbox")
                 {
-                    if (!string.IsNullOrWhiteSpace(DocId) && !string.IsNullOrWhiteSpace(MessageID) && !string.IsNullOrWhiteSpace(MessageRole))
-                    {
-                        await loadDocumentModel();
-                    }
-                    else
-                    {
-                        formMode = FormMode.List;
-                        //
-                    }
-                    oldPage = Page!;
+                    traceStatus = TraceStatus.InProgress;
                 }
-
-                // Check navigate from inbound to outbound or outbound to inbound
-                if (oldLink != Link)
+                else if (Page == "draft")
                 {
-                    if (!string.IsNullOrWhiteSpace(DocId) && !string.IsNullOrWhiteSpace(MessageID) && !string.IsNullOrWhiteSpace(MessageRole))
-                    {
-                        await loadDocumentModel();
-                    }
-                    else
-                    {
-                        formMode = FormMode.List;
-                        //
-                    }
-                    oldLink = Link!;
+                    traceStatus = TraceStatus.Draft;
+                }
+                else if (Page == "completed")
+                {
+                    traceStatus = TraceStatus.Completed;
+                }
+                else if (Page == "bin")
+                {
+                    traceStatus = TraceStatus.Trash;
+                }
+                else if (Page == "coprocess")
+                {
+                    traceStatus = TraceStatus.CoProccess;
+                }
+                // Check navigate from navbar
+                if (DocId == "none")
+                {
+                    oldDocID = "none";
+                    formMode = FormMode.List;
+                    //
 
-                    // Load recipient
-                    string urlGetOrgItem = $"{endpoint.API}/api/v1/Organization/GetItem/{employee.OrganizationID!}/{roleId}/{Link}";
-                    var result = await httpService.Get<IEnumerable<RoleTreeModel>>(urlGetOrgItem, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
-                    if (result.Success)
+                    // Check Change from old page to other  page
+                    if (oldPage != Page)
                     {
-                        var expected = result.Response.ToList();
-                        expected.RemoveAll(x => x.Role.RoleID == roleId);
-                        recipients = expected;
-                        if (recipients.IsNullOrEmpty())
+                        if (!string.IsNullOrWhiteSpace(DocId) && !string.IsNullOrWhiteSpace(MessageID) && !string.IsNullOrWhiteSpace(MessageRole))
                         {
+                            await loadDocumentModel();
+                        }
+                        else
+                        {
+                            formMode = FormMode.List;
+                            //
+                        }
+                        oldPage = Page!;
+                    }
+
+                    // Check navigate from inbound to outbound or outbound to inbound
+                    if (oldLink != Link)
+                    {
+                        if (!string.IsNullOrWhiteSpace(DocId) && !string.IsNullOrWhiteSpace(MessageID) && !string.IsNullOrWhiteSpace(MessageRole))
+                        {
+                            await loadDocumentModel();
+                        }
+                        else
+                        {
+                            formMode = FormMode.List;
+                            //
+                        }
+                        oldLink = Link!;
+
+                        #region Validate Token
+                        var getTokenState = await tokenState.ValidateToken();
+                        if (!getTokenState)
+                            nav.NavigateTo("/authorize");
+                        #endregion
+
+
+                        // Load recipient
+                        string urlGetOrgItem = $"{endpoint.API}/api/v1/Organization/GetItem/{employee.OrganizationID!}/{roleId}/{Link}";
+                        var result = await httpService.Get<IEnumerable<RoleTreeModel>>(urlGetOrgItem, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
+                        if (result.Success)
+                        {
+                            var expected = result.Response.ToList();
+                            expected.RemoveAll(x => x.Role.RoleID == roleId);
+                            recipients = expected;
+                            if (recipients.IsNullOrEmpty())
+                            {
+                                showSendButton = false;
+                            }
+
+                        }
+                        else
+                        {
+                            recipients = null;
                             showSendButton = false;
                         }
-
-                    }
-                    else
-                    {
-                        recipients = null;
-                        showSendButton = false;
                     }
                 }
-            }
-            else
-            {
-                // Click from notification
-                if (oldDocID != DocId)
+                else
                 {
-
-                    Log.Information($"Old: {oldDocID}, Doc: {DocId}");
-                    oldDocID = DocId!;
-                    if (!string.IsNullOrWhiteSpace(DocId) && !string.IsNullOrWhiteSpace(MessageID) && !string.IsNullOrWhiteSpace(MessageRole))
+                    // Click from notification
+                    if (oldDocID != DocId)
                     {
-                        await loadDocumentModel();
+
+                        Log.Information($"Old: {oldDocID}, Doc: {DocId}");
+                        oldDocID = DocId!;
+                        if (!string.IsNullOrWhiteSpace(DocId) && !string.IsNullOrWhiteSpace(MessageID) && !string.IsNullOrWhiteSpace(MessageRole))
+                        {
+                            await loadDocumentModel();
+                        }
                     }
                 }
             }
+            catch (Exception)
+            {
+                AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, (INTERNAL_SERVER_ERROR)", Defaults.Classes.Position.BottomRight, Severity.Error);
+            }
+            
 
         }
         protected override async Task OnInitializedAsync()
         {
-            var rules = await storageHelper.GetRuleMenuAsync();
-            if (!ValidateRule.isInRole(rules, $"/pages/doc/{Link}/{Page}"))
+            try
             {
-                nav.NavigateTo("/pages/unauthorized");
-            }
-            if (!ValidateRule.isInRole(rules, $"/pages/doc/{Link}/{Page}/{DocId}"))
-            {
-                nav.NavigateTo("/pages/unauthorized");
-            }
+                var rules = await storageHelper.GetRuleMenuAsync();
+                if (!ValidateRule.isInRole(rules, $"/pages/doc/{Link}/{Page}"))
+                {
+                    nav.NavigateTo("/pages/unauthorized");
+                }
+                if (!ValidateRule.isInRole(rules, $"/pages/doc/{Link}/{Page}/{DocId}"))
+                {
+                    nav.NavigateTo("/pages/unauthorized");
+                }
 
 
-            // Check Page
-            if (Page == "inbox")
-            {
-                traceStatus = TraceStatus.InProgress;
-            }
-            else if (Page == "draft")
-            {
-                traceStatus = TraceStatus.Draft;
-            }
-            else if (Page == "completed")
-            {
-                traceStatus = TraceStatus.Completed;
-            }
-            else if (Page == "bin")
-            {
-                traceStatus = TraceStatus.Trash;
-            }
-            else if (Page == "coprocess")
-            {
-                traceStatus = TraceStatus.CoProccess;
-            }
-            if (!string.IsNullOrWhiteSpace(DocId) && !string.IsNullOrWhiteSpace(MessageID) && !string.IsNullOrWhiteSpace(MessageRole))
-            {
-                await loadDocumentModel();
-            }
-            else
-            {
-                formMode = FormMode.List;
+                // Check Page
+                if (Page == "inbox")
+                {
+                    traceStatus = TraceStatus.InProgress;
+                }
+                else if (Page == "draft")
+                {
+                    traceStatus = TraceStatus.Draft;
+                }
+                else if (Page == "completed")
+                {
+                    traceStatus = TraceStatus.Completed;
+                }
+                else if (Page == "bin")
+                {
+                    traceStatus = TraceStatus.Trash;
+                }
+                else if (Page == "coprocess")
+                {
+                    traceStatus = TraceStatus.CoProccess;
+                }
+                if (!string.IsNullOrWhiteSpace(DocId) && !string.IsNullOrWhiteSpace(MessageID) && !string.IsNullOrWhiteSpace(MessageRole))
+                {
+                    await loadDocumentModel();
+                }
+                else
+                {
+                    formMode = FormMode.List;
 
-            }
+                }
 
-            oldLink = Link!;
-            oldPage = Page!;
+                oldLink = Link!;
+                oldPage = Page!;
+            }
+            catch (Exception)
+            {
+
+                AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, (INTERNAL_SERVER_ERROR)", Defaults.Classes.Position.BottomRight, Severity.Error);
+            }
+            
         }
         
 
@@ -204,6 +228,11 @@ namespace DFM.Frontend.Pages
                 {
                     if (isDelete.Value)
                     {
+                        #region Validate Token
+                        var getTokenState = await tokenState.ValidateToken();
+                        if (!getTokenState)
+                            nav.NavigateTo("/authorize");
+                        #endregion
                         // Delete button had fire
                         onProcessing = true;
                         if (employee == null)
@@ -275,6 +304,11 @@ namespace DFM.Frontend.Pages
                 {
                     if (isTerminated.Value)
                     {
+                        #region Validate Token
+                        var getTokenState = await tokenState.ValidateToken();
+                        if (!getTokenState)
+                            nav.NavigateTo("/authorize");
+                        #endregion
                         if (employee == null)
                         {
                             employee = await storageHelper.GetEmployeeProfileAsync();
@@ -377,6 +411,11 @@ namespace DFM.Frontend.Pages
                 {
                     if (isRestore.Value)
                     {
+                        #region Validate Token
+                        var getTokenState = await tokenState.ValidateToken();
+                        if (!getTokenState)
+                            nav.NavigateTo("/authorize");
+                        #endregion
                         // Delete button had fire
                         onProcessing = true;
                         await InvokeAsync(StateHasChanged);
@@ -456,6 +495,11 @@ namespace DFM.Frontend.Pages
                 {
                     if (sendBox.Value)
                     {
+                        #region Validate Token
+                        var getTokenState = await tokenState.ValidateToken();
+                        if (!getTokenState)
+                            nav.NavigateTo("/authorize");
+                        #endregion
                         onProcessing = true;
                         await InvokeAsync(StateHasChanged);
                         // Add receiver to model before save
@@ -647,38 +691,53 @@ namespace DFM.Frontend.Pages
 
         private MainReceiver generateMain(MainReceiver mainReciver, IEnumerable<RoleTreeModel> roleTrees)
         {
-            var item = roleTrees.FirstOrDefault(x => x.Role.RoleID == mainReciver.Id);
-            if (item == null)
+            try
             {
-                return null;
-            }
-            if (item.RoleType == RoleTypeModel.InboundGeneral || item.RoleType == RoleTypeModel.InboundOfficePrime || item.RoleType == RoleTypeModel.InboundPrime)
-            {
-                mainReciver.InboxType = InboxType.Inbound;
-
-            }
-            else if (item.RoleType == RoleTypeModel.OutboundGeneral || item.RoleType == RoleTypeModel.OutboundOfficePrime || item.RoleType == RoleTypeModel.OutboundPrime)
-            {
-                mainReciver.InboxType = InboxType.Outbound;
-            }
-            else
-            {
-                if (Link == "inbound")
+                var item = roleTrees.FirstOrDefault(x => x.Role.RoleID == mainReciver.Id);
+                if (item == null)
+                {
+                    return null;
+                }
+                if (item.RoleType == RoleTypeModel.InboundGeneral || item.RoleType == RoleTypeModel.InboundOfficePrime || item.RoleType == RoleTypeModel.InboundPrime)
                 {
                     mainReciver.InboxType = InboxType.Inbound;
+
                 }
-                else
+                else if (item.RoleType == RoleTypeModel.OutboundGeneral || item.RoleType == RoleTypeModel.OutboundOfficePrime || item.RoleType == RoleTypeModel.OutboundPrime)
                 {
                     mainReciver.InboxType = InboxType.Outbound;
                 }
+                else
+                {
+                    if (Link == "inbound")
+                    {
+                        mainReciver.InboxType = InboxType.Inbound;
+                    }
+                    else
+                    {
+                        mainReciver.InboxType = InboxType.Outbound;
+                    }
+                }
+                return mainReciver;
             }
-            return mainReciver;
+            catch (Exception)
+            {
+
+                AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, (INTERNAL_SERVER_ERROR)", Defaults.Classes.Position.BottomRight, Severity.Error);
+                return null;
+            }
+            
         }
 
         async Task onUpdateWhenOpenDocument()
         {
             try
             {
+                #region Validate Token
+                var getTokenState = await tokenState.ValidateToken();
+                if (!getTokenState)
+                    nav.NavigateTo("/authorize");
+                #endregion
                 onProcessing = true;
                 if (employee == null)
                 {
@@ -738,6 +797,11 @@ namespace DFM.Frontend.Pages
         {
             try
             {
+                #region Validate Token
+                var getTokenState = await tokenState.ValidateToken();
+                if (!getTokenState)
+                    nav.NavigateTo("/authorize");
+                #endregion
                 onProcessing = true;
                 string url = $"{endpoint.API}/api/v1/Document/GetDocument/{DocId}";
                 if (string.IsNullOrWhiteSpace(token))
@@ -775,6 +839,11 @@ namespace DFM.Frontend.Pages
         {
             try
             {
+                #region Validate Token
+                var getTokenState = await tokenState.ValidateToken();
+                if (!getTokenState)
+                    nav.NavigateTo("/authorize");
+                #endregion
                 onProcessing = true;
                 if (employee == null)
                 {
@@ -806,7 +875,7 @@ namespace DFM.Frontend.Pages
             catch (Exception)
             {
 
-
+                AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, (INTERNAL_SERVER_ERROR)", Defaults.Classes.Position.BottomRight, Severity.Error);
             }
         }
 
@@ -898,32 +967,41 @@ namespace DFM.Frontend.Pages
 
         private List<CoProcessRequest> generateCoprocess(IEnumerable<RoleTreeModel> roleTrees) 
         {
-            List<CoProcessRequest>? result = new();
-            foreach (var item in roleTrees)
+            try
             {
-                if (item.RoleType == RoleTypeModel.InboundGeneral || item.RoleType == RoleTypeModel.InboundOfficePrime || item.RoleType == RoleTypeModel.InboundPrime)
+                List<CoProcessRequest>? result = new();
+                foreach (var item in roleTrees)
                 {
-                    result.Add(new CoProcessRequest(item, InboxType.Inbound));
-
-                }
-                else if (item.RoleType == RoleTypeModel.OutboundGeneral || item.RoleType == RoleTypeModel.OutboundOfficePrime || item.RoleType == RoleTypeModel.OutboundPrime)
-                {
-                    result.Add(new CoProcessRequest(item, InboxType.Outbound));
-                }
-                else
-                {
-                    if (Link == "inbound")
+                    if (item.RoleType == RoleTypeModel.InboundGeneral || item.RoleType == RoleTypeModel.InboundOfficePrime || item.RoleType == RoleTypeModel.InboundPrime)
                     {
                         result.Add(new CoProcessRequest(item, InboxType.Inbound));
+
                     }
-                    else
+                    else if (item.RoleType == RoleTypeModel.OutboundGeneral || item.RoleType == RoleTypeModel.OutboundOfficePrime || item.RoleType == RoleTypeModel.OutboundPrime)
                     {
                         result.Add(new CoProcessRequest(item, InboxType.Outbound));
                     }
+                    else
+                    {
+                        if (Link == "inbound")
+                        {
+                            result.Add(new CoProcessRequest(item, InboxType.Inbound));
+                        }
+                        else
+                        {
+                            result.Add(new CoProcessRequest(item, InboxType.Outbound));
+                        }
+                    }
                 }
-            }
 
-            return result;
+                return result;
+            }
+            catch (Exception)
+            {
+                AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, (INTERNAL_SERVER_ERROR)", Defaults.Classes.Position.BottomRight, Severity.Error);
+                return null!;
+            }
+            
         }
         bool validateField()
         {
@@ -938,6 +1016,11 @@ namespace DFM.Frontend.Pages
         {
             try
             {
+                #region Validate Token
+                var getTokenState = await tokenState.ValidateToken();
+                if (!getTokenState)
+                    nav.NavigateTo("/authorize");
+                #endregion
                 onProcessing = true;
                 if (employee == null)
                 {
@@ -1120,6 +1203,11 @@ namespace DFM.Frontend.Pages
         {
             try
             {
+                #region Validate Token
+                var getTokenState = await tokenState.ValidateToken();
+                if (!getTokenState)
+                    nav.NavigateTo("/authorize");
+                #endregion
                 onProcessing = true;
                 roleId = roleItem.RoleID;
                 selectedRole = roleItem;
@@ -1186,13 +1274,26 @@ namespace DFM.Frontend.Pages
         }
         private async Task getPublisher()
         {
-            string urlGetPublisher = $"{endpoint.API}/api/v1/Organization/GetPublisher/{employee!.OrganizationID!}/{roleId}";
-            var publisherResult = await httpService.Get<CommonResponseId>(urlGetPublisher, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
-
-            if (publisherResult.Success)
+            try
             {
-                publisher = publisherResult.Response;
+                #region Validate Token
+                var getTokenState = await tokenState.ValidateToken();
+                if (!getTokenState)
+                    nav.NavigateTo("/authorize");
+                #endregion
+                string urlGetPublisher = $"{endpoint.API}/api/v1/Organization/GetPublisher/{employee!.OrganizationID!}/{roleId}";
+                var publisherResult = await httpService.Get<CommonResponseId>(urlGetPublisher, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
+
+                if (publisherResult.Success)
+                {
+                    publisher = publisherResult.Response;
+                }
             }
+            catch (Exception)
+            {
+                AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, (INTERNAL_SERVER_ERROR)", Defaults.Classes.Position.BottomRight, Severity.Error);
+            }
+            
         }
         private IEnumerable<string> MaxCharacters(string ch)
         {

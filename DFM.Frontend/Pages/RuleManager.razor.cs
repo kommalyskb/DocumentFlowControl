@@ -34,38 +34,52 @@ namespace DFM.Frontend.Pages
 
         async Task onDeleteButtonClick()
         {
-            bool? isDelete = await delBox!.Show();
-            if (isDelete.HasValue)
+            try
             {
-                if (isDelete.Value)
+                bool? isDelete = await delBox!.Show();
+                if (isDelete.HasValue)
                 {
-                    onProcessing = true;
-                    if (string.IsNullOrWhiteSpace(token))
+                    if (isDelete.Value)
                     {
-                        token = await accessToken.GetTokenAsync();
+                        #region Validate Token
+                        var getTokenState = await tokenState.ValidateToken();
+                        if (!getTokenState)
+                            nav.NavigateTo("/authorize");
+                        #endregion
+                        onProcessing = true;
+                        if (string.IsNullOrWhiteSpace(token))
+                        {
+                            token = await accessToken.GetTokenAsync();
+                        }
+
+                        string url = $"{endpoint.API}/api/v1/RuleMenu/RemoveItem/{ruleMenu!.id}";
+                        var result = await httpService.Get<CommonResponseId>(url, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
+
+                        if (result.Success)
+                        {
+                            AlertMessage("ທຸລະກຳຂອງທ່ານ ສຳເລັດ", Defaults.Classes.Position.BottomRight, Severity.Success);
+                        }
+                        else
+                        {
+                            AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ", Defaults.Classes.Position.BottomRight, Severity.Error);
+                        }
+
+
+                        onProcessing = false;
+
+                        await Task.Delay(delayTime);
+
+                        disposedObj();
+                        formMode = FormMode.List;
                     }
-
-                    string url = $"{endpoint.API}/api/v1/RuleMenu/RemoveItem/{ruleMenu!.id}";
-                    var result = await httpService.Get<CommonResponseId>(url, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
-
-                    if (result.Success)
-                    {
-                        AlertMessage("ທຸລະກຳຂອງທ່ານ ສຳເລັດ", Defaults.Classes.Position.BottomRight, Severity.Success);
-                    }
-                    else
-                    {
-                        AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ", Defaults.Classes.Position.BottomRight, Severity.Error);
-                    }
-
-
-                    onProcessing = false;
-
-                    await Task.Delay(delayTime);
-
-                    disposedObj();
-                    formMode = FormMode.List;
                 }
             }
+            catch (Exception)
+            {
+
+                AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, (INTERNAL_SERVER_ERROR)", Defaults.Classes.Position.BottomRight, Severity.Error);
+            }
+           
         }
 
         void onEditButtonClick()
@@ -82,38 +96,51 @@ namespace DFM.Frontend.Pages
 
         async Task onSaveClickAsync()
         {
-            onProcessing = true;
-            if (string.IsNullOrWhiteSpace(token))
+            try
             {
-                token = await accessToken.GetTokenAsync();
+                #region Validate Token
+                var getTokenState = await tokenState.ValidateToken();
+                if (!getTokenState)
+                    nav.NavigateTo("/authorize");
+                #endregion
+                onProcessing = true;
+                if (string.IsNullOrWhiteSpace(token))
+                {
+                    token = await accessToken.GetTokenAsync();
+                }
+
+                await InvokeAsync(StateHasChanged);
+
+                httpService.MediaType = MediaType.JSON;
+                if (employee == null)
+                {
+                    employee = await storageHelper.GetEmployeeProfileAsync();
+                }
+                ruleMenu.OrgID = employee.OrganizationID;
+                string url = $"{endpoint.API}/api/v1/RuleMenu/UpdateRule";
+                var result = await httpService.Post<RuleMenu, CommonResponseId>(url, ruleMenu, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
+
+                if (result.Success)
+                {
+                    AlertMessage("ທຸລະກຳຂອງທ່ານ ສຳເລັດ", Defaults.Classes.Position.BottomRight, Severity.Success);
+                }
+                else
+                {
+                    AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ", Defaults.Classes.Position.BottomRight, Severity.Error);
+                }
+
+                onProcessing = false;
+
+                await Task.Delay(delayTime);
+
+                disposedObj();
+                formMode = FormMode.List;
+            }
+            catch (Exception)
+            {
+                AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, (INTERNAL_SERVER_ERROR)", Defaults.Classes.Position.BottomRight, Severity.Error);
             }
             
-            await InvokeAsync(StateHasChanged);
-
-            httpService.MediaType = MediaType.JSON;
-            if (employee == null)
-            {
-                employee = await storageHelper.GetEmployeeProfileAsync();
-            }
-            ruleMenu.OrgID = employee.OrganizationID;
-            string url = $"{endpoint.API}/api/v1/RuleMenu/UpdateRule";
-            var result = await httpService.Post<RuleMenu, CommonResponseId>(url, ruleMenu, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
-
-            if (result.Success)
-            {
-                AlertMessage("ທຸລະກຳຂອງທ່ານ ສຳເລັດ", Defaults.Classes.Position.BottomRight, Severity.Success);
-            }
-            else
-            {
-                AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ", Defaults.Classes.Position.BottomRight, Severity.Error);
-            }
-
-            onProcessing = false;
-
-            await Task.Delay(delayTime);
-
-            disposedObj();
-            formMode = FormMode.List;
         }
         void disposedObj()
         {

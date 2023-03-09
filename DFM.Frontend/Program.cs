@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.ResponseCompression;
 using DFM.Frontend.Hubs;
 using Serilog;
 using Serilog.Sinks.Elasticsearch;
+using DFM.Frontend.AuthHelper;
 
 var builder = WebApplication.CreateBuilder(args);
 #region Custom log used serial log
@@ -132,6 +133,7 @@ builder.Services.AddScoped<LocalStorageHelper>();
 builder.Services.AddScoped<ICascadingService, CascadingService>();
 builder.Services.AddSingleton<IMinioService, MinioService>();
 builder.Services.AddSingleton<IAESHelper,  AESHelper>();
+builder.Services.AddSingleton<TokenState>();
 //builder.Services.AddScoped<IJSRuntime, JSRuntime>();
 builder.Services.AddMudServices();
 

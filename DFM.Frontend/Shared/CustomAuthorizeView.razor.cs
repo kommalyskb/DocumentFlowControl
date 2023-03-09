@@ -37,7 +37,7 @@ namespace DFM.Frontend.Shared
             }
             else if (!AccessTokenService.CheckToken(token))
             {
-                string refreshToken = await accessToken.GetRefreshTokenAsync();
+                var refreshToken = await accessToken.GetRefreshTokenAsync();
                 if (!string.IsNullOrEmpty(refreshToken))
                 {
                     var refreshTokenReq = new RefreshTokenEndPointRequest

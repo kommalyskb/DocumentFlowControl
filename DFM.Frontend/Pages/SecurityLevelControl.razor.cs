@@ -35,38 +35,51 @@ namespace DFM.Frontend.Pages
 
         async Task onDeleteButtonClick()
         {
-            bool? isDelete = await delBox!.Show();
-            if (isDelete.HasValue)
+            try
             {
-                if (isDelete.Value)
+                bool? isDelete = await delBox!.Show();
+                if (isDelete.HasValue)
                 {
-                    onProcessing = true;
-                    if (string.IsNullOrWhiteSpace(token))
+                    if (isDelete.Value)
                     {
-                        token = await accessToken.GetTokenAsync();
+                        #region Validate Token
+                        var getTokenState = await tokenState.ValidateToken();
+                        if (!getTokenState)
+                            nav.NavigateTo("/authorize");
+                        #endregion
+                        onProcessing = true;
+                        if (string.IsNullOrWhiteSpace(token))
+                        {
+                            token = await accessToken.GetTokenAsync();
+                        }
+
+                        string url = $"{endpoint.API}/api/v1/SecurityLevel/RemoveItem/{documentSecurityModel!.id}";
+                        var result = await httpService.Get<CommonResponse>(url, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
+
+                        if (result.Success)
+                        {
+                            AlertMessage("ທຸລະກຳຂອງທ່ານ ສຳເລັດ", Defaults.Classes.Position.BottomRight, Severity.Success);
+                        }
+                        else
+                        {
+                            AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ", Defaults.Classes.Position.BottomRight, Severity.Error);
+                        }
+
+
+                        onProcessing = false;
+
+                        await Task.Delay(delayTime);
+
+                        disposedObj();
+                        formMode = FormMode.List;
                     }
-
-                    string url = $"{endpoint.API}/api/v1/SecurityLevel/RemoveItem/{documentSecurityModel!.id}";
-                    var result = await httpService.Get<CommonResponse>(url, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
-
-                    if (result.Success)
-                    {
-                        AlertMessage("ທຸລະກຳຂອງທ່ານ ສຳເລັດ", Defaults.Classes.Position.BottomRight, Severity.Success);
-                    }
-                    else
-                    {
-                        AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ", Defaults.Classes.Position.BottomRight, Severity.Error);
-                    }
-
-
-                    onProcessing = false;
-
-                    await Task.Delay(delayTime);
-
-                    disposedObj();
-                    formMode = FormMode.List;
                 }
             }
+            catch (Exception)
+            {
+                AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, (INTERNAL_SERVER_ERROR)", Defaults.Classes.Position.BottomRight, Severity.Error);
+            }
+            
         }
 
         void onEditButtonClick()
@@ -83,63 +96,76 @@ namespace DFM.Frontend.Pages
 
         async Task onSaveClickAsync()
         {
-            onProcessing = true;
-            if (string.IsNullOrWhiteSpace(token))
+            try
             {
-                token = await accessToken.GetTokenAsync();
-            }
-            await InvokeAsync(StateHasChanged);
+                #region Validate Token
+                var getTokenState = await tokenState.ValidateToken();
+                if (!getTokenState)
+                    nav.NavigateTo("/authorize");
+                #endregion
+                onProcessing = true;
+                if (string.IsNullOrWhiteSpace(token))
+                {
+                    token = await accessToken.GetTokenAsync();
+                }
+                await InvokeAsync(StateHasChanged);
 
-            httpService.MediaType = MediaType.JSON;
-            if (string.IsNullOrWhiteSpace(documentSecurityModel.Level))
-            {
-                AlertMessage("ກະລຸນາ ປ້ອນຂໍ້ມູນໃຫ້ຄົບຖ້ວນ", Defaults.Classes.Position.BottomRight, Severity.Error);
+                httpService.MediaType = MediaType.JSON;
+                if (string.IsNullOrWhiteSpace(documentSecurityModel.Level))
+                {
+                    AlertMessage("ກະລຸນາ ປ້ອນຂໍ້ມູນໃຫ້ຄົບຖ້ວນ", Defaults.Classes.Position.BottomRight, Severity.Error);
+                    onProcessing = false;
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(documentSecurityModel.id))
+                {
+                    if (employee == null)
+                    {
+                        employee = await storageHelper.GetEmployeeProfileAsync();
+                    }
+                    documentSecurityModel.OrganizationID = employee.OrganizationID;
+                    // New folder
+                    string url = $"{endpoint.API}/api/v1/SecurityLevel/NewItem";
+                    var result = await httpService.Post<DocumentSecurityModel, CommonResponseId>(url, documentSecurityModel, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
+
+                    if (result.Success)
+                    {
+                        AlertMessage("ທຸລະກຳຂອງທ່ານ ສຳເລັດ", Defaults.Classes.Position.BottomRight, Severity.Success);
+                    }
+                    else
+                    {
+                        AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ", Defaults.Classes.Position.BottomRight, Severity.Error);
+                    }
+                }
+                else
+                {
+                    // Update folder
+                    string url = $"{endpoint.API}/api/v1/SecurityLevel/UpdateItem";
+                    var result = await httpService.Post<DocumentSecurityModel, CommonResponseId>(url, documentSecurityModel, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
+
+                    if (result.Success)
+                    {
+                        AlertMessage("ທຸລະກຳຂອງທ່ານ ສຳເລັດ", Defaults.Classes.Position.BottomRight, Severity.Success);
+                    }
+                    else
+                    {
+                        AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ", Defaults.Classes.Position.BottomRight, Severity.Error);
+                    }
+                }
+
                 onProcessing = false;
-                return;
-            }
 
-            if (string.IsNullOrWhiteSpace(documentSecurityModel.id))
+                await Task.Delay(delayTime);
+
+                disposedObj();
+                formMode = FormMode.List;
+            }
+            catch (Exception)
             {
-                if (employee == null)
-                {
-                    employee = await storageHelper.GetEmployeeProfileAsync();
-                }
-                documentSecurityModel.OrganizationID = employee.OrganizationID;
-                // New folder
-                string url = $"{endpoint.API}/api/v1/SecurityLevel/NewItem";
-                var result = await httpService.Post<DocumentSecurityModel, CommonResponseId>(url, documentSecurityModel, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
-
-                if (result.Success)
-                {
-                    AlertMessage("ທຸລະກຳຂອງທ່ານ ສຳເລັດ", Defaults.Classes.Position.BottomRight, Severity.Success);
-                }
-                else
-                {
-                    AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ", Defaults.Classes.Position.BottomRight, Severity.Error);
-                }
+                AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, (INTERNAL_SERVER_ERROR)", Defaults.Classes.Position.BottomRight, Severity.Error);
             }
-            else
-            {
-                // Update folder
-                string url = $"{endpoint.API}/api/v1/SecurityLevel/UpdateItem";
-                var result = await httpService.Post<DocumentSecurityModel, CommonResponseId>(url, documentSecurityModel, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
-
-                if (result.Success)
-                {
-                    AlertMessage("ທຸລະກຳຂອງທ່ານ ສຳເລັດ", Defaults.Classes.Position.BottomRight, Severity.Success);
-                }
-                else
-                {
-                    AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ", Defaults.Classes.Position.BottomRight, Severity.Error);
-                }
-            }
-
-            onProcessing = false;
-
-            await Task.Delay(delayTime);
-
-            disposedObj();
-            formMode = FormMode.List;
+            
         }
         void disposedObj()
         {

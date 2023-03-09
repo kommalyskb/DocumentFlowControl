@@ -23,135 +23,188 @@ namespace DFM.Frontend.Pages
         private ReportClickDTO? itemClick = new();
         protected override async Task OnInitializedAsync()
         {
-            var rules = await storageHelper.GetRuleMenuAsync();
-            if (!ValidateRule.isInRole(rules, $"/pages/monitor/{Link}"))
+            try
             {
-                nav.NavigateTo("/pages/unauthorized");
-            }
-
-            onProcessing = true;
-
-            InboxType inboxType = InboxType.Inbound;
-            oldLink = Link!;
-            if (Link == "inbound")
-            {
-                current = "ເອກະສານຂາເຂົ້າ";
-                inboxType = InboxType.Inbound;
-            }
-            else
-            {
-                current = "ເອກະສານຂາອອກ";
-                inboxType = InboxType.Outbound;
-            }
-            if (employee == null)
-            {
-                employee = await storageHelper.GetEmployeeProfileAsync();
-            }
-
-            string url = $"{endpoint.API}/api/v1/Organization/GetItem/{employee.OrganizationID}";
-            if (string.IsNullOrWhiteSpace(token))
-            {
-                token = await accessToken.GetTokenAsync();
-            }
-
-            var result = await httpService.Get<IEnumerable<RoleTreeModel>>(url, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
-            if (result.Success)
-            {
-                //tabItems = result.Response.ToList();
-                roleIds = result.Response.Select(x => x.Role.RoleID).ToList()!;
-                url = $"{endpoint.API}/api/v1/Document/GetPersonalReport";
-                var reportResult = await httpService.Post<GetPersonalReportRequest, List<PersonalReportSummary>>(url, new GetPersonalReportRequest
+                #region Validate Token
+                var getTokenState = await tokenState.ValidateToken();
+                if (!getTokenState)
+                    nav.NavigateTo("/authorize");
+                #endregion
+                var rules = await storageHelper.GetRuleMenuAsync();
+                if (!ValidateRule.isInRole(rules, $"/pages/monitor/{Link}"))
                 {
-                    end = -1,
-                    start = -1,
-                    inboxType = inboxType,
-                    roleIDs = roleIds
-                }, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
-                if (reportResult.Success)
-                {
-                    reportSummary = reportResult.Response;
-
+                    nav.NavigateTo("/pages/unauthorized");
                 }
-            }
-            onProcessing = false;
 
-            await InvokeAsync(StateHasChanged);
+                onProcessing = true;
+
+                InboxType inboxType = InboxType.Inbound;
+                oldLink = Link!;
+                if (Link == "inbound")
+                {
+                    current = "ເອກະສານຂາເຂົ້າ";
+                    inboxType = InboxType.Inbound;
+                }
+                else
+                {
+                    current = "ເອກະສານຂາອອກ";
+                    inboxType = InboxType.Outbound;
+                }
+                if (employee == null)
+                {
+                    employee = await storageHelper.GetEmployeeProfileAsync();
+                }
+
+                string url = $"{endpoint.API}/api/v1/Organization/GetItem/{employee.OrganizationID}";
+                if (string.IsNullOrWhiteSpace(token))
+                {
+                    token = await accessToken.GetTokenAsync();
+                }
+
+                var result = await httpService.Get<IEnumerable<RoleTreeModel>>(url, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
+                if (result.Success)
+                {
+                    //tabItems = result.Response.ToList();
+                    roleIds = result.Response.Select(x => x.Role.RoleID).ToList()!;
+                    url = $"{endpoint.API}/api/v1/Document/GetPersonalReport";
+                    var reportResult = await httpService.Post<GetPersonalReportRequest, List<PersonalReportSummary>>(url, new GetPersonalReportRequest
+                    {
+                        end = -1,
+                        start = -1,
+                        inboxType = inboxType,
+                        roleIDs = roleIds
+                    }, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
+                    if (reportResult.Success)
+                    {
+                        reportSummary = reportResult.Response;
+
+                    }
+                }
+                onProcessing = false;
+
+                await InvokeAsync(StateHasChanged);
+            }
+            catch (Exception)
+            {
+
+                AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, (INTERNAL_SERVER_ERROR)", Defaults.Classes.Position.BottomRight, Severity.Error);
+            }
+            
 
         }
 
         protected override async Task OnParametersSetAsync()
         {
-            if (oldLink != Link)
+            try
             {
-                onProcessing = true;
-                InboxType inboxType = InboxType.Inbound;
-                isDrillDown = ReportDrillDownEnum.Search;
-                oldLink = Link!;
-                reportSummary = new();
-                searchRequest = new();
-                documentModel = new();
-                rawDocument = new();
-                if (Link == "inbound")
+                if (oldLink != Link)
                 {
-                    current = "ລາຍງານເອກະສານຂາເຂົ້າ";
-                    inboxType = InboxType.Inbound;
-                }
-                else
-                {
-                    current = "ລາຍງານເອກະສານຂາອອກ";
-                    inboxType = InboxType.Outbound;
-                }
-                string url = $"{endpoint.API}/api/v1/Document/GetPersonalReport";
-                var reportResult = await httpService.Post<GetPersonalReportRequest, List<PersonalReportSummary>>(url, new GetPersonalReportRequest
-                {
-                    end = -1,
-                    start = -1,
-                    inboxType = inboxType,
-                    roleIDs = roleIds
-                }, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
-                if (reportResult.Success)
-                {
-                    reportSummary = reportResult.Response;
+                    #region Validate Token
+                    var getTokenState = await tokenState.ValidateToken();
+                    if (!getTokenState)
+                        nav.NavigateTo("/authorize");
+                    #endregion
+                    onProcessing = true;
+                    InboxType inboxType = InboxType.Inbound;
+                    isDrillDown = ReportDrillDownEnum.Search;
+                    oldLink = Link!;
+                    reportSummary = new();
+                    searchRequest = new();
+                    documentModel = new();
+                    rawDocument = new();
+                    if (Link == "inbound")
+                    {
+                        current = "ລາຍງານເອກະສານຂາເຂົ້າ";
+                        inboxType = InboxType.Inbound;
+                    }
+                    else
+                    {
+                        current = "ລາຍງານເອກະສານຂາອອກ";
+                        inboxType = InboxType.Outbound;
+                    }
+                    string url = $"{endpoint.API}/api/v1/Document/GetPersonalReport";
+                    var reportResult = await httpService.Post<GetPersonalReportRequest, List<PersonalReportSummary>>(url, new GetPersonalReportRequest
+                    {
+                        end = -1,
+                        start = -1,
+                        inboxType = inboxType,
+                        roleIDs = roleIds
+                    }, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
+                    if (reportResult.Success)
+                    {
+                        reportSummary = reportResult.Response;
 
+                    }
+                    onProcessing = false;
                 }
-                onProcessing = false;
             }
+            catch (Exception)
+            {
+
+                AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, (INTERNAL_SERVER_ERROR)", Defaults.Classes.Position.BottomRight, Severity.Error);
+            }
+            
         }
 
         private async Task onSearch(GetPersonalReportRequest callback)
         {
+            try
+            {
+                #region Validate Token
+                var getTokenState = await tokenState.ValidateToken();
+                if (!getTokenState)
+                    nav.NavigateTo("/authorize");
+                #endregion
+                searchRequest = callback;
+                onProcessing = true;
+                string url = $"{endpoint.API}/api/v1/Document/GetPersonalReport";
+                var result = await httpService.Post<GetPersonalReportRequest, List<PersonalReportSummary>>(url, callback, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
 
-            searchRequest = callback;
-            onProcessing = true;
-            string url = $"{endpoint.API}/api/v1/Document/GetPersonalReport";
-            var result = await httpService.Post<GetPersonalReportRequest, List<PersonalReportSummary>>(url, callback, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
-
-            reportSummary = result.Response;
-            onProcessing = false;
-            await InvokeAsync(StateHasChanged);
+                reportSummary = result.Response;
+                onProcessing = false;
+                await InvokeAsync(StateHasChanged);
+            }
+            catch (Exception)
+            {
+                AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, (INTERNAL_SERVER_ERROR)", Defaults.Classes.Position.BottomRight, Severity.Error);
+            }
+            
 
         }
 
         private async Task onItemReportClick(ReportClickDTO item)
         {
-            if (Link == "inbound")
+            try
             {
-                previousBtn = "ລາຍງານເອກະສານຂາເຂົ້າ";
+                #region Validate Token
+                var getTokenState = await tokenState.ValidateToken();
+                if (!getTokenState)
+                    nav.NavigateTo("/authorize");
+                #endregion
+                if (Link == "inbound")
+                {
+                    previousBtn = "ລາຍງານເອກະສານຂາເຂົ້າ";
+                }
+                else
+                {
+                    previousBtn = "ລາຍງານເອກະສານຂາອອກ";
+                }
+                current = "ລາຍການເອກະສານ";
+                itemClick = item;
+                searchRequest!.roleIDs = new List<string> { item.RoleID! };
+                onProcessing = true;
+                string url = $"{endpoint.API}/api/v1/Document/DrillDownReport/{item.TraceStatus}";
+                var result = await httpService.Post<GetPersonalReportRequest, List<PersonalReportSummary>>(url, searchRequest, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
+                isDrillDown = ReportDrillDownEnum.List;
+                roleId = item.RoleID;
+                onProcessing = false;
+                await InvokeAsync(StateHasChanged);
             }
-            else
+            catch (Exception)
             {
-                previousBtn = "ລາຍງານເອກະສານຂາອອກ";
+                AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, (INTERNAL_SERVER_ERROR)", Defaults.Classes.Position.BottomRight, Severity.Error);
             }
-            current = "ລາຍການເອກະສານ";
-            itemClick = item;
-            searchRequest!.roleIDs = new List<string> { item.RoleID! };
-            onProcessing = true;
-            string url = $"{endpoint.API}/api/v1/Document/DrillDownReport/{item.TraceStatus}";
-            var result = await httpService.Post<GetPersonalReportRequest, List<PersonalReportSummary>>(url, searchRequest, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
-            isDrillDown = ReportDrillDownEnum.List;
-            roleId = item.RoleID;
-            onProcessing = false;
-            await InvokeAsync(StateHasChanged);
+            
         }
         async Task onPrevoiusToSearch()
         {
@@ -187,13 +240,21 @@ namespace DFM.Frontend.Pages
 
         async Task onRowClick(DocumentModel item)
         {
+            try
+            {
+                // Row click
+                documentModel = item;
+                var myRole = documentModel!.Recipients!.LastOrDefault(x => x.RecipientInfo.RoleID == roleId);
+                rawDocument = documentModel!.RawDatas!.LastOrDefault(x => x.DataID == myRole!.DataID);
+                isDrillDown = ReportDrillDownEnum.Detail;
+                await InvokeAsync(StateHasChanged);
+            }
+            catch (Exception)
+            {
 
-            // Row click
-            documentModel = item;
-            var myRole = documentModel!.Recipients!.LastOrDefault(x => x.RecipientInfo.RoleID == roleId);
-            rawDocument = documentModel!.RawDatas!.LastOrDefault(x => x.DataID == myRole!.DataID);
-            isDrillDown = ReportDrillDownEnum.Detail;
-            await InvokeAsync(StateHasChanged);
+                AlertMessage("ທຸລະກຳຂອງທ່ານ ຜິດພາດ, (INTERNAL_SERVER_ERROR)", Defaults.Classes.Position.BottomRight, Severity.Error);
+            }
+            
         }
 
         void AlertMessage(string message, string position, Severity severity)
