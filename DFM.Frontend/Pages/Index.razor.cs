@@ -26,7 +26,7 @@ namespace DFM.Frontend.Pages
             if (roles == null)
             {
                 roles = await storageHelper.GetRolesAsync();
-               
+
             }
             findInboundOutboundSameParent();
             if (roles != null)
@@ -76,8 +76,8 @@ namespace DFM.Frontend.Pages
             {
                 return false;
             }
-           
-            
+
+
         }
         private void findInboundOutboundSameParent()
         {
@@ -89,8 +89,27 @@ namespace DFM.Frontend.Pages
             x.Role.RoleType == RoleTypeModel.OutboundOfficePrime || x.Role.RoleType == RoleTypeModel.OutboundPrime);
 
                 // Find same parent
+                string? oldParentId = "";
                 foreach (var item in inbound_outbound)
                 {
+                    if (string.IsNullOrWhiteSpace(oldParentId))
+                    {
+                        oldParentId = item.ParentID;
+                    }
+                    else
+                    {
+                        // Check this item has already add to Ienumerable
+                        if (oldParentId == item.ParentID)
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            oldParentId = item.ParentID;
+                        }
+                    }
+                    
+
                     var sameParent = inbound_outbound.Where(x => x.ParentID == item.ParentID).ToList();
                     if (sameParent.Count > 1)
                     {

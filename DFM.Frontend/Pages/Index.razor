@@ -52,26 +52,31 @@
         </MudItem>
     </MudGrid>
     <MudGrid>
-        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            @if (isMultiRole())
-            {
+        @if (isMultiRole())
+        {
+            <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
                 <DashboardTable Title="ຂໍ້ມູນເອກະສານ ຂາເຂົ້າ" InboxType="InboxType.Inbound" RoleId="@roleInbound" OnProcessing="onProcessing" TextInProgress="ອິນບ໋ອກ"></DashboardTable>
-            }
-            else
-            {
-                <DashboardTable Title="ຂໍ້ມູນເອກະສານ ຂາເຂົ້າ" InboxType="InboxType.Inbound" RoleId="@roleID" OnProcessing="onProcessing" TextInProgress="ອິນບ໋ອກ"></DashboardTable>
-            }
-        </MudItem>
-        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            @if (isMultiRole())
-            {
+
+            </MudItem>
+            <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
                 <DashboardTable Title="ຂໍ້ມູນເອກະສານ ຂາອອກ" InboxType="InboxType.Outbound" RoleId="@roleOutbound" OnProcessing="onProcessing" TextInProgress="ເອກະສານສົ່ງອອກ"></DashboardTable>
-            }
-            else
-            {
+
+            </MudItem>
+        }
+        else
+        {
+            <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+
+                <DashboardTable Title="ຂໍ້ມູນເອກະສານ ຂາເຂົ້າ" InboxType="InboxType.Inbound" RoleId="@roleID" OnProcessing="onProcessing" TextInProgress="ອິນບ໋ອກ"></DashboardTable>
+            </MudItem>
+
+            <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
                 <DashboardTable Title="ຂໍ້ມູນເອກະສານ ຂາອອກ" InboxType="InboxType.Outbound" RoleId="@roleID" OnProcessing="onProcessing" TextInProgress="ເອກະສານສົ່ງອອກ"></DashboardTable>
-            }
-        </MudItem>
+
+            </MudItem>
+        }
+        
+        
 
     </MudGrid>
 </MudContainer>

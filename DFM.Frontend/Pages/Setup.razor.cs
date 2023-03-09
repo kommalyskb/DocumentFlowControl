@@ -79,7 +79,12 @@ namespace DFM.Frontend.Pages
                 if (orgResult.Success)
                 {
                     Console.WriteLine(JsonSerializer.Serialize(orgResult.Response));
-                    string urlEmployee = $"{endpoint.API}/api/v1/Employee/SaveItem?notify=yes";
+                    string isNotify = "no";
+                    if (notify)
+                    {
+                        isNotify = "yes";
+                    }
+                    string urlEmployee = $"{endpoint.API}/api/v1/Employee/SaveItem?notify={isNotify}";
                     employee.OrganizationID = orgResult.Response.Id;
                     var empResult = await httpService.Post<EmployeeModel, CommonResponse>(urlEmployee, employee, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
                     if (empResult.Success)

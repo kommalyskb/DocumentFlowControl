@@ -72,11 +72,14 @@
                         <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
                             <h2>ຂໍ້ມູນເຂົ້າເຖິງລະບົບ</h2>
                         </MudItem>
-                        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+                        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
                             <MudTextField Margin="Margin.Dense" Disabled="onProcessing" @bind-Value="employee!.Username" Required="true" T="string" Counter="12" MaxLength="12" Immediate="true" Variant="Variant.Outlined" Validation="@(new Func<string, IEnumerable<string>>(UserCharacters))" HelperText="Username ທີ່ໃຊ້ລັອກອິນລະບົບ" Label="Username" />
                         </MudItem>
-                        <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
+                        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
                             <MudTextField Margin="Margin.Dense" Disabled="onProcessing" @bind-Value="employee!.Password" InputType="InputType.Password" Required="true" T="string" Counter="6" MaxLength="6" Immediate="true" Variant="Variant.Outlined" Validation="@(new Func<string, IEnumerable<string>>(PasswordCharacters))" HelperText="Pລະຫັດຜ່ານ" Label="Password" />
+                        </MudItem>
+                        <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+                            <MudCheckBox Disabled="onProcessing" @bind-Checked="notify" Label="ແຈ້ງການຂໍ້ມູນຜູ້ໃຊ້ທາງອີເມວ" Color="Color.Primary"></MudCheckBox>
                         </MudItem>
 
                         <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
@@ -132,6 +135,7 @@
 
 @code {
     bool onProcessing = false;
+    bool notify = false;
     OrganizationModel model = new();
     EmployeeModel employee = new();
     private CancellationTokenSource cts = new CancellationTokenSource();
