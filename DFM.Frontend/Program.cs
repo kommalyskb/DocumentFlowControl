@@ -21,19 +21,20 @@ builder.Host.UseSerilog((context, configuration) =>
     configuration.Enrich.FromLogContext()
     .Enrich.WithMachineName()
     .WriteTo.Console()
-    .WriteTo.Elasticsearch
-    (
-        new ElasticsearchSinkOptions
-        (
-            new Uri(context.Configuration["LogServer:Uri"])
-        )
-        {
-            IndexFormat = $"{context.Configuration["AppName"]}-logs-{context.HostingEnvironment.EnvironmentName?.ToLower().Replace(".", "-")}-{DateTime.Now:yyyy-MM}",
-            AutoRegisterTemplate = true,
-            NumberOfShards = 2,
-            NumberOfReplicas = 1
-        }
-    )
+    //.WriteTo.Elasticsearch
+    //(
+    //    new ElasticsearchSinkOptions
+    //    (
+    //        new Uri(context.Configuration["LogServer:Uri"])
+    //    )
+    //    {
+    //        IndexFormat = $"{context.Configuration["AppName"]}-logs-{context.HostingEnvironment.EnvironmentName?.ToLower().Replace(".", "-")}-{DateTime.Now:yyyy-MM}",
+    //        AutoRegisterTemplate = true,
+    //        NumberOfShards = 2,
+    //        NumberOfReplicas = 1
+    //    }
+    //)
+    .WriteTo.File("log.txt", rollingInterval: RollingInterval.Day, rollOnFileSizeLimit: true)
     .Enrich.WithProperty("Environment", context.HostingEnvironment.EnvironmentName)
     .ReadFrom.Configuration(context.Configuration);
 });
