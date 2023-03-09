@@ -28,7 +28,7 @@ jobs:
       name: Build & push Docker image -> DFM API
       with:
         image: codecamplao/dfm-api
-        tags: 1.40.00.01(cse), latest
+        tags: 1.40.00.01.cse, latest
         registry: docker.io
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
@@ -37,7 +37,7 @@ jobs:
       name: Build & push Docker image -> DFM Frontend
       with:
         image: codecamplao/dfm-frontend
-        tags: 1.40.00.01(cse), latest
+        tags: 1.40.00.01.cse, latest
         registry: docker.io
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
