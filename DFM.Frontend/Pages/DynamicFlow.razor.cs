@@ -14,11 +14,11 @@ namespace DFM.Frontend.Pages
      
         protected override async Task OnInitializedAsync()
         {
-            //var rules = await storageHelper.GetRuleMenuAsync();
-            //if (!ValidateRule.isInRole(rules, "/pages/freeflow"))
-            //{
-            //    nav.NavigateTo("/pages/unauthorized");
-            //}
+            var rules = await storageHelper.GetRuleMenuAsync();
+            if (!ValidateRule.isInRole(rules, "/pages/freeflow"))
+            {
+                nav.NavigateTo("/pages/unauthorized");
+            }
 
             formMode = FormMode.List;
         }
