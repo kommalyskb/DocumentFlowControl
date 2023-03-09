@@ -12,5 +12,6 @@ namespace DFM.Shared.DTOs
         public string? OrgID { get; set; }
         public PartialRole Role { get; set; } = new();
         public PartialEmployeeProfile Employee { get; set; } = new();
+        public string? ParentID { get; set; }
     }
 }

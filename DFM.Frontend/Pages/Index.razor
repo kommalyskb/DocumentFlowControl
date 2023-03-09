@@ -15,8 +15,8 @@
 <MudContainer>
     <MudGrid>
         <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
-            
-            
+
+
 
             <div class="mud-paper mud-elevation-1 mud-card mud-width-full">
                 <div class="mud-card-content">
@@ -26,6 +26,7 @@
                         <MudSelect Margin="Margin.Dense" SelectedValues="selectValues" Disabled="onProcessing" @bind-Value="roleID" T="string" HelperText="ຕຳແໜ່ງຂອງທ່ານ" Label="ຕຳແໜ່ງ" Variant="Variant.Outlined">
                             @if (roles is not null)
                             {
+
                                 foreach (var item in roles!)
                                 {
                                     Console.WriteLine($"{item.Role.RoleID} -  {item.Role.Display.Local}");
@@ -36,15 +37,15 @@
                     }
                     @*else
                     {
-                        <MudSelect Margin="Margin.Dense" Disabled="onProcessing" @bind-Value="roleID" T="string" HelperText="ຕຳແໜ່ງຂອງທ່ານ" Label="ຕຳແໜ່ງ" Variant="Variant.Outlined">
-                            @if (roles is not null)
-                            {
-                                foreach (var item in roles!)
-                                {
-                                    <MudSelectItem Value="item.Role.RoleID">@item.Role.Display.Local</MudSelectItem>
-                                }
-                            }
-                        </MudSelect>
+                    <MudSelect Margin="Margin.Dense" Disabled="onProcessing" @bind-Value="roleID" T="string" HelperText="ຕຳແໜ່ງຂອງທ່ານ" Label="ຕຳແໜ່ງ" Variant="Variant.Outlined">
+                    @if (roles is not null)
+                    {
+                    foreach (var item in roles!)
+                    {
+                    <MudSelectItem Value="item.Role.RoleID">@item.Role.Display.Local</MudSelectItem>
+                    }
+                    }
+                    </MudSelect>
                     }*@
                 </div>
             </div>
@@ -52,10 +53,24 @@
     </MudGrid>
     <MudGrid>
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <DashboardTable Title="ຂໍ້ມູນເອກະສານ ຂາເຂົ້າ" InboxType="InboxType.Inbound" RoleId="@roleID" OnProcessing="onProcessing" TextInProgress="ອິນບ໋ອກ"></DashboardTable>
+            @if (isMultiRole())
+            {
+                <DashboardTable Title="ຂໍ້ມູນເອກະສານ ຂາເຂົ້າ" InboxType="InboxType.Inbound" RoleId="@roleInbound" OnProcessing="onProcessing" TextInProgress="ອິນບ໋ອກ"></DashboardTable>
+            }
+            else
+            {
+                <DashboardTable Title="ຂໍ້ມູນເອກະສານ ຂາເຂົ້າ" InboxType="InboxType.Inbound" RoleId="@roleID" OnProcessing="onProcessing" TextInProgress="ອິນບ໋ອກ"></DashboardTable>
+            }
         </MudItem>
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            <DashboardTable Title="ຂໍ້ມູນເອກະສານ ຂາອອກ" InboxType="InboxType.Outbound" RoleId="@roleID" OnProcessing="onProcessing" TextInProgress="ເອກະສານສົ່ງອອກ"></DashboardTable>
+            @if (isMultiRole())
+            {
+                <DashboardTable Title="ຂໍ້ມູນເອກະສານ ຂາອອກ" InboxType="InboxType.Outbound" RoleId="@roleOutbound" OnProcessing="onProcessing" TextInProgress="ເອກະສານສົ່ງອອກ"></DashboardTable>
+            }
+            else
+            {
+                <DashboardTable Title="ຂໍ້ມູນເອກະສານ ຂາອອກ" InboxType="InboxType.Outbound" RoleId="@roleID" OnProcessing="onProcessing" TextInProgress="ເອກະສານສົ່ງອອກ"></DashboardTable>
+            }
         </MudItem>
 
     </MudGrid>
@@ -63,6 +78,8 @@
 
 @code {
     string? roleID;
+    string? roleInbound;
+    string? roleOutbound;
     //string? roleName;
     bool onProcessing;
     private CancellationTokenSource cts = new CancellationTokenSource();

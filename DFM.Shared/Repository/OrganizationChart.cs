@@ -660,7 +660,8 @@ namespace DFM.Shared.Repository
             {
                 OrgID = orgId,
                 Employee = x.Employee,
-                Role = x.Role
+                Role = x.Role,
+                ParentID = x.ParentID
             });
 
             return (org.Response, result);
