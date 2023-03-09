@@ -129,12 +129,14 @@ builder.Services.AddStackExchangeRedisCache(options => // Register redis cache
 });
 
 builder.Services.AddSingleton<IRedisConnector, RedisConnector>();
+
 builder.Services.AddScoped<AccessTokenStorage>();
 builder.Services.AddScoped<LocalStorageHelper>();
+builder.Services.AddScoped<TokenState>();
+
 builder.Services.AddScoped<ICascadingService, CascadingService>();
 builder.Services.AddSingleton<IMinioService, MinioService>();
 builder.Services.AddSingleton<IAESHelper,  AESHelper>();
-builder.Services.AddSingleton<TokenState>();
 //builder.Services.AddScoped<IJSRuntime, JSRuntime>();
 builder.Services.AddMudServices();
 
