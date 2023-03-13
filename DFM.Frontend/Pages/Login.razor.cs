@@ -6,6 +6,7 @@ using MudBlazor;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using StackExchange.Redis;
+using System.Data;
 using System.Runtime.InteropServices;
 using System.Text.Json;
 
@@ -42,40 +43,41 @@ namespace DFM.Frontend.Pages
             Console.WriteLine(await result.HttpResponseMessage.Content.ReadAsStringAsync());
             if (result.Success)
             {
-                // Set access token to local storage
-                
-                // Set refresh token to local storage
-
-                // Get Profile to local storage
-                var employeeProfile = await cascading.GetEmployeeProfile(result.Response.AccessToken!);
-                if (!employeeProfile.Success)
+                if (model.Username == "admin")
                 {
-                    AlertMessage($"ບໍ່ສາມາດ ລັອກອິນໄດ້, ພົບບັນຫາກ່ຽວກັບຂໍ້ມູນຜູ້ໃຊ້", Defaults.Classes.Position.BottomRight, Severity.Error);
+                    await Task.WhenAll(accessToken.SetTokenAsync(result.Response.AccessToken),
+                            accessToken.SetRefreshTokenAsync(result.Response.RefreshToken));
+                    nav.NavigateTo("/setup", true);
                 }
                 else
                 {
-                    // Get Roles to local storage
-                    var roles = await cascading.GetRoles(result.Response.AccessToken!);
-                    // Get Rules Menu to local storage
-                    var rules = await cascading.GetRules(result.Response.AccessToken!);
+                    // Set access token to local storage
 
-                    await Task.WhenAll(accessToken.SetTokenAsync(result.Response.AccessToken),
-                        accessToken.SetRefreshTokenAsync(result.Response.RefreshToken),
-                        storageHelper.SetEmployeeProfileAsync(employeeProfile.Content),
-                        storageHelper.SetRolesAsync(roles.Contents),
-                        storageHelper.SetRuleMenuAsync(rules.Contents));
+                    // Set refresh token to local storage
 
-                    if (model.Username == "admin")
+                    // Get Profile to local storage
+                    var employeeProfile = await cascading.GetEmployeeProfile(result.Response.AccessToken!);
+                    if (!employeeProfile.Success)
                     {
-                        nav.NavigateTo("/setup", true);
+                        AlertMessage($"ບໍ່ສາມາດ ລັອກອິນໄດ້, ພົບບັນຫາກ່ຽວກັບຂໍ້ມູນຜູ້ໃຊ້", Defaults.Classes.Position.BottomRight, Severity.Error);
                     }
                     else
                     {
-                        nav.NavigateTo("/", true);
+                        // Get Roles to local storage
+                        var roles = await cascading.GetRoles(result.Response.AccessToken!);
+                        // Get Rules Menu to local storage
+                        var rules = await cascading.GetRules(result.Response.AccessToken!);
+
+                        await Task.WhenAll(accessToken.SetTokenAsync(result.Response.AccessToken),
+                            accessToken.SetRefreshTokenAsync(result.Response.RefreshToken),
+                            storageHelper.SetEmployeeProfileAsync(employeeProfile.Content),
+                            storageHelper.SetRolesAsync(roles.Contents),
+                            storageHelper.SetRuleMenuAsync(rules.Contents));
+
 
                     }
+                    nav.NavigateTo("/", true);
                 }
-                
 
             }
             else
