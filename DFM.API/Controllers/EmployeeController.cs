@@ -108,6 +108,10 @@ namespace DFM.API.Controllers
                 }
                 //get admin token
                 var checkAdminToken = await identityHelper.GetAdminAccessToken();
+                if (!checkAdminToken.Response.Success)
+                {
+                    return BadRequest(checkAdminToken.Response);
+                }
                 var validateResult = await identityHelper.ValidateUser(request.Username, checkAdminToken.Token);
 
                 bool isNewUser = false;

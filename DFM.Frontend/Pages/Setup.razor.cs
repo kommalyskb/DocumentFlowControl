@@ -4,6 +4,7 @@ using DFM.Shared.Entities;
 using HttpClientService;
 using MudBlazor;
 using Newtonsoft.Json.Linq;
+using Serilog;
 using System.Text.Json;
 
 namespace DFM.Frontend.Pages
@@ -87,6 +88,9 @@ namespace DFM.Frontend.Pages
                     string urlEmployee = $"{endpoint.API}/api/v1/Employee/SaveItem?notify={isNotify}";
                     employee.OrganizationID = orgResult.Response.Id;
                     var empResult = await httpService.Post<EmployeeModel, CommonResponse>(urlEmployee, employee, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
+
+                    Log.Information(await empResult.HttpResponseMessage.Content.ReadAsStringAsync());
+
                     if (empResult.Success)
                     {
                         nav.NavigateTo($"/authorize", true);

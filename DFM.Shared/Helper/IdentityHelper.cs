@@ -6,6 +6,7 @@ using DFM.Shared.Resources;
 using HttpClientService;
 using IdentityModel.Client;
 using Redis.OM;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -98,9 +99,9 @@ namespace DFM.Shared.Helper
             if (admin != null)
             {
                 isNull = false;
-                if (ValidateToken(admin.AccessToken))
+                if (ValidateToken(admin.AccessToken!))
                 {
-                    token = admin.AccessToken;
+                    token = admin.AccessToken!;
                     res = new CommonResponse
                     {
                         Success = admin.Success,
@@ -109,7 +110,7 @@ namespace DFM.Shared.Helper
                         Detail = admin.Detail
                     };
 
-                    return (token, res);
+                    return (token!, res);
                 }
             }
             else
@@ -126,7 +127,7 @@ namespace DFM.Shared.Helper
                 Password = openID.AdminPassword,
                 Scope = openID.AdminScope
             });
-
+            
             if (!tokenResult.IsError)
             {
                 admin = new TokenEndPointResponse
@@ -149,9 +150,19 @@ namespace DFM.Shared.Helper
                     Message = ResultCode.SUCCESS_OPERATION,
                     Detail = ResultCode.SUCCESS_OPERATION
                 };
+                //update or insert
+                if (!isNull)
+                {
+                    await response.UpdateAsync(admin);
+                }
+                else
+                {
+                    await response.InsertAsync(admin);
+                }
             }
             else
             {
+                Log.Error($"Error Request Admin Authorize: {tokenResult.ErrorDescription}");
                 res = new CommonResponse
                 {
                     Success = false,
@@ -160,15 +171,7 @@ namespace DFM.Shared.Helper
                     Detail = tokenResult.Error
                 };
             }
-            //update or insert
-            if (!isNull)
-            {
-                await response.UpdateAsync(admin);
-            }
-            else
-            {
-                await response.InsertAsync(admin);
-            }
+            
             return (token, res);
         }
     }
