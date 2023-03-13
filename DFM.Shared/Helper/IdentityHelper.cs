@@ -59,25 +59,33 @@ namespace DFM.Shared.Helper
             {
                 int found = 2;
                 string id = "";
+                string url = $"{endpoint.IdentityAPI}/api/Users?searchText={username}&page=1&pageSize=10";
+                var validResult = await httpService.Get<object>(url, new AuthorizeHeader("bearer", token));
 
-                var validResult = await httpService.Get<object>($"{endpoint.IdentityAPI}/api/Users?searchText={username}&page=1&pageSize=10", new AuthorizeHeader("bearer", token));
+                var validContent = await validResult.HttpResponseMessage.Content.ReadAsStringAsync();
+                Log.Information($"Search User: {validContent}");
+                Log.Information($"Token: {token}");
+                Log.Information($"Url: {url}");
 
                 if (!validResult.Success)
                 {
                     found = 0;
                 }
-
-                var validContent = await validResult.HttpResponseMessage.Content.ReadAsStringAsync();
-                Log.Information($"Search User: {validContent}");
-                var validDeserialize = JsonSerializer.Deserialize<UserSearchResponse>(validContent);
-
-                if (validDeserialize?.totalCount == 0)
-                {
-                    found = 1;
-                }
                 else
                 {
-                    id = validDeserialize!.users![0].id!;
+                    
+                    var validDeserialize = JsonSerializer.Deserialize<UserSearchResponse>(validContent);
+
+                    if (validDeserialize?.totalCount == 0)
+                    {
+                        found = 1;
+                    }
+                    else
+                    {
+                        id = validDeserialize!.users![0].id!;
+                    }
+
+
                 }
 
                 return (found, id);
