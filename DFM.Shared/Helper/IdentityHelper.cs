@@ -68,6 +68,7 @@ namespace DFM.Shared.Helper
                 }
 
                 var validContent = await validResult.HttpResponseMessage.Content.ReadAsStringAsync();
+                Log.Information($"Search User: {validContent}");
                 var validDeserialize = JsonSerializer.Deserialize<UserSearchResponse>(validContent);
 
                 if (validDeserialize?.totalCount == 0)
@@ -76,7 +77,7 @@ namespace DFM.Shared.Helper
                 }
                 else
                 {
-                    id = validDeserialize.users[0].id;
+                    id = validDeserialize!.users![0].id!;
                 }
 
                 return (found, id);
