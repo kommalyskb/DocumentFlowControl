@@ -408,163 +408,171 @@ namespace DFM.Frontend.Pages.OrganizeComponent
 
         private async Task onSelectedRoleChanged(IEnumerable<RoleTypeModel> values)
         {
-            // Get Folder ID where index = 0
-            var prime = charts!.FirstOrDefault(x => x.RoleType == RoleTypeModel.Prime);
-            var deputyPrimes = charts!.Where(x => x.RoleType == RoleTypeModel.DeputyPrime);
-            var directors = charts!.Where(x => x.RoleType == RoleTypeModel.Director);
-            var office = charts!.FirstOrDefault(x => x.RoleType == RoleTypeModel.OfficePrime);
-            var general = charts!.Where(x => x.RoleType == RoleTypeModel.General);
-            var item = values.FirstOrDefault();
-            leaderList = new HashSet<RoleTreeModel>();
-            groupList = new HashSet<RoleTreeModel>();
-            switch (item)
+            try
             {
-                case RoleTypeModel.Prime:
-                    // Nothing here
-                    break;
-                case RoleTypeModel.DeputyPrime:
-                    // Bind only leader (Parent)
-                    leaderList = new HashSet<RoleTreeModel> { prime! };
-                    break;
-                case RoleTypeModel.PrimeSecretary:
-                    leaderList = new HashSet<RoleTreeModel> { prime! };
-                    break;
-                case RoleTypeModel.DeputyPrimeSecretary:
-                    foreach (var role in deputyPrimes)
-                    {
-                        leaderList = leaderList.Concat(new HashSet<RoleTreeModel>() { role });
-                    }
-                    break;
-                case RoleTypeModel.Director:
-                    foreach (var role in deputyPrimes)
-                    {
-                        leaderList = leaderList.Concat(new HashSet<RoleTreeModel>() { role });
-                    }
-                    break;
-                case RoleTypeModel.DeputyDirector:
-                    foreach (var role in directors)
-                    {
-                        leaderList = leaderList.Concat(new HashSet<RoleTreeModel>() { role });
-                    }
-                    break;
-                case RoleTypeModel.OfficePrime:
-                    foreach (var role in deputyPrimes)
-                    {
-                        leaderList = leaderList.Concat(new HashSet<RoleTreeModel>() { role });
-                    }
-                    break;
-                case RoleTypeModel.DeputyOfficePrime:
-                    leaderList = new HashSet<RoleTreeModel> { office! };
-                    break;
-                case RoleTypeModel.General:
-                    foreach (var role in directors)
-                    {
-                        leaderList = leaderList.Concat(new HashSet<RoleTreeModel>() { role });
-                    }
-                    break;
-                case RoleTypeModel.DeputyGeneral:
-                    foreach (var role in general)
-                    {
-                        leaderList = leaderList.Concat(new HashSet<RoleTreeModel>() { role });
-                    }
-                    break;
-                case RoleTypeModel.OfficeGeneral:
-                    foreach (var role in general)
-                    {
-                        leaderList = leaderList.Concat(new HashSet<RoleTreeModel>() { role });
-                    }
-                    break;
-                case RoleTypeModel.DeputyOfficeGeneral:
-                    foreach (var role in general)
-                    {
-                        leaderList = leaderList.Concat(new HashSet<RoleTreeModel>() { role });
-                    }
-                    break;
-                case RoleTypeModel.Division:
-                    foreach (var role in general)
-                    {
-                        groupList = groupList.Concat(new HashSet<RoleTreeModel>() { role });
-                    }
-                    groupList = groupList.Concat(new HashSet<RoleTreeModel>() { office! });
-                    break;
-                case RoleTypeModel.DeputyDivision:
-                    foreach (var role in general)
-                    {
-                        groupList = groupList.Concat(new HashSet<RoleTreeModel>() { role });
-                    }
-                    groupList = groupList.Concat(new HashSet<RoleTreeModel>() { office! });
-                    break;
-                case RoleTypeModel.Department:
-                    foreach (var role in general)
-                    {
-                        groupList = groupList.Concat(new HashSet<RoleTreeModel>() { role });
-                    }
-                    groupList = groupList.Concat(new HashSet<RoleTreeModel>() { office! });
-                    break;
-                case RoleTypeModel.DeputyDepartment:
-                    foreach (var role in general)
-                    {
-                        groupList = groupList.Concat(new HashSet<RoleTreeModel>() { role });
-                    }
-                    groupList = groupList.Concat(new HashSet<RoleTreeModel>() { office! });
-                    break;
-                case RoleTypeModel.Employee:
-                    foreach (var role in general)
-                    {
-                        groupList = groupList.Concat(new HashSet<RoleTreeModel>() { role });
-                    }
-                    groupList = groupList.Concat(new HashSet<RoleTreeModel>() { office! });
-                    break;
-                case RoleTypeModel.Contract:
-                    foreach (var role in general)
-                    {
-                        groupList = groupList.Concat(new HashSet<RoleTreeModel>() { role });
-                    }
-                    groupList = groupList.Concat(new HashSet<RoleTreeModel>() { office! });
-                    break;
-                case RoleTypeModel.Volunteer:
-                    foreach (var role in general)
-                    {
-                        groupList = groupList.Concat(new HashSet<RoleTreeModel>() { role });
-                    }
-                    groupList = groupList.Concat(new HashSet<RoleTreeModel>() { office! });
-                    break;
-                case RoleTypeModel.InboundPrime:
-                    leaderList = new HashSet<RoleTreeModel> { prime! };
-                    break;
-                case RoleTypeModel.InboundOfficePrime:
-                    leaderList = new HashSet<RoleTreeModel> { office! };
-                    break;
-                case RoleTypeModel.InboundGeneral:
-                    foreach (var role in general)
-                    {
-                        leaderList = leaderList.Concat(new HashSet<RoleTreeModel>() { role });
-                    }
-                    break;
-                case RoleTypeModel.OutboundPrime:
-                    leaderList = new HashSet<RoleTreeModel> { prime! };
-                    break;
-                case RoleTypeModel.OutboundOfficePrime:
-                    leaderList = new HashSet<RoleTreeModel> { office! };
-                    break;
-                case RoleTypeModel.OutboundGeneral:
-                    foreach (var role in general)
-                    {
-                        leaderList = leaderList.Concat(new HashSet<RoleTreeModel>() { role });
-                    }
-                    break;
-                default:
-                    break;
+                // Get Folder ID where index = 0
+                var prime = charts!.FirstOrDefault(x => x.RoleType == RoleTypeModel.Prime);
+                var deputyPrimes = charts!.Where(x => x.RoleType == RoleTypeModel.DeputyPrime);
+                var directors = charts!.Where(x => x.RoleType == RoleTypeModel.Director);
+                var office = charts!.FirstOrDefault(x => x.RoleType == RoleTypeModel.OfficePrime);
+                var general = charts!.Where(x => x.RoleType == RoleTypeModel.General);
+                var item = values.FirstOrDefault();
+                leaderList = new HashSet<RoleTreeModel>();
+                groupList = new HashSet<RoleTreeModel>();
+                switch (item)
+                {
+                    case RoleTypeModel.Prime:
+                        // Nothing here
+                        break;
+                    case RoleTypeModel.DeputyPrime:
+                        // Bind only leader (Parent)
+                        leaderList = new HashSet<RoleTreeModel> { prime! };
+                        break;
+                    case RoleTypeModel.PrimeSecretary:
+                        leaderList = new HashSet<RoleTreeModel> { prime! };
+                        break;
+                    case RoleTypeModel.DeputyPrimeSecretary:
+                        foreach (var role in deputyPrimes)
+                        {
+                            leaderList = leaderList.Concat(new HashSet<RoleTreeModel>() { role });
+                        }
+                        break;
+                    case RoleTypeModel.Director:
+                        foreach (var role in deputyPrimes)
+                        {
+                            leaderList = leaderList.Concat(new HashSet<RoleTreeModel>() { role });
+                        }
+                        break;
+                    case RoleTypeModel.DeputyDirector:
+                        foreach (var role in directors)
+                        {
+                            leaderList = leaderList.Concat(new HashSet<RoleTreeModel>() { role });
+                        }
+                        break;
+                    case RoleTypeModel.OfficePrime:
+                        foreach (var role in deputyPrimes)
+                        {
+                            leaderList = leaderList.Concat(new HashSet<RoleTreeModel>() { role });
+                        }
+                        break;
+                    case RoleTypeModel.DeputyOfficePrime:
+                        leaderList = new HashSet<RoleTreeModel> { office! };
+                        break;
+                    case RoleTypeModel.General:
+                        foreach (var role in directors)
+                        {
+                            leaderList = leaderList.Concat(new HashSet<RoleTreeModel>() { role });
+                        }
+                        break;
+                    case RoleTypeModel.DeputyGeneral:
+                        foreach (var role in general)
+                        {
+                            leaderList = leaderList.Concat(new HashSet<RoleTreeModel>() { role });
+                        }
+                        break;
+                    case RoleTypeModel.OfficeGeneral:
+                        foreach (var role in general)
+                        {
+                            leaderList = leaderList.Concat(new HashSet<RoleTreeModel>() { role });
+                        }
+                        break;
+                    case RoleTypeModel.DeputyOfficeGeneral:
+                        foreach (var role in general)
+                        {
+                            leaderList = leaderList.Concat(new HashSet<RoleTreeModel>() { role });
+                        }
+                        break;
+                    case RoleTypeModel.Division:
+                        foreach (var role in general)
+                        {
+                            groupList = groupList.Concat(new HashSet<RoleTreeModel>() { role });
+                        }
+                        groupList = groupList.Concat(new HashSet<RoleTreeModel>() { office! });
+                        break;
+                    case RoleTypeModel.DeputyDivision:
+                        foreach (var role in general)
+                        {
+                            groupList = groupList.Concat(new HashSet<RoleTreeModel>() { role });
+                        }
+                        groupList = groupList.Concat(new HashSet<RoleTreeModel>() { office! });
+                        break;
+                    case RoleTypeModel.Department:
+                        foreach (var role in general)
+                        {
+                            groupList = groupList.Concat(new HashSet<RoleTreeModel>() { role });
+                        }
+                        groupList = groupList.Concat(new HashSet<RoleTreeModel>() { office! });
+                        break;
+                    case RoleTypeModel.DeputyDepartment:
+                        foreach (var role in general)
+                        {
+                            groupList = groupList.Concat(new HashSet<RoleTreeModel>() { role });
+                        }
+                        groupList = groupList.Concat(new HashSet<RoleTreeModel>() { office! });
+                        break;
+                    case RoleTypeModel.Employee:
+                        foreach (var role in general)
+                        {
+                            groupList = groupList.Concat(new HashSet<RoleTreeModel>() { role });
+                        }
+                        groupList = groupList.Concat(new HashSet<RoleTreeModel>() { office! });
+                        break;
+                    case RoleTypeModel.Contract:
+                        foreach (var role in general)
+                        {
+                            groupList = groupList.Concat(new HashSet<RoleTreeModel>() { role });
+                        }
+                        groupList = groupList.Concat(new HashSet<RoleTreeModel>() { office! });
+                        break;
+                    case RoleTypeModel.Volunteer:
+                        foreach (var role in general)
+                        {
+                            groupList = groupList.Concat(new HashSet<RoleTreeModel>() { role });
+                        }
+                        groupList = groupList.Concat(new HashSet<RoleTreeModel>() { office! });
+                        break;
+                    case RoleTypeModel.InboundPrime:
+                        leaderList = new HashSet<RoleTreeModel> { prime! };
+                        break;
+                    case RoleTypeModel.InboundOfficePrime:
+                        leaderList = new HashSet<RoleTreeModel> { office! };
+                        break;
+                    case RoleTypeModel.InboundGeneral:
+                        foreach (var role in general)
+                        {
+                            leaderList = leaderList.Concat(new HashSet<RoleTreeModel>() { role });
+                        }
+                        break;
+                    case RoleTypeModel.OutboundPrime:
+                        leaderList = new HashSet<RoleTreeModel> { prime! };
+                        break;
+                    case RoleTypeModel.OutboundOfficePrime:
+                        leaderList = new HashSet<RoleTreeModel> { office! };
+                        break;
+                    case RoleTypeModel.OutboundGeneral:
+                        foreach (var role in general)
+                        {
+                            leaderList = leaderList.Concat(new HashSet<RoleTreeModel>() { role });
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                if (leaderList == null || leaderList.Count() == 0)
+                {
+                    parentSelectValues = null;
+                }
+                if (groupList == null || groupList.Count() == 0)
+                {
+                    groupSelectValues = null;
+                }
+                await InvokeAsync(StateHasChanged);
             }
-            if (leaderList == null || leaderList.Count() == 0)
+            catch (Exception)
             {
-                parentSelectValues = null;
+                await Notice.InvokeAsync("ຕ້ອງເພີ່ມຂໍ້ມູນຕຳແນ່ງໃຫ້ຄົບກ່ອນ");
             }
-            if (groupList == null || groupList.Count() == 0)
-            {
-                groupSelectValues = null;
-            }
-            await InvokeAsync(StateHasChanged);
+            
         }
     }
 }
