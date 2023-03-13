@@ -487,49 +487,70 @@ namespace DFM.Frontend.Pages.OrganizeComponent
                         {
                             groupList = groupList.Concat(new HashSet<RoleTreeModel>() { role });
                         }
-                        groupList = groupList.Concat(new HashSet<RoleTreeModel>() { office! });
+                        if (office != null)
+                        {
+                            groupList = groupList.Concat(new HashSet<RoleTreeModel>() { office! });
+                        }
                         break;
                     case RoleTypeModel.DeputyDivision:
                         foreach (var role in general)
                         {
                             groupList = groupList.Concat(new HashSet<RoleTreeModel>() { role });
                         }
-                        groupList = groupList.Concat(new HashSet<RoleTreeModel>() { office! });
+                        if (office != null)
+                        {
+                            groupList = groupList.Concat(new HashSet<RoleTreeModel>() { office! });
+                        }
                         break;
                     case RoleTypeModel.Department:
                         foreach (var role in general)
                         {
                             groupList = groupList.Concat(new HashSet<RoleTreeModel>() { role });
                         }
-                        groupList = groupList.Concat(new HashSet<RoleTreeModel>() { office! });
+                        if (office != null)
+                        {
+                            groupList = groupList.Concat(new HashSet<RoleTreeModel>() { office! });
+                        }
                         break;
                     case RoleTypeModel.DeputyDepartment:
                         foreach (var role in general)
                         {
                             groupList = groupList.Concat(new HashSet<RoleTreeModel>() { role });
                         }
-                        groupList = groupList.Concat(new HashSet<RoleTreeModel>() { office! });
+                        if (office != null)
+                        {
+                            groupList = groupList.Concat(new HashSet<RoleTreeModel>() { office! });
+                        }
                         break;
                     case RoleTypeModel.Employee:
                         foreach (var role in general)
                         {
                             groupList = groupList.Concat(new HashSet<RoleTreeModel>() { role });
                         }
-                        groupList = groupList.Concat(new HashSet<RoleTreeModel>() { office! });
+                        if (office != null)
+                        {
+                            groupList = groupList.Concat(new HashSet<RoleTreeModel>() { office! });
+                        }
                         break;
                     case RoleTypeModel.Contract:
                         foreach (var role in general)
                         {
                             groupList = groupList.Concat(new HashSet<RoleTreeModel>() { role });
                         }
-                        groupList = groupList.Concat(new HashSet<RoleTreeModel>() { office! });
+                        if (office != null)
+                        {
+                            groupList = groupList.Concat(new HashSet<RoleTreeModel>() { office! });
+                        }
                         break;
                     case RoleTypeModel.Volunteer:
                         foreach (var role in general)
                         {
                             groupList = groupList.Concat(new HashSet<RoleTreeModel>() { role });
                         }
-                        groupList = groupList.Concat(new HashSet<RoleTreeModel>() { office! });
+                        if (office != null)
+                        {
+                            groupList = groupList.Concat(new HashSet<RoleTreeModel>() { office! });
+                        }
                         break;
                     case RoleTypeModel.InboundPrime:
                         leaderList = new HashSet<RoleTreeModel> { prime! };
