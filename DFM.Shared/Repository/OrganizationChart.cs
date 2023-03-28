@@ -1209,12 +1209,16 @@ namespace DFM.Shared.Repository
                 {
                     if (env.EnableSendThroughParentOfficePrime)
                     {
-                        var roleAdditional = charts.FirstOrDefault(x => x.Role.RoleID == officePrime!.ParentID);
-                        if (roleAdditional != null)
+                        if (officePrime != null)
                         {
-                            rawCharts.Add((roleAdditional!, 5));
-                            //childCharts.Add(roleAdditional);
+                            var roleAdditional = charts.FirstOrDefault(x => x.Role.RoleID == officePrime!.ParentID);
+                            if (roleAdditional != null)
+                            {
+                                rawCharts.Add((roleAdditional!, 5));
+                                //childCharts.Add(roleAdditional);
+                            }
                         }
+                        
                     }
                 }
 

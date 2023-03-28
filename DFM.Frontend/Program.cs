@@ -121,12 +121,12 @@ Console.WriteLine($"-------------------------------------------");
 //redisOptions.User = redisConf.User;
 //redisOptions.Password = redisConf.Password;
 //redisOptions.Ssl = true;
-builder.Services.AddStackExchangeRedisCache(options => // Register redis cache
-{
-    //options.ConfigurationOptions = redisOptions;
-    options.Configuration = $"{redisConf.Server}:{redisConf.Port}, password={redisConf.Password}";
-    options.InstanceName = redisConf.Instance;
-});
+//builder.Services.AddStackExchangeRedisCache(options => // Register redis cache
+//{
+//    //options.ConfigurationOptions = redisOptions;
+//    options.Configuration = $"{redisConf.Server}:{redisConf.Port}, password={redisConf.Password}";
+//    options.InstanceName = redisConf.Instance;
+//});
 
 builder.Services.AddSingleton<IRedisConnector, RedisConnector>();
 

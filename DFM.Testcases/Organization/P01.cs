@@ -28,16 +28,16 @@ namespace DFM.Testcases.Organization
                 {
                     Scheme = "http",
                     Password = "1qaz2wsx",
-                    Port = 5984,
-                    SrvAddr = "localhost",
+                    Port = 25984,
+                    SrvAddr = "202.137.130.53",
                     Username = "admin"
                 },
                 Reader = new DBInfo
                 {
                     Scheme = "http",
                     Password = "1qaz2wsx",
-                    Port = 5984,
-                    SrvAddr = "localhost",
+                    Port = 25984,
+                    SrvAddr = "202.137.130.53",
                     Username = "admin"
                 }
 
@@ -117,7 +117,7 @@ namespace DFM.Testcases.Organization
         [Fact(DisplayName = "ດຶງຂໍ້ມູນ Organization ຕາມ ເງື່ອນ ທີ່ໄດ້ຮັບ: 1. ດຶງ Organization ນັບຕັ້ງແຕ່ Level X ລົງມາ")]
         public async Task NC4()
         {
-            var result = await organizationChart.GetChartFrom("8cb7efe0be82402f8007800db1a9c3f5", "d9500fc7a9c249c68390551561f1354a", ModuleType.DocumentInbound);
+            var result = await organizationChart.GetChartFrom("04b2644ebf1a434f87afe53ea30f149b", "cbc5c0f679e747a1b2eb63ea3e89eded", ModuleType.DocumentInbound);
             Assert.NotEqual(0, result.RowCount);
         }
         
