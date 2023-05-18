@@ -40,5 +40,7 @@ namespace DFM.Shared.Entities
         public InboxType InboxType { get; set; }
         [Indexed]
         public List<int>? DocNoUsed { get; set; } = new();
+        [Indexed]
+        public string? CreateRoleID { get; set; }
     }
 }

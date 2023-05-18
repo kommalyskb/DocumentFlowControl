@@ -11,6 +11,7 @@ namespace DFM.Shared.Configurations
         public bool ByPassDepartment { get; set; }
         public bool EnableSendThroughParentOfficePrime { get; set; } // True = ແມ່ນໃນກໍລະນີ ຂາເຂົ້າ ບໍລິສັດສາມາດສົ່ງໃຫ້ Parent ຂອງ Office Prime ໃຫ້
         public string? LogoUrl { get; set; }
+        public string? NavIco { get; set; }
         public string? PageTitle { get; set; }
         public EmailEnum Option { get; set; }
         public bool EmailNotify { get; set; }

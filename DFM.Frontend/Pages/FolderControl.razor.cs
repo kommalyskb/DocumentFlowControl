@@ -133,6 +133,9 @@ namespace DFM.Frontend.Pages
                 {
                     folderModel!.InboxType = InboxType.Outbound;
                 }
+                // Set Create Role ID
+                folderModel!.CreateRoleID = roleId;
+
                 httpService.MediaType = MediaType.JSON;
                 if (string.IsNullOrWhiteSpace(folderModel.id))
                 {

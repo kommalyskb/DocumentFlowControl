@@ -57,6 +57,13 @@ namespace DFM.Shared.Repository
                 var provider = new RedisConnectionProvider(redisConnector.Connection);
                 var context = provider.RedisCollection<FolderModel>();
 
+                if (string.IsNullOrEmpty(request.FormatType))
+                {
+                    request.FormatType = "$docno/$sn/$yyyy";
+                }
+
+                // Add Create Role ID to be modulator
+                request.Supervisors.Add(request.CreateRoleID!);
 
                 var result = await couchContext.InsertAsync<FolderModel>
                  (
@@ -124,6 +131,16 @@ namespace DFM.Shared.Repository
                         Detail = ValidateString.IsNullOrWhiteSpace(existing.Response.Detail!),
                         Message = ResultCode.NOT_FOUND
                     };
+                }
+
+                if (string.IsNullOrEmpty(request.FormatType))
+                {
+                    request.FormatType = "$docno/$sn/$yyyy";
+                }
+                // Check Create User is in modulator or not if not then add to the end of list
+                if (request.Supervisors.FirstOrDefault(x => x == request.CreateRoleID) == null)
+                {
+                    request.Supervisors.Add(request.CreateRoleID!);  
                 }
                 request.revision = existing.Content.revision;
                 // Redis first

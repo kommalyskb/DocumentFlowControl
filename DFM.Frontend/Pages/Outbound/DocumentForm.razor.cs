@@ -132,7 +132,7 @@ namespace DFM.Frontend.Pages.Outbound
                     }
                     if (item.component == 3)
                     {
-                        docTypeModels = JsonSerializer.Deserialize<IEnumerable<DataTypeModel>>(item.response);
+                        supportDocTypes = JsonSerializer.Deserialize<IEnumerable<DataTypeModel>>(item.response);
                     }
                     if (item.component == 4)
                     {
@@ -487,6 +487,7 @@ namespace DFM.Frontend.Pages.Outbound
             formatType = formatType!.Replace("$sn", $"{selectFolder.ShortName}");
             formatType = formatType!.Replace("$yyyy", $"{DateTime.Now.Year}");
 
+            docTypeModels = supportDocTypes!.Where(x => selectFolder.SupportDocTypes.Any(c => c == x.id));
 
             RawDocument!.DocNo = formatType;
             RawDocument!.FolderNum = docNumber;

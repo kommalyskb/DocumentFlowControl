@@ -38,7 +38,7 @@ namespace DFM.Shared.Helper
                     }
                     else
                     {
-                        return "ລໍຖ້າກຳເນີນງານ";
+                        return "ລໍຖ້າດຳເນີນງານ";
                     }
                    
                 case TraceStatus.Completed:
@@ -56,7 +56,7 @@ namespace DFM.Shared.Helper
                     }
                     else
                     {
-                        return "ລໍຖ້າກຳເນີນງານ";
+                        return "ລໍຖ້າດຳເນີນງານ";
                     }
                 case TraceStatus.Rejected:
                     return "ຍົກເລີກ";
