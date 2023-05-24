@@ -144,6 +144,9 @@ namespace DFM.Frontend.Pages
                         employee = await storageHelper.GetEmployeeProfileAsync();
                     };
                     folderModel.OrganizationID = employee.OrganizationID;
+
+                    folderModel.NextNumber = folderModel.Start;
+
                     // New folder
                     string url = $"{endpoint.API}/api/v1/Folder/NewItem";
                     var result = await httpService.Post<FolderModel, CommonResponseId>(url, folderModel, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
