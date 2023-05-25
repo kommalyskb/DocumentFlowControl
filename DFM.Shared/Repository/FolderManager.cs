@@ -63,7 +63,11 @@ namespace DFM.Shared.Repository
                 }
 
                 // Add Create Role ID to be modulator
-                request.Supervisors.Add(request.CreateRoleID!);
+                if (!request.Supervisors.Any(x => x == request.CreateRoleID))
+                {
+                    request.Supervisors.Add(request.CreateRoleID!);
+
+                }
 
                 var result = await couchContext.InsertAsync<FolderModel>
                  (
