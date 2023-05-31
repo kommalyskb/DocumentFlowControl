@@ -77,7 +77,7 @@ namespace DFM.Shared.Repository
                     var fromDb = await couchContext.ViewQueryAsync<RuleMenu>(read_couchDbHelper, "query", "byOrgID", orgId, -1, 0, false, false, cancellationToken);
                     foreach (var item in fromDb.Rows)
                     {
-                        tasks.Add(context.InsertAsync(item.Value));
+                        tasks.Add(context.InsertAsync(item.Value, TimeSpan.FromHours(1)));
                     }
                     await Task.WhenAll(tasks);
 
@@ -133,7 +133,7 @@ namespace DFM.Shared.Repository
                     var fromDb = await couchContext.ViewQueryAsync<RuleMenu>(read_couchDbHelper, "query", "byOrgID", orgId, -1, 0, false, false, cancellationToken);
                     foreach (var item in fromDb.Rows)
                     {
-                        tasks.Add(context.InsertAsync(item.Value));
+                        tasks.Add(context.InsertAsync(item.Value, TimeSpan.FromHours(1)));
                     }
                     await Task.WhenAll(tasks);
 
@@ -176,7 +176,7 @@ namespace DFM.Shared.Repository
                     var fromDb = await couchContext.ViewQueryAsync<RuleMenu>(read_couchDbHelper, "query", "byOrgID", orgId, -1, 0, false, false, cancellationToken);
                     foreach (var item in fromDb.Rows)
                     {
-                        tasks.Add(context.InsertAsync(item.Value));
+                        tasks.Add(context.InsertAsync(item.Value, TimeSpan.FromHours(1)));
                     }
                     await Task.WhenAll(tasks);
 
@@ -256,7 +256,7 @@ namespace DFM.Shared.Repository
                         }
 
                         request.revision = result.Rev;
-                        await context.InsertAsync(request);
+                        await context.InsertAsync(request, TimeSpan.FromHours(1));
                         return new CommonResponseId
                         {
                             Code = nameof(ResultCode.SUCCESS_OPERATION),
@@ -354,7 +354,7 @@ namespace DFM.Shared.Repository
                     {
                         result.Content.id = result.Id;
                         result.Content.revision = result.Rev;
-                        await context.InsertAsync(result.Content);
+                        await context.InsertAsync(result.Content, TimeSpan.FromHours(1));
 
                         return result.Content;
                     }

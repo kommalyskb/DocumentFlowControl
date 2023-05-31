@@ -55,105 +55,356 @@ namespace DFM.API.Controllers
             stopwatch.Start();
 
             // Check cache
-            string recordKey = $"connect.token.{request.ClientID}.{request.Username}"; // Set key for cache
-            var cacheResult = await cache.GetRecordAsync<TokenEndPointResponse>(recordKey);
+            //string recordKey = $"connect.token.{request.ClientID}.{request.Username}"; // Set key for cache
+            //var cacheResult = await cache.GetRecordAsync<TokenEndPointResponse>(recordKey);
 
-            if (cacheResult is null)
+            //if (cacheResult is null)
+            //{
+            //    if (request.GrantType == "password")
+            //    {
+            //        var response = await httpService.Client.RequestPasswordTokenAsync(new PasswordTokenRequest
+            //        {
+            //            Address = $"{openId.Authority}/connect/token",
+            //            GrantType = "password",
+
+            //            ClientId = request.ClientID,
+            //            ClientSecret = request.Secret,
+
+            //            UserName = request.Username,
+            //            Password = request.Password,
+
+            //            Scope = request.Scope
+
+            //        }, cancellationToken);
+
+            //        if (response.IsError)
+            //        {
+            //            //stop
+            //            stopwatch.Stop();
+            //            Console.WriteLine("\n------------Time elapse: " + stopwatch.Elapsed.ToString() + "------------\n");
+
+            //            return BadRequest(new CommonResponse
+            //            {
+            //                Success = false,
+            //                Code = nameof(ResultCode.REQUEST_TOKEN_ERROR),
+            //                Message = response.Error
+            //            });
+            //        }
+
+            //        var model = new TokenEndPointResponse
+            //        {
+            //            Success = true,
+            //            AccessToken = response.AccessToken,
+            //            Code = nameof(ResultCode.SUCCESS_OPERATION),
+            //            Message = ResultCode.SUCCESS_OPERATION,
+            //            Expire = response.ExpiresIn,
+            //            RefreshToken = response.RefreshToken,
+            //            Password = request.Password,
+            //            Username = request.Username
+            //        };
+
+            //        // Set cache
+            //        await cache.SetRecordAsync<TokenEndPointResponse>(recordKey, model, TimeSpan.FromSeconds(3600));
+            //        return Ok(model);
+            //    }
+            //    else if (request.GrantType == "client_credentials")
+            //    {
+            //        var response = await httpService.Client.RequestTokenAsync(new ClientCredentialsTokenRequest
+            //        {
+            //            Address = $"{openId.Authority}/connect/token",
+            //            GrantType = "client_credentials",
+
+            //            ClientId = request.ClientID,
+            //            ClientSecret = request.Secret,
+
+            //            Scope = request.Scope
+
+            //        }, cancellationToken);
+            //        if (response.IsError)
+            //        {
+            //            //stop
+            //            stopwatch.Stop();
+            //            Console.WriteLine("\n------------Time elapse: " + stopwatch.Elapsed.ToString() + "------------\n");
+
+            //            return BadRequest(new CommonResponse
+            //            {
+            //                Success = false,
+            //                Code = nameof(ResultCode.REQUEST_TOKEN_ERROR),
+            //                Message = response.Error
+            //            });
+            //        }
+
+            //        var model = new TokenEndPointResponse
+            //        {
+            //            Success = true,
+            //            AccessToken = response.AccessToken,
+            //            Code = nameof(ResultCode.SUCCESS_OPERATION),
+            //            Message = ResultCode.SUCCESS_OPERATION,
+            //            Expire = response.ExpiresIn,
+            //            RefreshToken = response.RefreshToken
+            //        };
+
+            //        // Set cache
+            //        await cache.SetRecordAsync<TokenEndPointResponse>(recordKey, model, TimeSpan.FromSeconds(redis.Expire!.Value));
+
+            //        //stop
+            //        stopwatch.Stop();
+            //        Console.WriteLine("\n------------Time elapse: " + stopwatch.Elapsed.ToString() + "------------\n");
+
+            //        return Ok(model);
+            //    }
+            //    else
+            //    {
+            //        //stop
+            //        stopwatch.Stop();
+            //        Console.WriteLine("\n------------Time elapse: " + stopwatch.Elapsed.ToString() + "------------\n");
+
+            //        return BadRequest(new CommonResponse
+            //        {
+            //            Success = false,
+            //            Code = nameof(ResultCode.GRANT_INVALID),
+            //            Message = ResultCode.GRANT_INVALID
+            //        });
+            //    }
+            //}
+
+            //// Check expired token life time
+            //if (!identityHelper.ValidateToken(cacheResult.AccessToken))
+            //{
+            //    if (request.GrantType == "password")
+            //    {
+
+            //        // Check password is same as cache
+            //        if (request.Password.Equals(cacheResult.Password) && request.Username.Equals(cacheResult.Username))
+            //        {
+            //            var response = await httpService.Client.RequestPasswordTokenAsync(new PasswordTokenRequest
+            //            {
+            //                Address = $"{openId.Authority}/connect/token",
+            //                GrantType = "password",
+
+            //                ClientId = request.ClientID,
+            //                ClientSecret = request.Secret,
+
+            //                UserName = request.Username,
+            //                Password = request.Password,
+
+            //                Scope = request.Scope
+
+            //            }, cancellationToken);
+
+            //            if (response.IsError)
+            //            {
+            //                //stop
+            //                stopwatch.Stop();
+            //                Console.WriteLine("\n------------Time elapse: " + stopwatch.Elapsed.ToString() + "------------\n");
+
+            //                return BadRequest(new CommonResponse
+            //                {
+            //                    Success = false,
+            //                    Code = nameof(ResultCode.REQUEST_TOKEN_ERROR),
+            //                    Message = response.Error
+            //                });
+            //            }
+
+            //            var model = new TokenEndPointResponse
+            //            {
+            //                Success = true,
+            //                AccessToken = response.AccessToken,
+            //                Code = nameof(ResultCode.SUCCESS_OPERATION),
+            //                Message = ResultCode.SUCCESS_OPERATION,
+            //                Expire = response.ExpiresIn,
+            //                RefreshToken = response.RefreshToken,
+            //                Password = request.Password,
+            //                Username = request.Username
+            //            };
+
+            //            // Set cache
+            //            await cache.SetRecordAsync<TokenEndPointResponse>(recordKey, model, TimeSpan.FromSeconds(3600));
+
+            //            //stop
+            //            stopwatch.Stop();
+            //            Console.WriteLine("\n------------Time elapse: " + stopwatch.Elapsed.ToString() + "------------\n");
+
+            //            return Ok(model);
+            //        }
+
+            //        // Return user password is incorrect
+            //        return BadRequest(new CommonResponse
+            //        {
+            //            Success = false,
+            //            Code = nameof(ResultCode.USERNAME_NOT_FOUND),
+            //            Message = "User or Password is incorrect"
+            //        });
+            //    }
+            //    else if (request.GrantType == "client_credentials")
+            //    {
+            //        var response = await httpService.Client.RequestTokenAsync(new ClientCredentialsTokenRequest
+            //        {
+            //            Address = $"{openId.Authority}/connect/token",
+            //            GrantType = "client_credentials",
+
+            //            ClientId = request.ClientID,
+            //            ClientSecret = request.Secret,
+
+            //            Scope = request.Scope
+
+            //        }, cancellationToken);
+            //        if (response.IsError)
+            //        {
+            //            //stop
+            //            stopwatch.Stop();
+            //            Console.WriteLine("\n------------Time elapse: " + stopwatch.Elapsed.ToString() + "------------\n");
+
+            //            return BadRequest(new CommonResponse
+            //            {
+            //                Success = false,
+            //                Code = nameof(ResultCode.REQUEST_TOKEN_ERROR),
+            //                Message = response.Error
+            //            });
+            //        }
+
+            //        var model = new TokenEndPointResponse
+            //        {
+            //            Success = true,
+            //            AccessToken = response.AccessToken,
+            //            Code = nameof(ResultCode.SUCCESS_OPERATION),
+            //            Message = ResultCode.SUCCESS_OPERATION,
+            //            Expire = response.ExpiresIn,
+            //            RefreshToken = response.RefreshToken
+            //        };
+
+            //        // Set cache
+            //        await cache.SetRecordAsync<TokenEndPointResponse>(recordKey, model, TimeSpan.FromSeconds(redis.Expire!.Value));
+
+            //        //stop
+            //        stopwatch.Stop();
+            //        Console.WriteLine("\n------------Time elapse: " + stopwatch.Elapsed.ToString() + "------------\n");
+
+            //        return Ok(model);
+            //    }
+            //    else
+            //    {
+            //        //stop
+            //        stopwatch.Stop();
+            //        Console.WriteLine("\n------------Time elapse: " + stopwatch.Elapsed.ToString() + "------------\n");
+
+            //        return BadRequest(new CommonResponse
+            //        {
+            //            Success = false,
+            //            Code = nameof(ResultCode.GRANT_INVALID),
+            //            Message = ResultCode.GRANT_INVALID
+            //        });
+            //    }
+            //}
+            //else
+            //{
+            //    // Check password is same as cache
+            //    if (request.GrantType == "password")
+            //    {
+            //        if (request.Password.Equals(cacheResult.Password) && request.Username.Equals(cacheResult.Username))
+            //        {
+            //            //stop
+            //            stopwatch.Stop();
+            //            Console.WriteLine("\n------------Time elapse: " + stopwatch.Elapsed.ToString() + "------------\n");
+
+            //            return Ok(new TokenEndPointResponse
+            //            {
+            //                Success = true,
+            //                AccessToken = cacheResult.AccessToken,
+            //                Code = nameof(ResultCode.SUCCESS_OPERATION),
+            //                Message = ResultCode.SUCCESS_OPERATION,
+            //                Expire = cacheResult.Expire,
+            //                RefreshToken = cacheResult.RefreshToken
+            //            });
+            //        }
+            //        else
+            //        {
+            //            var response = await httpService.Client.RequestPasswordTokenAsync(new PasswordTokenRequest
+            //            {
+            //                Address = $"{openId.Authority}/connect/token",
+            //                GrantType = "password",
+
+            //                ClientId = request.ClientID,
+            //                ClientSecret = request.Secret,
+
+            //                UserName = request.Username,
+            //                Password = request.Password,
+
+            //                Scope = request.Scope
+
+            //            }, cancellationToken);
+
+            //            if (response.IsError)
+            //            {
+            //                //stop
+            //                stopwatch.Stop();
+            //                Console.WriteLine("\n------------Time elapse: " + stopwatch.Elapsed.ToString() + "------------\n");
+
+            //                return BadRequest(new CommonResponse
+            //                {
+            //                    Success = false,
+            //                    Code = nameof(ResultCode.USERNAME_NOT_FOUND),
+            //                    Message = "User or Password is incorrect"
+            //                });
+            //            }
+
+            //            var model = new TokenEndPointResponse
+            //            {
+            //                Success = true,
+            //                AccessToken = response.AccessToken,
+            //                Code = nameof(ResultCode.SUCCESS_OPERATION),
+            //                Message = ResultCode.SUCCESS_OPERATION,
+            //                Expire = response.ExpiresIn,
+            //                RefreshToken = response.RefreshToken,
+            //                Password = request.Password,
+            //                Username = request.Username
+            //            };
+
+            //            // Set cache
+            //            await cache.SetRecordAsync<TokenEndPointResponse>(recordKey, model, TimeSpan.FromSeconds(3600));
+            //            //stop
+            //            stopwatch.Stop();
+            //            Console.WriteLine("\n------------Time elapse: " + stopwatch.Elapsed.ToString() + "------------\n");
+
+            //            return Ok(model);
+            //        }
+            //    }
+            //    else
+            //    {
+            //        //stop
+            //        stopwatch.Stop();
+            //        Console.WriteLine("\n------------Time elapse: " + stopwatch.Elapsed.ToString() + "------------\n");
+
+            //        return Ok(new TokenEndPointResponse
+            //        {
+            //            Success = true,
+            //            AccessToken = cacheResult.AccessToken,
+            //            Code = nameof(ResultCode.SUCCESS_OPERATION),
+            //            Message = ResultCode.SUCCESS_OPERATION,
+            //            Expire = cacheResult.Expire,
+            //            RefreshToken = cacheResult.RefreshToken
+            //        });
+            //    }
+            //}
+
+            if (request.GrantType == "password")
             {
-                if (request.GrantType == "password")
+                var response = await httpService.Client.RequestPasswordTokenAsync(new PasswordTokenRequest
                 {
-                    var response = await httpService.Client.RequestPasswordTokenAsync(new PasswordTokenRequest
-                    {
-                        Address = $"{openId.Authority}/connect/token",
-                        GrantType = "password",
+                    Address = $"{openId.Authority}/connect/token",
+                    GrantType = "password",
 
-                        ClientId = request.ClientID,
-                        ClientSecret = request.Secret,
+                    ClientId = request.ClientID,
+                    ClientSecret = request.Secret,
 
-                        UserName = request.Username,
-                        Password = request.Password,
+                    UserName = request.Username,
+                    Password = request.Password,
 
-                        Scope = request.Scope
+                    Scope = request.Scope
 
-                    }, cancellationToken);
+                }, cancellationToken);
 
-                    if (response.IsError)
-                    {
-                        //stop
-                        stopwatch.Stop();
-                        Console.WriteLine("\n------------Time elapse: " + stopwatch.Elapsed.ToString() + "------------\n");
-
-                        return BadRequest(new CommonResponse
-                        {
-                            Success = false,
-                            Code = nameof(ResultCode.REQUEST_TOKEN_ERROR),
-                            Message = response.Error
-                        });
-                    }
-
-                    var model = new TokenEndPointResponse
-                    {
-                        Success = true,
-                        AccessToken = response.AccessToken,
-                        Code = nameof(ResultCode.SUCCESS_OPERATION),
-                        Message = ResultCode.SUCCESS_OPERATION,
-                        Expire = response.ExpiresIn,
-                        RefreshToken = response.RefreshToken,
-                        Password = request.Password,
-                        Username = request.Username
-                    };
-
-                    // Set cache
-                    await cache.SetRecordAsync<TokenEndPointResponse>(recordKey, model, TimeSpan.FromSeconds(3600));
-                    return Ok(model);
-                }
-                else if (request.GrantType == "client_credentials")
-                {
-                    var response = await httpService.Client.RequestTokenAsync(new ClientCredentialsTokenRequest
-                    {
-                        Address = $"{openId.Authority}/connect/token",
-                        GrantType = "client_credentials",
-
-                        ClientId = request.ClientID,
-                        ClientSecret = request.Secret,
-
-                        Scope = request.Scope
-
-                    }, cancellationToken);
-                    if (response.IsError)
-                    {
-                        //stop
-                        stopwatch.Stop();
-                        Console.WriteLine("\n------------Time elapse: " + stopwatch.Elapsed.ToString() + "------------\n");
-
-                        return BadRequest(new CommonResponse
-                        {
-                            Success = false,
-                            Code = nameof(ResultCode.REQUEST_TOKEN_ERROR),
-                            Message = response.Error
-                        });
-                    }
-
-                    var model = new TokenEndPointResponse
-                    {
-                        Success = true,
-                        AccessToken = response.AccessToken,
-                        Code = nameof(ResultCode.SUCCESS_OPERATION),
-                        Message = ResultCode.SUCCESS_OPERATION,
-                        Expire = response.ExpiresIn,
-                        RefreshToken = response.RefreshToken
-                    };
-
-                    // Set cache
-                    await cache.SetRecordAsync<TokenEndPointResponse>(recordKey, model, TimeSpan.FromSeconds(redis.Expire!.Value));
-
-                    //stop
-                    stopwatch.Stop();
-                    Console.WriteLine("\n------------Time elapse: " + stopwatch.Elapsed.ToString() + "------------\n");
-
-                    return Ok(model);
-                }
-                else
+                if (response.IsError)
                 {
                     //stop
                     stopwatch.Stop();
@@ -162,127 +413,41 @@ namespace DFM.API.Controllers
                     return BadRequest(new CommonResponse
                     {
                         Success = false,
-                        Code = nameof(ResultCode.GRANT_INVALID),
-                        Message = ResultCode.GRANT_INVALID
+                        Code = nameof(ResultCode.REQUEST_TOKEN_ERROR),
+                        Message = response.Error
                     });
                 }
+
+                var model = new TokenEndPointResponse
+                {
+                    Success = true,
+                    AccessToken = response.AccessToken,
+                    Code = nameof(ResultCode.SUCCESS_OPERATION),
+                    Message = ResultCode.SUCCESS_OPERATION,
+                    Expire = response.ExpiresIn,
+                    RefreshToken = response.RefreshToken,
+                    Password = request.Password,
+                    Username = request.Username
+                };
+
+                // Set cache
+                //await cache.SetRecordAsync<TokenEndPointResponse>(recordKey, model, TimeSpan.FromSeconds(3600));
+                return Ok(model);
             }
-
-            // Check expired token life time
-            if (!identityHelper.ValidateToken(cacheResult.AccessToken))
+            else if (request.GrantType == "client_credentials")
             {
-                if (request.GrantType == "password")
+                var response = await httpService.Client.RequestTokenAsync(new ClientCredentialsTokenRequest
                 {
+                    Address = $"{openId.Authority}/connect/token",
+                    GrantType = "client_credentials",
 
-                    // Check password is same as cache
-                    if (request.Password.Equals(cacheResult.Password) && request.Username.Equals(cacheResult.Username))
-                    {
-                        var response = await httpService.Client.RequestPasswordTokenAsync(new PasswordTokenRequest
-                        {
-                            Address = $"{openId.Authority}/connect/token",
-                            GrantType = "password",
+                    ClientId = request.ClientID,
+                    ClientSecret = request.Secret,
 
-                            ClientId = request.ClientID,
-                            ClientSecret = request.Secret,
+                    Scope = request.Scope
 
-                            UserName = request.Username,
-                            Password = request.Password,
-
-                            Scope = request.Scope
-
-                        }, cancellationToken);
-
-                        if (response.IsError)
-                        {
-                            //stop
-                            stopwatch.Stop();
-                            Console.WriteLine("\n------------Time elapse: " + stopwatch.Elapsed.ToString() + "------------\n");
-
-                            return BadRequest(new CommonResponse
-                            {
-                                Success = false,
-                                Code = nameof(ResultCode.REQUEST_TOKEN_ERROR),
-                                Message = response.Error
-                            });
-                        }
-
-                        var model = new TokenEndPointResponse
-                        {
-                            Success = true,
-                            AccessToken = response.AccessToken,
-                            Code = nameof(ResultCode.SUCCESS_OPERATION),
-                            Message = ResultCode.SUCCESS_OPERATION,
-                            Expire = response.ExpiresIn,
-                            RefreshToken = response.RefreshToken,
-                            Password = request.Password,
-                            Username = request.Username
-                        };
-
-                        // Set cache
-                        await cache.SetRecordAsync<TokenEndPointResponse>(recordKey, model, TimeSpan.FromSeconds(3600));
-
-                        //stop
-                        stopwatch.Stop();
-                        Console.WriteLine("\n------------Time elapse: " + stopwatch.Elapsed.ToString() + "------------\n");
-
-                        return Ok(model);
-                    }
-
-                    // Return user password is incorrect
-                    return BadRequest(new CommonResponse
-                    {
-                        Success = false,
-                        Code = nameof(ResultCode.USERNAME_NOT_FOUND),
-                        Message = "User or Password is incorrect"
-                    });
-                }
-                else if (request.GrantType == "client_credentials")
-                {
-                    var response = await httpService.Client.RequestTokenAsync(new ClientCredentialsTokenRequest
-                    {
-                        Address = $"{openId.Authority}/connect/token",
-                        GrantType = "client_credentials",
-
-                        ClientId = request.ClientID,
-                        ClientSecret = request.Secret,
-
-                        Scope = request.Scope
-
-                    }, cancellationToken);
-                    if (response.IsError)
-                    {
-                        //stop
-                        stopwatch.Stop();
-                        Console.WriteLine("\n------------Time elapse: " + stopwatch.Elapsed.ToString() + "------------\n");
-
-                        return BadRequest(new CommonResponse
-                        {
-                            Success = false,
-                            Code = nameof(ResultCode.REQUEST_TOKEN_ERROR),
-                            Message = response.Error
-                        });
-                    }
-
-                    var model = new TokenEndPointResponse
-                    {
-                        Success = true,
-                        AccessToken = response.AccessToken,
-                        Code = nameof(ResultCode.SUCCESS_OPERATION),
-                        Message = ResultCode.SUCCESS_OPERATION,
-                        Expire = response.ExpiresIn,
-                        RefreshToken = response.RefreshToken
-                    };
-
-                    // Set cache
-                    await cache.SetRecordAsync<TokenEndPointResponse>(recordKey, model, TimeSpan.FromSeconds(redis.Expire!.Value));
-
-                    //stop
-                    stopwatch.Stop();
-                    Console.WriteLine("\n------------Time elapse: " + stopwatch.Elapsed.ToString() + "------------\n");
-
-                    return Ok(model);
-                }
-                else
+                }, cancellationToken);
+                if (response.IsError)
                 {
                     //stop
                     stopwatch.Stop();
@@ -291,103 +456,43 @@ namespace DFM.API.Controllers
                     return BadRequest(new CommonResponse
                     {
                         Success = false,
-                        Code = nameof(ResultCode.GRANT_INVALID),
-                        Message = ResultCode.GRANT_INVALID
+                        Code = nameof(ResultCode.REQUEST_TOKEN_ERROR),
+                        Message = response.Error
                     });
                 }
+
+                var model = new TokenEndPointResponse
+                {
+                    Success = true,
+                    AccessToken = response.AccessToken,
+                    Code = nameof(ResultCode.SUCCESS_OPERATION),
+                    Message = ResultCode.SUCCESS_OPERATION,
+                    Expire = response.ExpiresIn,
+                    RefreshToken = response.RefreshToken
+                };
+
+                // Set cache
+                //await cache.SetRecordAsync<TokenEndPointResponse>(recordKey, model, TimeSpan.FromSeconds(redis.Expire!.Value));
+
+                //stop
+                stopwatch.Stop();
+                Console.WriteLine("\n------------Time elapse: " + stopwatch.Elapsed.ToString() + "------------\n");
+
+                return Ok(model);
             }
             else
             {
-                // Check password is same as cache
-                if (request.GrantType == "password")
+                //stop
+                stopwatch.Stop();
+                Console.WriteLine("\n------------Time elapse: " + stopwatch.Elapsed.ToString() + "------------\n");
+
+                return BadRequest(new CommonResponse
                 {
-                    if (request.Password.Equals(cacheResult.Password) && request.Username.Equals(cacheResult.Username))
-                    {
-                        //stop
-                        stopwatch.Stop();
-                        Console.WriteLine("\n------------Time elapse: " + stopwatch.Elapsed.ToString() + "------------\n");
-
-                        return Ok(new TokenEndPointResponse
-                        {
-                            Success = true,
-                            AccessToken = cacheResult.AccessToken,
-                            Code = nameof(ResultCode.SUCCESS_OPERATION),
-                            Message = ResultCode.SUCCESS_OPERATION,
-                            Expire = cacheResult.Expire,
-                            RefreshToken = cacheResult.RefreshToken
-                        });
-                    }
-                    else
-                    {
-                        var response = await httpService.Client.RequestPasswordTokenAsync(new PasswordTokenRequest
-                        {
-                            Address = $"{openId.Authority}/connect/token",
-                            GrantType = "password",
-
-                            ClientId = request.ClientID,
-                            ClientSecret = request.Secret,
-
-                            UserName = request.Username,
-                            Password = request.Password,
-
-                            Scope = request.Scope
-
-                        }, cancellationToken);
-
-                        if (response.IsError)
-                        {
-                            //stop
-                            stopwatch.Stop();
-                            Console.WriteLine("\n------------Time elapse: " + stopwatch.Elapsed.ToString() + "------------\n");
-
-                            return BadRequest(new CommonResponse
-                            {
-                                Success = false,
-                                Code = nameof(ResultCode.USERNAME_NOT_FOUND),
-                                Message = "User or Password is incorrect"
-                            });
-                        }
-
-                        var model = new TokenEndPointResponse
-                        {
-                            Success = true,
-                            AccessToken = response.AccessToken,
-                            Code = nameof(ResultCode.SUCCESS_OPERATION),
-                            Message = ResultCode.SUCCESS_OPERATION,
-                            Expire = response.ExpiresIn,
-                            RefreshToken = response.RefreshToken,
-                            Password = request.Password,
-                            Username = request.Username
-                        };
-
-                        // Set cache
-                        await cache.SetRecordAsync<TokenEndPointResponse>(recordKey, model, TimeSpan.FromSeconds(3600));
-                        //stop
-                        stopwatch.Stop();
-                        Console.WriteLine("\n------------Time elapse: " + stopwatch.Elapsed.ToString() + "------------\n");
-
-                        return Ok(model);
-                    }
-                }
-                else
-                {
-                    //stop
-                    stopwatch.Stop();
-                    Console.WriteLine("\n------------Time elapse: " + stopwatch.Elapsed.ToString() + "------------\n");
-
-                    return Ok(new TokenEndPointResponse
-                    {
-                        Success = true,
-                        AccessToken = cacheResult.AccessToken,
-                        Code = nameof(ResultCode.SUCCESS_OPERATION),
-                        Message = ResultCode.SUCCESS_OPERATION,
-                        Expire = cacheResult.Expire,
-                        RefreshToken = cacheResult.RefreshToken
-                    });
-                }
+                    Success = false,
+                    Code = nameof(ResultCode.GRANT_INVALID),
+                    Message = ResultCode.GRANT_INVALID
+                });
             }
-
-
         }
        
         /// <summary>

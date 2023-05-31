@@ -604,7 +604,7 @@ namespace DFM.Shared.Repository
                     existing.Content.revision = existing.Rev;
                     existing.Content.id = existing.Id;
                     //await mem.StringSetAsync(recordKey, JsonSerializer.Serialize(existing.Content));
-                    await context.InsertAsync(existing.Content);
+                    await context.InsertAsync(existing.Content, TimeSpan.FromHours(1));
 
                     return (new CommonResponseId()
                     {
@@ -721,7 +721,7 @@ namespace DFM.Shared.Repository
                     //var mem = redisConnector.Connection.GetDatabase(1);
                     //await mem.StringSetAsync(recordKey, JsonSerializer.Serialize(request));
                     request.revision = result.Rev;
-                    await context.InsertAsync(request);
+                    await context.InsertAsync(request, TimeSpan.FromHours(1));
 
 
                     return new CommonResponseId()
@@ -2064,7 +2064,7 @@ namespace DFM.Shared.Repository
                         //var mem = redisConnector.Connection.GetDatabase(1);
                         //await mem.StringSetAsync(recordKey, JsonSerializer.Serialize(request));
                         request.revision = result.Rev;
-                        await context.InsertAsync(request);
+                        await context.InsertAsync(request, TimeSpan.FromHours(1));
 
 
                         return new CommonResponseId()
@@ -2195,7 +2195,7 @@ namespace DFM.Shared.Repository
                     existing.Content.revision = existing.Rev;
                     existing.Content.id = existing.Id;
                     //await mem.StringSetAsync(recordKey, JsonSerializer.Serialize(existing.Content));
-                    await context.InsertAsync(existing.Content);
+                    await context.InsertAsync(existing.Content, TimeSpan.FromHours(1));
 
                     var response = existing.Content.RoleTypeItems!.Where(x => x.ModuleType == moduleType);
 
@@ -2259,7 +2259,7 @@ namespace DFM.Shared.Repository
                     existing.Content.revision = existing.Rev;
                     existing.Content.id = existing.Id;
                     //await mem.StringSetAsync(recordKey, JsonSerializer.Serialize(existing.Content));
-                    await context.InsertAsync(existing.Content);
+                    await context.InsertAsync(existing.Content, TimeSpan.FromHours(1));
 
                     return (new CommonResponseId()
                     {

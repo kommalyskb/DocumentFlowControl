@@ -79,7 +79,7 @@ namespace DFM.Shared.Repository
 
                     // Insert new redis cache
                     request.revision = result.Rev;
-                    await context.InsertAsync(request);
+                    await context.InsertAsync(request, TimeSpan.FromHours(1));
 
                     return new CommonResponseId()
                     {
@@ -222,7 +222,7 @@ namespace DFM.Shared.Repository
                     existing.Content.id = existing.Id;
                     //await mem.StringSetAsync(recordKey, JsonSerializer.Serialize(existing.Content));
 
-                    await context.InsertAsync(existing.Content);
+                    await context.InsertAsync(existing.Content, TimeSpan.FromHours(1));
 
                     return (new CommonResponseId()
                     {

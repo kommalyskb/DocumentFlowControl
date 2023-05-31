@@ -28,7 +28,7 @@ namespace DFM.Testcases.Employee
                     Scheme = "http",
                     Password = "1qaz2wsx",
                     Port = 5984,
-                    SrvAddr = "localhost",
+                    SrvAddr = "20.10.100.91",
                     Username = "admin"
                 },
                 Reader = new DBInfo
@@ -36,14 +36,14 @@ namespace DFM.Testcases.Employee
                     Scheme = "http",
                     Password = "1qaz2wsx",
                     Port = 5984,
-                    SrvAddr = "localhost",
+                    SrvAddr = "20.10.100.91",
                     Username = "admin"
                 }
 
             };
             IRedisConnector redisConnector = new RedisConnector(new RedisConf()
             {
-                Server = "localhost",
+                Server = "20.10.100.91",
                 Port = 12000,
                 Password = "1qaz2wsx"
             });
@@ -126,7 +126,7 @@ namespace DFM.Testcases.Employee
         [Fact(DisplayName = "ສະແດງ ພະນັກງານ info ຕາມ ID ພະນັກງານ")]
         public async Task NC5()
         {
-            var result = await employeeManager.GetProfile("31af54c8579244a79f3882e0bed9efc0");
+            var result = await employeeManager.GetProfile("962f5b83-9212-4872-9bcd-da5852f7794b");
 
             Assert.True(result.Response.Success);
         }
