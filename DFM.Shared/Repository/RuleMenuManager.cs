@@ -14,6 +14,7 @@ using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -77,7 +78,7 @@ namespace DFM.Shared.Repository
                     var fromDb = await couchContext.ViewQueryAsync<RuleMenu>(read_couchDbHelper, "query", "byOrgID", orgId, -1, 0, false, false, cancellationToken);
                     foreach (var item in fromDb.Rows)
                     {
-                        tasks.Add(context.InsertAsync(item.Value, TimeSpan.FromHours(1)));
+                        tasks.Add(context.InsertAsync(item.Value));
                     }
                     await Task.WhenAll(tasks);
 
@@ -133,7 +134,7 @@ namespace DFM.Shared.Repository
                     var fromDb = await couchContext.ViewQueryAsync<RuleMenu>(read_couchDbHelper, "query", "byOrgID", orgId, -1, 0, false, false, cancellationToken);
                     foreach (var item in fromDb.Rows)
                     {
-                        tasks.Add(context.InsertAsync(item.Value, TimeSpan.FromHours(1)));
+                        tasks.Add(context.InsertAsync(item.Value));
                     }
                     await Task.WhenAll(tasks);
 
@@ -176,7 +177,7 @@ namespace DFM.Shared.Repository
                     var fromDb = await couchContext.ViewQueryAsync<RuleMenu>(read_couchDbHelper, "query", "byOrgID", orgId, -1, 0, false, false, cancellationToken);
                     foreach (var item in fromDb.Rows)
                     {
-                        tasks.Add(context.InsertAsync(item.Value, TimeSpan.FromHours(1)));
+                        tasks.Add(context.InsertAsync(item.Value));
                     }
                     await Task.WhenAll(tasks);
 
@@ -229,6 +230,41 @@ namespace DFM.Shared.Repository
             }
         }
 
+        public async Task<int> UpdateCache(string orgId, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var result = context.Where(x => x.OrgID == orgId).ToList();
+                if (result.Count() > 0)
+                {
+                    List<Task> removeTasks = new List<Task>();
+                    foreach (var item in result)
+                    {
+                        removeTasks.Add(context.DeleteAsync(item));
+                    }
+                    await Task.WhenAll(removeTasks);
+                }
+
+                List<Task> tasks = new List<Task>();
+                // Get from database
+                var fromDb = await couchContext.ViewQueryAsync<RuleMenu>(read_couchDbHelper, "query", "byOrgID", orgId, -1, 0, false, false, cancellationToken);
+                foreach (var item in fromDb.Rows)
+                {
+                    tasks.Add(context.InsertAsync(item.Value));
+                }
+                await Task.WhenAll(tasks);
+
+
+                return tasks.Count;
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         public async Task<CommonResponseId> UpdateRules(RuleMenu request, CancellationToken cancellationToken = default(CancellationToken))
         {
             try
@@ -256,7 +292,7 @@ namespace DFM.Shared.Repository
                         }
 
                         request.revision = result.Rev;
-                        await context.InsertAsync(request, TimeSpan.FromHours(1));
+                        await context.InsertAsync(request);
                         return new CommonResponseId
                         {
                             Code = nameof(ResultCode.SUCCESS_OPERATION),
@@ -354,7 +390,7 @@ namespace DFM.Shared.Repository
                     {
                         result.Content.id = result.Id;
                         result.Content.revision = result.Rev;
-                        await context.InsertAsync(result.Content, TimeSpan.FromHours(1));
+                        await context.InsertAsync(result.Content);
 
                         return result.Content;
                     }

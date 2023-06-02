@@ -108,5 +108,29 @@ namespace DFM.API.Controllers
             }
             return Ok(result);
         }
+
+        [HttpGet("UpdateCache/{orgID}")]
+        [MapToApiVersion("1.0")]
+        [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateCacheV1(string orgID, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            // Get Owner
+            string userId = "";// GeneratorHelper.NotAvailable;
+            if (User.Claims.FirstOrDefault(x => x.Type == "sub") != null)
+            {
+                userId = User.Claims.FirstOrDefault(x => x.Type == "sub")!.Value;
+
+            }
+            var myProfile = await employeeManager.GetProfile(userId, cancellationToken);
+            if (!myProfile.Response.Success)
+            {
+                return BadRequest(myProfile.Response);
+            }
+
+            var result = await menuManager.UpdateCache(orgID, cancellationToken);
+            
+            return Ok($"Tasks: {result}");
+        }
     }
 }

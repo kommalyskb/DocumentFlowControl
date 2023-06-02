@@ -53,5 +53,11 @@ namespace DFM.Testcases.RoleMgr
         {
             var result = await manager.UpdateRules(new Shared.Entities.RuleMenu ());
         }
+
+        [Fact]
+        public async Task UpdateCache()
+        {
+            await manager.UpdateCache();
+        }
     }
 }

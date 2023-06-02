@@ -15,5 +15,6 @@ namespace DFM.Shared.Interfaces
         Task<IEnumerable<RuleMenu>> GetRuleMenus(IEnumerable<RoleTypeModel> roles, string orgId, CancellationToken cancellationToken = default);
         Task<CommonResponseId> RemoveRule(string id, CancellationToken cancellationToken = default);
         Task<CommonResponseId> UpdateRules(RuleMenu request, CancellationToken cancellationToken = default);
+        Task<int> UpdateCache(string orgId, CancellationToken cancellationToken = default);
     }
 }
