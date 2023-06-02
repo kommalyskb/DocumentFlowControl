@@ -57,7 +57,7 @@ namespace DFM.Testcases.RoleMgr
         [Fact]
         public async Task UpdateCache()
         {
-            await manager.UpdateCache();
+            await manager.UpdateCache("");
         }
     }
 }
