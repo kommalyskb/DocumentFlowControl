@@ -386,6 +386,7 @@ namespace DFM.API.Controllers
                             }
                         }
                     };
+                    // ຕັ້ງຄ່າຂໍ້ມູນຜູ້ສ້າງ/ສົ່ງ
                     var rec = new Reciepient
                     {
                         UId = Guid.NewGuid().ToString("N"),
@@ -408,7 +409,7 @@ namespace DFM.API.Controllers
                             RoleTrace = ownRoleTrace,
                             Attachments = request.Main.Comment.Attachments
                         },
-                        InboxType = request.InboxType
+                        InboxType = request.InboxType,
                     };
 
                     // Set Reciepient
@@ -559,6 +560,7 @@ namespace DFM.API.Controllers
                         }
 
                         // Check condition for main display
+                        // ຖ້າບໍ່ຢາກໃຫ້ໃຊ້ເງື່ອນໄຂການສົ່ງຂ້າມ ຈາກ ຂາອອກ ໄປ ຂາເຂົ້າ ແລ້ວສ້າງ record ໃຫມ່ແມ່ນໃຫ້ Comment statement ຂ້າງລຸ່ມອອກ
                         if (isCrossRoleType(myRole.Content!.RoleType, receiverRole.Content!.RoleType))
                         {
                             isMainDisplay = false;
@@ -734,7 +736,17 @@ namespace DFM.API.Controllers
 
                     var result = await documentTransaction.NewDocument(request.DocumentModel, cancellationToken);
 
+                    if (envConf.EmailNotify)
+                    {
+                        await Task.WhenAll(tasks);
+                    }
+
                     // Create new record if it's in condition
+                    // ສຳລັບ MainDisplay ແມ່ນເງື່ອນໄຂທີ່ມີການສົ່ງຂ້າມ ຈາກ ຂາອອກໄປຫາຂາເຂົ້າ ຈະຕ້ອງມີການສ້າງ Record ໃຫມ່ຂື້ນມາ
+                    // ແລະສຳລັບການ Track ແມ່ນຈະບໍ່ສາມາດ DrillDown ລົງໄປຈາາກ ຂາອອກນີ້ໄດ້ແລ້ວ ເພາະເອກະສານຈະສິ້ນສຸດຢູ່ຂາອອກເລີຍ
+                    // ແລະສຳລັບຜູ້ຮັບທີ່ເປັນ Main ຝັ່ງຂາເຂົ້າ ແມ່ນຈະເຮັດຕາມປົກກະຕິໄປເລີຍ
+                    // ໃນກໍລະນີທີ່ບໍ່ຕ້ອງການໃຫ້ສ້າງ Record ໃຫມ່ແມ່ນສາມາດ Comment ອອກໄດ້
+                    #region Need to dupplicate when send cross from Outbound to Inbound
                     if (!isMainDisplay)
                     {
                         for (int i = 0; i < request.DocumentModel.Recipients.Count; i++)
@@ -751,16 +763,16 @@ namespace DFM.API.Controllers
 
                         // Set Parent ID for track back
                         request.DocumentModel.ParentID = result.Id;
+                        request.DocumentModel.id = null; // Clear ID for create new record
+                        request.DocumentModel.revision = null; // Clear Revision for create new record
                         // New Record
                         await documentTransaction.NewDocument(request.DocumentModel, cancellationToken);
-                        // Send email
-                        if (envConf.EmailNotify)
-                        {
-                            await Task.WhenAll(tasks);
-                        }
 
                     }
+                    #endregion
 
+                    // Send email
+                    
 
                     if (result.Success)
                     {
@@ -854,6 +866,7 @@ namespace DFM.API.Controllers
                     // Update owner recipient 
                     for (int i = 0; i < doc!.Content.Recipients!.Count; i++)
                     {
+                        // Proccess ນີ້ແມ່ນປ້ອງກັນບໍ່ໃຫ້ຂໍ້ມູນຜູ້ຮັບ ຫຼືຜູ້ສົ່ງທີ່ມີຢູ່ແລ້ວມີການອັບເດດ ເລີຍຕ້ອງເອົາຂໍ້ມູນຈາກຖານຂໍ້ມູນ ມາ replace ໃສ່
                         var recipient = doc!.Content.Recipients![i];
                         foreach (var item in request.DocumentModel.Recipients!)
                         {
@@ -1008,6 +1021,7 @@ namespace DFM.API.Controllers
                         }
 
                         // Check condition for main display
+                        // ຖ້າບໍ່ຢາກໃຫ້ໃຊ້ເງື່ອນໄຂການສົ່ງຂ້າມ ຈາກ ຂາອອກ ໄປ ຂາເຂົ້າ ແລ້ວສ້າງ record ໃຫມ່ແມ່ນໃຫ້ Comment statement ຂ້າງລຸ່ມອອກ
                         if (isCrossRoleType(myRole.Content!.RoleType, receiverRole.Content!.RoleType))
                         {
                             isMainDisplay = false;
@@ -1134,8 +1148,6 @@ namespace DFM.API.Controllers
 
                     }
 
-
-
                     // Set recipient
                     request.DocumentModel.Recipients = doc!.Content.Recipients!;
 
@@ -1145,7 +1157,12 @@ namespace DFM.API.Controllers
                     {
                         await Task.WhenAll(tasks);
                     }
+                    // ສຳລັບ MainDisplay ແມ່ນເງື່ອນໄຂທີ່ມີການສົ່ງຂ້າມ ຈາກ ຂາອອກໄປຫາຂາເຂົ້າ ຈະຕ້ອງມີການສ້າງ Record ໃຫມ່ຂື້ນມາ
+                    // ແລະສຳລັບການ Track ແມ່ນຈະບໍ່ສາມາດ DrillDown ລົງໄປຈາາກ ຂາອອກນີ້ໄດ້ແລ້ວ ເພາະເອກະສານຈະສິ້ນສຸດຢູ່ຂາອອກເລີຍ
+                    // ແລະສຳລັບຜູ້ຮັບທີ່ເປັນ Main ຝັ່ງຂາເຂົ້າ ແມ່ນຈະເຮັດຕາມປົກກະຕິໄປເລີຍ
+                    // ໃນກໍລະນີທີ່ບໍ່ຕ້ອງການໃຫ້ສ້າງ Record ໃຫມ່ແມ່ນສາມາດ Comment ອອກໄດ້
                     // Create new record if it's in condition
+                    #region Need to dupplicate when send cross from Outbound to Inbound
                     if (!isMainDisplay)
                     {
                         for (int i = 0; i < request.DocumentModel.Recipients.Count; i++)
@@ -1162,9 +1179,16 @@ namespace DFM.API.Controllers
 
                         // Set Parent ID for track back
                         request.DocumentModel.ParentID = result.Id;
+                        request.DocumentModel.id = null; // Clear ID for create new record
+                        request.DocumentModel.revision = null; // Clear Revision for create new record
                         // New Record
                         await documentTransaction.NewDocument(request.DocumentModel, cancellationToken);
                     }
+                    #endregion
+
+
+                    
+                   
 
                     if (result.Success)
                     {
@@ -1173,6 +1197,30 @@ namespace DFM.API.Controllers
                     return BadRequest(result);
                 }
 
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        [HttpPost("ReadDocument/{docID}")]
+        //[AllowAnonymous]
+        [MapToApiVersion("1.0")]
+        [ProducesResponseType(typeof(CommonResponseId), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CommonResponse), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> ReadDocumentV1([FromBody] Reciepient request, string docID, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            try
+            {
+                var result = await documentTransaction.UpdateReadDocumentStatus(request, docID, cancellationToken);
+
+                if (!result.Success)
+                {
+                    return BadRequest(result);
+                }
+                return Ok(result);
             }
             catch (Exception)
             {

@@ -28,23 +28,23 @@ namespace DFM.Testcases.Organization
                 {
                     Scheme = "http",
                     Password = "1qaz2wsx",
-                    Port = 25984,
-                    SrvAddr = "202.137.130.53",
+                    Port = 5984,
+                    SrvAddr = "20.10.100.91",
                     Username = "admin"
                 },
                 Reader = new DBInfo
                 {
                     Scheme = "http",
                     Password = "1qaz2wsx",
-                    Port = 25984,
-                    SrvAddr = "202.137.130.53",
+                    Port = 5984,
+                    SrvAddr = "20.10.100.91",
                     Username = "admin"
                 }
 
             };
             IRedisConnector redisConnector = new RedisConnector(new RedisConf()
             {
-                Server = "localhost",
+                Server = "20.10.100.91",
                 Port = 12000,
                 Password = "1qaz2wsx"
             });
@@ -150,7 +150,7 @@ namespace DFM.Testcases.Organization
         [Fact(DisplayName = "ດຶງເອົາ Role ທີ່ມີ Employee ຕາມ Filter")]
         public async Task NC5()
         {
-            var result = await organizationChart.GetRoles("b98c5c46cebd430bb7d9fe596d73c459", "0e27d2881de2420fba50eef81ed32e22");
+            var result = await organizationChart.GetRoles("22c9feb088284830ad169bf04e90d747", "d622a93d-fe18-437b-ac8e-0c7e596c9d79");
             Assert.True(result.Response.Success);
         }
         [Fact(DisplayName = "ດຶງຂໍ້ມູນ Organization ID")]

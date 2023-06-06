@@ -16,13 +16,13 @@
     }
     @if (ValidateRule.isInRole(rules!, "/pages/home"))
     {
-        string l = "/pages/home";
-        <MudNavLink OnClick="(() => CloseNotification.InvokeAsync(l))"  IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.Home">ຫນ້າຫລັກ</MudNavLink>
+        string l = "/";
+        <MudNavLink Href="@l" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.Home" Match="NavLinkMatch.Prefix">ຫນ້າຫລັກ</MudNavLink>
     }
     @if (ValidateRule.isInRole(rules!, "/pages/personal/account"))
     {
         string l = "/pages/personal/account";
-        <MudNavLink OnClick="(() => CloseNotification.InvokeAsync(l))" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.Person">ຂໍ້ມູນຜູ້ໃຊ້</MudNavLink>
+        <MudNavLink Href="@l" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.Person" Match="NavLinkMatch.All">ຂໍ້ມູນຜູ້ໃຊ້</MudNavLink>
     }
     @if (ValidateRule.isInRole(rules!, "/pages/home") || ValidateRule.isInRole(rules!, "/pages/personal/account"))
     {
@@ -44,31 +44,31 @@
     @if (ValidateRule.isInRole(rules!, "/pages/doc/inbound/inbox/none"))
     {
         string l = "/pages/doc/inbound/inbox/none";
-        <MudNavLink OnClick="(() => CloseNotification.InvokeAsync(l))" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.MoveToInbox" Match="NavLinkMatch.Prefix">ອິນບ໋ອກ</MudNavLink>
+        <MudNavLink Href="@l" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.MoveToInbox" Match="NavLinkMatch.All">ອິນບ໋ອກ</MudNavLink>
 
     }
     @if (ValidateRule.isInRole(rules!, "/pages/doc/inbound/coprocess/none"))
     {
         string l = "/pages/doc/inbound/coprocess/none";
-        <MudNavLink OnClick="(() => CloseNotification.InvokeAsync(l))" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.ClosedCaptionOff" Match="NavLinkMatch.Prefix">ຕິດຕາມ</MudNavLink>
+        <MudNavLink Href="@l" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.ClosedCaptionOff" Match="NavLinkMatch.All">ຕິດຕາມ</MudNavLink>
 
     }
     @if (ValidateRule.isInRole(rules!, "/pages/doc/inbound/draft/none"))
     {
         string l = "/pages/doc/inbound/draft/none";
-        <MudNavLink OnClick="(() => CloseNotification.InvokeAsync(l))" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.Drafts" Match="NavLinkMatch.Prefix">ສະບັບຮ່າງ</MudNavLink>
+        <MudNavLink Href="@l" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.Drafts" Match="NavLinkMatch.All">ສະບັບຮ່າງ</MudNavLink>
 
     }
     @if (ValidateRule.isInRole(rules!, "/pages/doc/inbound/completed/none"))
     {
         string l = "/pages/doc/inbound/completed/none";
-        <MudNavLink OnClick="(() => CloseNotification.InvokeAsync(l))" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.LibraryAddCheck" Match="NavLinkMatch.Prefix">ສຳເລັດແລ້ວ</MudNavLink>
+        <MudNavLink Href="@l" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.LibraryAddCheck" Match="NavLinkMatch.All">ສຳເລັດແລ້ວ</MudNavLink>
 
     }
     @if (ValidateRule.isInRole(rules!, "/pages/doc/inbound/bin/none"))
     {
         string l = "/pages/personal/account";
-        <MudNavLink Href="/pages/doc/inbound/bin/none" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.Delete" Match="NavLinkMatch.Prefix">ຖັງຂີ້ເຫຍື່ອ</MudNavLink>
+        <MudNavLink Href="/pages/doc/inbound/bin/none" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.Delete" Match="NavLinkMatch.All">ຖັງຂີ້ເຫຍື່ອ</MudNavLink>
 
     }
     @if (ValidateRule.isInRole(rules!, "/pages/doc/inbound/inbox/none") || ValidateRule.isInRole(rules!, "/pages/doc/inbound/coprocess/none") ||
@@ -93,31 +93,31 @@
     @if (ValidateRule.isInRole(rules!, "/pages/doc/outbound/inbox/none"))
     {
         string l = "/pages/doc/outbound/inbox/none";
-        <MudNavLink OnClick="(() => CloseNotification.InvokeAsync(l))" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.ForwardToInbox" Match="NavLinkMatch.Prefix">ເອກະສານສົ່ງອອກ</MudNavLink>
+        <MudNavLink Href="@l" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.ForwardToInbox" Match="NavLinkMatch.All">ເອກະສານສົ່ງອອກ</MudNavLink>
 
     }
     @if (ValidateRule.isInRole(rules!, "/pages/doc/outbound/coprocess/none"))
     {
         string l = "/pages/doc/outbound/coprocess/none";
-        <MudNavLink OnClick="(() => CloseNotification.InvokeAsync(l))" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.ClosedCaptionOff" Match="NavLinkMatch.Prefix">ຕິດຕາມ</MudNavLink>
+        <MudNavLink Href="@l" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.ClosedCaptionOff" Match="NavLinkMatch.All">ຕິດຕາມ</MudNavLink>
 
     }
     @if (ValidateRule.isInRole(rules!, "/pages/doc/outbound/draft/none"))
     {
         string l = "/pages/doc/outbound/draft/none";
-        <MudNavLink OnClick="(() => CloseNotification.InvokeAsync(l))" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.Drafts" Match="NavLinkMatch.Prefix">ສະບັບຮ່າງ</MudNavLink>
+        <MudNavLink Href="@l" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.Drafts" Match="NavLinkMatch.All">ສະບັບຮ່າງ</MudNavLink>
 
     }
     @if (ValidateRule.isInRole(rules!, "/pages/doc/outbound/completed/none"))
     {
         string l = "/pages/doc/outbound/completed/none";
-        <MudNavLink OnClick="(() => CloseNotification.InvokeAsync(l))" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.LibraryAddCheck" Match="NavLinkMatch.Prefix">ສຳເລັດແລ້ວ</MudNavLink>
+        <MudNavLink Href="@l" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.LibraryAddCheck" Match="NavLinkMatch.All">ສຳເລັດແລ້ວ</MudNavLink>
 
     }
     @if (ValidateRule.isInRole(rules!, "/pages/doc/outbound/bin/none"))
     {
         string l = "/pages/doc/outbound/bin/none";
-        <MudNavLink OnClick="(() => CloseNotification.InvokeAsync(l))" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.Delete" Match="NavLinkMatch.Prefix">ຖັງຂີ້ເຫຍື່ອ</MudNavLink>
+        <MudNavLink Href="@l" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.Delete" Match="NavLinkMatch.All">ຖັງຂີ້ເຫຍື່ອ</MudNavLink>
 
     }
     @if (ValidateRule.isInRole(rules!, "/pages/doc/outbound/inbox/none") || ValidateRule.isInRole(rules!, "/pages/doc/outbound/coprocess/none") ||
@@ -141,12 +141,12 @@
     @if (ValidateRule.isInRole(rules!, "/pages/monitor/inbound"))
     {
         string l = "/pages/monitor/inbound";
-        <MudNavLink OnClick="(() => CloseNotification.InvokeAsync(l))" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.AdminPanelSettings">ເອກະສານຂາເຂົ້າ</MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All" Href="@l" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.AdminPanelSettings">ເອກະສານຂາເຂົ້າ</MudNavLink>
     }
     @if (ValidateRule.isInRole(rules!, "/pages/monitor/outbound"))
     {
         string l = "/pages/monitor/outbound";
-        <MudNavLink OnClick="(() => CloseNotification.InvokeAsync(l))" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.AdminPanelSettings">ເອກະສານຂາອອກ</MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All" Href="@l" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.AdminPanelSettings">ເອກະສານຂາອອກ</MudNavLink>
     }
     @if (ValidateRule.isInRole(rules!, "/pages/monitor/inbound") || ValidateRule.isInRole(rules!, "/pages/monitor/outbound"))
     {
@@ -166,12 +166,12 @@
     @if (ValidateRule.isInRole(rules!, "/pages/folder/inbound"))
     {
         string l = "/pages/folder/inbound";
-        <MudNavLink OnClick="(() => CloseNotification.InvokeAsync(l))" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.Folder">ແຟ້ມຂາເຂົ້າ</MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All" Href="@l" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.Folder">ແຟ້ມຂາເຂົ້າ</MudNavLink>
     }
     @if (ValidateRule.isInRole(rules!, "/pages/folder/outbound"))
     {
         string l = "/pages/folder/outbound";
-        <MudNavLink OnClick="(() => CloseNotification.InvokeAsync(l))" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.FolderShared">ແຟ້ມຂາອອກ</MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All" Href="@l" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.FolderShared">ແຟ້ມຂາອອກ</MudNavLink>
     }
     @if (ValidateRule.isInRole(rules!, "/pages/folder/inbound") || ValidateRule.isInRole(rules!, "/pages/folder/outbound"))
     {
@@ -193,37 +193,37 @@
     @if (ValidateRule.isInRole(rules!, "/pages/org/chart"))
     {
         string l = "/pages/org/chart";
-        <MudNavLink OnClick="(() => CloseNotification.InvokeAsync(l))" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.AddChart">ແຜນວາດອົງກອນ</MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All" Href="@l" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.AddChart">ແຜນວາດອົງກອນ</MudNavLink>
     }
     @if (ValidateRule.isInRole(rules!, "/pages/org/user"))
     {
         string l = "/pages/org/user";
-        <MudNavLink OnClick="(() => CloseNotification.InvokeAsync(l))" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.SupervisedUserCircle">ຜູ້ໃຊ້ລະບົບ</MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All" Href="@l" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.SupervisedUserCircle">ຜູ້ໃຊ້ລະບົບ</MudNavLink>
     }
     @if (ValidateRule.isInRole(rules!, "/pages/doctype"))
     {
         string l = "/pages/doctype";
-        <MudNavLink OnClick="(() => CloseNotification.InvokeAsync(l))" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.Assessment">ປະເພດເອກະສານ</MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All" Href="@l" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.Assessment">ປະເພດເອກະສານ</MudNavLink>
     }
     @if (ValidateRule.isInRole(rules!, "/pages/security"))
     {
         string l = "/pages/security";
-        <MudNavLink OnClick="(() => CloseNotification.InvokeAsync(l))" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.Security">ລະດັບຄວາມປອດໄພເອກະສານ</MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All" Href="@l" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.Security">ລະດັບຄວາມປອດໄພເອກະສານ</MudNavLink>
     }
     @if (ValidateRule.isInRole(rules!, "/pages/urgent"))
     {
         string l = "/pages/urgent";
-        <MudNavLink OnClick="(() => CloseNotification.InvokeAsync(l))" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.NoiseAware">ລະດັບຄວາມເລັ່ງດ່ວນ</MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All" Href="@l" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.NoiseAware">ລະດັບຄວາມເລັ່ງດ່ວນ</MudNavLink>
     }
     @if (ValidateRule.isInRole(rules!, "/pages/rulemanager"))
     {
         string l = "/pages/rulemanager";
-        <MudNavLink OnClick="(() => CloseNotification.InvokeAsync(l))" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.RuleFolder">ກຳໜົດສິດຂອງຜູ້ໃຊ້</MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All" Href="@l" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.RuleFolder">ກຳໜົດສິດຂອງຜູ້ໃຊ້</MudNavLink>
     }
     @*@if (ValidateRule.isInRole(rules!, "/pages/freeflow"))
     {
         string l = "/pages/freeflow";
-        <MudNavLink OnClick="(() => CloseNotification.InvokeAsync(l))" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.Water">ກຳໜົດການສົ່ງເອກະສານ</MudNavLink>
+    <MudNavLink Match="NavLinkMatch.All" Href="@l" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.Water">ກຳໜົດການສົ່ງເອກະສານ</MudNavLink>
     }*@
 
 
@@ -248,13 +248,13 @@
     @if (ValidateRule.isInRole(rules!, "/pages/report/inbound"))
     {
         string l = "/pages/report/inbound";
-        <MudNavLink OnClick="(() => CloseNotification.InvokeAsync(l))" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.Newspaper">ລາຍງານເອກະສານຂາເຂົ້າ</MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All" Href="@l" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.Newspaper">ລາຍງານເອກະສານຂາເຂົ້າ</MudNavLink>
 
     }
     @if (ValidateRule.isInRole(rules!, "/pages/report/outbound"))
     {
         string l = "/pages/report/outbound";
-        <MudNavLink OnClick="(() => CloseNotification.InvokeAsync(l))" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.Newspaper">ລາຍງານເອກະສານຂາອອກ</MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All" Href="@l" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.Newspaper">ລາຍງານເອກະສານຂາອອກ</MudNavLink>
 
     }
     @if (ValidateRule.isInRole(rules!, "/pages/report/inbound") || ValidateRule.isInRole(rules!, "/pages/report/outbound"))
@@ -267,9 +267,9 @@
         <MudText Typo="Typo.subtitle2" Color="Color.Primary" Style="font-weight: bold; font-size: 16px;" Class="ml-4 my-3">ລະບົບ</MudText>
     }
 
-    <MudNavLink Href="/authorize" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.Logout">ອອກຈາກລະບົບ</MudNavLink>
+    <MudNavLink Href="/authorize" Match="NavLinkMatch.All" IconColor="Color.Primary" Style="color: #002f57" Icon="@Icons.Material.Outlined.Logout">ອອກຈາກລະບົບ</MudNavLink>
     <MudText Typo="Typo.subtitle2" Color="Color.Primary" Class="ml-4 my-3">
-        <MeasureLatency/>
+        @*<MeasureLatency/>*@
     </MudText>
     <MudDivider Style="height:5px" />
 </MudNavMenu>

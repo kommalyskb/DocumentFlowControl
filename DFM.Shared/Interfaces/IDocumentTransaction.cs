@@ -19,5 +19,6 @@ namespace DFM.Shared.Interfaces
         Task<CommonResponseId> NewDocument(DocumentModel request, CancellationToken cancellationToken = default);
         Task<CommonResponse> SendDocument(string docId, List<Reciepient> reciepients, CancellationToken cancellationToken = default);
         Task<PersonalReportSummary> GetDashboard(GetDashboardRequest request, CancellationToken cancellationToken = default);
+        Task<CommonResponseId> UpdateReadDocumentStatus(Reciepient request, string docID, CancellationToken cancellationToken);
     }
 }

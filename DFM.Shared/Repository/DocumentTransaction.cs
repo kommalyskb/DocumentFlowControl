@@ -65,9 +65,9 @@ namespace DFM.Shared.Repository
 
                 var result = await couchContext.InsertAsync<DocumentModel>
                                (
-                                   couchDBHelper: write_couchDbHelper,
-                                   model: request,
-                                   cancellationToken: cancellationToken
+                                    couchDBHelper: write_couchDbHelper,
+                                    model: request,
+                                    cancellationToken: cancellationToken
                                );
 
                 if (result.IsSuccess)
@@ -183,7 +183,106 @@ namespace DFM.Shared.Repository
 
 
         }
+        public async Task<CommonResponseId> UpdateReadDocumentStatus(Reciepient reciepient, string docID, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            try
+            {
+                // Find the existing record
 
+                var existing = await GetDocument(docID, cancellationToken);
+
+                if (!existing.Response.Success)
+                {
+                    return new CommonResponseId()
+                    {
+                        Id = docID,
+                        Code = nameof(ResultCode.NOT_FOUND),
+                        Success = false,
+                        Detail = ValidateString.IsNullOrWhiteSpace(existing.Response.Detail!),
+                        Message = ResultCode.NOT_FOUND
+                    };
+                }
+
+                // Redis first
+                var provider = new RedisConnectionProvider(redisConnector.Connection);
+                var context = provider.RedisCollection<DocumentModel>();
+                // Find index of recipient
+                var recipientContent = existing.Content.Recipients!.LastOrDefault(x => x.UId == reciepient.UId);
+                var index = existing.Content.Recipients!.IndexOf(recipientContent!);
+                // Then replace it
+                existing.Content.Recipients[index] = reciepient;
+
+                var result = await couchContext.EditAsync<DocumentModel>
+                   (
+                       couchDBHelper: write_couchDbHelper,
+                       model: existing.Content,
+                       cancellationToken: cancellationToken
+                   );
+
+                if (result.IsSuccess)
+                {
+                    //Set cache after create success
+                    //string recordKey = $"{RedisPrefix.Document}{result.Id}"; // Set key for cache
+                    //var mem = redisConnector.Connection.GetDatabase(1);
+                    //await mem.StringSetAsync(recordKey, JsonSerializer.Serialize(request));
+                    existing.Content.revision = result.Rev;
+                    await context.UpdateAsync(existing.Content);
+
+                    // Check if this document has parent then try to update there parent too
+                    if (!string.IsNullOrWhiteSpace(existing.Content.ParentID))
+                    {
+                        // Find that document
+                        var parentDoc = await GetDocument(existing.Content.ParentID, cancellationToken);
+
+                        if (parentDoc.Response.Success)
+                        {
+                            var recParent = parentDoc.Content.Recipients!.LastOrDefault(x => x.UId == reciepient.UId);
+                            var parentIndex = parentDoc.Content.Recipients!.IndexOf(recParent!);
+
+                            parentDoc.Content.Recipients[parentIndex] = reciepient;
+
+                            var parentResult = await couchContext.EditAsync<DocumentModel>
+                            (
+                                couchDBHelper: write_couchDbHelper,
+                                model: parentDoc.Content,
+                                cancellationToken: cancellationToken
+                            );
+                            // Update cache
+                            parentDoc.Content.revision = parentResult.Rev;
+                            await context.UpdateAsync(parentDoc.Content);
+                        }
+                    }
+
+
+                    return new CommonResponseId()
+                    {
+                        Id = result.Id,
+                        Code = nameof(ResultCode.SUCCESS_OPERATION),
+                        Success = true,
+                        Detail = ValidateString.IsNullOrWhiteSpace(result.Error),
+                        Message = ResultCode.SUCCESS_OPERATION
+                    };
+                }
+                else
+                {
+                    return new CommonResponseId()
+                    {
+                        Id = GeneratorHelper.NotAvailable,
+                        Code = nameof(ResultCode.REQUEST_FAIL),
+                        Success = false,
+                        Detail = ValidateString.IsNullOrWhiteSpace(result.Error),
+                        Message = ResultCode.REQUEST_FAIL
+                    };
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+
+        }
         public async Task<(CommonResponse Response, DocumentModel Content)> GetDocument(string id, CancellationToken cancellationToken = default(CancellationToken))
         {
             try
@@ -252,6 +351,7 @@ namespace DFM.Shared.Repository
 
         }
 
+        // Not used
         public async Task<CommonResponse> SendDocument(string docId, List<Reciepient> reciepients, CancellationToken cancellationToken = default(CancellationToken))
         {
             try
@@ -571,7 +671,7 @@ namespace DFM.Shared.Repository
                         .GroupBy(x => x.roleId)
                         .Select(c => new ReportPersonalGroup { RoleID = c.Key, Count = c.Count() });
                     }
-                    
+
                     //finished = countFinished.Where(x => x.createDate >= start && x.createDate <= end).Count();
                     foreach (var item in finishedResult)
                     {
@@ -611,7 +711,7 @@ namespace DFM.Shared.Repository
                         .GroupBy(x => x.roleId)
                         .Select(c => new ReportPersonalGroup { RoleID = c.Key, Count = c.Count() });
                     }
-                    
+
                     //inprogress = countInprogress.Where(x => x.createDate >= start && x.createDate <= end).Count();
                     foreach (var item in inprogressResult)
                     {

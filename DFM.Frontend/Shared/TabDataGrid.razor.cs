@@ -147,7 +147,7 @@ namespace DFM.Frontend.Shared
                             CreateDate = myDoc!.CreateDate,
                             CompletedDate = myDoc!.CompletedDate,
                             FontColor = urgentLabel != null ? urgentLabel.FontColor! : "",
-
+                            DocNoFrom = rawDocumentData.ExternalDocID
                         });
                     }
                     //unread = Elements.Count(x => !x.IsRead);

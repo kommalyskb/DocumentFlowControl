@@ -535,7 +535,15 @@ namespace DFM.Frontend.Pages
                         rawDocument!.RelateFles = relateFiles.Select(x => x.Info).ToList();
 
                         DocumentRequest documentRequest = new DocumentRequest();
+                        if (Link == "inbound")
+                        {
+                            documentRequest.InboxType = InboxType.Inbound;
 
+                        }
+                        else
+                        {
+                            documentRequest.InboxType = InboxType.Outbound;
+                        }
                         if (myRole != null)
                         {
                             documentRequest.Uid = myRole!.UId;
@@ -743,24 +751,16 @@ namespace DFM.Frontend.Pages
                 {
                     employee = await storageHelper.GetEmployeeProfileAsync();
                 }
-                string url = $"{endpoint.API}/api/v1/Document/SaveDocument/{roleId}";
+                string url = $"{endpoint.API}/api/v1/Document/ReadDocument/{documentModel!.id}";
                 if (string.IsNullOrWhiteSpace(token))
                 {
                     token = await accessToken.GetTokenAsync();
                 }
 
-                // Bind Files
-                rawDocument!.Attachments = files.Select(x => x.Info).ToList();
-                rawDocument!.RelateFles = relateFiles.Select(x => x.Info).ToList();
-
-                DocumentRequest documentRequest = new DocumentRequest();
-                
-                documentRequest.RawDocument = rawDocument;
-                documentRequest.DocumentModel = documentModel;
-                int index = documentRequest.DocumentModel.Recipients!.IndexOf(myRole!);
-                documentRequest.DocumentModel.Recipients[index].IsRead = true;
-                documentRequest.DocumentModel.Recipients[index].ReadDate = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
-                documentRequest.DocumentModel.Recipients[index].RecipientInfo.Fullname = new ShortEmpInfo
+                int index = documentModel.Recipients!.IndexOf(myRole!);
+                documentModel.Recipients[index].IsRead = true;
+                documentModel.Recipients[index].ReadDate = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
+                documentModel.Recipients[index].RecipientInfo.Fullname = new ShortEmpInfo
                 {
                     EmployeeID = employee.EmployeeID,
                     Name = new MultiLanguage
@@ -770,19 +770,9 @@ namespace DFM.Frontend.Pages
                     }
                 };
 
-                if (Link == "inbound")
-                {
-                    documentRequest.DocumentModel.Recipients[index].InboxType = InboxType.Inbound;
-                    //documentModel!.InboxType = InboxType.Inbound;
-
-                }
-                else
-                {
-                    documentRequest.DocumentModel.Recipients[index].InboxType = InboxType.Outbound;
-                    //documentModel!.InboxType = InboxType.Outbound;
-                }
+                var updateRequest = documentModel.Recipients[index];
                 // Send request for save document
-                var result = await httpService.Post<DocumentRequest, CommonResponse>(url, documentRequest, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
+                var result = await httpService.Post<Reciepient, CommonResponse>(url, updateRequest, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
                 await Task.Delay(delayTime);
             }
             catch (Exception)
@@ -921,6 +911,7 @@ namespace DFM.Frontend.Pages
                         await onUpdateWhenOpenDocument(); // Update document
 
                     }
+                    //await onUpdateWhenOpenDocument(); // Update document
 
                     // Check this is from Trash or View
                     if (myRole!.DocStatus == TraceStatus.Trash)

@@ -27,7 +27,7 @@ namespace DFM.Testcases.DocumentOperation
                     Scheme = "http",
                     Password = "1qaz2wsx",
                     Port = 5984,
-                    SrvAddr = "localhost",
+                    SrvAddr = "20.10.100.91",
                     Username = "admin"
                 },
                 Reader = new DBInfo
@@ -35,15 +35,16 @@ namespace DFM.Testcases.DocumentOperation
                     Scheme = "http",
                     Password = "1qaz2wsx",
                     Port = 5984,
-                    SrvAddr = "localhost",
+                    SrvAddr = "20.10.100.91",
                     Username = "admin"
                 }
 
             };
             IRedisConnector redisConnector = new RedisConnector(new RedisConf()
             {
-                Server = "localhost",
-                Port = 6379
+                Server = "20.10.100.91",
+                Port = 12000,
+                Password = "1qaz2wsx"
             });
             IOrganizationChart organizationChart = new OrganizationChart(couchContext, dBConfig, redisConnector, new EnvConf());
             IRoleManager roleManager = new RoleManager(couchContext, dBConfig, redisConnector, organizationChart);
@@ -208,7 +209,7 @@ namespace DFM.Testcases.DocumentOperation
         [Fact(DisplayName = "ສະແດງ ເອກະສານ ທັງຫມົດ ຕາມ RoleID ຕາມ Document Window")]
         public async Task NC9()
         {
-            var result = await documentService.GetDocumentByRoleId("bcd52dd6296d4a44ba2b93733a699b48", InboxType.Outbound, TraceStatus.Draft);
+            var result = await documentService.GetDocumentByRoleId("9c2fcab79d84428086b40bf58034c68c", InboxType.Inbound, TraceStatus.Completed);
             Assert.NotEqual(0, result.RowCount);
         }
     }
