@@ -330,14 +330,18 @@
                     <MudFab Disabled="OnProcessing" Color="Color.Primary" Icon="@Icons.Material.Filled.Refresh" Size="Size.Medium" OnClick="refreshFolder" />
                     <MudFab Disabled="OnProcessing" Color="Color.Primary" Icon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="displayFolderDialogAsync" />
                 </MudItem>
-                <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4" ondblclick="@onDocNoClick">
+                <MudItem xs="12" md="3" Class="d-flex flex-grow-1 gap-4" ondblclick="@onDocNoClick">
                     <MudField Margin="Margin.Dense" Label="ເລກທີ" Variant="Variant.Filled">@RawDocument!.DocNo</MudField>
 
+                </MudItem>
+
+                <MudItem xs="12" md="3" Class="d-flex flex-grow-1 gap-4">
+                    <MudDatePicker Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="OnProcessing" @bind-Text="RawDocument!.SetDate" Required="true" PickerVariant="PickerVariant.Dialog" Label="ວັນທີລົງເລກທີເອກະສານ" HelperText="ວັນທີລົງເລກທີເອກະສານ" DateFormat="dd/MM/yyyy" />
                 </MudItem>
             }
 
 
-            <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+            <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
 
                 <MudSelect Margin="Margin.Dense" Disabled="OnProcessing" @bind-Value="RawDocument!.FormType" T="string" HelperText="ລັກສະນະການຮັບເອກະສານ" Label="ຮູບແບບເອກະສານ" Variant="Variant.Outlined">
                     <MudSelectItem Value="@("ໃຫມ່")" />
@@ -345,9 +349,7 @@
                     <MudSelectItem Value="@("ຖອນຄືນ")" />
                 </MudSelect>
             </MudItem>
-            <MudItem xs="12" md="2" Class="d-flex flex-grow-1 gap-4">
-
-            </MudItem>
+            
             <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
 
                 @if (selectDoctypeValues != null)
@@ -376,15 +378,15 @@
                 }
             </MudItem>
 
-            <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+            @*<MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
 
                 <MudDatePicker Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="OnProcessing" @bind-Value="RawDocument!.SetDate" PickerVariant="PickerVariant.Dialog" Label="ວັນທີ່ສົ່ງເອກະສານອອກ" HelperText="ວັນທີ່ສົ່ງເອກະສານ" DateFormat="dd/MM/yyyy" />
-            </MudItem>
-            <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+            </MudItem>*@
+            <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
 
                 <MudTextField Margin="Margin.Dense" Disabled="OnProcessing" @bind-Value="RawDocument!.ExternalUnit" T="string" Counter="500" MaxLength="500" Immediate="true" Variant="Variant.Outlined" Validation="@(new Func<string, IEnumerable<string>>(MediumCharacters))" HelperText="ຫນ່ວຍທີ່ຮັບເອກະສານ ໃນກໍລະນີ ຈົບການສົ່ງ" Label="ຫນ່ວຍງານພາຍນອກ" />
             </MudItem>
-            <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
+            <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
 
                 <MudTextField Margin="Margin.Dense" Disabled="OnProcessing" @bind-Value="RawDocument!.Signer" T="string" Counter="500" MaxLength="500" Immediate="true" Variant="Variant.Outlined" Validation="@(new Func<string, IEnumerable<string>>(MediumCharacters))" HelperText="ຜູ້ທີ່ມາເຊັນຮັບເອກະສານ" Label="ຜູ້ເຊັນເອກະສານ" />
             </MudItem>

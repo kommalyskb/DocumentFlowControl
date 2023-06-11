@@ -128,6 +128,7 @@ namespace DFM.Frontend.Pages.Inbound
                     if (item.component == 3)
                     {
                         supportDocTypes = JsonSerializer.Deserialize<IEnumerable<DataTypeModel>>(item.response);
+                        docTypeModels = supportDocTypes!.ToList();
                     }
                     if (item.component == 4)
                     {

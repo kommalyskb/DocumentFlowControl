@@ -118,6 +118,8 @@ namespace DFM.Frontend.Pages.Outbound
         }
         private async Task bindDataToVariables(ChannelReader<(bool success, int component, string response)> reader)
         {
+
+            
             await foreach (var item in reader.ReadAllAsync())
             {
                 if (item.success)
@@ -133,6 +135,9 @@ namespace DFM.Frontend.Pages.Outbound
                     if (item.component == 3)
                     {
                         supportDocTypes = JsonSerializer.Deserialize<IEnumerable<DataTypeModel>>(item.response);
+
+                        docTypeModels = supportDocTypes!.ToList();
+
                     }
                     if (item.component == 4)
                     {
@@ -491,6 +496,7 @@ namespace DFM.Frontend.Pages.Outbound
 
             RawDocument!.DocNo = formatType;
             RawDocument!.FolderNum = docNumber;
+
             await InvokeAsync(StateHasChanged);
         }
         private async Task onDocNoClick()

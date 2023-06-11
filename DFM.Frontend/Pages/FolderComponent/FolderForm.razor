@@ -31,7 +31,7 @@
 
         </MudItem>
         <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
-            @if (formatDefaults != null)
+            @*@if (formatDefaults != null)
             {
                 <MudSelect Margin="Margin.Dense" @bind-Value="FolderModel!.FormatType" Disabled="OnProcessing" T="string" SelectedValues="formatDefaults" HelperText="ຮູບແບບທີ່ເອົາມາສະແດງໃນເລກທີເອກະສານ" Label="ຮູບແບບເລກທີ" Variant="Variant.Outlined">
                     @foreach (var item in DocNoFormat.Formats)
@@ -48,8 +48,13 @@
                         <MudSelectItem T="string" Value="item.Value">@item.Name</MudSelectItem>
                     }
                 </MudSelect>
-            }
-           
+            }*@
+            <MudSelect Margin="Margin.Dense" @bind-Value="FolderModel!.FormatType" Disabled="OnProcessing" T="string" HelperText="ຮູບແບບທີ່ເອົາມາສະແດງໃນເລກທີເອກະສານ" Label="ຮູບແບບເລກທີ" Variant="Variant.Outlined">
+                @foreach (var item in DocNoFormat.Formats)
+                {
+                    <MudSelectItem T="string" Value="item.Value">@item.Name</MudSelectItem>
+                }
+            </MudSelect>
         </MudItem>
         <MudItem xs="12" md="12" Class="d-flex flex-grow-1 gap-4">
             
@@ -85,6 +90,7 @@
     [Parameter] public FolderModel? FolderModel { get; set; }
     [Parameter] public bool OnProcessing { get; set; }
 
+    string folderType = "";
     private CancellationTokenSource cts = new CancellationTokenSource();
     public void Dispose()
     {

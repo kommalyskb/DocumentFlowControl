@@ -7,6 +7,7 @@ using DFM.Shared.Helper;
 using DFM.Shared.Interfaces;
 using DFM.Shared.Repository;
 using DFM.Shared.Resources;
+using EllipticCurve.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -137,7 +138,7 @@ namespace DFM.API.Controllers
         {
             try
             {
-                
+
                 var result = await documentTransaction.GetPersonalReport(request, cancellationToken);
                 return Ok(result);
 
@@ -410,6 +411,7 @@ namespace DFM.API.Controllers
                             Attachments = request.Main.Comment.Attachments
                         },
                         InboxType = request.InboxType,
+
                     };
 
                     // Set Reciepient
@@ -465,7 +467,7 @@ namespace DFM.API.Controllers
                                 mainBehavior = BehaviorStatus.ReadWrite;
                             }
                         }
-                        else if(receiverRole.Content.RoleType == RoleTypeModel.PrimeSecretary || receiverRole.Content.RoleType == RoleTypeModel.DeputyPrimeSecretary ||
+                        else if (receiverRole.Content.RoleType == RoleTypeModel.PrimeSecretary || receiverRole.Content.RoleType == RoleTypeModel.DeputyPrimeSecretary ||
                             receiverRole.Content.RoleType == RoleTypeModel.Director || receiverRole.Content.RoleType == RoleTypeModel.DeputyDirector)
                         {
                             // No need dupplicate
@@ -561,10 +563,10 @@ namespace DFM.API.Controllers
 
                         // Check condition for main display
                         // ຖ້າບໍ່ຢາກໃຫ້ໃຊ້ເງື່ອນໄຂການສົ່ງຂ້າມ ຈາກ ຂາອອກ ໄປ ຂາເຂົ້າ ແລ້ວສ້າງ record ໃຫມ່ແມ່ນໃຫ້ Comment statement ຂ້າງລຸ່ມອອກ
-                        if (isCrossRoleType(myRole.Content!.RoleType, receiverRole.Content!.RoleType))
-                        {
-                            isMainDisplay = false;
-                        }
+                        //if (isCrossRoleType(myRole.Content!.RoleType, receiverRole.Content!.RoleType))
+                        //{
+                        //    isMainDisplay = false;
+                        //}
 
                         // Get Email from main recipient
                         //
@@ -772,7 +774,7 @@ namespace DFM.API.Controllers
                     #endregion
 
                     // Send email
-                    
+
 
                     if (result.Success)
                     {
@@ -803,6 +805,8 @@ namespace DFM.API.Controllers
                     //var doc = await context.FindByIdAsync(request.DocumentModel.id);
                     var doc = await documentTransaction.GetDocument(request.DocumentModel.id, cancellationToken);
 
+                    // Sender
+                    var sender = doc!.Content.Recipients!.FirstOrDefault(x => x.UId == request.Uid);
 
                     // Update raw data in document model
                     var oldRawData = doc!.Content.RawDatas!.FirstOrDefault(x => x.DataID == request.RawDocument.DataID);
@@ -812,45 +816,68 @@ namespace DFM.API.Controllers
                         #region ອັບເດດການນຳໃຊ້ ເລກທີ່ໃນ Folder ແລະ ກວດ ເລກທີ່ວ່າມີການໃຊ້ບໍ່ ຖ້າມີໃຫ້ໃຊ້ເລກທີຖັດໄປ
                         if (string.IsNullOrWhiteSpace(oldRawData!.FolderId))
                         {
-                            if (!string.IsNullOrWhiteSpace(request.RawDocument!.FolderId!))
+                            // ຖ້າເປັນການ ລຶບເອກະສານແມ່ນໃຫ້ເອົາ ເລກທີຄືນມາ
+                            if (sender.DocStatus == TraceStatus.Trash)
                             {
                                 var folder = await folderManager.GetFolder(request.RawDocument!.FolderId!, cancellationToken);
                                 if (folder.Response.Success)
                                 {
-                                    // ກວດວ່າມີການໃຊ້ເລກທີ່ໃນ folder ດັ່ງກ່າວຫຼືບໍ່
-                                    var isExistFolderNum = folder.Content.DocNoUsed!.Any(x => x == request.RawDocument.FolderNum);
-                                    if (!isExistFolderNum)
+                                    // Remove history
+                                    folder.Content.DocNoUsed!.Remove(request.RawDocument.FolderNum);
+                                }
+
+
+                                //request.RawDocument.FolderNum = 0;
+                                request.RawDocument.DocNo = "";
+                                request.RawDocument.FolderId = "";
+
+                                // Update folder
+                                await folderManager.EditFolder(folder.Content, cancellationToken);
+
+                            }
+                            else
+                            {
+                                if (!string.IsNullOrWhiteSpace(request.RawDocument!.FolderId!))
+                                {
+                                    var folder = await folderManager.GetFolder(request.RawDocument!.FolderId!, cancellationToken);
+                                    if (folder.Response.Success)
                                     {
-                                        // Set Folder num history
-                                        folder.Content.DocNoUsed!.Add(request.RawDocument.FolderNum);
+                                        // ກວດວ່າມີການໃຊ້ເລກທີ່ໃນ folder ດັ່ງກ່າວຫຼືບໍ່
+                                        var isExistFolderNum = folder.Content.DocNoUsed!.Any(x => x == request.RawDocument.FolderNum);
+                                        if (!isExistFolderNum)
+                                        {
+                                            // Set Folder num history
+                                            folder.Content.DocNoUsed!.Add(request.RawDocument.FolderNum);
 
+                                        }
+                                        else
+                                        {
+                                            // Find next folder num for auto increase
+                                            int newFolderNum = folderManager.FindNextFolderNum(folder.Content);
+
+                                            // Update DocNo
+                                            string formatType = folder.Content.FormatType!;
+                                            formatType = formatType.Replace("$docno", $"{folder.Content.Prefix!}{newFolderNum}");
+                                            formatType = formatType.Replace("$sn", $"{folder.Content.ShortName}");
+                                            formatType = formatType.Replace("$yyyy", $"{DateTime.Now.Year}");
+
+                                            request.RawDocument.FolderNum = newFolderNum;
+                                            request.RawDocument.DocNo = formatType;
+
+                                            // Set Folder num history
+                                            folder.Content.DocNoUsed!.Add(newFolderNum);
+                                        }
+
+
+                                        // Set next number
+                                        folder.Content.NextNumber = folderManager.FindNextFolderNum(folder.Content);
+
+                                        // Update folder
+                                        await folderManager.EditFolder(folder.Content, cancellationToken);
                                     }
-                                    else
-                                    {
-                                        // Find next folder num for auto increase
-                                        int newFolderNum = folderManager.FindNextFolderNum(folder.Content);
-
-                                        // Update DocNo
-                                        string formatType = folder.Content.FormatType!;
-                                        formatType = formatType.Replace("$docno", $"{folder.Content.Prefix!}{newFolderNum}");
-                                        formatType = formatType.Replace("$sn", $"{folder.Content.ShortName}");
-                                        formatType = formatType.Replace("$yyyy", $"{DateTime.Now.Year}");
-
-                                        request.RawDocument.FolderNum = newFolderNum;
-                                        request.RawDocument.DocNo = formatType;
-
-                                        // Set Folder num history
-                                        folder.Content.DocNoUsed!.Add(newFolderNum);
-                                    }
-
-
-                                    // Set next number
-                                    folder.Content.NextNumber = folderManager.FindNextFolderNum(folder.Content);
-
-                                    // Update folder
-                                    await folderManager.EditFolder(folder.Content, cancellationToken);
                                 }
                             }
+
 
                         }
 
@@ -860,8 +887,7 @@ namespace DFM.API.Controllers
                         request.DocumentModel.RawDatas![indexData] = request.RawDocument;
                     }
 
-                    // Sender
-                    var sender = doc!.Content.Recipients!.FirstOrDefault(x => x.UId == request.Uid);
+
 
                     // Update owner recipient 
                     for (int i = 0; i < doc!.Content.Recipients!.Count; i++)
@@ -1022,10 +1048,10 @@ namespace DFM.API.Controllers
 
                         // Check condition for main display
                         // ຖ້າບໍ່ຢາກໃຫ້ໃຊ້ເງື່ອນໄຂການສົ່ງຂ້າມ ຈາກ ຂາອອກ ໄປ ຂາເຂົ້າ ແລ້ວສ້າງ record ໃຫມ່ແມ່ນໃຫ້ Comment statement ຂ້າງລຸ່ມອອກ
-                        if (isCrossRoleType(myRole.Content!.RoleType, receiverRole.Content!.RoleType))
-                        {
-                            isMainDisplay = false;
-                        }
+                        //if (isCrossRoleType(myRole.Content!.RoleType, receiverRole.Content!.RoleType))
+                        //{
+                        //    isMainDisplay = false;
+                        //}
 
                         // Get Email from main recipient
                         //
@@ -1094,7 +1120,7 @@ namespace DFM.API.Controllers
                             if (envConf.EmailNotify)
                             {
                                 var itemRole = await organization.GetEmployee(request.DocumentModel!.OrganizationID!, item.Model!.Role.RoleID!);
-                                var itemProfile = await employeeManager.GetProfile(itemRole.Content.Employee.UserID! );
+                                var itemProfile = await employeeManager.GetProfile(itemRole.Content.Employee.UserID!);
                                 emails.Add(itemProfile.Content.Contact.Email!);
                             }
 
@@ -1187,8 +1213,8 @@ namespace DFM.API.Controllers
                     #endregion
 
 
-                    
-                   
+
+
 
                     if (result.Success)
                     {
