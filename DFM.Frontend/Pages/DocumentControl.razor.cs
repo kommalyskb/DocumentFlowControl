@@ -263,6 +263,11 @@ namespace DFM.Frontend.Pages
                             //documentModel!.InboxType = InboxType.Outbound;
                             documentModel!.Recipients![index].InboxType = InboxType.Outbound;
                         }
+                        if (myRole != null)
+                        {
+                            documentRequest.Uid = myRole!.UId;
+
+                        }
                         documentRequest.RawDocument = rawDocument;
                         documentRequest.DocumentModel = documentModel;
 
@@ -444,6 +449,11 @@ namespace DFM.Frontend.Pages
                         {
                             documentModel!.Recipients![index].InboxType = InboxType.Outbound;
                             //documentModel!.InboxType = InboxType.Outbound;
+                        }
+                        if (myRole != null)
+                        {
+                            documentRequest.Uid = myRole!.UId;
+
                         }
                         documentRequest.RawDocument = rawDocument;
                         documentRequest.DocumentModel = documentModel;
@@ -996,8 +1006,11 @@ namespace DFM.Frontend.Pages
         }
         bool validateField()
         {
-
-            if (string.IsNullOrWhiteSpace(rawDocument!.Title))
+            if (Link == "outbound" && string.IsNullOrWhiteSpace(rawDocument!.Title) && string.IsNullOrWhiteSpace(rawDocument!.Signer))
+            {
+                return false;
+            }
+            else if (Link == "inbound" && string.IsNullOrWhiteSpace(rawDocument!.Title))
             {
                 return false;
             }
@@ -1052,6 +1065,11 @@ namespace DFM.Frontend.Pages
                     documentRequest.InboxType = InboxType.Outbound;
                 }
 
+                if (myRole != null)
+                {
+                    documentRequest.Uid = myRole!.UId;
+
+                }
                 documentRequest.RawDocument = rawDocument;
                 documentRequest.DocumentModel = documentModel;
                 // Send request for save document

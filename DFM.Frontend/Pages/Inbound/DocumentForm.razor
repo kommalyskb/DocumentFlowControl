@@ -367,7 +367,16 @@
 
         </MudItem>
         <MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
-            @if (selectDoctypeValues != null)
+            <MudSelect Margin="Margin.Dense" Disabled="OnProcessing" @bind-Value="RawDocument!.DocType" T="string" HelperText="ປະເພດຂອງເອກະສານທີ່ຮັບມາ" Label="ປະເພດເອກະສານ" Variant="Variant.Outlined">
+                    @if (docTypeModels is not null)
+                    {
+                        foreach (var item in docTypeModels!)
+                        {
+                            <MudSelectItem Value="item.id">@item.DocType</MudSelectItem>
+                        }
+                    }
+                </MudSelect>
+            @*@if (selectDoctypeValues != null)
             {
                 <MudSelect Margin="Margin.Dense" SelectedValues="selectDoctypeValues" Disabled="OnProcessing" @bind-Value="RawDocument!.DocType" T="string" HelperText="ປະເພດຂອງເອກະສານທີ່ຮັບມາ" Label="ປະເພດເອກະສານ" Variant="Variant.Outlined">
                     @if (docTypeModels is not null)
@@ -390,7 +399,7 @@
                         }
                     }
                 </MudSelect>
-            }
+            }*@
 
         </MudItem>
 

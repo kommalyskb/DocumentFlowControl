@@ -805,8 +805,7 @@ namespace DFM.API.Controllers
                     //var doc = await context.FindByIdAsync(request.DocumentModel.id);
                     var doc = await documentTransaction.GetDocument(request.DocumentModel.id, cancellationToken);
 
-                    // Sender
-                    var sender = doc!.Content.Recipients!.FirstOrDefault(x => x.UId == request.Uid);
+                    var ownerDocument = request.DocumentModel.Recipients!.FirstOrDefault(x => x.UId == request.Uid);
 
                     // Update raw data in document model
                     var oldRawData = doc!.Content.RawDatas!.FirstOrDefault(x => x.DataID == request.RawDocument.DataID);
@@ -816,28 +815,54 @@ namespace DFM.API.Controllers
                         #region ອັບເດດການນຳໃຊ້ ເລກທີ່ໃນ Folder ແລະ ກວດ ເລກທີ່ວ່າມີການໃຊ້ບໍ່ ຖ້າມີໃຫ້ໃຊ້ເລກທີຖັດໄປ
                         if (string.IsNullOrWhiteSpace(oldRawData!.FolderId))
                         {
-                            // ຖ້າເປັນການ ລຶບເອກະສານແມ່ນໃຫ້ເອົາ ເລກທີຄືນມາ
-                            if (sender.DocStatus == TraceStatus.Trash)
+                            if (!string.IsNullOrWhiteSpace(request.RawDocument!.FolderId!))
                             {
                                 var folder = await folderManager.GetFolder(request.RawDocument!.FolderId!, cancellationToken);
                                 if (folder.Response.Success)
                                 {
-                                    // Remove history
-                                    folder.Content.DocNoUsed!.Remove(request.RawDocument.FolderNum);
+                                    // ກວດວ່າມີການໃຊ້ເລກທີ່ໃນ folder ດັ່ງກ່າວຫຼືບໍ່
+                                    var isExistFolderNum = folder.Content.DocNoUsed!.Any(x => x == request.RawDocument.FolderNum);
+                                    if (!isExistFolderNum)
+                                    {
+                                        // Set Folder num history
+                                        folder.Content.DocNoUsed!.Add(request.RawDocument.FolderNum);
+
+                                    }
+                                    else
+                                    {
+                                        // Find next folder num for auto increase
+                                        int newFolderNum = folderManager.FindNextFolderNum(folder.Content);
+
+                                        // Update DocNo
+                                        string formatType = folder.Content.FormatType!;
+                                        formatType = formatType.Replace("$docno", $"{folder.Content.Prefix!}{newFolderNum}");
+                                        formatType = formatType.Replace("$sn", $"{folder.Content.ShortName}");
+                                        formatType = formatType.Replace("$yyyy", $"{DateTime.Now.Year}");
+
+                                        request.RawDocument.FolderNum = newFolderNum;
+                                        request.RawDocument.DocNo = formatType;
+
+                                        // Set Folder num history
+                                        folder.Content.DocNoUsed!.Add(newFolderNum);
+                                    }
+
+
+                                    // Set next number
+                                    folder.Content.NextNumber = folderManager.FindNextFolderNum(folder.Content);
+
+                                    // Update folder
+                                    await folderManager.EditFolder(folder.Content, cancellationToken);
                                 }
-
-
-                                //request.RawDocument.FolderNum = 0;
-                                request.RawDocument.DocNo = "";
-                                request.RawDocument.FolderId = "";
-
-                                // Update folder
-                                await folderManager.EditFolder(folder.Content, cancellationToken);
-
                             }
-                            else
+
+
+                        }
+                        else
+                        {
+                            // ກວດວ່າຖ້າມີການປ່ຽນໃຊ້ Folder ໃຫມ່ໃຫ້ແລ່ນ ເລກທີໃຫມ່
+                            if (!string.IsNullOrWhiteSpace(request.RawDocument!.FolderId!))
                             {
-                                if (!string.IsNullOrWhiteSpace(request.RawDocument!.FolderId!))
+                                if (request.RawDocument!.FolderId! != oldRawData.FolderId!)
                                 {
                                     var folder = await folderManager.GetFolder(request.RawDocument!.FolderId!, cancellationToken);
                                     if (folder.Response.Success)
@@ -876,18 +901,41 @@ namespace DFM.API.Controllers
                                         await folderManager.EditFolder(folder.Content, cancellationToken);
                                     }
                                 }
+                                
                             }
 
 
+                            // ຖ້າເປັນການ ລຶບເອກະສານແມ່ນໃຫ້ເອົາ ເລກທີຄືນມາ
+                            if (ownerDocument!.DocStatus == TraceStatus.Trash)
+                            {
+                                var folder = await folderManager.GetFolder(request.RawDocument!.FolderId!, cancellationToken);
+                                if (folder.Response.Success)
+                                {
+                                    // Remove history
+                                    folder.Content.DocNoUsed!.Remove(request.RawDocument.FolderNum);
+                                }
+
+
+                                //request.RawDocument.FolderNum = 0;
+                                request.RawDocument.DocNo = "";
+                                request.RawDocument.FolderId = "";
+
+                                // Update folder
+                                await folderManager.EditFolder(folder.Content, cancellationToken);
+
+                            }
                         }
 
                         #endregion
 
                         int indexData = doc!.Content.RawDatas!.IndexOf(oldRawData);
+                        // Set update raw document
                         request.DocumentModel.RawDatas![indexData] = request.RawDocument;
                     }
 
 
+                    // Sender for send an email
+                    var sender = doc!.Content.Recipients!.FirstOrDefault(x => x.UId == request.Uid);
 
                     // Update owner recipient 
                     for (int i = 0; i < doc!.Content.Recipients!.Count; i++)

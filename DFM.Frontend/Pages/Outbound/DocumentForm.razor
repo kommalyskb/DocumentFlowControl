@@ -352,7 +352,17 @@
             
             <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
 
-                @if (selectDoctypeValues != null)
+                <MudSelect Margin="Margin.Dense" Disabled="OnProcessing" @bind-Value="RawDocument!.DocType" T="string" HelperText="ປະເພດຂອງເອກະສານທີ່ຮັບມາ" Label="ປະເພດເອກະສານ" Variant="Variant.Outlined">
+                    @if (docTypeModels is not null)
+                    {
+                        foreach (var item in docTypeModels!)
+                        {
+                            <MudSelectItem Value="item.id">@item.DocType</MudSelectItem>
+                        }
+                    }
+                </MudSelect>
+
+                @*@if (selectDoctypeValues != null)
                 {
                     <MudSelect Margin="Margin.Dense" SelectedValues="selectDoctypeValues" Disabled="OnProcessing" @bind-Value="RawDocument!.DocType" T="string" HelperText="ປະເພດຂອງເອກະສານທີ່ຮັບມາ" Label="ປະເພດເອກະສານ" Variant="Variant.Outlined">
                         @if (docTypeModels is not null)
@@ -375,7 +385,7 @@
                             }
                         }
                     </MudSelect>
-                }
+                }*@
             </MudItem>
 
             @*<MudItem xs="12" md="4" Class="d-flex flex-grow-1 gap-4">
@@ -388,7 +398,7 @@
             </MudItem>
             <MudItem xs="12" md="6" Class="d-flex flex-grow-1 gap-4">
 
-                <MudTextField Margin="Margin.Dense" Disabled="OnProcessing" @bind-Value="RawDocument!.Signer" T="string" Counter="500" MaxLength="500" Immediate="true" Variant="Variant.Outlined" Validation="@(new Func<string, IEnumerable<string>>(MediumCharacters))" HelperText="ຜູ້ທີ່ມາເຊັນຮັບເອກະສານ" Label="ຜູ້ເຊັນເອກະສານ" />
+                <MudTextField Margin="Margin.Dense" Disabled="OnProcessing" Required="true" @bind-Value="RawDocument!.Signer" T="string" Counter="500" MaxLength="500" Immediate="true" Variant="Variant.Outlined" Validation="@(new Func<string, IEnumerable<string>>(MediumCharacters))" HelperText="ຜູ້ທີ່ນຳໃຊ້ເລກທີ" Label="ຜູ້ທີ່ນຳໃຊ້ເລກທີ" />
             </MudItem>
         }
 
