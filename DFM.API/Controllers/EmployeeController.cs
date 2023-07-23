@@ -10,6 +10,7 @@ using HttpClientService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using MyCouch.Requests;
 using Serilog;
 using System.Diagnostics;
@@ -33,9 +34,10 @@ namespace DFM.API.Controllers
         private readonly AESConfig aesConf;
         private readonly IEmailHelper emailHelper;
         private readonly SMTPConf smtp;
+        private readonly ILogger<EmployeeController> logger;
 
         public EmployeeController(IEmployeeManager employeeManager, IIdentityHelper identityHelper, IHttpService httpService,
-            ServiceEndpoint endpoint, IAESHelper aes, AESConfig aesConf, IEmailHelper emailHelper, SMTPConf smtp)
+            ServiceEndpoint endpoint, IAESHelper aes, AESConfig aesConf, IEmailHelper emailHelper, SMTPConf smtp, ILogger<EmployeeController> logger)
         {
             this.employeeManager = employeeManager;
             this.identityHelper = identityHelper;
@@ -45,6 +47,7 @@ namespace DFM.API.Controllers
             this.aesConf = aesConf;
             this.emailHelper = emailHelper;
             this.smtp = smtp;
+            this.logger = logger;
         }
 
         [HttpGet("GetItem")]
@@ -110,6 +113,7 @@ namespace DFM.API.Controllers
                 var checkAdminToken = await identityHelper.GetAdminAccessToken();
                 if (!checkAdminToken.Response.Success)
                 {
+                    logger.LogError($"checkAdminToken: {checkAdminToken.Response.Detail}");
                     return BadRequest(checkAdminToken.Response);
                 }
                 var validateResult = await identityHelper.ValidateUser(request.Username, checkAdminToken.Token);
@@ -120,6 +124,9 @@ namespace DFM.API.Controllers
                     // New User
                     isNewUser = true;
                 }
+
+                logger.LogInformation($"SearchState: {validateResult.SearchState}");
+
                 if (validateResult.SearchState == 2)
                 {
                     // Found user
@@ -137,7 +144,7 @@ namespace DFM.API.Controllers
                             confirmPassword = password
 
                         };
-                        Log.Information($"Reset User(New) SSO: {reqUserContent}");
+                        logger.LogInformation($"Reset User(New) SSO: {reqUserContent.userId}");
                         // Set password
                         await httpService.Post<UserResetRequest>($"{endpoint.IdentityAPI}/api/Users/ChangePassword", reqUserContent, new AuthorizeHeader("bearer", checkAdminToken.Token), cancellationToken);
 
@@ -183,7 +190,7 @@ namespace DFM.API.Controllers
                     {
                         userName = request.Username,
                         accessFailedCount = 0,
-                        email = $"{request.Username}@dummy.csenergy.la",
+                        email = $"{request.Username}@dummy.officiate.xyz",
                         emailConfirmed = true,
                         lockoutEnabled = true,
                         lockoutEnd = DateTime.UtcNow,
@@ -194,7 +201,7 @@ namespace DFM.API.Controllers
                     };
                     var reqUser = await httpService.Post<UserRegisterRequestResponse>($"{endpoint.IdentityAPI}/api/Users", r, new AuthorizeHeader("bearer", checkAdminToken.Token), cancellationToken);
                     var reqUserContent = await reqUser.HttpResponseMessage.Content.ReadAsStringAsync();
-                    Log.Information($"Create User SSO: {reqUserContent}");
+                    logger.LogInformation($"Create User SSO: {reqUserContent}");
                     if (reqUser.Success)
                     {
                         var userResponse = JsonSerializer.Deserialize<UserRegisterRequestResponse>(reqUserContent);

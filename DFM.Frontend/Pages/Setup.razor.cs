@@ -89,7 +89,7 @@ namespace DFM.Frontend.Pages
                     employee.OrganizationID = orgResult.Response.Id;
                     var empResult = await httpService.Post<EmployeeModel, CommonResponse>(urlEmployee, employee, new AuthorizeHeader("bearer", token), cancellationToken: cts.Token);
 
-                    Log.Information(await empResult.HttpResponseMessage.Content.ReadAsStringAsync());
+                    Console.WriteLine(await empResult.HttpResponseMessage.Content.ReadAsStringAsync());
 
                     if (empResult.Success)
                     {
