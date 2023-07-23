@@ -5,6 +5,7 @@ using DFM.Shared.Extensions;
 using DFM.Shared.Resources;
 using HttpClientService;
 using IdentityModel.Client;
+using Microsoft.Extensions.Logging;
 using Redis.OM;
 using Serilog;
 using System;
@@ -29,13 +30,15 @@ namespace DFM.Shared.Helper
         private readonly ServiceEndpoint endpoint;
         private readonly IRedisConnector redisConnector;
         private readonly OpenIDConf openID;
+        private readonly ILogger<IdentityHelper> logger;
 
-        public IdentityHelper(IHttpService httpService, ServiceEndpoint endpoint, IRedisConnector redisConnector, OpenIDConf openID)
+        public IdentityHelper(IHttpService httpService, ServiceEndpoint endpoint, IRedisConnector redisConnector, OpenIDConf openID, ILogger<IdentityHelper> logger)
         {
             this.httpService = httpService;
             this.endpoint = endpoint;
             this.redisConnector = redisConnector;
             this.openID = openID;
+            this.logger = logger;
         }
         public bool ValidateToken(string token)
         {
@@ -103,10 +106,11 @@ namespace DFM.Shared.Helper
             CommonResponse res = new();
             var provider = new RedisConnectionProvider(redisConnector.Connection);
             var response = provider.RedisCollection<TokenEndPointResponse>();
-
+            
             var admin = await response.FindByIdAsync("admin");
             if (admin != null)
             {
+                logger.LogInformation($"Admin: {admin.AccessToken}");
                 isNull = false;
                 if (ValidateToken(admin.AccessToken!))
                 {
@@ -171,7 +175,7 @@ namespace DFM.Shared.Helper
             }
             else
             {
-                Log.Error($"Error Request Admin Authorize: {tokenResult.ErrorDescription}");
+                logger.LogError($"Error Request Admin Authorize: {tokenResult.ErrorDescription}");
                 res = new CommonResponse
                 {
                     Success = false,
