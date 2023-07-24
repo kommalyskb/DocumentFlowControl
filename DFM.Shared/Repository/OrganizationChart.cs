@@ -2032,7 +2032,9 @@ namespace DFM.Shared.Repository
                 var context = provider.RedisCollection<DynamicFlowModel>();
 
                 var existing = await GetDynamicFlowByID(orgID, moduleType, cancellationToken);
-                if (!existing.Response.Success)
+                // ກວດວ່າ ມີ Module ດັ່ງກ່າວແລ້ວຫຼືຍັງ
+                var isExists = existing.FlowModel.RoleTypeItems!.Any(x => x.RoleSource == source && x.ModuleType == moduleType);
+                if (!isExists)
                 {
                     // Insert new record
                     var request = new DynamicFlowModel
