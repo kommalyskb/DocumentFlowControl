@@ -47,7 +47,7 @@ namespace DFM.Testcases.Employee
                 Port = 12000,
                 Password = "1qaz2wsx"
             });
-            IOrganizationChart organizationChart = new OrganizationChart(couchContext, dBConfig, redisConnector, new EnvConf());
+            IOrganizationChart organizationChart = new OrganizationChart(couchContext, dBConfig, redisConnector, new EnvConf(), default!);
             employeeManager = new EmployeeManager(couchContext, dBConfig, redisConnector, organizationChart);
         }
         [Fact]

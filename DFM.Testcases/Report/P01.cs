@@ -45,7 +45,7 @@ namespace DFM.Testcases.Report
                 Server = "localhost",
                 Port = 6379
             });
-            IOrganizationChart organizationChart = new OrganizationChart(couchContext, dBConfig, redisConnector, new EnvConf());
+            IOrganizationChart organizationChart = new OrganizationChart(couchContext, dBConfig, redisConnector, new EnvConf(), default!);
             IRoleManager roleManager = new RoleManager(couchContext, dBConfig, redisConnector, organizationChart);
             documentService = new DocumentTransaction(couchContext, dBConfig, redisConnector, roleManager);
         }

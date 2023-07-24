@@ -46,7 +46,7 @@ namespace DFM.Testcases.DocumentOperation
                 Port = 12000,
                 Password = "1qaz2wsx"
             });
-            IOrganizationChart organizationChart = new OrganizationChart(couchContext, dBConfig, redisConnector, new EnvConf());
+            IOrganizationChart organizationChart = new OrganizationChart(couchContext, dBConfig, redisConnector, new EnvConf(), default!);
             IRoleManager roleManager = new RoleManager(couchContext, dBConfig, redisConnector, organizationChart);
             documentService = new DocumentTransaction(couchContext, dBConfig, redisConnector, roleManager);
         }
