@@ -2040,7 +2040,7 @@ namespace DFM.Shared.Repository
 
                 logger.LogInformation($"IsDynamicFlowExists : {isExists}");
                 
-                if (!isExists)
+                if (!existing.Response.Success)
                 {
                     // Insert new record
                     var request = new DynamicFlowModel
@@ -2099,7 +2099,7 @@ namespace DFM.Shared.Repository
                 else
                 {
                     // Update existing record
-                    var isRoleTypeExist = existing!.FlowModel!.RoleTypeItems!.FirstOrDefault(x => x.RoleSource == source);
+                    var isRoleTypeExist = existing!.FlowModel!.RoleTypeItems!.FirstOrDefault(x => x.RoleSource == source && x.ModuleType == moduleType);
                     if (isRoleTypeExist == null)
                     {
                         // Add new
