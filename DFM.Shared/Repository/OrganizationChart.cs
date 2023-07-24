@@ -8,6 +8,7 @@ using DFM.Shared.Extensions;
 using DFM.Shared.Helper;
 using DFM.Shared.Interfaces;
 using DFM.Shared.Resources;
+using Microsoft.Extensions.Logging;
 using Minio.DataModel;
 using MyCouch.Requests;
 using Redis.OM;
@@ -29,16 +30,18 @@ namespace DFM.Shared.Repository
         private readonly ICouchContext couchContext;
         private readonly IRedisConnector redisConnector;
         private readonly EnvConf env;
+        private readonly ILogger<OrganizationChart> logger;
         private readonly CouchDBHelper read_couchDbHelper;
         private readonly CouchDBHelper write_couchDbHelper;
         private readonly CouchDBHelper read_dynamic_couchDbHelper;
         private readonly CouchDBHelper write_dynamic_couchDbHelper;
 
-        public OrganizationChart(ICouchContext couchContext, DBConfig dbConfig, IRedisConnector redisConnector, EnvConf env)
+        public OrganizationChart(ICouchContext couchContext, DBConfig dbConfig, IRedisConnector redisConnector, EnvConf env, ILogger<OrganizationChart> logger)
         {
             this.couchContext = couchContext;
             this.redisConnector = redisConnector;
             this.env = env;
+            this.logger = logger;
             this.read_couchDbHelper = new CouchDBHelper
            (
                scheme: dbConfig.Reader.Scheme,
@@ -2034,6 +2037,9 @@ namespace DFM.Shared.Repository
                 var existing = await GetDynamicFlowByID(orgID, moduleType, cancellationToken);
                 // ກວດວ່າ ມີ Module ດັ່ງກ່າວແລ້ວຫຼືຍັງ
                 var isExists = existing.FlowModel.RoleTypeItems!.Any(x => x.RoleSource == source && x.ModuleType == moduleType);
+
+                logger.LogInformation($"IsDynamicFlowExists : {isExists}");
+                
                 if (!isExists)
                 {
                     // Insert new record
